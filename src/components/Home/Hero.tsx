@@ -1,27 +1,24 @@
 "use strict";
 "use client";
 
-import { ArrowUpRight, FileText, Play, ShoppingCart } from "lucide-react";
+import { ArrowUpRight, Play } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-const authors = [
-  { id: 1, name: "Alex Johnson", avatar: "/images/home/author-1.jpg" },
-  {
-    id: 2,
-    name: "Maria Garcia",
-    avatar: "/images/home/author-2.jpg",
-  },
-  { id: 3, name: "James Wilson", avatar: "/images/home/author-3.jpg" },
-];
 export default function Hero() {
+  const avatars = [
+    { src: "/images/home/author-1.jpg", alt: "User review 1" },
+    { src: "/images/home/author-2.jpg", alt: "User review 2" },
+    { src: "/images/home/author-3.jpg", alt: "User review 3" },
+  ];
+
   return (
     <div className="w-full relative min-h-187.5 flex items-center bg-slate-900 overflow-hidden select-none">
       {/* BACKGROUND IMAGE WITH DARK BLUR OVERLAY */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-700 scale-105"
         style={{
-          backgroundImage: `url('/images/home/hero-bg-image.jpg')`, // Replace with your actual asset path
+          backgroundImage: `url('/images/home/hero-bg-image.jpg')`,
         }}
       />
       <div className="absolute inset-0 bg-linear-to-r from-black/80 via-black/60 to-transparent z-10" />
@@ -75,48 +72,40 @@ export default function Hero() {
           </div>
 
           {/* TESTIMONIAL / AVATAR ROW */}
-          <div className="flex flex-col sm:flex-row sm:items-center space-y-4 sm:space-y-0 sm:space-x-4 pt-10 border-t border-white/10 w-full max-w-xl">
-            {/* Overlapping Avatar Stack */}
-            <div className="flex -space-x-3 overflow-hidden">
-              {authors.map((a) => (
-                <div key={a.avatar} className="rounded-full">
+          <div className="flex flex-row items-center gap-4 sm:gap-6 pt-10 w-full max-w-2xl bg-transparent select-none">
+            {/* Overlapping Avatar Stack with 4 items matching image_825bc7.png */}
+            <div className="flex -space-x-3 sm:-space-x-4 shrink-0">
+              {avatars.map((avatar, idx) => (
+                <div
+                  key={idx}
+                  className="inline-block h-12 w-12 sm:h-14 sm:w-14 rounded-full ring-1 ring-white/80 shadow-md bg-gray-800 relative overflow-hidden"
+                >
                   <Image
-                    src={a.avatar}
-                    width="160"
-                    height="50"
-                    alt="logo"
-                  />{" "}
+                    fill
+                    sizes="(max-width: 640px) 48px, 56px"
+                    className="object-cover rounded-full"
+                    src={avatar.src}
+                    alt={avatar.alt}
+                  />
                 </div>
               ))}
             </div>
-            {/* Quote */}
-            <p className="text-gray-300 text-sm italic font-light leading-snug">
-              “Empowering homes and businesses with clean solar energy for
-              brighter tomorrow.”
-            </p>
+
+            {/* Elegant Vertical Divider Line */}
+            <div className="h-10 w-px bg-white/20 shrink-0" />
+
+            {/* Bold Typography Presentation Area */}
+            <div className="max-w-md">
+              <p className="text-white text-sm sm:text-base md:text-lg font-bold leading-snug tracking-tight">
+                “Empowering homes and businesses with clean solar energy for
+                brighter tomorrow.”
+              </p>
+            </div>
           </div>
         </div>
 
         {/* RIGHT COLUMN (Kept clean or open for complex compositions/spacing matching image layouts) */}
         <div className="lg:col-span-5 hidden lg:block" />
-      </div>
-
-      {/* FLOATING ACTION TOOLBAR SIDEBAR (Right edge) */}
-      <div className="absolute right-0 top-1/2 -translate-y-1/2 z-30 hidden md:flex flex-col space-y-px bg-white rounded-l-md shadow-2xl border border-r-0 border-gray-200 overflow-hidden">
-        <button
-          type="button"
-          aria-label="Documentation"
-          className="p-3.5 text-gray-700 hover:text-[#4CAF50] hover:bg-gray-50 transition-colors border-b border-gray-100"
-        >
-          <FileText size={20} />
-        </button>
-        <button
-          type="button"
-          aria-label="Cart"
-          className="p-3.5 text-gray-700 hover:text-[#4CAF50] hover:bg-gray-50 transition-colors"
-        >
-          <ShoppingCart size={20} />
-        </button>
       </div>
     </div>
   );

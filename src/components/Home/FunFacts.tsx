@@ -117,11 +117,11 @@ export default function FunFacts() {
           </p>
 
           {/* Subdivided Stats Dashboard Box */}
-          <div className="bg-[#F3F7F9] rounded-[2rem] p-6 sm:p-8 border border-gray-100/50 mt-8">
+          <div className="bg-[#F3F7F9] rounded-4xl p-6 sm:p-8 border border-gray-100/50 mt-8">
             <div className="grid grid-cols-2 gap-x-4 gap-y-8 relative">
               {/* Decorative cross lines matching image layout structure */}
-              <div className="absolute top-1/2 left-0 right-0 h-[1px] bg-gray-200/60 transform -translate-y-1/2 hidden sm:block" />
-              <div className="absolute top-0 bottom-0 left-1/2 w-[1px] bg-gray-200/60 transform -translate-x-1/2 hidden sm:block" />
+              <div className="absolute top-1/2 left-0 right-0 h-px bg-gray-200/60 transform -translate-y-1/2 hidden sm:block" />
+              <div className="absolute top-0 bottom-0 left-1/2 w-px bg-gray-200/60 transform -translate-x-1/2 hidden sm:block" />
 
               {facts.map((fact, index) => (
                 <div
@@ -140,7 +140,7 @@ export default function FunFacts() {
                     <h3 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-[#051720] tracking-tight">
                       {fact.metric}
                     </h3>
-                    <p className="text-[11px] sm:text-xs font-semibold text-gray-400 leading-normal max-w-[140px] mx-auto">
+                    <p className="text-[11px] sm:text-xs font-semibold text-gray-400 leading-normal max-w-35 mx-auto">
                       {fact.label}
                     </p>
                   </div>
@@ -160,7 +160,7 @@ export default function FunFacts() {
             width={1200}
             height={900}
             sizes="(max-width: 1024px) 100vw, 45vw"
-            className="w-full h-auto rounded-[2rem] shadow-sm"
+            className="w-full h-auto rounded-4xl shadow-sm"
             priority
           />
         </div>

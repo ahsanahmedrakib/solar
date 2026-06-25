@@ -7,10 +7,9 @@ export default function CleanEnergyAbout() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
         {/* ================= LEFT COLUMN: IMAGES & STATS ================= */}
         {/* Container aspect ratio shifted to 1.08/1 to slightly reduce the overall height */}
-        <div className="relative w-full max-w-142.5 mx-auto aspect-[1.08/1] lg:col-span-6 order-2 lg:order-1 mt-12 lg:mt-0">
+        <div className="relative w-full max-w-135 mx-auto aspect-[0.92/1] lg:col-span-6 order-2 lg:order-1 mt-12 lg:mt-0 select-none">
           {/* 1. Top Left Image (Office / Turbine Team) */}
-          {/* Height brought down to 70% for a cleaner look */}
-          <div className="absolute top-0 left-0 w-[58%] h-[70%] rounded-3xl overflow-hidden shadow-sm bg-gray-100">
+          <div className="absolute top-0 left-0 w-[70%] h-[64%] rounded-xl overflow-hidden shadow-sm ">
             <Image
               src="/images/home/about-us-image-1.jpg"
               alt="Team discussing clean energy"
@@ -21,9 +20,49 @@ export default function CleanEnergyAbout() {
             />
           </div>
 
-          {/* 2. Right Big Image (Engineers Walking) */}
-          {/* Height set to 84% to perfectly balance the overlap without stretching too far */}
-          <div className="absolute bottom-0 right-0 w-[58%] h-[84%] rounded-3xl overflow-hidden shadow-md z-10 bg-gray-100">
+          {/* 2. Rotating "Contact Us" Badge */}
+          {/* Positioned accurately to the top right of the composition */}
+          <div className="absolute top-4 right-5 z-30 w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 animate-[spin_25s_linear_infinite] origin-center">
+            <svg viewBox="0 0 100 100" className="w-full h-full">
+              <path
+                id="contactBadgePath"
+                d="M 50,50 m -36,0 a 36,36 0 1,1 72,0 a 36,36 0 1,1 -72,0"
+                className="fill-none"
+              />
+              {/* Dark Navy Inner Center Circle */}
+              <circle cx="50" cy="50" r="16" className="fill-[#051720]" />
+              {/* White Lightning Bolt Vector Icon */}
+              <path
+                d="M49 38L43 49H49L48 58L57 45H49L52 38H49Z"
+                className="fill-green stroke-white"
+                strokeWidth="1"
+                strokeLinejoin="round"
+              />
+              {/* Bright Green Text Ring */}
+              <text className="text-[9.5px] font-extrabold fill-[#44B549] tracking-[2.2px]">
+                <textPath href="#contactBadgePath">
+                  * Contact Us * Contact Us * Contact Us{" "}
+                </textPath>
+              </text>
+            </svg>
+          </div>
+
+          {/* 3. Bottom Left Experience Card */}
+          {/* Aligned natively underneath the left edge of the top image */}
+          <div className="absolute bottom-0 left-0 w-[42%] aspect-[1/.85] flex flex-col justify-center items-center bg-[#03141F] text-white p-4 rounded-xl shadow-md text-center z-20">
+            <h3 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-1 text-white">
+              25+
+            </h3>
+            <p className="text-xs sm:text-sm text-gray-300 font-semibold leading-snug">
+              Years Of
+              <br />
+              Experience
+            </p>
+          </div>
+
+          {/* 4. Right Big Image (Engineers Walking) */}
+          {/* Elevated with thick white borders to emphasize the clean overlap cut layer */}
+          <div className="absolute bottom-0 right-0 w-[56%] h-[74%] rounded-xl overflow-hidden shadow-2xl border-4 sm:border-8 border-white z-10">
             <Image
               src="/images/home/about-us-image-2.jpg"
               alt="Engineers walking on site"
@@ -31,48 +70,6 @@ export default function CleanEnergyAbout() {
               sizes="(max-width: 1024px) 50vw, 30vw"
               className="object-cover"
             />
-          </div>
-
-          {/* 3. Bottom Left Experience Card */}
-          <div className="absolute bottom-0 left-0 w-[38%] aspect-square flex flex-col justify-center bg-[#051720] text-white p-4 sm:p-6 rounded-3xl shadow-sm text-center z-20">
-            <h3 className="text-2xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-1">
-              25+
-            </h3>
-            <p className="text-[9px] sm:text-xs text-gray-400 font-medium tracking-wider uppercase leading-tight">
-              Years Of
-              <br />
-              Experience
-            </p>
-          </div>
-
-          {/* 4. Rotating "Contact Us" Badge */}
-          {/* Positioned cleanly on the new intersection point */}
-          <div className="absolute top-[1%] right-[15%] z-30 w-16 h-16 sm:w-24 sm:h-24 bg-[#31A24C] rounded-full flex items-center justify-center shadow-md border-4 border-white">
-            <div className="relative w-full h-full flex items-center justify-center animate-[spin_15s_linear_infinite]">
-              <svg className="w-full h-full absolute" viewBox="0 0 100 100">
-                <path
-                  id="circlePath"
-                  d="M 50, 50 m -37, 0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0"
-                  fill="none"
-                />
-                <text className="text-[10px] font-bold fill-white uppercase tracking-[0.18em]">
-                  <textPath href="#circlePath" startOffset="0%">
-                    • Contact Us • Contact Us
-                  </textPath>
-                </text>
-              </svg>
-              {/* Center Bolt Icon */}
-              <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-[#061A23] flex items-center justify-center z-10">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  className="w-3 h-3 sm:w-4 sm:h-4 text-white"
-                >
-                  <path d="M12 2L3.5 14h7V22l8.5-12h-7z" />
-                </svg>
-              </div>
-            </div>
           </div>
         </div>
 

@@ -165,69 +165,13 @@ const WhyChooseUs: React.FC = () => {
               {/* Green Support Card */}
               <div className="w-full aspect-[1.15/1] sm:aspect-[0.9/1] bg-[#44B549] text-white p-6 sm:p-8 rounded-3xl sm:rounded-4xl shadow-sm flex flex-col justify-end relative overflow-hidden group">
                 <div className="absolute top-6 left-6 w-20 h-20 sm:w-24 sm:h-24 opacity-95 transition-transform duration-500 group-hover:scale-110">
-                  <svg
-                    className="w-full h-full"
-                    viewBox="0 0 100 100"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <circle
-                      cx="70"
-                      cy="25"
-                      r="10"
-                      fill="#FFD700"
-                      className="animate-pulse"
-                    />
-                    <line
-                      x1="70"
-                      y1="8"
-                      x2="70"
-                      y2="12"
-                      stroke="#FFD700"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                    />
-                    <line
-                      x1="82"
-                      y1="20"
-                      x2="86"
-                      y2="18"
-                      stroke="#FFD700"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                    />
-
-                    <path
-                      d="M20 50 L65 35 L85 60 L35 80 Z"
-                      fill="#4D49BD"
-                      stroke="#E2E8F0"
-                      strokeWidth="1.5"
-                    />
-                    <path
-                      d="M35 45 L50 68"
-                      stroke="#FFFFFF"
-                      strokeWidth="1"
-                      strokeOpacity="0.4"
-                    />
-                    <path
-                      d="M50 40 L68 62"
-                      stroke="#FFFFFF"
-                      strokeWidth="1"
-                      strokeOpacity="0.4"
-                    />
-                    <path
-                      d="M28 58 L74 43"
-                      stroke="#FFFFFF"
-                      strokeWidth="1"
-                      strokeOpacity="0.4"
-                    />
-                    <path
-                      d="M50 68 L50 82 M52 82 L44 82"
-                      stroke="#312E81"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                    />
-                  </svg>
+                  <Image
+                    src="/images/home/why-choose-info-image.png"
+                    alt="Solar engineer inspecting photovoltaic panels"
+                    fill
+                    sizes="(max-width: 640px) 100vw, 25vw"
+                    className="object-cover"
+                  />
                 </div>
 
                 <div className="space-y-2 sm:space-y-3 z-10">
@@ -261,9 +205,6 @@ const WhyChooseUs: React.FC = () => {
           ))}
         </div>
 
-        <div className="flex justify-center mb-6">
-          <div className="w-3 h-3 bg-emerald-500 rounded-full" />
-        </div>
 
         {/* Contact CTA */}
         <div className="bg-white rounded-3xl shadow-xl p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center gap-5 max-w-2xl mx-auto">
