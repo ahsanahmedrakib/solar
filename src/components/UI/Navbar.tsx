@@ -86,14 +86,14 @@ export default function Navbar() {
           {/* DESKTOP NAVIGATION LINKS (Hover Action via CSS) */}
           <nav className="hidden lg:flex items-center space-x-8 text-gray-700 font-medium h-full">
             <Link
-              href="#"
+              href="/"
               className="text-[#4CAF50] flex items-center space-x-1 py-4"
             >
               <span>Home</span>
               <ChevronDown size={14} />
             </Link>
             <Link
-              href="#"
+              href="/about"
               className="hover:text-[#4CAF50] transition-colors py-4"
             >
               About Us

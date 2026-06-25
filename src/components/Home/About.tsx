@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-export default function CleanEnergyAbout() {
+export default function About() {
   return (
     <section className="bg-white py-12 px-4 sm:px-6 lg:py-20 lg:px-18 mx-auto font-sans relative">
       {/* Main Grid Wrapper */}
