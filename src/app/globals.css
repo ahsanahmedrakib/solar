@@ -1,26 +1,243 @@
 @import "tailwindcss";
 
+/* ================================================================
+   SUNEX SOLAR — DESIGN TOKEN SYSTEM
+   Tailwind v4 uses @theme for design tokens (no tailwind.config.js)
+   All brand colors and semantic tokens live here.
+   ================================================================ */
+
+/* ----------------------------------------------------------------
+   1. RAW BRAND PALETTE — primitive color values
+   ---------------------------------------------------------------- */
+@theme {
+  /* ── Brand Green Scale ────────────────────────────────────────── */
+  --color-brand-50:  #f0fdf4;
+  --color-brand-100: #dcfce7;
+  --color-brand-200: #bbf7d0;
+  --color-brand-300: #86efac;
+  --color-brand-400: #4ade80;
+  --color-brand-500: #22c55e;
+  --color-brand-600: #4CAF50;   /* ← PRIMARY brand green (used across site) */
+  --color-brand-700: #43a047;
+  --color-brand-800: #388e3c;
+  --color-brand-900: #2e7d32;
+  --color-brand-950: #1b5e20;
+
+  /* ── Accent / Secondary palette (matching #44B549) ─────────────── */
+  --color-accent-400: #66bb6a;
+  --color-accent-500: #4CAF50;
+  --color-accent-600: #44B549;  /* ← found in many components */
+  --color-accent-700: #388e3c;
+
+  /* ── Neutral / Slate ─────────────────────────────────────────── */
+  --color-neutral-50:  #f8fafc;
+  --color-neutral-100: #f1f5f9;
+  --color-neutral-200: #e2e8f0;
+  --color-neutral-300: #cbd5e1;
+  --color-neutral-400: #94a3b8;
+  --color-neutral-500: #64748b;
+  --color-neutral-600: #475569;
+  --color-neutral-700: #334155;
+  --color-neutral-800: #1e293b;
+  --color-neutral-900: #0f172a;
+  --color-neutral-950: #020617;
+
+  /* ── Admin Dark Surface Palette ──────────────────────────────── */
+  --color-admin-bg:           #0f1117;
+  --color-admin-surface:      #161b27;
+  --color-admin-surface-2:    #1e2535;
+  --color-admin-surface-hover:#242b3d;
+
+  /* ── Semantic Colors ─────────────────────────────────────────── */
+  --color-success:   #10b981;
+  --color-warning:   #f59e0b;
+  --color-danger:    #ef4444;
+  --color-info:      #3b82f6;
+
+  /* ── Shorthand aliases (used in Tailwind utilities like bg-primary) */
+  --color-primary:         var(--color-brand-600);
+  --color-primary-hover:   var(--color-brand-700);
+  --color-primary-light:   var(--color-brand-50);
+  --color-primary-muted:   color-mix(in srgb, var(--color-brand-600) 12%, transparent);
+
+  /* ── Typography ──────────────────────────────────────────────── */
+  --font-sans: var(--font-geist-sans), "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  /* ── Border Radius ───────────────────────────────────────────── */
+  --radius-sm:   6px;
+  --radius-md:   10px;
+  --radius-lg:   14px;
+  --radius-xl:   20px;
+  --radius-2xl:  28px;
+  --radius-full: 9999px;
+
+  /* ── Shadows ─────────────────────────────────────────────────── */
+  --shadow-brand: 0 4px 24px color-mix(in srgb, var(--color-brand-600) 35%, transparent);
+  --shadow-card:  0 1px 3px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
+  --shadow-admin: 0 4px 24px rgba(0,0,0,.4);
+
+  /* ── Transition ──────────────────────────────────────────────── */
+  --transition-default: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow:    300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ----------------------------------------------------------------
+   2. SEMANTIC CSS CUSTOM PROPERTIES — consumed by components
+      These map to the design tokens above, keeping things consistent
+      between the main site and the admin panel.
+   ---------------------------------------------------------------- */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Site surface / text */
+  --background:      #ffffff;
+  --foreground:      #171717;
+
+  /* Brand green — single source of truth */
+  --clr-primary:         #4CAF50;
+  --clr-primary-hover:   #43a047;
+  --clr-primary-dark:    #388e3c;
+  --clr-primary-light:   #f0fdf4;
+  --clr-primary-muted:   rgba(76, 175, 80, 0.12);
+  --clr-accent:          #44B549;   /* slight variant used in Footer & banners */
+
+  /* Admin dark theme */
+  --admin-bg:              #0f1117;
+  --admin-surface:         #161b27;
+  --admin-surface-2:       #1e2535;
+  --admin-surface-hover:   #242b3d;
+  --admin-border:          rgba(255, 255, 255, 0.07);
+  --admin-border-strong:   rgba(255, 255, 255, 0.12);
+  --admin-text-primary:    #f0f4ff;
+  --admin-text-secondary:  #8b95b0;
+  --admin-text-muted:      #5a6380;
+
+  /* Admin accent — green instead of amber, aligned with brand */
+  --admin-accent:          #4CAF50;
+  --admin-accent-hover:    #43a047;
+  --admin-accent-muted:    rgba(76, 175, 80, 0.12);
+  --admin-accent-glow:     rgba(76, 175, 80, 0.25);
+
+  /* Semantic */
+  --admin-danger:   #ef4444;
+  --admin-success:  #10b981;
+  --admin-info:     #3b82f6;
+  --admin-warning:  #f59e0b;
+
+  /* Spacing for admin shell */
+  --admin-sidebar-width:  260px;
+  --admin-header-height:  64px;
+  --admin-radius:         12px;
+  --admin-radius-sm:      8px;
+
+  /* shadcn-ui token mapping */
+  --card:                   var(--admin-surface);
+  --card-foreground:        var(--admin-text-primary);
+  --primary:                var(--admin-accent);
+  --primary-foreground:     #0f1117;
+  --secondary:              var(--admin-surface-2);
+  --secondary-foreground:   var(--admin-text-primary);
+  --muted:                  var(--admin-surface-2);
+  --muted-foreground:       var(--admin-text-secondary);
+  --accent:                 var(--admin-accent-muted);
+  --accent-foreground:      var(--admin-accent);
+  --destructive:            var(--admin-danger);
+  --destructive-foreground: #fff;
+  --border:                 var(--admin-border);
+  --input:                  var(--admin-border-strong);
+  --ring:                   var(--admin-accent);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* ----------------------------------------------------------------
+   3. GLOBAL BASE STYLES
+   ---------------------------------------------------------------- */
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+}
+
+/* ----------------------------------------------------------------
+   4. UTILITY CLASSES — brand green helpers for components
+   These complement Tailwind's generated utilities when you need
+   the exact brand color without a Tailwind alias.
+   ---------------------------------------------------------------- */
+
+/* Backgrounds */
+.bg-brand          { background-color: var(--clr-primary); }
+.bg-brand-hover:hover { background-color: var(--clr-primary-hover); }
+.bg-brand-muted    { background-color: var(--clr-primary-muted); }
+.bg-brand-light    { background-color: var(--clr-primary-light); }
+
+/* Text */
+.text-brand        { color: var(--clr-primary); }
+.text-accent       { color: var(--clr-accent); }
+
+/* Border */
+.border-brand      { border-color: var(--clr-primary); }
+
+/* Fill (for SVGs) */
+.fill-brand        { fill: var(--clr-primary); }
+
+/* CTA button — used throughout main site */
+.btn-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 24px;
+  background: var(--clr-primary);
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: background var(--transition-default), transform var(--transition-default);
+  text-decoration: none;
+}
+.btn-brand:hover {
+  background: var(--clr-primary-hover);
+  transform: translateY(-1px);
+}
+.btn-brand:active {
+  transform: translateY(0);
+}
+
+/* Outline variant */
+.btn-brand-outline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 24px;
+  background: transparent;
+  color: var(--clr-primary);
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 2px solid var(--clr-primary);
+  cursor: pointer;
+  transition: all var(--transition-default);
+  text-decoration: none;
+}
+.btn-brand-outline:hover {
+  background: var(--clr-primary);
+  color: #fff;
+}
+
+/* ── Admin accent shortcuts (green-based) ─────────────────────── */
+.admin-accent-text   { color: var(--admin-accent); }
+.admin-accent-bg     { background: var(--admin-accent-muted); }
+.admin-accent-border { border-color: var(--admin-accent); }
+
+/* Badge / pill */
+.badge-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  background: var(--clr-primary-muted);
+  color: var(--clr-primary-dark);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
 }

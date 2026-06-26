@@ -35,10 +35,10 @@
   --admin-text-primary: #f0f4ff;
   --admin-text-secondary: #8b95b0;
   --admin-text-muted: #5a6380;
-  --admin-accent: #f59e0b;
-  --admin-accent-hover: #fbbf24;
-  --admin-accent-muted: rgba(245, 158, 11, 0.12);
-  --admin-accent-glow: rgba(245, 158, 11, 0.25);
+  --admin-accent: #4CAF50;
+  --admin-accent-hover: #43a047;
+  --admin-accent-muted: rgba(76, 175, 80, 0.12);
+  --admin-accent-glow: rgba(76, 175, 80, 0.25);
   --admin-danger: #ef4444;
   --admin-success: #10b981;
   --admin-info: #3b82f6;
