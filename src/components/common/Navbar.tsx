@@ -72,7 +72,9 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between">
           {/* LOGO */}
           <div className="flex items-center space-x-2">
-            <Image src="/logo.svg" width={160} height={50} alt="logo" />
+            <Link href="/">
+              <Image src="/logo.svg" width={160} height={50} alt="logo" />
+            </Link>
           </div>
 
           {/* DESKTOP NAVIGATION */}
