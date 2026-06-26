@@ -1,5 +1,6 @@
 import Footer from "@/components/common/Footer";
 import Navbar from "@/components/common/Navbar";
+import FloatingChatWidget from "@/components/common/FloatingChatWidget";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -36,6 +37,7 @@ export default function RootLayout({
         <Navbar />
         {children}
         <Footer />
+        <FloatingChatWidget />
       </body>
     </html>
   );

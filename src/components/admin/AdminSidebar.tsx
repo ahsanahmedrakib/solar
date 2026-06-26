@@ -16,6 +16,8 @@ import {
   Briefcase,
   Layers,
   FileText,
+  CreditCard,
+  Mail,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -36,14 +38,24 @@ const navItems = [
     icon: Layers,
   },
   {
+    title: "Plans",
+    href: "/admin/plans",
+    icon: CreditCard,
+  },
+  {
+    title: "Team",
+    href: "/admin/team",
+    icon: Users,
+  },
+  {
     title: "Blogs",
     href: "/admin/blogs",
     icon: FileText,
   },
   {
-    title: "Analytics",
-    href: "/admin/analytics",
-    icon: BarChart3,
+    title: "Contact Queries",
+    href: "/admin/contact",
+    icon: Mail,
   },
 ];
 

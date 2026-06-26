@@ -1,12 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { 
   Search, Plus, Edit2, Trash2, X, AlertCircle, FileText, Calendar, Tag, Layers
 } from "lucide-react";
+import { ImageUploadInput } from "@/components/admin/ImageUploadInput";
 
 // Define the Blog Interface
 interface Blog {
@@ -99,7 +100,7 @@ const blogSchema = yup.object().shape({
     .required("Slug is required")
     .matches(/^[a-z0-9-]+$/, "Slug must contain only lowercase letters, numbers, and hyphens (e.g. top-benefits-2026)"),
   category: yup.string().required("Category is required").oneOf(CATEGORIES, "Invalid category selection"),
-  imageUrl: yup.string().required("Image path is required").matches(/^\/.*$/, "Image path must start with a leading slash / (e.g. /images/blogs/post-1.jpg)"),
+  imageUrl: yup.string().required("Image is required"),
   content: yup.string().required("Blog content text is required").min(20, "Content must be at least 20 characters"),
   tagsString: yup.string().required("At least one tag is required").matches(/^[^,]+(,[^,]+)*$/, "Tags must be comma-separated strings (e.g. Solar, Batteries, Green)"),
 });
@@ -132,6 +133,7 @@ export default function AdminBlogsPage() {
   const {
     register,
     handleSubmit,
+    control,
     setValue,
     watch,
     reset,
@@ -503,23 +505,20 @@ export default function AdminBlogsPage() {
                 </div>
               </div>
 
-              {/* Cover Image Path */}
-              <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold text-[var(--admin-text-secondary)] uppercase tracking-wider">
-                  Post Cover Image File Path *
-                </label>
-                <input
-                  type="text"
-                  placeholder="e.g. /images/blogs/post-1.jpg"
-                  {...register("imageUrl")}
-                  className={`w-full bg-[var(--admin-surface-2)] border ${errors.imageUrl ? 'border-[var(--admin-danger)]' : 'border-[var(--admin-border)]'} text-sm text-[var(--admin-text-primary)] rounded-lg p-2.5 outline-none focus:border-[var(--admin-accent)] transition`}
-                />
-                {errors.imageUrl && (
-                  <span className="text-[11px] text-[var(--admin-danger)] flex items-center gap-1">
-                    <AlertCircle size={10} /> {errors.imageUrl.message}
-                  </span>
+              {/* Cover Image Upload Component */}
+              <Controller
+                name="imageUrl"
+                control={control}
+                render={({ field }) => (
+                  <ImageUploadInput
+                    label="Post Cover Image"
+                    value={field.value}
+                    onChange={field.onChange}
+                    error={errors.imageUrl?.message}
+                    placeholder="/images/blogs/post-1.jpg"
+                  />
                 )}
-              </div>
+              />
 
               {/* Blog Content Description Text */}
               <div className="flex flex-col gap-1.5">

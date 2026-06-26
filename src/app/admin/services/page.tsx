@@ -1,13 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import * as Icons from "lucide-react";
 import { 
   Search, Plus, Edit2, Trash2, Eye, X, Check, AlertCircle, Wrench, Shield, Zap, Sun, Battery, Globe, Leaf, Activity
 } from "lucide-react";
+import { ImageUploadInput } from "@/components/admin/ImageUploadInput";
 
 // Define the Service Interface
 interface Service {
@@ -97,7 +98,7 @@ const serviceSchema = yup.object().shape({
     .required("Slug is required")
     .matches(/^[a-z0-9-]+$/, "Slug must contain only lowercase letters, numbers, and hyphens (e.g., solar-battery-storage)"),
   description: yup.string().required("Description is required").min(10, "Description must be at least 10 characters"),
-  image: yup.string().required("Image path is required").matches(/^\/.*$/, "Image path must start with a leading slash / (e.g., /images/services/service-1.jpg)"),
+  image: yup.string().required("Image is required"),
   alt: yup.string().required("Alt text is required").min(5, "Alt text must be descriptive"),
   iconName: yup.string().required("Please select an icon"),
 });
@@ -129,6 +130,7 @@ export default function AdminServicesPage() {
   const {
     register,
     handleSubmit,
+    control,
     setValue,
     watch,
     reset,
@@ -458,22 +460,20 @@ export default function AdminServicesPage() {
 
               {/* Image Path */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-semibold text-[var(--admin-text-secondary)] uppercase tracking-wider">
-                    Image File Path *
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="e.g. /images/services/service-1.jpg"
-                    {...register("image")}
-                    className={`w-full bg-[var(--admin-surface-2)] border ${errors.image ? 'border-[var(--admin-danger)]' : 'border-[var(--admin-border)]'} text-sm text-[var(--admin-text-primary)] rounded-lg p-2.5 outline-none focus:border-[var(--admin-accent)] transition`}
-                  />
-                  {errors.image && (
-                    <span className="text-[11px] text-[var(--admin-danger)] flex items-center gap-1">
-                      <AlertCircle size={10} /> {errors.image.message}
-                    </span>
+                {/* Image Upload Component */}
+                <Controller
+                  name="image"
+                  control={control}
+                  render={({ field }) => (
+                    <ImageUploadInput
+                      label="Service Image"
+                      value={field.value}
+                      onChange={field.onChange}
+                      error={errors.image?.message}
+                      placeholder="/images/services/service-item-image-1.jpg"
+                    />
                   )}
-                </div>
+                />
 
                 <div className="flex flex-col gap-1.5">
                   <label className="text-xs font-semibold text-[var(--admin-text-secondary)] uppercase tracking-wider">

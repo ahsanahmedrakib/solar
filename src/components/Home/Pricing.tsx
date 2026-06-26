@@ -1,111 +1,133 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 interface PricingPlan {
+  id?: number;
   name: string;
   description: string;
   monthlyPrice: number;
   annualPrice: number;
   features: string[];
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
 }
+
+const defaultIcons = [
+  (
+    <svg
+      key="1"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={2}
+      stroke="currentColor"
+      className="w-5 h-5"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.854-1.106-2.24 0-3.093a3.773 3.773 0 0 1 4.242 0c.163.127.317.265.461.414M19.5 12a7.5 7.5 0 1 1-15 0 7.5 7.5 0 0 1 15 0Z"
+      />
+    </svg>
+  ),
+  (
+    <svg
+      key="2"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={2}
+      stroke="currentColor"
+      className="w-5 h-5"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"
+      />
+    </svg>
+  ),
+  (
+    <svg
+      key="3"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      strokeWidth={2}
+      stroke="currentColor"
+      className="w-5 h-5"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9"
+      />
+    </svg>
+  ),
+];
+
+const initialPlans: PricingPlan[] = [
+  {
+    name: "Basic Solar Plan",
+    description:
+      "Perfect entry-level solar solution to start reducing your electricity bills immediately.",
+    monthlyPrice: 299.0,
+    annualPrice: 249.0,
+    features: [
+      "High-Efficiency Solar Panels",
+      "Real-Time Performance Monitoring",
+      "Hybrid Inverter Support",
+      "Basic Installation & Setup",
+    ],
+  },
+  {
+    name: "Standard Solar Plan",
+    description:
+      "Balanced solution with enhanced performance and better energy storage options.",
+    monthlyPrice: 499.0,
+    annualPrice: 419.0,
+    features: [
+      "High-Efficiency Solar Panels",
+      "Real-Time Performance Monitoring",
+      "Hybrid Inverter + Battery Support",
+      "Advanced Monitoring Dashboard",
+      "Priority Installation",
+    ],
+  },
+  {
+    name: "Premium Solar Plan",
+    description:
+      "Complete energy independence with top-tier equipment and full smart home integration.",
+    monthlyPrice: 699.0,
+    annualPrice: 589.0,
+    features: [
+      "Premium High-Efficiency Panels",
+      "Real-Time Performance Monitoring",
+      "Full Hybrid Battery System",
+      "Smart Home Integration",
+      "Premium Installation & Support",
+      "Extended 25-Year Warranty",
+    ],
+  },
+];
 
 export default function Pricing() {
   const [isAnnual, setIsAnnual] = useState(false);
+  const [plans, setPlans] = useState<PricingPlan[]>(initialPlans);
 
-  const plans: PricingPlan[] = [
-    {
-      name: "Basic Solar Plan",
-      description:
-        "Perfect entry-level solar solution to start reducing your electricity bills immediately.",
-      monthlyPrice: 299.0,
-      annualPrice: 249.0,
-      features: [
-        "High-Efficiency Solar Panels",
-        "Real-Time Performance Monitoring",
-        "Hybrid Inverter Support",
-        "Basic Installation & Setup",
-      ],
-      icon: (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={2}
-          stroke="currentColor"
-          className="w-5 h-5"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M12 6v12m-3-2.818.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.854-1.106-2.24 0-3.093a3.773 3.773 0 0 1 4.242 0c.163.127.317.265.461.414M19.5 12a7.5 7.5 0 1 1-15 0 7.5 7.5 0 0 1 15 0Z"
-          />
-        </svg>
-      ),
-    },
-    {
-      name: "Standard Solar Plan",
-      description:
-        "Balanced solution with enhanced performance and better energy storage options.",
-      monthlyPrice: 499.0,
-      annualPrice: 419.0,
-      features: [
-        "High-Efficiency Solar Panels",
-        "Real-Time Performance Monitoring",
-        "Hybrid Inverter + Battery Support",
-        "Advanced Monitoring Dashboard",
-        "Priority Installation",
-      ],
-      icon: (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={2}
-          stroke="currentColor"
-          className="w-5 h-5"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"
-          />
-        </svg>
-      ),
-    },
-    {
-      name: "Premium Solar Plan",
-      description:
-        "Complete energy independence with top-tier equipment and full smart home integration.",
-      monthlyPrice: 699.0,
-      annualPrice: 589.0,
-      features: [
-        "Premium High-Efficiency Panels",
-        "Real-Time Performance Monitoring",
-        "Full Hybrid Battery System",
-        "Smart Home Integration",
-        "Premium Installation & Support",
-        "Extended 25-Year Warranty",
-      ],
-      icon: (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={2}
-          stroke="currentColor"
-          className="w-5 h-5"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9"
-          />
-        </svg>
-      ),
-    },
-  ];
+  useEffect(() => {
+    const stored = localStorage.getItem("admin_plans");
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setPlans(parsed);
+        }
+      } catch (e) {
+        console.error("Error loading plans", e);
+      }
+    }
+  }, []);
 
   return (
     <section className="bg-[#FAFBFD] py-16 px-4 sm:px-6 lg:py-24 lg:px-8 font-sans">
@@ -153,7 +175,7 @@ export default function Pricing() {
 
         {/* PLANS GRID */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pt-6 text-left">
-          {plans.map((plan) => (
+          {plans.map((plan, idx) => (
             <div
               key={plan.name}
               className="bg-[#F3F7F9] rounded-3xl p-6 sm:p-8 flex flex-col justify-between shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100/50"
@@ -162,7 +184,7 @@ export default function Pricing() {
                 {/* Header */}
                 <div className="flex items-center gap-4">
                   <div className="w-11 h-11 rounded-full bg-[#44B549] text-white flex items-center justify-center shadow-sm">
-                    {plan.icon}
+                    {plan.icon || defaultIcons[idx % defaultIcons.length]}
                   </div>
                   <h3 className="text-xl font-bold text-[#051720]">
                     {plan.name}
