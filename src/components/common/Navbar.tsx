@@ -105,7 +105,7 @@ export default function Navbar() {
               Services
             </Link>
             <Link
-              href="#"
+              href="/blogs"
               className="hover:text-[#4CAF50] transition-colors py-4"
             >
               Blogs
