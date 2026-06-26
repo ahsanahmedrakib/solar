@@ -5,7 +5,7 @@ interface BlogsContentsType {
   category: string;
   title: string;
   imageUrl: string;
-  linkUrl: string;
+  slug: string;
 }
 
 const cardData: BlogsContentsType[] = [
@@ -13,37 +13,37 @@ const cardData: BlogsContentsType[] = [
     category: "Residential Solar",
     title: "A Complete Guide to Solar Energy for Homeowners",
     imageUrl: "/images/blogs/post-1.jpg",
-    linkUrl: "#",
+    slug: "a-complete-guide-to-solar-energy-for-homeowners",
   },
   {
     category: "Solar Benefits",
     title: "Top Benefits of Switching to Solar Power in 2026",
     imageUrl: "/images/blogs/post-2.jpg",
-    linkUrl: "#",
+    slug: "a-complete-guide-to-solar-energy-for-homeowners",
   },
   {
     category: "Installation Guide",
     title: "How Solar Panels Work: A Simple Guide for Homeowners",
     imageUrl: "/images/blogs/post-3.jpg",
-    linkUrl: "#",
+    slug: "a-complete-guide-to-solar-energy-for-homeowners",
   },
   {
     category: "Solar Panels",
     title: "Solar Installation Process Explained Step by Step",
     imageUrl: "/images/blogs/post-4.jpg",
-    linkUrl: "#",
+    slug: "a-complete-guide-to-solar-energy-for-homeowners",
   },
   {
     category: "Energy Solutions",
     title: "Residential vs Commercial Solar: Which Is Right for You?",
     imageUrl: "/images/blogs/post-5.jpg",
-    linkUrl: "#",
+    slug: "a-complete-guide-to-solar-energy-for-homeowners",
   },
   {
     category: "Solar Maintenance",
     title: "How to Maintain Your Solar System for Peak Performance",
     imageUrl: "/images/blogs/post-6.jpg",
-    linkUrl: "#",
+    slug: "a-complete-guide-to-solar-energy-for-homeowners",
   },
 ];
 
@@ -80,7 +80,7 @@ export default function BlogsContents() {
 
               {/* Read More Interactive Call to Action */}
               <Link
-                href={card.linkUrl}
+                href={"blogs/" + card.slug}
                 className="flex items-center gap-2 text-sm font-medium w-fit group-hover:text-green-400 transition-colors duration-200"
               >
                 <span>Read More</span>

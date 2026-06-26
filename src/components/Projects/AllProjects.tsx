@@ -3,7 +3,7 @@ import Link from "next/link";
 interface ProjectCard {
   title: string;
   imageUrl: string;
-  linkUrl: string;
+  slug: string;
   isFeatured?: boolean;
 }
 
@@ -11,32 +11,32 @@ const projects: ProjectCard[] = [
   {
     title: "Rooftop Solar Installation for Residential Homes",
     imageUrl: "/images/projects/project-1.jpg",
-    linkUrl: "#",
+    slug: "rooftop-solar-installation-for-residential-homes",
   },
   {
     title: "Industrial Solar Power Installation Manufacturing Unit",
     imageUrl: "/images/projects/project-2.jpg",
-    linkUrl: "#",
+    slug: "rooftop-solar-installation-for-residential-homes",
   },
   {
     title: "Sustainable Solar Energy Project for Communities",
     imageUrl: "/images/projects/project-3.jpg",
-    linkUrl: "#",
+    slug: "rooftop-solar-installation-for-residential-homes",
   },
   {
     title: "Commercial Solar Plant for Office Building",
     imageUrl: "/images/projects/project-4.jpg",
-    linkUrl: "#",
+    slug: "rooftop-solar-installation-for-residential-homes",
   },
   {
     title: "Solar Installation for Educational Institute",
     imageUrl: "/images/projects/project-5.jpg",
-    linkUrl: "#",
+    slug: "rooftop-solar-installation-for-residential-homes",
   },
   {
     title: "Hybrid Solar System for Hospital Facility",
     imageUrl: "/images/projects/project-6.jpg",
-    linkUrl: "#",
+    slug: "rooftop-solar-installation-for-residential-homes",
   },
 ];
 
@@ -84,7 +84,7 @@ export default function AllProjects() {
 
               {/* View Details Call to Action */}
               <Link
-                href={project.linkUrl}
+                href={"projects/" + project.slug}
                 className="inline-flex items-center gap-2.5 text-xs font-semibold uppercase tracking-wider text-white hover:text-green-400 transition-colors"
               >
                 <span>View Details</span>

@@ -1,5 +1,6 @@
 import { ServiceCard } from "@/types/services";
 import Image from "next/image";
+import Link from "next/link";
 
 const ServicesCard = ({ services }: { services: ServiceCard[] }) => {
   return (
@@ -38,12 +39,14 @@ const ServicesCard = ({ services }: { services: ServiceCard[] }) => {
             </div>
 
             <div className="pt-6">
-              <button className="inline-flex items-center gap-2 font-bold text-sm text-[#051720] group-hover:text-[#44B549] transition-colors">
-                Learn More
-                <div className="w-5 h-5 rounded-full bg-[#44B549] text-white flex items-center justify-center text-[10px]">
-                  ➔
-                </div>
-              </button>
+              <Link href={"services/" + service.slug}>
+                <button className="inline-flex cursor-pointer items-center gap-2 font-bold text-sm text-[#051720] group-hover:text-[#44B549] transition-colors">
+                  Learn More
+                  <div className="w-5 h-5 rounded-full bg-[#44B549] text-white flex items-center justify-center text-[10px]">
+                    ➔
+                  </div>
+                </button>
+              </Link>
             </div>
           </div>
         ))}

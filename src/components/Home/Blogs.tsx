@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 interface BlogCard {
   id: number;
@@ -6,6 +7,7 @@ interface BlogCard {
   category: string;
   imageSrc: string;
   imageAlt: string;
+  slug: string;
 }
 
 export default function Blogs() {
@@ -16,6 +18,7 @@ export default function Blogs() {
       category: "Residential Solar",
       imageSrc: "/images/home/post-1.jpg",
       imageAlt: "Two solar technicians assembling an array layout on a rooftop",
+      slug: "a-complete-guide-to-solar-energy-for-homeowners",
     },
     {
       id: 2,
@@ -24,6 +27,7 @@ export default function Blogs() {
       imageSrc: "/images/home/post-2.jpg",
       imageAlt:
         "A happy smiling middle-aged couple standing in front of their solar-powered house",
+      slug: "a-complete-guide-to-solar-energy-for-homeowners",
     },
     {
       id: 3,
@@ -32,6 +36,7 @@ export default function Blogs() {
       imageSrc: "/images/home/post-3.jpg",
       imageAlt:
         "A solar supervisor in a hard hat reviewing installation logistics on a tablet with a worker",
+      slug: "a-complete-guide-to-solar-energy-for-homeowners",
     },
   ];
 
@@ -91,7 +96,7 @@ export default function Blogs() {
           {blogs.map((blog) => (
             <div
               key={blog.id}
-              className="relative w-full aspect-[0.84/1] rounded-4xl overflow-hidden group shadow-md bg-gray-100 cursor-pointer"
+              className="relative w-full aspect-[0.84/1] rounded-4xl overflow-hidden group shadow-md bg-gray-100"
             >
               {/* Main Card Background Image Asset */}
               <Image
@@ -121,27 +126,29 @@ export default function Blogs() {
                   </h3>
 
                   {/* Read More Trigger Group */}
-                  <div className="flex items-center gap-2 pt-1 border-t border-white/10">
-                    <span className="text-xs sm:text-sm font-bold text-white tracking-wide">
-                      Read More
-                    </span>
-                    <div className="w-6 h-6 rounded-full bg-[#44B549] text-white flex items-center justify-center transition-transform duration-300 group-hover:translate-x-1">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={2.5}
-                        stroke="currentColor"
-                        className="w-3 h-3"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25"
-                        />
-                      </svg>
+                  <Link href={"blogs/" + blog.slug}>
+                    <div className="flex items-center gap-2 pt-1 border-t border-white/10">
+                      <span className="text-xs sm:text-sm font-bold text-white tracking-wide">
+                        Read More
+                      </span>
+                      <div className="w-6 h-6 rounded-full bg-[#44B549] text-white flex items-center justify-center transition-transform duration-300 group-hover:translate-x-1">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={2.5}
+                          stroke="currentColor"
+                          className="w-3 h-3"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25"
+                          />
+                        </svg>
+                      </div>
                     </div>
-                  </div>
+                  </Link>
                 </div>
               </div>
             </div>

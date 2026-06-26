@@ -5,4 +5,5 @@ export interface ServiceCard {
   image: string;
   alt: string;
   iconSvg: React.ReactNode;
+  slug: string;
 }

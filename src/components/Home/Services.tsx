@@ -25,6 +25,7 @@ const services: ServiceCard[] = [
         />
       </svg>
     ),
+    slug: "residential-solar-solutions",
   },
   {
     id: 2,
@@ -49,6 +50,7 @@ const services: ServiceCard[] = [
         />
       </svg>
     ),
+    slug: "residential-solar-solutions",
   },
   {
     id: 3,
@@ -78,6 +80,7 @@ const services: ServiceCard[] = [
         />
       </svg>
     ),
+    slug: "residential-solar-solutions",
   },
 ];
 
