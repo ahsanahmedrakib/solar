@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export default function AboutBanner() {
+export default function ServicesBanner() {
   return (
     <section className="relative w-full h-65 sm:h-80 lg:h-100 flex items-center justify-center overflow-hidden bg-[#04111c]">
       {/* 1. Background Image Layer */}
@@ -21,7 +21,7 @@ export default function AboutBanner() {
       <div className="relative z-10 text-center px-4 max-w-4xl mx-auto flex flex-col items-center justify-center h-full pt-6">
         {/* Main Section Header Title */}
         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight drop-shadow-sm mb-3 sm:mb-4 animate-fade-in">
-          About Us
+          Our Services
         </h1>
 
         {/* Breadcrumb Navigation System */}
@@ -35,7 +35,7 @@ export default function AboutBanner() {
 
           <span className="text-gray-400 font-medium select-none">/</span>
 
-          <span className="text-white tracking-wide">About Us</span>
+          <span className="text-white tracking-wide">Our Services</span>
         </nav>
       </div>
 

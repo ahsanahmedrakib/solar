@@ -3,8 +3,6 @@ import CoreFeatures from "../Home/CoreFeatures";
 import FAQAndStats from "../Home/FAQAndStats";
 import Testimonials from "../Home/Testimonials";
 import WhyChooseUs from "../Home/WhyChooseUs";
-import Footer from "../common/Footer";
-import Navbar from "../common/Navbar";
 import AboutBanner from "./AboutBanner";
 import Advantages from "./Advantages";
 import Approach from "./Approach";
@@ -14,7 +12,6 @@ import WhatWeDo from "./WhatWeDo";
 const AboutPage = () => {
   return (
     <div>
-      <Navbar />
       <AboutBanner />
       <About />
       <Approach />
@@ -25,7 +22,6 @@ const AboutPage = () => {
       <Teams />
       <Testimonials />
       <FAQAndStats />
-      <Footer />
     </div>
   );
 };

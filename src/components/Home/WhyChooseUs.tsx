@@ -1,6 +1,3 @@
-"use client";
-"use strict";
-
 import Image from "next/image";
 import React from "react";
 
@@ -204,7 +201,6 @@ const WhyChooseUs: React.FC = () => {
             </div>
           ))}
         </div>
-
 
         {/* Contact CTA */}
         <div className="bg-white rounded-3xl shadow-xl p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center gap-5 max-w-2xl mx-auto">

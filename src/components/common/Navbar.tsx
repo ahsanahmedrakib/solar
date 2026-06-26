@@ -99,7 +99,7 @@ export default function Navbar() {
               About Us
             </Link>
             <Link
-              href="#"
+              href="/services"
               className="hover:text-[#4CAF50] transition-colors py-4"
             >
               Services
