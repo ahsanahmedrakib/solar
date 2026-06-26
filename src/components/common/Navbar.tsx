@@ -20,20 +20,7 @@ export default function Navbar() {
   const [isMobilePagesOpen, setIsMobilePagesOpen] = useState(false);
   const [isMobileLayoutsOpen, setIsMobileLayoutsOpen] = useState(false);
 
-  const mainPages = [
-    "Service Details",
-    "Blog Details",
-    "Projects",
-    "Project Details",
-    "Our Team",
-    "Team Details",
-    "Pricing Plans",
-    "Testimonials",
-    "Image Gallery",
-    "Video Gallery",
-    "FAQs",
-    "404",
-  ];
+  const mainPages = ["Demo 1", "Demo 2"];
 
   return (
     <div className="w-full relative">
@@ -90,7 +77,6 @@ export default function Navbar() {
               className="text-[#4CAF50] flex items-center space-x-1 py-4"
             >
               <span>Home</span>
-              <ChevronDown size={14} />
             </Link>
             <Link
               href="/about"
@@ -105,6 +91,12 @@ export default function Navbar() {
               Services
             </Link>
             <Link
+              href="/projects"
+              className="hover:text-[#4CAF50] transition-colors py-4"
+            >
+              Projects
+            </Link>
+            <Link
               href="/blogs"
               className="hover:text-[#4CAF50] transition-colors py-4"
             >
@@ -114,7 +106,7 @@ export default function Navbar() {
             {/* LEVEL 1: PAGES DROPDOWN CONTAINER */}
             <div className="relative group py-4">
               <button className="hover:text-[#4CAF50] transition-colors flex items-center space-x-1 focus:outline-none">
-                <span>Pages</span>
+                <span>Demo</span>
                 <ChevronDown
                   size={14}
                   className="transition-transform duration-200 group-hover:rotate-180"
@@ -137,7 +129,7 @@ export default function Navbar() {
                 {/* LEVEL 2: HEADER LAYOUTS SUBMENU */}
                 <div className="relative group/sub">
                   <button className="w-full flex justify-between items-center px-6 py-2.5 hover:bg-emerald-600 transition-colors">
-                    <span>Header Layouts</span>
+                    <span>Demo 3</span>
                     <ChevronRight size={14} />
                   </button>
                   {/* Level 2 Submenu Box */}
@@ -146,13 +138,7 @@ export default function Navbar() {
                       href="#"
                       className="block px-4 py-2 hover:bg-emerald-700"
                     >
-                      Layout Version 1
-                    </Link>
-                    <Link
-                      href="#"
-                      className="block px-4 py-2 hover:bg-emerald-700"
-                    >
-                      Layout Version 2
+                      Demo 3_1
                     </Link>
                   </div>
                 </div>
@@ -160,7 +146,7 @@ export default function Navbar() {
                 {/* LEVEL 2: FOOTER LAYOUTS SUBMENU */}
                 <div className="relative group/sub">
                   <button className="w-full flex justify-between items-center px-6 py-2.5 hover:bg-emerald-600 transition-colors">
-                    <span>Footer Layouts</span>
+                    <span>Demo 4</span>
                     <ChevronRight size={14} />
                   </button>
                   {/* Level 2 Submenu Box */}
@@ -169,13 +155,7 @@ export default function Navbar() {
                       href="#"
                       className="block px-4 py-2 hover:bg-emerald-700"
                     >
-                      Footer Classic
-                    </Link>
-                    <Link
-                      href="#"
-                      className="block px-4 py-2 hover:bg-emerald-700"
-                    >
-                      Footer Modern
+                      Demo 4_1
                     </Link>
                   </div>
                 </div>
@@ -183,7 +163,7 @@ export default function Navbar() {
             </div>
 
             <Link
-              href="#"
+              href="/contact"
               className="hover:text-[#4CAF50] transition-colors py-4"
             >
               Contact Us
