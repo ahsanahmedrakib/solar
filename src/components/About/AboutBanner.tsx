@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export default function AboutHeroBanner() {
+export default function AboutBanner() {
   return (
     <section className="relative w-full h-65 sm:h-80 lg:h-100 flex items-center justify-center overflow-hidden bg-[#04111c]">
       {/* 1. Background Image Layer */}

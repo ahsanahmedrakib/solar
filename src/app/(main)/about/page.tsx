@@ -1,13 +1,9 @@
-import AboutHeroBanner from "@/components/About/AboutHeroBanner";
-import About from "@/components/Home/About";
-import Navbar from "@/components/UI/Navbar";
+import AboutPage from "@/components/About/AboutPage";
 
 const page = () => {
   return (
     <div>
-      <Navbar />
-      <AboutHeroBanner />
-      <About />
+      <AboutPage />
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import About from "./About";
+import Banner from "./Banner";
 import Blogs from "./Blogs";
 import CoreFeatures from "./CoreFeatures";
 import FAQAndStats from "./FAQAndStats";
@@ -17,6 +18,7 @@ const HomePage = () => {
       <About />
       <Services />
       <WhyChooseUs />
+      <Banner />
       <Pricing />
       <CoreFeatures />
       <FunFacts />
