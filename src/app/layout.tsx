@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Sunex - Solar & Renewable Enegy",
-  description: "Sunex - Solar & Renewable Enegy",
+  title: "Sunex - Solar & Renewable Energy",
+  description: "Sunex - Solar & Renewable Energy",
   icons: {
     icon: "/favicon.png",
   },
