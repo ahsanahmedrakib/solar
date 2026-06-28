@@ -13,6 +13,9 @@ import {
   ChevronRight,
   Bell,
   HelpCircle,
+  Briefcase,
+  Layers,
+  FileText,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -23,37 +26,32 @@ const navItems = [
     icon: LayoutDashboard,
   },
   {
-    title: "Products",
-    href: "/admin/products",
-    icon: Package,
+    title: "Services",
+    href: "/admin/services",
+    icon: Briefcase,
   },
   {
-    title: "Orders",
-    href: "/admin/orders",
-    icon: ShoppingCart,
+    title: "Projects",
+    href: "/admin/projects",
+    icon: Layers,
   },
   {
-    title: "Customers",
-    href: "/admin/customers",
-    icon: Users,
+    title: "Blogs",
+    href: "/admin/blogs",
+    icon: FileText,
   },
   {
     title: "Analytics",
     href: "/admin/analytics",
     icon: BarChart3,
   },
-  {
-    title: "Settings",
-    href: "/admin/settings",
-    icon: Settings,
-  },
 ];
 
 const bottomNavItems = [
   {
-    title: "Notifications",
-    href: "/admin/notifications",
-    icon: Bell,
+    title: "Settings",
+    href: "/admin/settings",
+    icon: Settings,
   },
 ];
 
