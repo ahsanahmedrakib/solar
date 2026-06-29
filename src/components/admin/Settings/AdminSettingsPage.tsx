@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  Check,
   FileText,
   Globe,
   Layout,
@@ -12,7 +11,8 @@ import {
   Sparkles,
   Sun,
 } from "lucide-react";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 
 interface Field {
   id: string;
@@ -327,26 +327,28 @@ const DEFAULT_SECTIONS: Section[] = [
 ];
 
 export default function AdminSettingsPage() {
-  const [sections, setSections] = useState<Section[]>(() => {
-    try {
-      const stored =
-        typeof window !== "undefined"
-          ? localStorage.getItem("admin_settings")
-          : null;
-      if (stored) {
-        const parsed: Section[] = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          // Filter out notifications if present in cached localStorage data
-          return parsed.filter((s) => s.id !== "notifications");
-        }
-      }
-    } catch {
-      // fall through to default
-    }
-    return DEFAULT_SECTIONS;
-  });
+  const [sections, setSections] = useState<Section[]>(DEFAULT_SECTIONS);
+  const [loading, setLoading] = useState(true);
 
-  const [isSaved, setIsSaved] = useState(false);
+  useEffect(() => {
+    async function loadSettings() {
+      try {
+        const res = await fetch("/api/settings");
+        const json = await res.json();
+        if (json.success && json.data) {
+          setSections(json.data);
+        } else {
+          toast.error("Failed to load settings: " + json.error);
+        }
+      } catch (err) {
+        console.error("Failed to load settings", err);
+        toast.error("Failed to load settings.");
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadSettings();
+  }, []);
 
   const handleFieldChange = (
     sectionId: string,
@@ -384,11 +386,36 @@ export default function AdminSettingsPage() {
     );
   };
 
-  const handleSave = () => {
-    localStorage.setItem("admin_settings", JSON.stringify(sections));
-    setIsSaved(true);
-    setTimeout(() => setIsSaved(false), 3000);
+  const handleSave = async () => {
+    try {
+      const res = await fetch("/api/settings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sections }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        toast.success("Website settings saved successfully!");
+      } else {
+        toast.error("Failed to save settings: " + json.error);
+      }
+    } catch (err) {
+      console.error("Failed to save settings", err);
+      toast.error("Failed to save settings.");
+    }
   };
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px]">
+        <div className="w-10 h-10 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+        <p className="mt-4 text-(--admin-text-secondary) font-medium">
+          Loading settings...
+        </p>
+      </div>
+    );
+  }
+
 
   return (
     <div className="space-y-6 pb-12">
@@ -399,13 +426,6 @@ export default function AdminSettingsPage() {
             Manage comprehensive site-wide information, branding, hero content,
             SEO, and system defaults ({sections.length} sections)
           </p>
-        </div>
-        <div className="admin-page-header-actions flex items-center gap-3">
-          {isSaved && (
-            <span className="text-xs font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-lg flex items-center gap-1.5 animate-fade-in">
-              <Check size={14} /> Website Settings Saved!
-            </span>
-          )}
         </div>
       </div>
 

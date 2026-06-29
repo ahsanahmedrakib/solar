@@ -1,6 +1,7 @@
 "use client";
 
 import { yupResolver } from "@hookform/resolvers/yup";
+import { toast } from "react-toastify";
 import {
   AlertCircle,
   CreditCard,
@@ -11,7 +12,7 @@ import {
   Trash2,
   X,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 
@@ -119,38 +120,30 @@ interface PlanFormData {
 }
 
 export default function AdminPlansPage() {
-  const [plans, setPlans] = useState<Plan[]>(() => {
-    
-    if (typeof window === "undefined") return DEFAULT_PLANS;
-    const stored = localStorage.getItem("admin_plans");
-    if (stored) {
-      try {
-        return JSON.parse(stored);
-      } catch (error) {
-        console.error("Failed to parse saved plans:", error);
-        return DEFAULT_PLANS;
-      }
-    }
-    localStorage.setItem("admin_plans", JSON.stringify(DEFAULT_PLANS));
-    return DEFAULT_PLANS;
-  });
-  
-
-  // const [isLoaded, setIsLoaded] = useState(false);
+  const [plans, setPlans] = useState<Plan[]>(DEFAULT_PLANS);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
 
   const [isOpen, setIsOpen] = useState(false);
   const [editingPlan, setEditingPlan] = useState<Plan | null>(null);
 
-  // Load plans from localStorage on client side only
-  // useEffect(() => {
-  //   setIsLoaded(true);
-  // }, []);
-
-  const savePlans = (updatedList: Plan[]) => {
-    setPlans(updatedList);
-    localStorage.setItem("admin_plans", JSON.stringify(updatedList));
-  };
+  useEffect(() => {
+    async function loadPlans() {
+      try {
+        const res = await fetch("/api/plans");
+        const json = await res.json();
+        if (json.success) {
+          setPlans(json.data);
+        }
+      } catch (error) {
+        console.error("Failed to load plans", error);
+        toast.error("Failed to load pricing plans.");
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadPlans();
+  }, []);
 
   const {
     register,
@@ -199,52 +192,90 @@ export default function AdminPlansPage() {
     setIsOpen(true);
   };
 
-  const handleDeleteClick = (id: number) => {
+  const handleDeleteClick = async (id: number) => {
     if (confirm("Are you sure you want to delete this pricing plan?")) {
-      const filtered = plans.filter((p) => p.id !== id);
-      savePlans(filtered);
+      try {
+        const res = await fetch(`/api/plans?id=${id}`, {
+          method: "DELETE",
+        });
+        const json = await res.json();
+        if (json.success) {
+          setPlans((prev) => prev.filter((p) => p.id !== id));
+          toast.success("Pricing plan deleted successfully!");
+        } else {
+          toast.error("Failed to delete pricing plan: " + json.error);
+        }
+      } catch (error: any) {
+        console.error("Failed to delete plan", error);
+        toast.error("Failed to delete pricing plan: " + error.message);
+      }
     }
   };
 
   const onSubmit = async (data: PlanFormData) => {
-    await new Promise((resolve) => setTimeout(resolve, 400));
-
     const parsedFeatures = data.featuresString
       .split(",")
       .map((f) => f.trim())
       .filter((f) => f.length > 0);
 
-    if (editingPlan) {
-      const updatedList = plans.map((p) =>
-        p.id === editingPlan.id
-          ? {
-              ...p,
-              name: data.name,
-              description: data.description,
-              monthlyPrice: data.monthlyPrice,
-              annualPrice: data.annualPrice,
-              features: parsedFeatures,
-              isPopular: data.isPopular,
-              badge: data.badge || undefined,
-            }
-          : p,
-      );
-      savePlans(updatedList);
-    } else {
-      const newPlan: Plan = {
-        id: plans.length > 0 ? Math.max(...plans.map((p) => p.id)) + 1 : 1,
-        name: data.name,
-        description: data.description,
-        monthlyPrice: data.monthlyPrice,
-        annualPrice: data.annualPrice,
-        features: parsedFeatures,
-        isPopular: data.isPopular,
-        badge: data.badge || undefined,
-      };
-      savePlans([...plans, newPlan]);
+    const payload = {
+      name: data.name,
+      description: data.description,
+      monthlyPrice: Number(data.monthlyPrice),
+      annualPrice: Number(data.annualPrice),
+      features: parsedFeatures,
+      isPopular: data.isPopular,
+      badge: data.badge || undefined,
+    };
+
+    try {
+      if (editingPlan) {
+        const res = await fetch("/api/plans", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: editingPlan.id, ...payload }),
+        });
+        const json = await res.json();
+        if (json.success) {
+          setPlans((prev) =>
+            prev.map((p) => (p.id === editingPlan.id ? { ...p, ...payload } : p))
+          );
+          toast.success("Pricing plan updated successfully!");
+        } else {
+          toast.error("Failed to update pricing plan: " + json.error);
+        }
+      } else {
+        const res = await fetch("/api/plans", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        const json = await res.json();
+        if (json.success) {
+          setPlans((prev) => [...prev, json.data]);
+          toast.success("Pricing plan added successfully!");
+        } else {
+          toast.error("Failed to add pricing plan: " + json.error);
+        }
+      }
+      setIsOpen(false);
+    } catch (error: any) {
+      console.error("Failed to save plan", error);
+      toast.error("Failed to save pricing plan: " + error.message);
     }
-    setIsOpen(false);
   };
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px]">
+        <div className="w-10 h-10 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+        <p className="mt-4 text-(--admin-text-secondary) font-medium">
+          Loading Solar Plans...
+        </p>
+      </div>
+    );
+  }
+
 
   const filteredPlans = plans.filter(
     (p) =>

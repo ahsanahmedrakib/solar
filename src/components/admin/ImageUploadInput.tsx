@@ -2,6 +2,7 @@
 
 import { AlertCircle, Link as LinkIcon, Upload, X } from "lucide-react";
 import React, { useRef, useState } from "react";
+import { toast } from "react-toastify";
 
 interface ImageUploadInputProps {
   value: string;
@@ -25,7 +26,7 @@ export function ImageUploadInput({
   const handleFileChange = (file: File | undefined) => {
     if (!file) return;
     if (!file.type.startsWith("image/")) {
-      alert("Please select a valid image file.");
+      toast.error("Please select a valid image file.");
       return;
     }
 

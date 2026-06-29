@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import { toast } from "react-toastify";
 
 // Form Validation Schema using Yup
 const contactSchema = yup.object().shape({
@@ -48,15 +49,35 @@ export default function GetInTouch() {
         },
     });
 
-    const onSubmit = (data: ContactFormData) => {
-        console.log("Form Submitted:", data);
-        setIsSubmitted(true);
-        reset();
-
-        // Hide success message after 5 seconds
-        setTimeout(() => {
-            setIsSubmitted(false);
-        }, 5000);
+    const onSubmit = async (data: ContactFormData) => {
+        try {
+            const payload = {
+                name: `${data.firstName} ${data.lastName}`.trim(),
+                email: data.emailAddress,
+                phone: data.phoneNumber,
+                subject: "Inquiry from website contact form",
+                message: data.message,
+            };
+            const res = await fetch("/api/contact", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+            });
+            const json = await res.json();
+            if (json.success) {
+                toast.success("Message submitted successfully!");
+                setIsSubmitted(true);
+                reset();
+                setTimeout(() => {
+                    setIsSubmitted(false);
+                }, 5000);
+            } else {
+                toast.error("Failed to submit form: " + json.error);
+            }
+        } catch (error) {
+            console.error("Error submitting contact form", error);
+            toast.error("An error occurred. Please try again.");
+        }
     };
 
     return (
@@ -192,7 +213,7 @@ export default function GetInTouch() {
                     </p>
 
                     {isSubmitted && (
-                        <div className="bg-[#e8f5e9] text-[#2e7d32] p-4 rounded-xl text-sm font-medium border border-[#c8e6c9] mb-6 flex items-center gap-2 transition-all">
+                        <div className="bg-[#e8f5e9] text-brand-900 p-4 rounded-xl text-sm font-medium border border-[#c8e6c9] mb-6 flex items-center gap-2 transition-all">
                             <svg className="w-5 h-5 shrink-0 text-[#4caf50]" fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                             </svg>

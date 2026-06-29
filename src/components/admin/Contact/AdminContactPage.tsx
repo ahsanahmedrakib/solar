@@ -16,6 +16,7 @@ import {
   X,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 export interface ContactQuery {
   id: string;
@@ -78,113 +79,124 @@ const DEFAULT_QUERIES: ContactQuery[] = [
 ];
 
 export default function AdminContactQueriesPage() {
-  const getInitialQueries = (): ContactQuery[] => {
-    if (typeof window === "undefined") return DEFAULT_QUERIES;
-    const stored = localStorage.getItem("contact_queries");
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed;
-        }
-      } catch (e) {
-        console.error("Failed to parse stored contact queries", e);
-      }
-    }
-    return DEFAULT_QUERIES;
-  };
-
-  const [queries, setQueries] = useState<ContactQuery[]>(getInitialQueries);
+  const [queries, setQueries] = useState<ContactQuery[]>(DEFAULT_QUERIES);
+  const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<
     "all" | "new" | "replied" | "archived"
   >("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedQuery, setSelectedQuery] = useState<ContactQuery | null>(null);
   const [replyText, setReplyText] = useState("");
-  const [toastMsg, setToastMsg] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const stored = localStorage.getItem("contact_queries");
-    if (!stored) {
-      localStorage.setItem("contact_queries", JSON.stringify(DEFAULT_QUERIES));
-      return;
-    }
-
+  const loadQueries = async () => {
     try {
-      const parsed = JSON.parse(stored);
-      if (!Array.isArray(parsed) || parsed.length === 0) {
-        localStorage.setItem(
-          "contact_queries",
-          JSON.stringify(DEFAULT_QUERIES),
-        );
+      const res = await fetch("/api/contact");
+      const json = await res.json();
+      if (json.success) {
+        setQueries(json.data);
+      } else {
+        toast.error("Failed to load contact queries: " + json.error);
       }
     } catch (e) {
-      console.error("Failed to parse stored contact queries", e);
-      localStorage.setItem("contact_queries", JSON.stringify(DEFAULT_QUERIES));
+      console.error("Failed to load contact queries", e);
+      toast.error("Failed to load contact queries.");
+    } finally {
+      setLoading(false);
     }
+  };
+
+  useEffect(() => {
+    (async () => {
+      await loadQueries();
+    })();
   }, []);
 
-  const saveQueries = (updated: ContactQuery[]) => {
-    setQueries(updated);
-    localStorage.setItem("contact_queries", JSON.stringify(updated));
-  };
-
-  const showToast = (msg: string) => {
-    setToastMsg(msg);
-    setTimeout(() => setToastMsg(null), 3000);
-  };
-
-  const handleStatusChange = (
+  const handleStatusChange = async (
     id: string,
     newStatus: "new" | "replied" | "archived",
   ) => {
-    const updated = queries.map((q) =>
-      q.id === id ? { ...q, status: newStatus } : q,
-    );
-    saveQueries(updated);
-    if (selectedQuery && selectedQuery.id === id) {
-      setSelectedQuery({ ...selectedQuery, status: newStatus });
-    }
-    showToast(`Status updated to ${newStatus.toUpperCase()}`);
-  };
-
-  const handleDelete = (id: string) => {
-    if (confirm("Are you sure you want to delete this contact query?")) {
-      const updated = queries.filter((q) => q.id !== id);
-      saveQueries(updated);
-      if (selectedQuery && selectedQuery.id === id) {
-        setSelectedQuery(null);
+    try {
+      const res = await fetch("/api/contact", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, status: newStatus }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        setQueries((prev) =>
+          prev.map((q) => (q.id === id ? { ...q, status: newStatus } : q))
+        );
+        if (selectedQuery && selectedQuery.id === id) {
+          setSelectedQuery({ ...selectedQuery, status: newStatus });
+        }
+        toast.success(`Status updated to ${newStatus.toUpperCase()}`);
+      } else {
+        toast.error("Failed to update status: " + json.error);
       }
-      showToast("Contact query deleted");
+    } catch (error) {
+      console.error("Failed to update status", error);
+      toast.error("Failed to update status.");
     }
   };
 
-  const handleSendReplyNote = () => {
-    if (!selectedQuery || !replyText.trim()) return;
-    const updated = queries.map((q) =>
-      q.id === selectedQuery.id
-        ? {
-            ...q,
-            status: "replied" as const,
-            notes:
-              (q.notes ? q.notes + "\n\n" : "") +
-              `[Replied on ${new Date().toLocaleDateString()}]: ` +
-              replyText,
+  const handleDelete = async (id: string) => {
+    if (confirm("Are you sure you want to delete this contact query?")) {
+      try {
+        const res = await fetch(`/api/contact?id=${id}`, {
+          method: "DELETE",
+        });
+        const json = await res.json();
+        if (json.success) {
+          setQueries((prev) => prev.filter((q) => q.id !== id));
+          if (selectedQuery && selectedQuery.id === id) {
+            setSelectedQuery(null);
           }
-        : q,
-    );
-    saveQueries(updated);
-    setSelectedQuery({
-      ...selectedQuery,
-      status: "replied",
-      notes:
-        (selectedQuery.notes ? selectedQuery.notes + "\n\n" : "") +
-        `[Replied on ${new Date().toLocaleDateString()}]: ` +
-        replyText,
-    });
-    setReplyText("");
-    showToast("Reply recorded & query marked as Replied");
+          toast.success("Contact query deleted");
+        } else {
+          toast.error("Failed to delete contact query: " + json.error);
+        }
+      } catch (error) {
+        console.error("Failed to delete contact query", error);
+        toast.error("Failed to delete contact query.");
+      }
+    }
+  };
+
+  const handleSendReplyNote = async () => {
+    if (!selectedQuery || !replyText.trim()) return;
+    const newNotes = (selectedQuery.notes ? selectedQuery.notes + "\n\n" : "") +
+      `[Replied on ${new Date().toLocaleDateString()}]: ` +
+      replyText;
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: selectedQuery.id, status: "replied", notes: newNotes }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        setQueries((prev) =>
+          prev.map((q) =>
+            q.id === selectedQuery.id
+              ? { ...q, status: "replied", notes: newNotes }
+              : q
+          )
+        );
+        setSelectedQuery({
+          ...selectedQuery,
+          status: "replied",
+          notes: newNotes,
+        });
+        setReplyText("");
+        toast.success("Reply recorded & query marked as Replied");
+      } else {
+        toast.error("Failed to save reply: " + json.error);
+      }
+    } catch (error) {
+      console.error("Failed to add note", error);
+      toast.error("Failed to save reply.");
+    }
   };
 
   // Filter logic
@@ -219,6 +231,17 @@ export default function AdminContactQueriesPage() {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-100">
+        <div className="w-10 h-10 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
+        <p className="mt-4 text-(--admin-text-secondary) font-medium">
+          Loading contact queries...
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6 pb-12">
       {/* Header */}
@@ -234,16 +257,11 @@ export default function AdminContactQueriesPage() {
           </p>
         </div>
         <div className="admin-page-header-actions flex items-center gap-3">
-          {toastMsg && (
-            <span className="text-xs font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-lg flex items-center gap-1.5 animate-fade-in">
-              <CheckCircle size={14} /> {toastMsg}
-            </span>
-          )}
           <button
-            onClick={() => {
-              const stored = localStorage.getItem("contact_queries");
-              if (stored) setQueries(JSON.parse(stored));
-              showToast("Refreshed list");
+            onClick={async () => {
+              setLoading(true);
+              await loadQueries();
+              toast.success("Contact queries refreshed");
             }}
             className="admin-btn-secondary flex items-center gap-2 text-xs px-4 py-2"
           >

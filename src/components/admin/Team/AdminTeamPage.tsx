@@ -2,6 +2,7 @@
 
 import { ImageUploadInput } from "@/components/Admin/ImageUploadInput";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { toast } from "react-toastify";
 import {
   AlertCircle,
   Briefcase,
@@ -66,46 +67,30 @@ interface TeamFormData {
 }
 
 export default function AdminTeamPage() {
-  const [team, setTeam] = useState<TeamMember[]>(() => {
-    if (typeof window === "undefined") return DEFAULT_TEAM;
-
-    const stored = localStorage.getItem("admin_team");
-    if (!stored) return DEFAULT_TEAM;
-
-    try {
-      return JSON.parse(stored);
-    } catch {
-      return DEFAULT_TEAM;
-    }
-  });
-  
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [team, setTeam] = useState<TeamMember[]>(DEFAULT_TEAM);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
 
   const [isOpen, setIsOpen] = useState(false);
   const [editingMember, setEditingMember] = useState<TeamMember | null>(null);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const stored = localStorage.getItem("admin_team");
-    if (!stored) {
-      localStorage.setItem("admin_team", JSON.stringify(DEFAULT_TEAM));
-    } else {
+    async function loadTeam() {
       try {
-        JSON.parse(stored);
-      } catch {
-        localStorage.setItem("admin_team", JSON.stringify(DEFAULT_TEAM));
+        const res = await fetch("/api/team");
+        const json = await res.json();
+        if (json.success) {
+          setTeam(json.data);
+        }
+      } catch (error) {
+        console.error("Failed to load team members", error);
+        toast.error("Failed to load team members.");
+      } finally {
+        setLoading(false);
       }
     }
-
-    Promise.resolve().then(() => setIsLoaded(true));
+    loadTeam();
   }, []);
-
-  const saveTeam = (updatedList: TeamMember[]) => {
-    setTeam(updatedList);
-    localStorage.setItem("admin_team", JSON.stringify(updatedList));
-  };
 
   const {
     register,
@@ -145,40 +130,62 @@ export default function AdminTeamPage() {
     setIsOpen(true);
   };
 
-  const handleDeleteClick = (id: number) => {
+  const handleDeleteClick = async (id: number) => {
     if (confirm("Are you sure you want to remove this team member?")) {
-      const filtered = team.filter((m) => m.id !== id);
-      saveTeam(filtered);
+      try {
+        const res = await fetch(`/api/team?id=${id}`, {
+          method: "DELETE",
+        });
+        const json = await res.json();
+        if (json.success) {
+          setTeam((prev) => prev.filter((m) => m.id !== id));
+          toast.success("Team member removed successfully!");
+        } else {
+          toast.error("Failed to remove team member: " + json.error);
+        }
+      } catch (error: any) {
+        console.error("Failed to remove team member", error);
+        toast.error("Failed to remove team member: " + error.message);
+      }
     }
   };
 
   const onSubmit = async (data: TeamFormData) => {
-    await new Promise((resolve) => setTimeout(resolve, 400));
-
-    if (editingMember) {
-      const updatedList = team.map((m) =>
-        m.id === editingMember.id
-          ? {
-              ...m,
-              name: data.name,
-              role: data.role,
-              image: data.image,
-              bio: data.bio,
-            }
-          : m,
-      );
-      saveTeam(updatedList);
-    } else {
-      const newMember: TeamMember = {
-        id: team.length > 0 ? Math.max(...team.map((m) => m.id)) + 1 : 1,
-        name: data.name,
-        role: data.role,
-        image: data.image,
-        bio: data.bio,
-      };
-      saveTeam([...team, newMember]);
+    try {
+      if (editingMember) {
+        const res = await fetch("/api/team", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: editingMember.id, ...data }),
+        });
+        const json = await res.json();
+        if (json.success) {
+          setTeam((prev) =>
+            prev.map((m) => (m.id === editingMember.id ? { ...m, ...data } : m))
+          );
+          toast.success("Team member updated successfully!");
+        } else {
+          toast.error("Failed to update team member: " + json.error);
+        }
+      } else {
+        const res = await fetch("/api/team", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+        const json = await res.json();
+        if (json.success) {
+          setTeam((prev) => [...prev, json.data]);
+          toast.success("Team member added successfully!");
+        } else {
+          toast.error("Failed to add team member: " + json.error);
+        }
+      }
+      setIsOpen(false);
+    } catch (error: any) {
+      console.error("Failed to save team member", error);
+      toast.error("Failed to save team member: " + error.message);
     }
-    setIsOpen(false);
   };
 
   const filteredTeam = team.filter(
@@ -187,7 +194,7 @@ export default function AdminTeamPage() {
       m.role.toLowerCase().includes(search.toLowerCase()),
   );
 
-  if (!isLoaded) {
+  if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-100">
         <div className="w-10 h-10 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"></div>

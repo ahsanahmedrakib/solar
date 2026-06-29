@@ -2,6 +2,7 @@
 
 import { ImageUploadInput } from "@/components/Admin/ImageUploadInput";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { toast } from "react-toastify";
 import * as Icons from "lucide-react";
 import {
   Activity,
@@ -138,28 +139,31 @@ const serviceSchema = yup.object().shape({
 type ServiceFormData = yup.InferType<typeof serviceSchema>;
 
 export default function AdminServicesPage() {
-  const [services, setServices] = useState<Service[]>(() => {
-    if (typeof window === "undefined") return DEFAULT_SERVICES;
-
-    const stored = localStorage.getItem("admin_services");
-    if (!stored) {
-      localStorage.setItem("admin_services", JSON.stringify(DEFAULT_SERVICES));
-      return DEFAULT_SERVICES;
-    }
-
-    try {
-      return JSON.parse(stored);
-    } catch (error) {
-      console.error("Failed to parse saved services:", error);
-      return DEFAULT_SERVICES;
-    }
-  });
-  // const [isLoaded, setIsLoaded] = useState(false);
+  const [services, setServices] = useState<Service[]>(DEFAULT_SERVICES);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
 
   // Modal State
   const [isOpen, setIsOpen] = useState(false);
   const [editingService, setEditingService] = useState<Service | null>(null);
+
+  useEffect(() => {
+    async function loadServices() {
+      try {
+        const res = await fetch("/api/services");
+        const json = await res.json();
+        if (json.success) {
+          setServices(json.data);
+        }
+      } catch (error) {
+        console.error("Failed to load services", error);
+        toast.error("Failed to load services.");
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadServices();
+  }, []);
 
   // Form Setup
   const {
@@ -181,11 +185,6 @@ export default function AdminServicesPage() {
     },
   });
 
-  // useEffect(() => {
-  //   if (typeof window === "undefined") return;
-  //   setIsLoaded(true);
-  // }, []);
-
   // Auto-generate slug from title
   const formTitle = useWatch({ control, name: "title" }) as string;
   const selectedIcon = useWatch({ control, name: "iconName" }) as string;
@@ -193,21 +192,14 @@ export default function AdminServicesPage() {
   useEffect(() => {
     if (formTitle && !editingService) {
       const generatedSlug = formTitle
-        .toLowerCase()
-        .replace(/[^a-z0-9\s-]/g, "")
-        .trim()
-        .replace(/\s+/g, "-")
-        .replace(/-+/g, "-");
+          .toLowerCase()
+          .replace(/[^a-z0-9\s-]/g, "")
+          .trim()
+          .replace(/\s+/g, "-")
+          .replace(/-+/g, "-");
       setValue("slug", generatedSlug, { shouldValidate: true });
     }
   }, [formTitle, setValue, editingService]);
-
-  const saveServices = (updatedList: Service[]) => {
-    setServices(updatedList);
-    if (typeof window !== "undefined") {
-      localStorage.setItem("admin_services", JSON.stringify(updatedList));
-    }
-  };
 
   const handleAddClick = () => {
     setEditingService(null);
@@ -235,31 +227,75 @@ export default function AdminServicesPage() {
     setIsOpen(true);
   };
 
-  const handleDeleteClick = (id: number) => {
+  const handleDeleteClick = async (id: number) => {
     if (confirm("Are you sure you want to delete this service?")) {
-      const filtered = services.filter((s) => s.id !== id);
-      saveServices(filtered);
+      try {
+        const res = await fetch(`/api/services?id=${id}`, {
+          method: "DELETE",
+        });
+        const json = await res.json();
+        if (json.success) {
+          setServices((prev) => prev.filter((s) => s.id !== id));
+          toast.success("Service deleted successfully!");
+        } else {
+          toast.error("Failed to delete service: " + json.error);
+        }
+      } catch (error: any) {
+        console.error("Failed to delete service", error);
+        toast.error("Failed to delete service: " + error.message);
+      }
     }
   };
 
   const onSubmit = async (data: ServiceFormData) => {
-    await new Promise((resolve) => setTimeout(resolve, 800));
-
-    if (editingService) {
-      const updatedList = services.map((s) =>
-        s.id === editingService.id ? { ...s, ...data } : s,
-      );
-      saveServices(updatedList);
-    } else {
-      const newService: Service = {
-        id:
-          services.length > 0 ? Math.max(...services.map((s) => s.id)) + 1 : 1,
-        ...data,
-      };
-      saveServices([...services, newService]);
+    try {
+      if (editingService) {
+        const res = await fetch("/api/services", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: editingService.id, ...data }),
+        });
+        const json = await res.json();
+        if (json.success) {
+          setServices((prev) =>
+            prev.map((s) => (s.id === editingService.id ? { ...s, ...data } : s))
+          );
+          toast.success("Service updated successfully!");
+        } else {
+          toast.error("Failed to update service: " + json.error);
+        }
+      } else {
+        const res = await fetch("/api/services", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+        const json = await res.json();
+        if (json.success) {
+          setServices((prev) => [...prev, json.data]);
+          toast.success("Service added successfully!");
+        } else {
+          toast.error("Failed to add service: " + json.error);
+        }
+      }
+      setIsOpen(false);
+    } catch (error: any) {
+      console.error("Failed to save service", error);
+      toast.error("Failed to save service: " + error.message);
     }
-    setIsOpen(false);
   };
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px]">
+        <div className="w-10 h-10 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+        <p className="mt-4 text-(--admin-text-secondary) font-medium">
+          Loading Services...
+        </p>
+      </div>
+    );
+  }
+
 
   const filteredServices = services.filter(
     (s) =>

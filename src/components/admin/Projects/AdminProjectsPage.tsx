@@ -2,6 +2,7 @@
 
 import { ImageUploadInput } from "@/components/Admin/ImageUploadInput";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { toast } from "react-toastify";
 import {
   AlertCircle,
   Check,
@@ -162,30 +163,23 @@ export default function AdminProjectsPage() {
     },
   });
 
-  // Load from localStorage on client only
+  // Load from database on mount
   useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const stored = localStorage.getItem("admin_projects");
-    let projectsToSet = DEFAULT_PROJECTS;
-
-    if (stored) {
+    async function loadProjects() {
       try {
-        projectsToSet = JSON.parse(stored);
+        const res = await fetch("/api/projects");
+        const json = await res.json();
+        if (json.success) {
+          setProjects(json.data);
+        }
       } catch (error) {
-        console.error("Failed to parse saved projects:", error);
-        projectsToSet = DEFAULT_PROJECTS;
+        console.error("Failed to load projects", error);
+        toast.error("Failed to load projects.");
+      } finally {
+        setIsLoaded(true);
       }
-    } else {
-      localStorage.setItem("admin_projects", JSON.stringify(DEFAULT_PROJECTS));
     }
-
-    // Avoid synchronous setState within effect to prevent cascading renders
-    // Schedule update asynchronously
-    setTimeout(() => {
-      setProjects(projectsToSet);
-      setIsLoaded(true);
-    }, 0);
+    loadProjects();
   }, []);
 
   // Automatically generate slug from Title
@@ -205,13 +199,6 @@ export default function AdminProjectsPage() {
       setValue("slug", generatedSlug, { shouldValidate: true });
     }
   }, [formTitle, setValue, editingProject]);
-
-  const saveProjects = (updatedList: Project[]) => {
-    setProjects(updatedList);
-    if (typeof window !== "undefined") {
-      localStorage.setItem("admin_projects", JSON.stringify(updatedList));
-    }
-  };
 
   const handleAddClick = () => {
     setEditingProject(null);
@@ -241,30 +228,62 @@ export default function AdminProjectsPage() {
     setIsOpen(true);
   };
 
-  const handleDeleteClick = (id: number) => {
+  const handleDeleteClick = async (id: number) => {
     if (confirm("Are you sure you want to delete this project?")) {
-      const filtered = projects.filter((p) => p.id !== id);
-      saveProjects(filtered);
+      try {
+        const res = await fetch(`/api/projects?id=${id}`, {
+          method: "DELETE",
+        });
+        const json = await res.json();
+        if (json.success) {
+          setProjects((prev) => prev.filter((p) => p.id !== id));
+          toast.success("Project deleted successfully!");
+        } else {
+          toast.error("Failed to delete project: " + json.error);
+        }
+      } catch (error: any) {
+        console.error("Failed to delete project", error);
+        toast.error("Failed to delete project: " + error.message);
+      }
     }
   };
 
   const onSubmit = async (data: ProjectFormData) => {
-    await new Promise((resolve) => setTimeout(resolve, 800));
-
-    if (editingProject) {
-      const updatedList = projects.map((p) =>
-        p.id === editingProject.id ? { ...p, ...data } : p,
-      );
-      saveProjects(updatedList);
-    } else {
-      const newProject: Project = {
-        id:
-          projects.length > 0 ? Math.max(...projects.map((p) => p.id)) + 1 : 1,
-        ...data,
-      };
-      saveProjects([...projects, newProject]);
+    try {
+      if (editingProject) {
+        const res = await fetch("/api/projects", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: editingProject.id, ...data }),
+        });
+        const json = await res.json();
+        if (json.success) {
+          setProjects((prev) =>
+            prev.map((p) => (p.id === editingProject.id ? { ...p, ...data } : p))
+          );
+          toast.success("Project updated successfully!");
+        } else {
+          toast.error("Failed to update project: " + json.error);
+        }
+      } else {
+        const res = await fetch("/api/projects", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+        const json = await res.json();
+        if (json.success) {
+          setProjects((prev) => [...prev, json.data]);
+          toast.success("Project added successfully!");
+        } else {
+          toast.error("Failed to add project: " + json.error);
+        }
+      }
+      setIsOpen(false);
+    } catch (error: any) {
+      console.error("Failed to save project", error);
+      toast.error("Failed to save project: " + error.message);
     }
-    setIsOpen(false);
   };
 
   // Filter & Search Logics

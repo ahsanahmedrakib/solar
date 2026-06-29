@@ -2,6 +2,7 @@
 
 import { ImageUploadInput } from "@/components/Admin/ImageUploadInput";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { toast } from "react-toastify";
 import {
   AlertCircle,
   Calendar,
@@ -141,25 +142,32 @@ const blogSchema = yup.object().shape({
 type BlogFormData = yup.InferType<typeof blogSchema>;
 
 export default function AdminBlogsPage() {
-  const [blogs, setBlogs] = useState<Blog[]>(() => {
-    if (typeof window === "undefined") {
-      return DEFAULT_BLOGS;
-    }
-    const stored = localStorage.getItem("admin_blogs");
-    if (!stored) {
-      localStorage.setItem("admin_blogs", JSON.stringify(DEFAULT_BLOGS));
-      return DEFAULT_BLOGS;
-    }
-    return JSON.parse(stored);
-  });
-  
-  const [isLoaded] = useState(true);
+  const [blogs, setBlogs] = useState<Blog[]>(DEFAULT_BLOGS);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
 
   // Modal State
   const [isOpen, setIsOpen] = useState(false);
   const [editingBlog, setEditingBlog] = useState<Blog | null>(null);
+
+  useEffect(() => {
+    async function loadBlogs() {
+      try {
+        const res = await fetch("/api/blogs");
+        const json = await res.json();
+        if (json.success) {
+          setBlogs(json.data);
+        }
+      } catch (error) {
+        console.error("Failed to load blogs", error);
+        toast.error("Failed to load blog posts.");
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadBlogs();
+  }, []);
 
   // Form Setup
   const {
@@ -199,11 +207,6 @@ export default function AdminBlogsPage() {
     }
   }, [formTitle, setValue, editingBlog]);
 
-  const saveBlogs = (updatedList: Blog[]) => {
-    setBlogs(updatedList);
-    localStorage.setItem("admin_blogs", JSON.stringify(updatedList));
-  };
-
   const handleAddClick = () => {
     setEditingBlog(null);
     reset({
@@ -230,17 +233,27 @@ export default function AdminBlogsPage() {
     setIsOpen(true);
   };
 
-  const handleDeleteClick = (id: number) => {
+  const handleDeleteClick = async (id: number) => {
     if (confirm("Are you sure you want to delete this blog post?")) {
-      const filtered = blogs.filter((b) => b.id !== id);
-      saveBlogs(filtered);
+      try {
+        const res = await fetch(`/api/blogs?id=${id}`, {
+          method: "DELETE",
+        });
+        const json = await res.json();
+        if (json.success) {
+          setBlogs((prev) => prev.filter((b) => b.id !== id));
+          toast.success("Blog post deleted successfully!");
+        } else {
+          toast.error("Failed to delete blog post: " + json.error);
+        }
+      } catch (error: any) {
+        console.error("Failed to delete blog", error);
+        toast.error("Failed to delete blog post: " + error.message);
+      }
     }
   };
 
   const onSubmit = async (data: BlogFormData) => {
-    await new Promise((resolve) => setTimeout(resolve, 800));
-
-    // Parse tag inputs: split by comma, trim spaces, remove empty strings
     const parsedTags = data.tagsString
       .split(",")
       .map((t) => t.trim())
@@ -252,37 +265,51 @@ export default function AdminBlogsPage() {
       year: "numeric",
     });
 
-    // TODO: Connect with API (e.g. axios.post('/api/blogs', { ...data, tags: parsedTags }))
-    if (editingBlog) {
-      const updatedList = blogs.map((b) =>
-        b.id === editingBlog.id
-          ? {
-              ...b,
-              title: data.title,
-              slug: data.slug,
-              category: data.category,
-              imageUrl: data.imageUrl,
-              content: data.content,
-              tags: parsedTags,
-              date: currentDateString, // Update edited date
-            }
-          : b,
-      );
-      saveBlogs(updatedList);
-    } else {
-      const newBlog: Blog = {
-        id: blogs.length > 0 ? Math.max(...blogs.map((b) => b.id)) + 1 : 1,
-        title: data.title,
-        slug: data.slug,
-        category: data.category,
-        imageUrl: data.imageUrl,
-        content: data.content,
-        tags: parsedTags,
-        date: currentDateString,
-      };
-      saveBlogs([...blogs, newBlog]);
+    const payload = {
+      title: data.title,
+      slug: data.slug,
+      category: data.category,
+      imageUrl: data.imageUrl,
+      content: data.content,
+      tags: parsedTags,
+      date: currentDateString,
+    };
+
+    try {
+      if (editingBlog) {
+        const res = await fetch("/api/blogs", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: editingBlog.id, ...payload }),
+        });
+        const json = await res.json();
+        if (json.success) {
+          setBlogs((prev) =>
+            prev.map((b) => (b.id === editingBlog.id ? { ...b, ...payload } : b))
+          );
+          toast.success("Blog post updated successfully!");
+        } else {
+          toast.error("Failed to update blog post: " + json.error);
+        }
+      } else {
+        const res = await fetch("/api/blogs", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        const json = await res.json();
+        if (json.success) {
+          setBlogs((prev) => [...prev, json.data]);
+          toast.success("Blog post added successfully!");
+        } else {
+          toast.error("Failed to add blog post: " + json.error);
+        }
+      }
+      setIsOpen(false);
+    } catch (error: any) {
+      console.error("Failed to save blog post", error);
+      toast.error("Failed to save blog post: " + error.message);
     }
-    setIsOpen(false);
   };
 
   // Filter & Search Logics
@@ -296,7 +323,7 @@ export default function AdminBlogsPage() {
     return matchCategory && matchSearch;
   });
 
-  if (!isLoaded) {
+  if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-100">
         <div className="w-10 h-10 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
