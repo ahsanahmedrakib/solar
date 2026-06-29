@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import { useState } from "react";
 
 interface TeamMember {
   name: string;
@@ -28,21 +28,23 @@ const initialTeamMembers: TeamMember[] = [
 ];
 
 export default function Teams() {
-  const [teamMembers, setTeamMembers] = useState<TeamMember[]>(initialTeamMembers);
-
-  useEffect(() => {
-    const stored = localStorage.getItem("admin_team");
-    if (stored) {
-      try {
+  const [teamMembers] = useState<TeamMember[]>(() => {
+    try {
+      const stored =
+        typeof window !== "undefined"
+          ? localStorage.getItem("admin_team")
+          : null;
+      if (stored) {
         const parsed = JSON.parse(stored);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          setTeamMembers(parsed);
+          return parsed as TeamMember[];
         }
-      } catch (e) {
-        console.error("Error loading team members", e);
       }
+    } catch (e) {
+      console.error("Error loading team members", e);
     }
-  }, []);
+    return initialTeamMembers;
+  });
   return (
     <section className="relative w-full bg-white px-4 py-12 md:px-8 lg:px-16 lg:py-24">
       <div className="mx-auto max-w-7xl">

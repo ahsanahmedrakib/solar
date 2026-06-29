@@ -1,8 +1,8 @@
 "use client";
 
-import { Bell, Search, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Bell, Menu, Search } from "lucide-react";
 import { usePathname } from "next/navigation";
 
 const pageTitles: Record<string, string> = {
@@ -21,16 +21,14 @@ export function AdminHeader() {
   const title = pageTitles[pathname] ?? "Admin Panel";
 
   return (
-    <header className="admin-header">
+    <header className="admin-header min-h-10">
       <div className="admin-header-left">
         <button className="admin-header-menu-btn" aria-label="Toggle menu">
           <Menu size={20} />
         </button>
         <div>
           <h1 className="admin-header-title">{title}</h1>
-          <p className="admin-header-breadcrumb">
-            Home / {title}
-          </p>
+          <p className="admin-header-breadcrumb">Home / {title}</p>
         </div>
       </div>
 
@@ -62,3 +60,4 @@ export function AdminHeader() {
     </header>
   );
 }
+
