@@ -15,7 +15,7 @@ import {
   X,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import * as yup from "yup";
 
 // Define the Project Interface
@@ -132,8 +132,20 @@ const projectSchema = yup.object().shape({
 type ProjectFormData = yup.InferType<typeof projectSchema>;
 
 export default function AdminProjectsPage() {
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [projects, setProjects] = useState<Project[]>(() => {
+    try {
+      const stored = localStorage.getItem("admin_projects");
+      if (stored) {
+        return JSON.parse(stored);
+      }
+    } catch {
+      // Ignore invalid stored data and fall back to defaults.
+    }
+
+    localStorage.setItem("admin_projects", JSON.stringify(DEFAULT_PROJECTS));
+    return DEFAULT_PROJECTS;
+  });
+
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
 
@@ -141,25 +153,12 @@ export default function AdminProjectsPage() {
   const [isOpen, setIsOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null>(null);
 
-  // Load from LocalStorage
-  useEffect(() => {
-    const stored = localStorage.getItem("admin_projects");
-    if (stored) {
-      setProjects(JSON.parse(stored));
-    } else {
-      setProjects(DEFAULT_PROJECTS);
-      localStorage.setItem("admin_projects", JSON.stringify(DEFAULT_PROJECTS));
-    }
-    setIsLoaded(true);
-  }, []);
-
   // Form Setup
   const {
     register,
     handleSubmit,
     control,
     setValue,
-    watch,
     reset,
     formState: { errors, isSubmitting },
   } = useForm<ProjectFormData>({
@@ -176,7 +175,11 @@ export default function AdminProjectsPage() {
   });
 
   // Automatically generate slug from Title
-  const formTitle = watch("title");
+  const formTitle = useWatch({
+    control,
+    name: "title",
+  });
+
   useEffect(() => {
     if (formTitle && !editingProject) {
       const generatedSlug = formTitle
@@ -260,16 +263,16 @@ export default function AdminProjectsPage() {
     return matchCategory && matchSearch;
   });
 
-  if (!isLoaded) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[400px]">
-        <div className="w-10 h-10 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
-        <p className="mt-4 text-[var(--admin-text-secondary)] font-medium">
-          Loading Projects registry...
-        </p>
-      </div>
-    );
-  }
+  // if (!isLoaded) {
+  //   return (
+  //     <div className="flex flex-col items-center justify-center min-h-100">
+  //       <div className="w-10 h-10 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
+  //       <p className="mt-4 text-(--admin-text-secondary) font-medium">
+  //         Loading Projects registry...
+  //       </p>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="space-y-6">
@@ -357,51 +360,48 @@ export default function AdminProjectsPage() {
                     <td>
                       <div className="flex items-center gap-3">
                         <div
-                          className="w-12 h-9 rounded-md bg-cover bg-center border border-[var(--admin-border)] flex-shrink-0"
+                          className="w-12 h-9 rounded-md bg-cover bg-center border border-(--admin-border) shrink-0"
                           style={{
                             backgroundImage: `url(${project.imageUrl})`,
                           }}
                         />
                         <div>
-                          <p className="font-semibold text-[14.5px] text-[var(--admin-text-primary)] max-w-xs truncate">
+                          <p className="font-semibold text-[14.5px] text-(--admin-text-primary) max-w-xs truncate">
                             {project.title}
                           </p>
-                          <p className="font-mono text-[11px] text-[var(--admin-text-muted)] mt-0.5">
+                          <p className="font-mono text-[11px] text-(--admin-text-muted) mt-0.5">
                             {project.slug}
                           </p>
                         </div>
                       </div>
                     </td>
                     <td>
-                      <div className="flex items-center gap-1.5 text-sm text-[var(--admin-text-secondary)]">
-                        <User
-                          size={13}
-                          className="text-[var(--admin-text-muted)]"
-                        />
+                      <div className="flex items-center gap-1.5 text-sm text-(--admin-text-secondary)">
+                        <User size={13} className="text-(--admin-text-muted)" />
                         {project.client}
                       </div>
                     </td>
                     <td>
-                      <div className="flex items-center gap-1.5 text-sm text-[var(--admin-text-secondary)]">
+                      <div className="flex items-center gap-1.5 text-sm text-(--admin-text-secondary)">
                         <MapPin
                           size={13}
-                          className="text-[var(--admin-text-muted)]"
+                          className="text-(--admin-text-muted)"
                         />
                         {project.location}
                       </div>
                     </td>
                     <td>
-                      <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-[rgba(59,130,246,0.08)] text-[var(--admin-info)] border border-[rgba(59,130,246,0.15)]">
+                      <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-[rgba(59,130,246,0.08) text-(--admin-info) border border-[rgba(59,130,246,0.15)">
                         {project.category}
                       </span>
                     </td>
                     <td className="text-center">
                       {project.isFeatured ? (
-                        <span className="inline-flex items-center gap-1 text-[11.5px] font-bold text-[var(--admin-success)] bg-[rgba(16,185,129,0.08)] border border-[rgba(16,185,129,0.15)] px-2 py-0.5 rounded">
+                        <span className="inline-flex items-center gap-1 text-[11.5px] font-bold text-(--admin-success) bg-[rgba(16,185,129,0.08) border border-[rgba(16,185,129,0.15) px-2 py-0.5 rounded">
                           <Check size={11} strokeWidth={3} /> Yes
                         </span>
                       ) : (
-                        <span className="text-[11.5px] text-[var(--admin-text-muted)]">
+                        <span className="text-[11.5px] text-(--admin-text-muted)">
                           -
                         </span>
                       )}
@@ -434,17 +434,17 @@ export default function AdminProjectsPage() {
 
       {/* CRUD Edit/Add Modal Overlay */}
       {isOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center px-4 bg-black/60 backdrop-blur-xs">
-          <div className="w-full max-w-xl bg-[var(--admin-surface)] border border-[var(--admin-border-strong)] rounded-xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
+        <div className="fixed inset-0 z-100 flex items-center justify-center px-4 bg-black/60 backdrop-blur-xs">
+          <div className="w-full max-w-xl bg-(--admin-surface) border border-(--admin-border-strong) rounded-xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
             {/* Modal Header */}
-            <div className="flex items-center justify-between p-5 border-b border-[var(--admin-border)] bg-[var(--admin-surface-2)]">
-              <h3 className="text-base font-bold text-[var(--admin-text-primary)] flex items-center gap-2">
-                <Layers size={18} className="text-[var(--admin-accent)]" />
+            <div className="flex items-center justify-between p-5 border-b border-(--admin-border) bg-(--admin-surface-2)">
+              <h3 className="text-base font-bold text-(--admin-text-primary) flex items-center gap-2">
+                <Layers size={18} className="text-(--admin-accent)" />
                 {editingProject ? "Edit Project" : "Add Project"}
               </h3>
               <button
                 onClick={() => setIsOpen(false)}
-                className="text-[var(--admin-text-muted)] hover:text-[var(--admin-text-primary)] transition"
+                className="text-(--admin-text-muted) hover:text-(--admin-text-primary) transition"
               >
                 <X size={18} />
               </button>
@@ -457,17 +457,17 @@ export default function AdminProjectsPage() {
             >
               {/* Project Title */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold text-[var(--admin-text-secondary)] uppercase tracking-wider">
+                <label className="text-xs font-semibold text-(--admin-text-secondary) uppercase tracking-wider">
                   Project Title *
                 </label>
                 <input
                   type="text"
                   placeholder="e.g. Commercial 500kW Array"
                   {...register("title")}
-                  className={`w-full bg-[var(--admin-surface-2)] border ${errors.title ? "border-[var(--admin-danger)]" : "border-[var(--admin-border)]"} text-sm text-[var(--admin-text-primary)] rounded-lg p-2.5 outline-none focus:border-[var(--admin-accent)] transition`}
+                  className={`w-full bg-(--admin-surface-2) border ${errors.title ? "border-(--admin-danger)" : "border-(--admin-border)"} text-sm text-(--admin-text-primary) rounded-lg p-2.5 outline-none focus:border-(--admin-accent) transition`}
                 />
                 {errors.title && (
-                  <span className="text-[11px] text-[var(--admin-danger)] flex items-center gap-1">
+                  <span className="text-[11px] text-(--admin-danger) flex items-center gap-1">
                     <AlertCircle size={10} /> {errors.title.message}
                   </span>
                 )}
@@ -475,17 +475,17 @@ export default function AdminProjectsPage() {
 
               {/* Project Slug */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold text-[var(--admin-text-secondary)] uppercase tracking-wider">
+                <label className="text-xs font-semibold text-(--admin-text-secondary) uppercase tracking-wider">
                   Slug (URL Segment) *
                 </label>
                 <input
                   type="text"
                   placeholder="e.g. commercial-500kw-array"
                   {...register("slug")}
-                  className={`w-full bg-[var(--admin-surface-2)] border ${errors.slug ? "border-[var(--admin-danger)]" : "border-[var(--admin-border)]"} text-sm font-mono text-[var(--admin-text-primary)] rounded-lg p-2.5 outline-none focus:border-[var(--admin-accent)] transition`}
+                  className={`w-full bg-(--admin-surface-2) border ${errors.slug ? "border-(--admin-danger)" : "border-(--admin-border)"} text-sm font-mono text-(--admin-text-primary) rounded-lg p-2.5 outline-none focus:border-(--admin-accent) transition`}
                 />
                 {errors.slug && (
-                  <span className="text-[11px] text-[var(--admin-danger)] flex items-center gap-1">
+                  <span className="text-[11px] text-(--admin-danger) flex items-center gap-1">
                     <AlertCircle size={10} /> {errors.slug.message}
                   </span>
                 )}
@@ -494,12 +494,12 @@ export default function AdminProjectsPage() {
               {/* Category & Featured Switch */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-semibold text-[var(--admin-text-secondary)] uppercase tracking-wider">
+                  <label className="text-xs font-semibold text-(--admin-text-secondary) uppercase tracking-wider">
                     Category *
                   </label>
                   <select
                     {...register("category")}
-                    className="w-full bg-[var(--admin-surface-2)] border border-[var(--admin-border)] text-sm text-[var(--admin-text-primary)] rounded-lg p-2.5 outline-none focus:border-[var(--admin-accent)] transition"
+                    className="w-full bg-(--admin-surface-2) border border-(--admin-border) text-sm text-(--admin-text-primary) rounded-lg p-2.5 outline-none focus:border-(--admin-accent) transition"
                   >
                     {CATEGORIES.map((cat) => (
                       <option key={cat} value={cat}>
@@ -508,22 +508,22 @@ export default function AdminProjectsPage() {
                     ))}
                   </select>
                   {errors.category && (
-                    <span className="text-[11px] text-[var(--admin-danger)] flex items-center gap-1">
+                    <span className="text-[11px] text-(--admin-danger) flex items-center gap-1">
                       <AlertCircle size={10} /> {errors.category.message}
                     </span>
                   )}
                 </div>
 
-                <div className="flex items-center gap-3 bg-[var(--admin-surface-2)] border border-[var(--admin-border)] rounded-lg p-2.5 mt-auto h-[44px]">
+                <div className="flex items-center gap-3 bg-(--admin-surface-2) border border-(--admin-border) rounded-lg p-2.5 mt-auto h-11">
                   <input
                     type="checkbox"
                     id="isFeatured"
                     {...register("isFeatured")}
-                    className="w-4 h-4 text-[var(--admin-accent)] focus:ring-[var(--admin-accent)] border-[var(--admin-border)] rounded accent-[var(--admin-accent)] cursor-pointer"
+                    className="w-4 h-4 text-(--admin-accent) focus:ring-(--admin-accent) border-(--admin-border) rounded accent-(--admin-accent) cursor-pointer"
                   />
                   <label
                     htmlFor="isFeatured"
-                    className="text-sm font-medium text-[var(--admin-text-primary)] cursor-pointer select-none"
+                    className="text-sm font-medium text-(--admin-text-primary) cursor-pointer select-none"
                   >
                     Feature on Landing Page
                   </label>
@@ -533,34 +533,34 @@ export default function AdminProjectsPage() {
               {/* Client & Location */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-semibold text-[var(--admin-text-secondary)] uppercase tracking-wider">
+                  <label className="text-xs font-semibold text-(--admin-text-secondary) uppercase tracking-wider">
                     Client Name *
                   </label>
                   <input
                     type="text"
                     placeholder="e.g. Vanguard Logistics Corp"
                     {...register("client")}
-                    className={`w-full bg-[var(--admin-surface-2)] border ${errors.client ? "border-[var(--admin-danger)]" : "border-[var(--admin-border)]"} text-sm text-[var(--admin-text-primary)] rounded-lg p-2.5 outline-none focus:border-[var(--admin-accent)] transition`}
+                    className={`w-full bg-(--admin-surface-2) border ${errors.client ? "border-(--admin-danger)" : "border-(--admin-border)"} text-sm text-(--admin-text-primary) rounded-lg p-2.5 outline-none focus:border-(--admin-accent) transition`}
                   />
                   {errors.client && (
-                    <span className="text-[11px] text-[var(--admin-danger)] flex items-center gap-1">
+                    <span className="text-[11px] text-(--admin-danger) flex items-center gap-1">
                       <AlertCircle size={10} /> {errors.client.message}
                     </span>
                   )}
                 </div>
 
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-semibold text-[var(--admin-text-secondary)] uppercase tracking-wider">
+                  <label className="text-xs font-semibold text-(--admin-text-secondary) uppercase tracking-wider">
                     Location *
                   </label>
                   <input
                     type="text"
                     placeholder="e.g. Phoenix, AZ"
                     {...register("location")}
-                    className={`w-full bg-[var(--admin-surface-2)] border ${errors.location ? "border-[var(--admin-danger)]" : "border-[var(--admin-border)]"} text-sm text-[var(--admin-text-primary)] rounded-lg p-2.5 outline-none focus:border-[var(--admin-accent)] transition`}
+                    className={`w-full bg-(--admin-surface-2) border ${errors.location ? "border-(--admin-danger)" : "border-(--admin-border)"} text-sm text-(--admin-text-primary) rounded-lg p-2.5 outline-none focus:border-(--admin-accent) transition`}
                   />
                   {errors.location && (
-                    <span className="text-[11px] text-[var(--admin-danger)] flex items-center gap-1">
+                    <span className="text-[11px] text-(--admin-danger) flex items-center gap-1">
                       <AlertCircle size={10} /> {errors.location.message}
                     </span>
                   )}
@@ -583,7 +583,7 @@ export default function AdminProjectsPage() {
               />
 
               {/* Form Actions */}
-              <div className="flex justify-end gap-3 pt-3 border-t border-[var(--admin-border)]">
+              <div className="flex justify-end gap-3 pt-3 border-t border-(--admin-border)">
                 <button
                   type="button"
                   onClick={() => setIsOpen(false)}

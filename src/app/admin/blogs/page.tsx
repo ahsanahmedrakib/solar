@@ -14,7 +14,7 @@ import {
   X,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import * as yup from "yup";
 
 // Define the Blog Interface
@@ -141,8 +141,19 @@ const blogSchema = yup.object().shape({
 type BlogFormData = yup.InferType<typeof blogSchema>;
 
 export default function AdminBlogsPage() {
-  const [blogs, setBlogs] = useState<Blog[]>([]);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [blogs, setBlogs] = useState<Blog[]>(() => {
+    if (typeof window === "undefined") {
+      return DEFAULT_BLOGS;
+    }
+    const stored = localStorage.getItem("admin_blogs");
+    if (!stored) {
+      localStorage.setItem("admin_blogs", JSON.stringify(DEFAULT_BLOGS));
+      return DEFAULT_BLOGS;
+    }
+    return JSON.parse(stored);
+  });
+  
+  const [isLoaded] = useState(true);
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
 
@@ -150,25 +161,12 @@ export default function AdminBlogsPage() {
   const [isOpen, setIsOpen] = useState(false);
   const [editingBlog, setEditingBlog] = useState<Blog | null>(null);
 
-  // Load from LocalStorage
-  useEffect(() => {
-    const stored = localStorage.getItem("admin_blogs");
-    if (stored) {
-      setBlogs(JSON.parse(stored));
-    } else {
-      setBlogs(DEFAULT_BLOGS);
-      localStorage.setItem("admin_blogs", JSON.stringify(DEFAULT_BLOGS));
-    }
-    setIsLoaded(true);
-  }, []);
-
   // Form Setup
   const {
     register,
     handleSubmit,
     control,
     setValue,
-    watch,
     reset,
     formState: { errors, isSubmitting },
   } = useForm<BlogFormData>({
@@ -184,7 +182,11 @@ export default function AdminBlogsPage() {
   });
 
   // Automatically generate slug from Title
-  const formTitle = watch("title");
+  const formTitle = useWatch({
+    control,
+    name: "title",
+    defaultValue: "",
+  });
   useEffect(() => {
     if (formTitle && !editingBlog) {
       const generatedSlug = formTitle
@@ -296,9 +298,9 @@ export default function AdminBlogsPage() {
 
   if (!isLoaded) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[400px]">
+      <div className="flex flex-col items-center justify-center min-h-100">
         <div className="w-10 h-10 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
-        <p className="mt-4 text-[var(--admin-text-secondary)] font-medium">
+        <p className="mt-4 text-(--admin-text-secondary) font-medium">
           Loading Blogs inventory...
         </p>
       </div>
@@ -391,30 +393,30 @@ export default function AdminBlogsPage() {
                     <td>
                       <div className="flex items-center gap-3">
                         <div
-                          className="w-12 h-9 rounded-md bg-cover bg-center border border-[var(--admin-border)] flex-shrink-0"
+                          className="w-12 h-9 rounded-md bg-cover bg-center border border-(--admin-border) shrink-0"
                           style={{ backgroundImage: `url(${blog.imageUrl})` }}
                         />
                         <div className="max-w-xs md:max-w-md truncate">
-                          <p className="font-semibold text-[14.5px] text-[var(--admin-text-primary)] truncate">
+                          <p className="font-semibold text-[14.5px] text-(--admin-text-primary) truncate">
                             {blog.title}
                           </p>
-                          <p className="font-mono text-[11px] text-[var(--admin-text-muted)] truncate mt-0.5">
+                          <p className="font-mono text-[11px] text-(--admin-text-muted) truncate mt-0.5">
                             {blog.slug}
                           </p>
                         </div>
                       </div>
                     </td>
                     <td>
-                      <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-[rgba(245,158,11,0.08)] text-[var(--admin-accent)] border border-[rgba(245,158,11,0.15)]">
+                      <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-[rgba(245,158,11,0.08) text-(--admin-accent) border border-[rgba(245,158,11,0.15)">
                         {blog.category}
                       </span>
                     </td>
                     <td>
-                      <div className="flex flex-wrap gap-1 max-w-[180px]">
+                      <div className="flex flex-wrap gap-1 max-w-45">
                         {blog.tags.map((t, idx) => (
                           <span
                             key={idx}
-                            className="text-[10px] bg-[var(--admin-surface-2)] text-[var(--admin-text-secondary)] px-1.5 py-0.5 rounded border border-[var(--admin-border)] flex items-center gap-0.5"
+                            className="text-[10px] bg-(--admin-surface-2) text-(--admin-text-secondary) px-1.5 py-0.5 rounded border border-(--admin-border) flex items-center gap-0.5"
                           >
                             <Tag size={8} /> {t}
                           </span>
@@ -422,10 +424,10 @@ export default function AdminBlogsPage() {
                       </div>
                     </td>
                     <td>
-                      <div className="flex items-center gap-1.5 text-xs text-[var(--admin-text-secondary)]">
+                      <div className="flex items-center gap-1.5 text-xs text-(--admin-text-secondary)">
                         <Calendar
                           size={12}
-                          className="text-[var(--admin-text-muted)]"
+                          className="text-(--admin-text-muted)"
                         />
                         {blog.date}
                       </div>
@@ -458,17 +460,17 @@ export default function AdminBlogsPage() {
 
       {/* CRUD Edit/Add Modal Overlay */}
       {isOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center px-4 bg-black/60 backdrop-blur-xs">
-          <div className="w-full max-w-xl bg-[var(--admin-surface)] border border-[var(--admin-border-strong)] rounded-xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
+        <div className="fixed inset-0 z-100 flex items-center justify-center px-4 bg-black/60 backdrop-blur-xs">
+          <div className="w-full max-w-xl bg-(--admin-surface) border border-(--admin-border-strong) rounded-xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
             {/* Modal Header */}
-            <div className="flex items-center justify-between p-5 border-b border-[var(--admin-border)] bg-[var(--admin-surface-2)]">
-              <h3 className="text-base font-bold text-[var(--admin-text-primary)] flex items-center gap-2">
-                <FileText size={18} className="text-[var(--admin-accent)]" />
+            <div className="flex items-center justify-between p-5 border-b border-(--admin-border) bg-(--admin-surface-2)">
+              <h3 className="text-base font-bold text-(--admin-text-primary) flex items-center gap-2">
+                <FileText size={18} className="text-(--admin-accent)" />
                 {editingBlog ? "Edit Blog Post" : "Write Blog Post"}
               </h3>
               <button
                 onClick={() => setIsOpen(false)}
-                className="text-[var(--admin-text-muted)] hover:text-[var(--admin-text-primary)] transition"
+                className="text-(--admin-text-muted) hover:text-(--admin-text-primary) transition"
               >
                 <X size={18} />
               </button>
@@ -481,17 +483,17 @@ export default function AdminBlogsPage() {
             >
               {/* Blog Title */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold text-[var(--admin-text-secondary)] uppercase tracking-wider">
+                <label className="text-xs font-semibold text-(--admin-text-secondary) uppercase tracking-wider">
                   Post Title *
                 </label>
                 <input
                   type="text"
                   placeholder="e.g. 5 Solar Storage Advantages"
                   {...register("title")}
-                  className={`w-full bg-[var(--admin-surface-2)] border ${errors.title ? "border-[var(--admin-danger)]" : "border-[var(--admin-border)]"} text-sm text-[var(--admin-text-primary)] rounded-lg p-2.5 outline-none focus:border-[var(--admin-accent)] transition`}
+                  className={`w-full bg-(--admin-surface-2) border ${errors.title ? "border-(--admin-danger)" : "border-(--admin-border)"} text-sm text-(--admin-text-primary) rounded-lg p-2.5 outline-none focus:border-(--admin-accent) transition`}
                 />
                 {errors.title && (
-                  <span className="text-[11px] text-[var(--admin-danger)] flex items-center gap-1">
+                  <span className="text-[11px] text-(--admin-danger) flex items-center gap-1">
                     <AlertCircle size={10} /> {errors.title.message}
                   </span>
                 )}
@@ -499,17 +501,17 @@ export default function AdminBlogsPage() {
 
               {/* Blog Slug */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold text-[var(--admin-text-secondary)] uppercase tracking-wider">
+                <label className="text-xs font-semibold text-(--admin-text-secondary) uppercase tracking-wider">
                   Slug (URL Segment) *
                 </label>
                 <input
                   type="text"
                   placeholder="e.g. 5-solar-storage-advantages"
                   {...register("slug")}
-                  className={`w-full bg-[var(--admin-surface-2)] border ${errors.slug ? "border-[var(--admin-danger)]" : "border-[var(--admin-border)]"} text-sm font-mono text-[var(--admin-text-primary)] rounded-lg p-2.5 outline-none focus:border-[var(--admin-accent)] transition`}
+                  className={`w-full bg-(--admin-surface-2) border ${errors.slug ? "border-(--admin-danger)" : "border-(--admin-border)"} text-sm font-mono text-(--admin-text-primary) rounded-lg p-2.5 outline-none focus:border-(--admin-accent) transition`}
                 />
                 {errors.slug && (
-                  <span className="text-[11px] text-[var(--admin-danger)] flex items-center gap-1">
+                  <span className="text-[11px] text-(--admin-danger) flex items-center gap-1">
                     <AlertCircle size={10} /> {errors.slug.message}
                   </span>
                 )}
@@ -518,12 +520,12 @@ export default function AdminBlogsPage() {
               {/* Category & Tags Input */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-semibold text-[var(--admin-text-secondary)] uppercase tracking-wider">
+                  <label className="text-xs font-semibold text-(--admin-text-secondary) uppercase tracking-wider">
                     Category *
                   </label>
                   <select
                     {...register("category")}
-                    className="w-full bg-[var(--admin-surface-2)] border border-[var(--admin-border)] text-sm text-[var(--admin-text-primary)] rounded-lg p-2.5 outline-none focus:border-[var(--admin-accent)] transition"
+                    className="w-full bg-(--admin-surface-2) border border-(--admin-border) text-sm text-(--admin-text-primary) rounded-lg p-2.5 outline-none focus:border-(--admin-accent) transition"
                   >
                     {CATEGORIES.map((cat) => (
                       <option key={cat} value={cat}>
@@ -532,24 +534,24 @@ export default function AdminBlogsPage() {
                     ))}
                   </select>
                   {errors.category && (
-                    <span className="text-[11px] text-[var(--admin-danger)] flex items-center gap-1">
+                    <span className="text-[11px] text-(--admin-danger) flex items-center gap-1">
                       <AlertCircle size={10} /> {errors.category.message}
                     </span>
                   )}
                 </div>
 
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-semibold text-[var(--admin-text-secondary)] uppercase tracking-wider">
+                  <label className="text-xs font-semibold text-(--admin-text-secondary) uppercase tracking-wider">
                     Tags (Comma-separated) *
                   </label>
                   <input
                     type="text"
                     placeholder="e.g. Green, Solar, Savings"
                     {...register("tagsString")}
-                    className={`w-full bg-[var(--admin-surface-2)] border ${errors.tagsString ? "border-[var(--admin-danger)]" : "border-[var(--admin-border)]"} text-sm text-[var(--admin-text-primary)] rounded-lg p-2.5 outline-none focus:border-[var(--admin-accent)] transition`}
+                    className={`w-full bg-(--admin-surface-2) border ${errors.tagsString ? "border-(--admin-danger)" : "border-(--admin-border)"} text-sm text-(--admin-text-primary) rounded-lg p-2.5 outline-none focus:border-(--admin-accent) transition`}
                   />
                   {errors.tagsString && (
-                    <span className="text-[11px] text-[var(--admin-danger)] flex items-center gap-1">
+                    <span className="text-[11px] text-(--admin-danger) flex items-center gap-1">
                       <AlertCircle size={10} /> {errors.tagsString.message}
                     </span>
                   )}
@@ -573,24 +575,24 @@ export default function AdminBlogsPage() {
 
               {/* Blog Content Description Text */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold text-[var(--admin-text-secondary)] uppercase tracking-wider">
+                <label className="text-xs font-semibold text-(--admin-text-secondary) uppercase tracking-wider">
                   Post Content Text *
                 </label>
                 <textarea
                   rows={6}
                   placeholder="Write the article content or summary details..."
                   {...register("content")}
-                  className={`w-full bg-[var(--admin-surface-2)] border ${errors.content ? "border-[var(--admin-danger)]" : "border-[var(--admin-border)]"} text-sm text-[var(--admin-text-primary)] rounded-lg p-2.5 outline-none focus:border-[var(--admin-accent)] transition resize-none`}
+                  className={`w-full bg-(--admin-surface-2) border ${errors.content ? "border-(--admin-danger)" : "border-(--admin-border)"} text-sm text-(--admin-text-primary) rounded-lg p-2.5 outline-none focus:border-(--admin-accent) transition resize-none`}
                 />
                 {errors.content && (
-                  <span className="text-[11px] text-[var(--admin-danger)] flex items-center gap-1">
+                  <span className="text-[11px] text-(--admin-danger) flex items-center gap-1">
                     <AlertCircle size={10} /> {errors.content.message}
                   </span>
                 )}
               </div>
 
               {/* Form Actions */}
-              <div className="flex justify-end gap-3 pt-3 border-t border-[var(--admin-border)]">
+              <div className="flex justify-end gap-3 pt-3 border-t border-(--admin-border)">
                 <button
                   type="button"
                   onClick={() => setIsOpen(false)}

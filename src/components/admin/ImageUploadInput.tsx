@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useRef } from "react";
-import { Upload, X, Image as ImageIcon, Link as LinkIcon, AlertCircle } from "lucide-react";
+import { AlertCircle, Link as LinkIcon, Upload, X } from "lucide-react";
+import React, { useRef, useState } from "react";
 
 interface ImageUploadInputProps {
   value: string;
@@ -49,13 +49,13 @@ export function ImageUploadInput({
   return (
     <div className="flex flex-col gap-1.5 w-full">
       <div className="flex items-center justify-between">
-        <label className="text-xs font-semibold text-[var(--admin-text-secondary)] uppercase tracking-wider">
+        <label className="text-xs font-semibold text-(--admin-text-secondary) uppercase tracking-wider">
           {label} *
         </label>
         <button
           type="button"
           onClick={() => setIsUrlMode(!isUrlMode)}
-          className="text-[11px] font-medium text-[var(--admin-accent)] hover:underline flex items-center gap-1 cursor-pointer"
+          className="text-[11px] font-medium text-(--admin-accent) hover:underline flex items-center gap-1 cursor-pointer"
         >
           {isUrlMode ? (
             <>
@@ -75,15 +75,15 @@ export function ImageUploadInput({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
-          className={`w-full bg-[var(--admin-surface-2)] border ${
-            error ? "border-[var(--admin-danger)]" : "border-[var(--admin-border)]"
-          } text-sm text-[var(--admin-text-primary)] rounded-lg p-2.5 outline-none focus:border-[var(--admin-accent)] transition`}
+          className={`w-full bg-(--admin-surface-2) border ${
+            error ? "border-(--admin-danger)" : "border-(--admin-border)"
+          } text-sm text-(--admin-text-primary) rounded-lg p-2.5 outline-none focus:border-(--admin-accent) transition`}
         />
       ) : (
         <div className="space-y-2">
           {value ? (
-            <div className="relative group rounded-xl overflow-hidden border border-[var(--admin-border-strong)] bg-[var(--admin-surface-2)] p-2 flex items-center gap-3">
-              <div className="w-16 h-16 rounded-lg overflow-hidden bg-black/20 flex-shrink-0 relative border border-[var(--admin-border)]">
+            <div className="relative group rounded-xl overflow-hidden border border-(--admin-border-strong) bg-(--admin-surface-2) p-2 flex items-center gap-3">
+              <div className="w-16 h-16 rounded-lg overflow-hidden bg-black/20 shrink-0 relative border border-(--admin-border)">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={value}
@@ -92,10 +92,10 @@ export function ImageUploadInput({
                 />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-semibold text-[var(--admin-text-primary)] truncate">
+                <p className="text-xs font-semibold text-(--admin-text-primary) truncate">
                   {value.startsWith("data:") ? "Uploaded Image File" : value}
                 </p>
-                <p className="text-[11px] text-[var(--admin-text-muted)] mt-0.5">
+                <p className="text-[11px] text-(--admin-text-muted) mt-0.5">
                   Click below to change or clear this image
                 </p>
               </div>
@@ -119,10 +119,10 @@ export function ImageUploadInput({
               onClick={() => fileInputRef.current?.click()}
               className={`border-2 border-dashed rounded-xl p-5 text-center cursor-pointer transition-all ${
                 isDragging
-                  ? "border-[var(--admin-accent)] bg-[var(--admin-accent-muted)]"
+                  ? "border-(--admin-accent) bg-(--admin-accent-muted)"
                   : error
-                  ? "border-[var(--admin-danger)] bg-red-500/5 hover:bg-red-500/10"
-                  : "border-[var(--admin-border-strong)] bg-[var(--admin-surface-2)] hover:border-[var(--admin-accent)] hover:bg-[var(--admin-surface-hover)]"
+                    ? "border-(--admin-danger) bg-red-500/5 hover:bg-red-500/10"
+                    : "border-(--admin-border-strong) bg-(--admin-surface-2) hover:border-(--admin-accent) hover:bg-(--admin-surface-hover)"
               }`}
             >
               <input
@@ -132,13 +132,16 @@ export function ImageUploadInput({
                 className="hidden"
                 onChange={(e) => handleFileChange(e.target.files?.[0])}
               />
-              <div className="w-10 h-10 rounded-full bg-[var(--admin-accent-muted)] text-[var(--admin-accent)] flex items-center justify-center mx-auto mb-2">
+              <div className="w-10 h-10 rounded-full bg-(--admin-accent-muted) text-(--admin-accent) flex items-center justify-center mx-auto mb-2">
                 <Upload size={18} />
               </div>
-              <p className="text-xs font-medium text-[var(--admin-text-primary)]">
-                <span className="text-[var(--admin-accent)] font-semibold">Click to upload</span> or drag and drop
+              <p className="text-xs font-medium text-(--admin-text-primary)">
+                <span className="text-(--admin-accent) font-semibold">
+                  Click to upload
+                </span>{" "}
+                or drag and drop
               </p>
-              <p className="text-[11px] text-[var(--admin-text-muted)] mt-1">
+              <p className="text-[11px] text-(--admin-text-muted) mt-1">
                 SVG, PNG, JPG, GIF or WEBP
               </p>
             </div>
@@ -147,10 +150,11 @@ export function ImageUploadInput({
       )}
 
       {error && (
-        <span className="text-[11px] text-[var(--admin-danger)] flex items-center gap-1">
+        <span className="text-[11px] text-(--admin-danger) flex items-center gap-1">
           <AlertCircle size={10} /> {error}
         </span>
       )}
     </div>
   );
 }
+

@@ -66,7 +66,18 @@ interface TeamFormData {
 }
 
 export default function AdminTeamPage() {
-  const [team, setTeam] = useState<TeamMember[]>([]);
+  const [team, setTeam] = useState<TeamMember[]>(() => {
+    if (typeof window === "undefined") return DEFAULT_TEAM;
+
+    const stored = localStorage.getItem("admin_team");
+    if (!stored) return DEFAULT_TEAM;
+
+    try {
+      return JSON.parse(stored);
+    } catch {
+      return DEFAULT_TEAM;
+    }
+  });
   const [isLoaded, setIsLoaded] = useState(false);
   const [search, setSearch] = useState("");
 
@@ -74,18 +85,20 @@ export default function AdminTeamPage() {
   const [editingMember, setEditingMember] = useState<TeamMember | null>(null);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
     const stored = localStorage.getItem("admin_team");
-    if (stored) {
-      try {
-        setTeam(JSON.parse(stored));
-      } catch {
-        setTeam(DEFAULT_TEAM);
-      }
-    } else {
-      setTeam(DEFAULT_TEAM);
+    if (!stored) {
       localStorage.setItem("admin_team", JSON.stringify(DEFAULT_TEAM));
+    } else {
+      try {
+        JSON.parse(stored);
+      } catch {
+        localStorage.setItem("admin_team", JSON.stringify(DEFAULT_TEAM));
+      }
     }
-    setIsLoaded(true);
+
+    Promise.resolve().then(() => setIsLoaded(true));
   }, []);
 
   const saveTeam = (updatedList: TeamMember[]) => {
@@ -100,7 +113,7 @@ export default function AdminTeamPage() {
     reset,
     formState: { errors, isSubmitting },
   } = useForm<TeamFormData>({
-    resolver: yupResolver(teamSchema) as any,
+    resolver: yupResolver(teamSchema) as never,
     defaultValues: {
       name: "",
       role: "",
@@ -175,9 +188,9 @@ export default function AdminTeamPage() {
 
   if (!isLoaded) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[400px]">
+      <div className="flex flex-col items-center justify-center min-h-100">
         <div className="w-10 h-10 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
-        <p className="mt-4 text-[var(--admin-text-secondary)] font-medium">
+        <p className="mt-4 text-(--admin-text-secondary) font-medium">
           Loading Team Directory...
         </p>
       </div>
@@ -251,21 +264,21 @@ export default function AdminTeamPage() {
                     <td>
                       <div className="flex items-center gap-3">
                         <div
-                          className="w-10 h-10 rounded-full bg-cover bg-center border border-[var(--admin-border-strong)] flex-shrink-0"
+                          className="w-10 h-10 rounded-full bg-cover bg-center border border-(--admin-border-strong) shrink-0"
                           style={{ backgroundImage: `url(${member.image})` }}
                         />
                         <div>
-                          <p className="font-bold text-[14.5px] text-[var(--admin-text-primary)]">
+                          <p className="font-bold text-[14.5px] text-(--admin-text-primary)">
                             {member.name}
                           </p>
                         </div>
                       </div>
                     </td>
                     <td>
-                      <div className="flex items-center gap-1.5 text-sm text-[var(--admin-text-secondary)] font-medium">
+                      <div className="flex items-center gap-1.5 text-sm text-(--admin-text-secondary) font-medium">
                         <Briefcase
                           size={14}
-                          className="text-[var(--admin-accent)]"
+                          className="text-(--admin-accent)"
                         />
                         {member.role}
                       </div>
@@ -297,16 +310,16 @@ export default function AdminTeamPage() {
       </div>
 
       {isOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center px-4 bg-black/60 backdrop-blur-xs">
-          <div className="w-full max-w-lg bg-[var(--admin-surface)] border border-[var(--admin-border-strong)] rounded-xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
-            <div className="flex items-center justify-between p-5 border-b border-[var(--admin-border)] bg-[var(--admin-surface-2)]">
-              <h3 className="text-base font-bold text-[var(--admin-text-primary)] flex items-center gap-2">
-                <Users size={18} className="text-[var(--admin-accent)]" />
+        <div className="fixed inset-0 z-100 flex items-center justify-center px-4 bg-black/60 backdrop-blur-xs">
+          <div className="w-full max-w-lg bg-(--admin-surface) border border-(--admin-border-strong) rounded-xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
+            <div className="flex items-center justify-between p-5 border-b border-(--admin-border) bg-(--admin-surface-2)">
+              <h3 className="text-base font-bold text-(--admin-text-primary) flex items-center gap-2">
+                <Users size={18} className="text-(--admin-accent)" />
                 {editingMember ? "Edit Team Member" : "Add Team Member"}
               </h3>
               <button
                 onClick={() => setIsOpen(false)}
-                className="text-[var(--admin-text-muted)] hover:text-[var(--admin-text-primary)] transition"
+                className="text-(--admin-text-muted) hover:text-(--admin-text-primary) transition"
               >
                 <X size={18} />
               </button>
@@ -317,34 +330,34 @@ export default function AdminTeamPage() {
               className="p-6 overflow-y-auto space-y-4 flex-1"
             >
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold text-[var(--admin-text-secondary)] uppercase tracking-wider">
+                <label className="text-xs font-semibold text-(--admin-text-secondary) uppercase tracking-wider">
                   Full Name *
                 </label>
                 <input
                   type="text"
                   placeholder="e.g. Sarah Connor"
                   {...register("name")}
-                  className={`w-full bg-[var(--admin-surface-2)] border ${errors.name ? "border-[var(--admin-danger)]" : "border-[var(--admin-border)]"} text-sm text-[var(--admin-text-primary)] rounded-lg p-2.5 outline-none focus:border-[var(--admin-accent)] transition`}
+                  className={`w-full bg-(--admin-surface-2) border ${errors.name ? "border-(--admin-danger)" : "border-(--admin-border)"} text-sm text-(--admin-text-primary) rounded-lg p-2.5 outline-none focus:border-(--admin-accent) transition`}
                 />
                 {errors.name && (
-                  <span className="text-[11px] text-[var(--admin-danger)] flex items-center gap-1">
+                  <span className="text-[11px] text-(--admin-danger) flex items-center gap-1">
                     <AlertCircle size={10} /> {errors.name.message}
                   </span>
                 )}
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold text-[var(--admin-text-secondary)] uppercase tracking-wider">
+                <label className="text-xs font-semibold text-(--admin-text-secondary) uppercase tracking-wider">
                   Role / Title *
                 </label>
                 <input
                   type="text"
                   placeholder="e.g. Lead Solar Architect"
                   {...register("role")}
-                  className={`w-full bg-[var(--admin-surface-2)] border ${errors.role ? "border-[var(--admin-danger)]" : "border-[var(--admin-border)]"} text-sm text-[var(--admin-text-primary)] rounded-lg p-2.5 outline-none focus:border-[var(--admin-accent)] transition`}
+                  className={`w-full bg-(--admin-surface-2) border ${errors.role ? "border-(--admin-danger)" : "border-(--admin-border)"} text-sm text-(--admin-text-primary) rounded-lg p-2.5 outline-none focus:border-(--admin-accent) transition`}
                 />
                 {errors.role && (
-                  <span className="text-[11px] text-[var(--admin-danger)] flex items-center gap-1">
+                  <span className="text-[11px] text-(--admin-danger) flex items-center gap-1">
                     <AlertCircle size={10} /> {errors.role.message}
                   </span>
                 )}
@@ -365,7 +378,7 @@ export default function AdminTeamPage() {
                 )}
               />
 
-              <div className="flex justify-end gap-3 pt-3 border-t border-[var(--admin-border)]">
+              <div className="flex justify-end gap-3 pt-3 border-t border-(--admin-border)">
                 <button
                   type="button"
                   onClick={() => setIsOpen(false)}
