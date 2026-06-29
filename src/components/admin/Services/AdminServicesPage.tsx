@@ -361,16 +361,16 @@ export default function AdminServicesPage() {
                 {filteredServices.map((service) => (
                   <tr key={service.id}>
                     <td className="text-center">
-                      <div className="mx-auto w-10 h-10 rounded-lg flex items-center justify-center bg-[rgba(245,158,11,0.08)] text-[var(--admin-accent)] border border-[rgba(245,158,11,0.15)]">
+                      <div className="mx-auto w-10 h-10 rounded-lg flex items-center justify-center bg-[rgba(245,158,11,0.08) text-(--admin-accent) border border-[rgba(245,158,11,0.15)">
                         {renderIcon(service.iconName, "w-5 h-5")}
                       </div>
                     </td>
                     <td>
                       <div>
-                        <p className="font-semibold text-[14.5px] text-[var(--admin-text-primary)]">
+                        <p className="font-semibold text-[14.5px] text-(--admin-text-primary)">
                           {service.title}
                         </p>
-                        <p className="text-[12px] text-[var(--admin-text-secondary)] line-clamp-2 max-w-lg mt-0.5">
+                        <p className="text-[12px] text-(--admin-text-secondary) line-clamp-2 max-w-lg mt-0.5">
                           {service.description}
                         </p>
                       </div>
