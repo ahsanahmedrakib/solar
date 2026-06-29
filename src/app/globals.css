@@ -272,6 +272,29 @@ body:has(.admin-layout-root) {
   overflow: hidden !important;
 }
 
+/* Hero Swiper */
+.hero-swiper .swiper-pagination {
+  bottom: 28px !important;
+  z-index: 30;
+}
+
+.hero-swiper-bullet {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin: 0 6px !important;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.35);
+  opacity: 1;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.hero-swiper-bullet-active {
+  width: 28px;
+  background: #4caf50;
+}
+
 /* React Toastify — brand-aligned notifications */
 :root {
   --toastify-color-success: var(--color-success);

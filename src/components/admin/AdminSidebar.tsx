@@ -18,6 +18,7 @@ import {
   FileText,
   CreditCard,
   Mail,
+  ImageIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -51,6 +52,11 @@ const navItems = [
     title: "Blogs",
     href: "/admin/blogs",
     icon: FileText,
+  },
+  {
+    title: "Hero Slider",
+    href: "/admin/hero-slider",
+    icon: ImageIcon,
   },
   {
     title: "Contact Queries",

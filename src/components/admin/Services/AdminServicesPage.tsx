@@ -386,39 +386,40 @@ export default function AdminServicesPage() {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr>
-                  <th className="w-16 text-center">Icon</th>
-                  <th>Service Detail</th>
+                  <th>Service</th>
                   <th>Slug</th>
-                  <th>Image Path</th>
                   <th className="text-center w-32">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredServices.map((service) => (
                   <tr key={service.id}>
-                    <td className="text-center">
-                      <div className="mx-auto w-10 h-10 rounded-lg flex items-center justify-center bg-[rgba(245,158,11,0.08) text-(--admin-accent) border border-[rgba(245,158,11,0.15)">
-                        {renderIcon(service.iconName, "w-5 h-5")}
-                      </div>
-                    </td>
                     <td>
-                      <div>
-                        <p className="font-semibold text-[14.5px] text-(--admin-text-primary)">
-                          {service.title}
-                        </p>
-                        <p className="text-[12px] text-(--admin-text-secondary) line-clamp-2 max-w-lg mt-0.5">
-                          {service.description}
-                        </p>
+                      <div className="flex items-center gap-3">
+                        <div
+                          className="w-14 h-10 rounded-md bg-cover bg-center border border-(--admin-border) shrink-0"
+                          style={{
+                            backgroundImage: `url(${service.image})`,
+                          }}
+                        />
+                        <div className="flex items-start gap-2.5 min-w-0">
+                          <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-[rgba(245,158,11,0.08)] text-(--admin-accent) border border-[rgba(245,158,11,0.15)] shrink-0">
+                            {renderIcon(service.iconName, "w-4 h-4")}
+                          </div>
+                          <div className="min-w-0">
+                            <p className="font-semibold text-[14.5px] text-(--admin-text-primary)">
+                              {service.title}
+                            </p>
+                            <p className="text-[12px] text-(--admin-text-secondary) line-clamp-2 max-w-lg mt-0.5">
+                              {service.description}
+                            </p>
+                          </div>
+                        </div>
                       </div>
                     </td>
                     <td>
                       <span className="font-mono text-[12px] text-(--admin-text-secondary) bg-(--admin-surface-2) px-2 py-1 rounded">
                         {service.slug}
-                      </span>
-                    </td>
-                    <td>
-                      <span className="font-mono text-[12px] text-(--admin-text-muted)">
-                        {service.image}
                       </span>
                     </td>
                     <td>

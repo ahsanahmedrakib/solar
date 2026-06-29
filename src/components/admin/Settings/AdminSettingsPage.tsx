@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
+import { ImageUploadInput } from "@/components/Admin/ImageUploadInput";
 
 interface Field {
   id: string;
@@ -59,6 +60,12 @@ const DEFAULT_SECTIONS: Section[] = [
         type: "text",
         value: "Sunex Solar & Renewable Energy",
         id: "company-name",
+      },
+      {
+        label: "Site Logo",
+        type: "image",
+        value: "/logo.svg",
+        id: "site-logo",
       },
       {
         label: "Brand Tagline",
@@ -326,6 +333,41 @@ const DEFAULT_SECTIONS: Section[] = [
   },
 ];
 
+function mergeSectionsWithDefaults(
+  loaded: Section[],
+  defaults: Section[],
+): Section[] {
+  return defaults.map((defaultSection) => {
+    const loadedSection = loaded.find((s) => s.id === defaultSection.id);
+    if (!loadedSection) return defaultSection;
+
+    const defaultFields = defaultSection.fields ?? [];
+    const loadedFields = loadedSection.fields ?? [];
+    const mergedFields = [
+      ...loadedFields,
+      ...defaultFields.filter(
+        (df) => !loadedFields.some((lf) => lf.id === df.id),
+      ),
+    ];
+
+    const defaultToggles = defaultSection.toggles ?? [];
+    const loadedToggles = loadedSection.toggles ?? [];
+    const mergedToggles = [
+      ...loadedToggles,
+      ...defaultToggles.filter(
+        (dt) => !loadedToggles.some((lt) => lt.id === dt.id),
+      ),
+    ];
+
+    return {
+      ...defaultSection,
+      ...loadedSection,
+      fields: mergedFields.length > 0 ? mergedFields : undefined,
+      toggles: mergedToggles.length > 0 ? mergedToggles : undefined,
+    };
+  });
+}
+
 export default function AdminSettingsPage() {
   const [sections, setSections] = useState<Section[]>(DEFAULT_SECTIONS);
   const [loading, setLoading] = useState(true);
@@ -336,7 +378,9 @@ export default function AdminSettingsPage() {
         const res = await fetch("/api/settings");
         const json = await res.json();
         if (json.success && json.data) {
-          setSections(json.data);
+          setSections(mergeSectionsWithDefaults(json.data, DEFAULT_SECTIONS));
+        } else if (json.success && !json.data) {
+          setSections(DEFAULT_SECTIONS);
         } else {
           toast.error("Failed to load settings: " + json.error);
         }
@@ -464,51 +508,64 @@ export default function AdminSettingsPage() {
                   >
                     {section.fields.map((field) => (
                       <div key={field.id}>
-                        <label
-                          htmlFor={field.id}
-                          style={{
-                            display: "block",
-                            fontSize: 12,
-                            fontWeight: 600,
-                            color: "var(--admin-text-secondary)",
-                            marginBottom: 6,
-                            letterSpacing: "0.02em",
-                          }}
-                        >
-                          {field.label}
-                        </label>
-                        <input
-                          id={field.id}
-                          type={field.type}
-                          value={field.value}
-                          onChange={(e) =>
-                            handleFieldChange(
-                              section.id,
-                              field.id,
-                              e.target.value,
-                            )
-                          }
-                          style={{
-                            width: "100%",
-                            background: "var(--admin-surface-2)",
-                            border: "1px solid var(--admin-border)",
-                            borderRadius: 8,
-                            padding: "8px 12px",
-                            color: "var(--admin-text-primary)",
-                            fontSize: 13,
-                            outline: "none",
-                            transition: "border-color 0.15s",
-                            boxSizing: "border-box",
-                          }}
-                          onFocus={(e) => {
-                            e.currentTarget.style.borderColor =
-                              "var(--admin-accent)";
-                          }}
-                          onBlur={(e) => {
-                            e.currentTarget.style.borderColor =
-                              "var(--admin-border)";
-                          }}
-                        />
+                        {field.type === "image" ? (
+                          <ImageUploadInput
+                            label={field.label}
+                            value={field.value}
+                            onChange={(val) =>
+                              handleFieldChange(section.id, field.id, val)
+                            }
+                            placeholder="/logo.svg"
+                          />
+                        ) : (
+                          <>
+                            <label
+                              htmlFor={field.id}
+                              style={{
+                                display: "block",
+                                fontSize: 12,
+                                fontWeight: 600,
+                                color: "var(--admin-text-secondary)",
+                                marginBottom: 6,
+                                letterSpacing: "0.02em",
+                              }}
+                            >
+                              {field.label}
+                            </label>
+                            <input
+                              id={field.id}
+                              type={field.type}
+                              value={field.value}
+                              onChange={(e) =>
+                                handleFieldChange(
+                                  section.id,
+                                  field.id,
+                                  e.target.value,
+                                )
+                              }
+                              style={{
+                                width: "100%",
+                                background: "var(--admin-surface-2)",
+                                border: "1px solid var(--admin-border)",
+                                borderRadius: 8,
+                                padding: "8px 12px",
+                                color: "var(--admin-text-primary)",
+                                fontSize: 13,
+                                outline: "none",
+                                transition: "border-color 0.15s",
+                                boxSizing: "border-box",
+                              }}
+                              onFocus={(e) => {
+                                e.currentTarget.style.borderColor =
+                                  "var(--admin-accent)";
+                              }}
+                              onBlur={(e) => {
+                                e.currentTarget.style.borderColor =
+                                  "var(--admin-border)";
+                              }}
+                            />
+                          </>
+                        )}
                       </div>
                     ))}
                   </div>

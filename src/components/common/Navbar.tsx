@@ -11,17 +11,40 @@ import {
   Phone,
   X,
 } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobilePagesOpen, setIsMobilePagesOpen] = useState(false);
+  const [logoSrc, setLogoSrc] = useState("/logo.svg");
 
   const pathname = usePathname();
   const mainPages = ["Demo 1", "Demo 2"];
+
+  useEffect(() => {
+    async function loadLogo() {
+      try {
+        const res = await fetch("/api/settings");
+        const json = await res.json();
+        if (json.success && json.data) {
+          const general = json.data.find(
+            (section: { id: string }) => section.id === "general",
+          );
+          const logoField = general?.fields?.find(
+            (field: { id: string; value: string }) => field.id === "site-logo",
+          );
+          if (logoField?.value) {
+            setLogoSrc(logoField.value);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to load site logo", error);
+      }
+    }
+    loadLogo();
+  }, []);
 
   const isActive = (href: string) => {
     if (!pathname) return false;
@@ -73,7 +96,14 @@ export default function Navbar() {
           {/* LOGO */}
           <div className="flex items-center space-x-2">
             <Link href="/">
-              <Image src="/logo.svg" width={160} height={50} alt="logo" />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={logoSrc}
+                width={160}
+                height={50}
+                alt="Sunex logo"
+                className="h-12 w-auto object-contain"
+              />
             </Link>
           </div>
 
