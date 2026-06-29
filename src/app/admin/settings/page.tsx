@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { 
+import {
   Globe, Layout, FileText, Share2, Shield, Sun, Phone, Mail, Check, Sparkles, Sliders, Info, MessageSquare
 } from "lucide-react";
 
@@ -128,6 +128,7 @@ const DEFAULT_SECTIONS: Section[] = [
       { label: "Twitter / X Profile URL", type: "url", value: "https://x.com/sunexsolar", id: "social-x" },
       { label: "LinkedIn Company URL", type: "url", value: "https://linkedin.com/company/sunexsolar", id: "social-li" },
       { label: "Instagram Profile URL", type: "url", value: "https://instagram.com/sunexsolar", id: "social-ig" },
+      { label: "Google Map Embded URL", type: "url", value: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d193595.25280821213!2d-74.11976373059876!3d40.69767006346294!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2sNew%20York%2C%20NY!5e0!3m2!1sen!2sus!4v1710000000000!5m2!1sen!2sus", id: "google-map" },
     ],
   },
   {
@@ -212,10 +213,6 @@ export default function SettingsPage() {
               <Check size={14} /> Website Settings Saved!
             </span>
           )}
-          <button id="save-settings-btn" onClick={handleSave} className="admin-btn-primary px-6">
-            <Sparkles size={14} />
-            Save Changes
-          </button>
         </div>
       </div>
 
@@ -335,10 +332,15 @@ export default function SettingsPage() {
                   </div>
                 )}
               </div>
+
             </div>
           );
         })}
       </div>
+      <button id="save-settings-btn" onClick={handleSave} className="admin-btn-primary px-6">
+        <Sparkles size={14} />
+        Save Changes
+      </button>
     </div>
   );
 }

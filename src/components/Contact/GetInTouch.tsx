@@ -1,20 +1,62 @@
 "use client";
 
 import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+
+// Form Validation Schema using Yup
+const contactSchema = yup.object().shape({
+    firstName: yup
+        .string()
+        .required("First name is required")
+        .min(2, "First name must be at least 2 characters"),
+    lastName: yup
+        .string()
+        .required("Last name is required")
+        .min(2, "Last name must be at least 2 characters"),
+    phoneNumber: yup
+        .string()
+        .required("Phone number is required")
+        .matches(/^[+]?[0-9\s\-()]{7,20}$/, "Invalid phone number"),
+    emailAddress: yup
+        .string()   
+        .required("Email address is required")
+        .email("Invalid email address"),
+    message: yup.string().required("Message is required")
+        .max(2000, "Message must be at most 2000 characters")
+});
+
+type ContactFormData = yup.InferType<typeof contactSchema>;
 
 export default function GetInTouch() {
-    const [formData, setFormData] = useState({
-        firstName: "",
-        lastName: "",
-        phoneNumber: "",
-        emailAddress: "",
-        message: "",
+    const [isSubmitted, setIsSubmitted] = useState(false);
+
+    const {
+        register,
+        handleSubmit,
+        reset,
+        formState: { errors, isSubmitting },
+    } = useForm<ContactFormData>({
+        resolver: yupResolver(contactSchema),
+        defaultValues: {
+            firstName: "",
+            lastName: "",
+            phoneNumber: "",
+            emailAddress: "",
+            message: "",
+        },
     });
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        console.log("Form Submitted:", formData);
-        // Add your form processing logic here
+    const onSubmit = (data: ContactFormData) => {
+        console.log("Form Submitted:", data);
+        setIsSubmitted(true);
+        reset();
+
+        // Hide success message after 5 seconds
+        setTimeout(() => {
+            setIsSubmitted(false);
+        }, 5000);
     };
 
     return (
@@ -149,7 +191,16 @@ export default function GetInTouch() {
                         ready to assist.
                     </p>
 
-                    <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+                    {isSubmitted && (
+                        <div className="bg-[#e8f5e9] text-[#2e7d32] p-4 rounded-xl text-sm font-medium border border-[#c8e6c9] mb-6 flex items-center gap-2 transition-all">
+                            <svg className="w-5 h-5 shrink-0 text-[#4caf50]" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                            </svg>
+                            <span>Thank you! Your message has been sent successfully. We will get back to you soon.</span>
+                        </div>
+                    )}
+
+                    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
                         {/* Row 1: Name */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                             <div className="flex flex-col gap-2">
@@ -159,13 +210,16 @@ export default function GetInTouch() {
                                 <input
                                     type="text"
                                     placeholder="Enter First Name"
-                                    required
-                                    className="w-full bg-white px-4 py-3 rounded-xl border-none outline-none placeholder-gray-400 text-sm focus:ring-2 focus:ring-[#39a838] transition-all"
-                                    value={formData.firstName}
-                                    onChange={(e) =>
-                                        setFormData({ ...formData, firstName: e.target.value })
-                                    }
+                                    className={`w-full bg-white px-4 py-3 rounded-xl border ${errors.firstName ? "border-red-500" : "border-transparent"
+                                        } outline-none placeholder-gray-400 text-sm focus:ring-2 ${errors.firstName ? "focus:ring-red-500" : "focus:ring-[#39a838]"
+                                        } transition-all`}
+                                    {...register("firstName")}
                                 />
+                                {errors.firstName && (
+                                    <span className="text-red-500 text-xs font-medium px-1">
+                                        {errors.firstName.message}
+                                    </span>
+                                )}
                             </div>
                             <div className="flex flex-col gap-2">
                                 <label className="text-[#011c2b] text-xs font-bold tracking-wide">
@@ -174,13 +228,16 @@ export default function GetInTouch() {
                                 <input
                                     type="text"
                                     placeholder="Enter Last Name"
-                                    required
-                                    className="w-full bg-white px-4 py-3 rounded-xl border-none outline-none placeholder-gray-400 text-sm focus:ring-2 focus:ring-[#39a838] transition-all"
-                                    value={formData.lastName}
-                                    onChange={(e) =>
-                                        setFormData({ ...formData, lastName: e.target.value })
-                                    }
+                                    className={`w-full bg-white px-4 py-3 rounded-xl border ${errors.lastName ? "border-red-500" : "border-transparent"
+                                        } outline-none placeholder-gray-400 text-sm focus:ring-2 ${errors.lastName ? "focus:ring-red-500" : "focus:ring-[#39a838]"
+                                        } transition-all`}
+                                    {...register("lastName")}
                                 />
+                                {errors.lastName && (
+                                    <span className="text-red-500 text-xs font-medium px-1">
+                                        {errors.lastName.message}
+                                    </span>
+                                )}
                             </div>
                         </div>
 
@@ -193,13 +250,16 @@ export default function GetInTouch() {
                                 <input
                                     type="tel"
                                     placeholder="Enter Phone Number"
-                                    required
-                                    className="w-full bg-white px-4 py-3 rounded-xl border-none outline-none placeholder-gray-400 text-sm focus:ring-2 focus:ring-[#39a838] transition-all"
-                                    value={formData.phoneNumber}
-                                    onChange={(e) =>
-                                        setFormData({ ...formData, phoneNumber: e.target.value })
-                                    }
+                                    className={`w-full bg-white px-4 py-3 rounded-xl border ${errors.phoneNumber ? "border-red-500" : "border-transparent"
+                                        } outline-none placeholder-gray-400 text-sm focus:ring-2 ${errors.phoneNumber ? "focus:ring-red-500" : "focus:ring-[#39a838]"
+                                        } transition-all`}
+                                    {...register("phoneNumber")}
                                 />
+                                {errors.phoneNumber && (
+                                    <span className="text-red-500 text-xs font-medium px-1">
+                                        {errors.phoneNumber.message}
+                                    </span>
+                                )}
                             </div>
                             <div className="flex flex-col gap-2">
                                 <label className="text-[#011c2b] text-xs font-bold tracking-wide">
@@ -208,13 +268,16 @@ export default function GetInTouch() {
                                 <input
                                     type="email"
                                     placeholder="Enter Email Address"
-                                    required
-                                    className="w-full bg-white px-4 py-3 rounded-xl border-none outline-none placeholder-gray-400 text-sm focus:ring-2 focus:ring-[#39a838] transition-all"
-                                    value={formData.emailAddress}
-                                    onChange={(e) =>
-                                        setFormData({ ...formData, emailAddress: e.target.value })
-                                    }
+                                    className={`w-full bg-white px-4 py-3 rounded-xl border ${errors.emailAddress ? "border-red-500" : "border-transparent"
+                                        } outline-none placeholder-gray-400 text-sm focus:ring-2 ${errors.emailAddress ? "focus:ring-red-500" : "focus:ring-[#39a838]"
+                                        } transition-all`}
+                                    {...register("emailAddress")}
                                 />
+                                {errors.emailAddress && (
+                                    <span className="text-red-500 text-xs font-medium px-1">
+                                        {errors.emailAddress.message}
+                                    </span>
+                                )}
                             </div>
                         </div>
 
@@ -226,21 +289,26 @@ export default function GetInTouch() {
                             <textarea
                                 rows={5}
                                 placeholder="Any Message..."
-                                className="w-full bg-white px-4 py-3 rounded-xl border-none outline-none placeholder-gray-400 text-sm resize-none focus:ring-2 focus:ring-[#39a838] transition-all"
-                                value={formData.message}
-                                onChange={(e) =>
-                                    setFormData({ ...formData, message: e.target.value })
-                                }
+                                className={`w-full bg-white px-4 py-3 rounded-xl border ${errors.message ? "border-red-500" : "border-transparent"
+                                    } outline-none placeholder-gray-400 text-sm resize-none focus:ring-2 ${errors.message ? "focus:ring-red-500" : "focus:ring-[#39a838]"
+                                    } transition-all`}
+                                {...register("message")}
                             />
+                            {errors.message && (
+                                <span className="text-red-500 text-xs font-medium px-1">
+                                    {errors.message.message}
+                                </span>
+                            )}
                         </div>
 
                         {/* Submit Button */}
                         <div className="mt-2">
                             <button
                                 type="submit"
-                                className="bg-[#4caf50] hover:bg-[#43a047] text-white text-sm font-semibold px-6 py-3 rounded-lg shadow-md transition-colors duration-200"
+                                disabled={isSubmitting}
+                                className="bg-[#4caf50] hover:bg-[#43a047] disabled:bg-gray-400 text-white text-sm font-semibold px-6 py-3 rounded-lg shadow-md transition-colors duration-200 cursor-pointer disabled:cursor-not-allowed"
                             >
-                                Submit Message
+                                {isSubmitting ? "Submitting..." : "Submit Message"}
                             </button>
                         </div>
                     </form>
