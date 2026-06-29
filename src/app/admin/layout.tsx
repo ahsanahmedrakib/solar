@@ -1,6 +1,6 @@
+import { AdminHeader } from "@/components/Admin/AdminHeader";
+import { AdminSidebar } from "@/components/Admin/AdminSidebar";
 import type { Metadata } from "next";
-import { AdminSidebar } from "@/components/admin/AdminSidebar";
-import { AdminHeader } from "@/components/admin/AdminHeader";
 import "./admin.css";
 
 export const metadata: Metadata = {
@@ -25,3 +25,4 @@ export default function AdminLayout({
     </div>
   );
 }
+

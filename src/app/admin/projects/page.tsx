@@ -1,14 +1,22 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { ImageUploadInput } from "@/components/Admin/ImageUploadInput";
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-import { 
-  Search, Plus, Edit2, Trash2, X, AlertCircle, Layers, Globe, MapPin, User, Check
+import {
+  AlertCircle,
+  Check,
+  Edit2,
+  Layers,
+  MapPin,
+  Plus,
+  Search,
+  Trash2,
+  User,
+  X,
 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { ImageUploadInput } from "@/components/admin/ImageUploadInput";
+import { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import * as yup from "yup";
 
 // Define the Project Interface
 interface Project {
@@ -94,15 +102,31 @@ const DEFAULT_PROJECTS: Project[] = [
 
 // Validation Schema using Yup
 const projectSchema = yup.object().shape({
-  title: yup.string().required("Title is required").min(5, "Title must be at least 5 characters"),
-  slug: yup.string()
+  title: yup
+    .string()
+    .required("Title is required")
+    .min(5, "Title must be at least 5 characters"),
+  slug: yup
+    .string()
     .required("Slug is required")
-    .matches(/^[a-z0-9-]+$/, "Slug must contain only lowercase letters, numbers, and hyphens (e.g. standard-solar-setup)"),
-  category: yup.string().required("Category is required").oneOf(CATEGORIES, "Invalid category selection"),
+    .matches(
+      /^[a-z0-9-]+$/,
+      "Slug must contain only lowercase letters, numbers, and hyphens (e.g. standard-solar-setup)",
+    ),
+  category: yup
+    .string()
+    .required("Category is required")
+    .oneOf(CATEGORIES, "Invalid category selection"),
   imageUrl: yup.string().required("Image is required"),
   isFeatured: yup.boolean().default(false),
-  client: yup.string().required("Client name is required").min(3, "Client name must be at least 3 characters"),
-  location: yup.string().required("Location is required").min(3, "Location must be at least 3 characters"),
+  client: yup
+    .string()
+    .required("Client name is required")
+    .min(3, "Client name must be at least 3 characters"),
+  location: yup
+    .string()
+    .required("Location is required")
+    .min(3, "Location must be at least 3 characters"),
 });
 
 type ProjectFormData = yup.InferType<typeof projectSchema>;
@@ -137,7 +161,7 @@ export default function AdminProjectsPage() {
     setValue,
     watch,
     reset,
-    formState: { errors, isSubmitting }
+    formState: { errors, isSubmitting },
   } = useForm<ProjectFormData>({
     resolver: yupResolver(projectSchema),
     defaultValues: {
@@ -147,8 +171,8 @@ export default function AdminProjectsPage() {
       imageUrl: "/images/projects/project-1.jpg",
       isFeatured: false,
       client: "",
-      location: ""
-    }
+      location: "",
+    },
   });
 
   // Automatically generate slug from Title
@@ -179,7 +203,7 @@ export default function AdminProjectsPage() {
       imageUrl: "/images/projects/project-1.jpg",
       isFeatured: false,
       client: "",
-      location: ""
+      location: "",
     });
     setIsOpen(true);
   };
@@ -193,7 +217,7 @@ export default function AdminProjectsPage() {
       imageUrl: project.imageUrl,
       isFeatured: project.isFeatured,
       client: project.client,
-      location: project.location
+      location: project.location,
     });
     setIsOpen(true);
   };
@@ -211,12 +235,13 @@ export default function AdminProjectsPage() {
     // TODO: Connect with API (e.g. axios.post('/api/projects', data))
     if (editingProject) {
       const updatedList = projects.map((p) =>
-        p.id === editingProject.id ? { ...p, ...data } : p
+        p.id === editingProject.id ? { ...p, ...data } : p,
       );
       saveProjects(updatedList);
     } else {
       const newProject: Project = {
-        id: projects.length > 0 ? Math.max(...projects.map((p) => p.id)) + 1 : 1,
+        id:
+          projects.length > 0 ? Math.max(...projects.map((p) => p.id)) + 1 : 1,
         ...data,
       };
       saveProjects([...projects, newProject]);
@@ -226,10 +251,12 @@ export default function AdminProjectsPage() {
 
   // Filter & Search Logics
   const filteredProjects = projects.filter((p) => {
-    const matchCategory = activeCategory === "All" || p.category === activeCategory;
-    const matchSearch = p.title.toLowerCase().includes(search.toLowerCase()) ||
-                        p.client.toLowerCase().includes(search.toLowerCase()) ||
-                        p.location.toLowerCase().includes(search.toLowerCase());
+    const matchCategory =
+      activeCategory === "All" || p.category === activeCategory;
+    const matchSearch =
+      p.title.toLowerCase().includes(search.toLowerCase()) ||
+      p.client.toLowerCase().includes(search.toLowerCase()) ||
+      p.location.toLowerCase().includes(search.toLowerCase());
     return matchCategory && matchSearch;
   });
 
@@ -237,7 +264,9 @@ export default function AdminProjectsPage() {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px]">
         <div className="w-10 h-10 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
-        <p className="mt-4 text-[var(--admin-text-secondary)] font-medium">Loading Projects registry...</p>
+        <p className="mt-4 text-[var(--admin-text-secondary)] font-medium">
+          Loading Projects registry...
+        </p>
       </div>
     );
   }
@@ -249,7 +278,8 @@ export default function AdminProjectsPage() {
         <div>
           <h2 className="admin-page-header-title">Projects</h2>
           <p className="admin-page-header-sub">
-            Track and show off solar installation projects ({projects.length} total)
+            Track and show off solar installation projects ({projects.length}{" "}
+            total)
           </p>
         </div>
         <div className="admin-page-header-actions">
@@ -326,25 +356,37 @@ export default function AdminProjectsPage() {
                   <tr key={project.id}>
                     <td>
                       <div className="flex items-center gap-3">
-                        <div 
+                        <div
                           className="w-12 h-9 rounded-md bg-cover bg-center border border-[var(--admin-border)] flex-shrink-0"
-                          style={{ backgroundImage: `url(${project.imageUrl})` }}
+                          style={{
+                            backgroundImage: `url(${project.imageUrl})`,
+                          }}
                         />
                         <div>
-                          <p className="font-semibold text-[14.5px] text-[var(--admin-text-primary)] max-w-xs truncate">{project.title}</p>
-                          <p className="font-mono text-[11px] text-[var(--admin-text-muted)] mt-0.5">{project.slug}</p>
+                          <p className="font-semibold text-[14.5px] text-[var(--admin-text-primary)] max-w-xs truncate">
+                            {project.title}
+                          </p>
+                          <p className="font-mono text-[11px] text-[var(--admin-text-muted)] mt-0.5">
+                            {project.slug}
+                          </p>
                         </div>
                       </div>
                     </td>
                     <td>
                       <div className="flex items-center gap-1.5 text-sm text-[var(--admin-text-secondary)]">
-                        <User size={13} className="text-[var(--admin-text-muted)]" />
+                        <User
+                          size={13}
+                          className="text-[var(--admin-text-muted)]"
+                        />
                         {project.client}
                       </div>
                     </td>
                     <td>
                       <div className="flex items-center gap-1.5 text-sm text-[var(--admin-text-secondary)]">
-                        <MapPin size={13} className="text-[var(--admin-text-muted)]" />
+                        <MapPin
+                          size={13}
+                          className="text-[var(--admin-text-muted)]"
+                        />
                         {project.location}
                       </div>
                     </td>
@@ -359,7 +401,9 @@ export default function AdminProjectsPage() {
                           <Check size={11} strokeWidth={3} /> Yes
                         </span>
                       ) : (
-                        <span className="text-[11.5px] text-[var(--admin-text-muted)]">-</span>
+                        <span className="text-[11.5px] text-[var(--admin-text-muted)]">
+                          -
+                        </span>
                       )}
                     </td>
                     <td>
@@ -398,7 +442,7 @@ export default function AdminProjectsPage() {
                 <Layers size={18} className="text-[var(--admin-accent)]" />
                 {editingProject ? "Edit Project" : "Add Project"}
               </h3>
-              <button 
+              <button
                 onClick={() => setIsOpen(false)}
                 className="text-[var(--admin-text-muted)] hover:text-[var(--admin-text-primary)] transition"
               >
@@ -407,8 +451,10 @@ export default function AdminProjectsPage() {
             </div>
 
             {/* Modal Form */}
-            <form onSubmit={handleSubmit(onSubmit)} className="p-6 overflow-y-auto space-y-4 flex-1">
-              
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="p-6 overflow-y-auto space-y-4 flex-1"
+            >
               {/* Project Title */}
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-semibold text-[var(--admin-text-secondary)] uppercase tracking-wider">
@@ -418,7 +464,7 @@ export default function AdminProjectsPage() {
                   type="text"
                   placeholder="e.g. Commercial 500kW Array"
                   {...register("title")}
-                  className={`w-full bg-[var(--admin-surface-2)] border ${errors.title ? 'border-[var(--admin-danger)]' : 'border-[var(--admin-border)]'} text-sm text-[var(--admin-text-primary)] rounded-lg p-2.5 outline-none focus:border-[var(--admin-accent)] transition`}
+                  className={`w-full bg-[var(--admin-surface-2)] border ${errors.title ? "border-[var(--admin-danger)]" : "border-[var(--admin-border)]"} text-sm text-[var(--admin-text-primary)] rounded-lg p-2.5 outline-none focus:border-[var(--admin-accent)] transition`}
                 />
                 {errors.title && (
                   <span className="text-[11px] text-[var(--admin-danger)] flex items-center gap-1">
@@ -436,7 +482,7 @@ export default function AdminProjectsPage() {
                   type="text"
                   placeholder="e.g. commercial-500kw-array"
                   {...register("slug")}
-                  className={`w-full bg-[var(--admin-surface-2)] border ${errors.slug ? 'border-[var(--admin-danger)]' : 'border-[var(--admin-border)]'} text-sm font-mono text-[var(--admin-text-primary)] rounded-lg p-2.5 outline-none focus:border-[var(--admin-accent)] transition`}
+                  className={`w-full bg-[var(--admin-surface-2)] border ${errors.slug ? "border-[var(--admin-danger)]" : "border-[var(--admin-border)]"} text-sm font-mono text-[var(--admin-text-primary)] rounded-lg p-2.5 outline-none focus:border-[var(--admin-accent)] transition`}
                 />
                 {errors.slug && (
                   <span className="text-[11px] text-[var(--admin-danger)] flex items-center gap-1">
@@ -475,7 +521,10 @@ export default function AdminProjectsPage() {
                     {...register("isFeatured")}
                     className="w-4 h-4 text-[var(--admin-accent)] focus:ring-[var(--admin-accent)] border-[var(--admin-border)] rounded accent-[var(--admin-accent)] cursor-pointer"
                   />
-                  <label htmlFor="isFeatured" className="text-sm font-medium text-[var(--admin-text-primary)] cursor-pointer select-none">
+                  <label
+                    htmlFor="isFeatured"
+                    className="text-sm font-medium text-[var(--admin-text-primary)] cursor-pointer select-none"
+                  >
                     Feature on Landing Page
                   </label>
                 </div>
@@ -491,7 +540,7 @@ export default function AdminProjectsPage() {
                     type="text"
                     placeholder="e.g. Vanguard Logistics Corp"
                     {...register("client")}
-                    className={`w-full bg-[var(--admin-surface-2)] border ${errors.client ? 'border-[var(--admin-danger)]' : 'border-[var(--admin-border)]'} text-sm text-[var(--admin-text-primary)] rounded-lg p-2.5 outline-none focus:border-[var(--admin-accent)] transition`}
+                    className={`w-full bg-[var(--admin-surface-2)] border ${errors.client ? "border-[var(--admin-danger)]" : "border-[var(--admin-border)]"} text-sm text-[var(--admin-text-primary)] rounded-lg p-2.5 outline-none focus:border-[var(--admin-accent)] transition`}
                   />
                   {errors.client && (
                     <span className="text-[11px] text-[var(--admin-danger)] flex items-center gap-1">
@@ -508,7 +557,7 @@ export default function AdminProjectsPage() {
                     type="text"
                     placeholder="e.g. Phoenix, AZ"
                     {...register("location")}
-                    className={`w-full bg-[var(--admin-surface-2)] border ${errors.location ? 'border-[var(--admin-danger)]' : 'border-[var(--admin-border)]'} text-sm text-[var(--admin-text-primary)] rounded-lg p-2.5 outline-none focus:border-[var(--admin-accent)] transition`}
+                    className={`w-full bg-[var(--admin-surface-2)] border ${errors.location ? "border-[var(--admin-danger)]" : "border-[var(--admin-border)]"} text-sm text-[var(--admin-text-primary)] rounded-lg p-2.5 outline-none focus:border-[var(--admin-accent)] transition`}
                   />
                   {errors.location && (
                     <span className="text-[11px] text-[var(--admin-danger)] flex items-center gap-1">
@@ -565,3 +614,4 @@ export default function AdminProjectsPage() {
     </div>
   );
 }
+

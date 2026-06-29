@@ -1,14 +1,27 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { ImageUploadInput } from "@/components/Admin/ImageUploadInput";
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import * as Icons from "lucide-react";
-import { 
-  Search, Plus, Edit2, Trash2, Eye, X, Check, AlertCircle, Wrench, Shield, Zap, Sun, Battery, Globe, Leaf, Activity
+import {
+  Activity,
+  AlertCircle,
+  Battery,
+  Edit2,
+  Globe,
+  Leaf,
+  Plus,
+  Search,
+  Shield,
+  Sun,
+  Trash2,
+  Wrench,
+  X,
+  Zap,
 } from "lucide-react";
-import { ImageUploadInput } from "@/components/admin/ImageUploadInput";
+import { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import * as yup from "yup";
 
 // Define the Service Interface
 interface Service {
@@ -38,7 +51,8 @@ const DEFAULT_SERVICES: Service[] = [
   {
     id: 1,
     title: "Solar Battery Storage",
-    description: "Reliable energy storage solutions that store excess solar power for use during peak hours or blackouts.",
+    description:
+      "Reliable energy storage solutions that store excess solar power for use during peak hours or blackouts.",
     image: "/images/services/service-item-image-1.jpg",
     alt: "Solar Battery Storage field",
     iconName: "Battery",
@@ -47,7 +61,8 @@ const DEFAULT_SERVICES: Service[] = [
   {
     id: 2,
     title: "Residential Solar Solutions",
-    description: "Custom designed solar systems for homes that help reduce electricity bills and support clean energy goals.",
+    description:
+      "Custom designed solar systems for homes that help reduce electricity bills and support clean energy goals.",
     image: "/images/services/service-item-image-2.jpg",
     alt: "Engineers working on home solar design",
     iconName: "Sun",
@@ -56,7 +71,8 @@ const DEFAULT_SERVICES: Service[] = [
   {
     id: 3,
     title: "Solar System Maintenance",
-    description: "Regular inspection, cleaning, and performance checks to ensure your solar panels are producing at maximum efficiency.",
+    description:
+      "Regular inspection, cleaning, and performance checks to ensure your solar panels are producing at maximum efficiency.",
     image: "/images/services/service-item-image-3.jpg",
     alt: "Engineer maintaining panels",
     iconName: "Wrench",
@@ -65,7 +81,8 @@ const DEFAULT_SERVICES: Service[] = [
   {
     id: 4,
     title: "Rooftop Solar Solutions",
-    description: "Space efficient rooftop systems designed to maximize energy generation on residential and commercial roofs.",
+    description:
+      "Space efficient rooftop systems designed to maximize energy generation on residential and commercial roofs.",
     image: "/images/services/service-item-image-4.jpg",
     alt: "A smiling couple standing in front of their house with rooftop solar panels",
     iconName: "Zap",
@@ -74,7 +91,8 @@ const DEFAULT_SERVICES: Service[] = [
   {
     id: 5,
     title: "Solar Panel Installation",
-    description: "Professional design, permitting, and high-quality installation services for reliable green energy production.",
+    description:
+      "Professional design, permitting, and high-quality installation services for reliable green energy production.",
     image: "/images/services/service-item-image-5.jpg",
     alt: "Two technicians installing and checking solar panels on a sunny day",
     iconName: "Shield",
@@ -83,7 +101,8 @@ const DEFAULT_SERVICES: Service[] = [
   {
     id: 6,
     title: "Hybrid Solar Systems",
-    description: "A smart combination of grid-tied solar panels and battery storage to ensure continuous power supply.",
+    description:
+      "A smart combination of grid-tied solar panels and battery storage to ensure continuous power supply.",
     image: "/images/services/service-item-image-6.jpg",
     alt: "Engineers inspecting a massive commercial hybrid solar system farm",
     iconName: "Globe",
@@ -93,13 +112,26 @@ const DEFAULT_SERVICES: Service[] = [
 
 // Validation Schema using Yup
 const serviceSchema = yup.object().shape({
-  title: yup.string().required("Title is required").min(3, "Title must be at least 3 characters"),
-  slug: yup.string()
+  title: yup
+    .string()
+    .required("Title is required")
+    .min(3, "Title must be at least 3 characters"),
+  slug: yup
+    .string()
     .required("Slug is required")
-    .matches(/^[a-z0-9-]+$/, "Slug must contain only lowercase letters, numbers, and hyphens (e.g., solar-battery-storage)"),
-  description: yup.string().required("Description is required").min(10, "Description must be at least 10 characters"),
+    .matches(
+      /^[a-z0-9-]+$/,
+      "Slug must contain only lowercase letters, numbers, and hyphens (e.g., solar-battery-storage)",
+    ),
+  description: yup
+    .string()
+    .required("Description is required")
+    .min(10, "Description must be at least 10 characters"),
   image: yup.string().required("Image is required"),
-  alt: yup.string().required("Alt text is required").min(5, "Alt text must be descriptive"),
+  alt: yup
+    .string()
+    .required("Alt text is required")
+    .min(5, "Alt text must be descriptive"),
   iconName: yup.string().required("Please select an icon"),
 });
 
@@ -109,7 +141,7 @@ export default function AdminServicesPage() {
   const [services, setServices] = useState<Service[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
   const [search, setSearch] = useState("");
-  
+
   // Modal State
   const [isOpen, setIsOpen] = useState(false);
   const [editingService, setEditingService] = useState<Service | null>(null);
@@ -134,7 +166,7 @@ export default function AdminServicesPage() {
     setValue,
     watch,
     reset,
-    formState: { errors, isSubmitting }
+    formState: { errors, isSubmitting },
   } = useForm<ServiceFormData>({
     resolver: yupResolver(serviceSchema),
     defaultValues: {
@@ -143,8 +175,8 @@ export default function AdminServicesPage() {
       description: "",
       image: "/images/services/service-item-image-1.jpg",
       alt: "",
-      iconName: "Battery"
-    }
+      iconName: "Battery",
+    },
   });
 
   // Automatically generate slug from Title
@@ -176,7 +208,7 @@ export default function AdminServicesPage() {
       description: "",
       image: "/images/services/service-item-image-1.jpg",
       alt: "",
-      iconName: "Battery"
+      iconName: "Battery",
     });
     setIsOpen(true);
   };
@@ -190,7 +222,7 @@ export default function AdminServicesPage() {
       description: service.description,
       image: service.image,
       alt: service.alt,
-      iconName: service.iconName
+      iconName: service.iconName,
     });
     setIsOpen(true);
   };
@@ -212,13 +244,14 @@ export default function AdminServicesPage() {
     if (editingService) {
       // Edit mode
       const updatedList = services.map((s) =>
-        s.id === editingService.id ? { ...s, ...data } : s
+        s.id === editingService.id ? { ...s, ...data } : s,
       );
       saveServices(updatedList);
     } else {
       // Add mode
       const newService: Service = {
-        id: services.length > 0 ? Math.max(...services.map((s) => s.id)) + 1 : 1,
+        id:
+          services.length > 0 ? Math.max(...services.map((s) => s.id)) + 1 : 1,
         ...data,
       };
       saveServices([...services, newService]);
@@ -227,22 +260,29 @@ export default function AdminServicesPage() {
   };
 
   // Filtered Services List
-  const filteredServices = services.filter((s) =>
-    s.title.toLowerCase().includes(search.toLowerCase()) ||
-    s.description.toLowerCase().includes(search.toLowerCase())
+  const filteredServices = services.filter(
+    (s) =>
+      s.title.toLowerCase().includes(search.toLowerCase()) ||
+      s.description.toLowerCase().includes(search.toLowerCase()),
   );
 
   // Dynamic Lucide Icon Render Helper
   const renderIcon = (iconName: string, className = "w-5 h-5") => {
     const IconComponent = (Icons as any)[iconName];
-    return IconComponent ? <IconComponent className={className} /> : <Icons.HelpCircle className={className} />;
+    return IconComponent ? (
+      <IconComponent className={className} />
+    ) : (
+      <Icons.HelpCircle className={className} />
+    );
   };
 
   if (!isLoaded) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px]">
         <div className="w-10 h-10 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
-        <p className="mt-4 text-[var(--admin-text-secondary)] font-medium">Loading Services catalog...</p>
+        <p className="mt-4 text-[var(--admin-text-secondary)] font-medium">
+          Loading Services catalog...
+        </p>
       </div>
     );
   }
@@ -254,7 +294,8 @@ export default function AdminServicesPage() {
         <div>
           <h2 className="admin-page-header-title">Services</h2>
           <p className="admin-page-header-sub">
-            Configure & manage client-facing solar services ({services.length} services)
+            Configure & manage client-facing solar services ({services.length}{" "}
+            services)
           </p>
         </div>
         <div className="admin-page-header-actions">
@@ -321,7 +362,9 @@ export default function AdminServicesPage() {
                     </td>
                     <td>
                       <div>
-                        <p className="font-semibold text-[14.5px] text-[var(--admin-text-primary)]">{service.title}</p>
+                        <p className="font-semibold text-[14.5px] text-[var(--admin-text-primary)]">
+                          {service.title}
+                        </p>
                         <p className="text-[12px] text-[var(--admin-text-secondary)] line-clamp-2 max-w-lg mt-0.5">
                           {service.description}
                         </p>
@@ -373,7 +416,7 @@ export default function AdminServicesPage() {
                 <Wrench size={18} className="text-[var(--admin-accent)]" />
                 {editingService ? "Edit Service" : "Add Service"}
               </h3>
-              <button 
+              <button
                 onClick={() => setIsOpen(false)}
                 className="text-[var(--admin-text-muted)] hover:text-[var(--admin-text-primary)] transition"
               >
@@ -382,8 +425,10 @@ export default function AdminServicesPage() {
             </div>
 
             {/* Modal Form */}
-            <form onSubmit={handleSubmit(onSubmit)} className="p-6 overflow-y-auto space-y-4 flex-1">
-              
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="p-6 overflow-y-auto space-y-4 flex-1"
+            >
               {/* Service Title */}
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-semibold text-[var(--admin-text-secondary)] uppercase tracking-wider">
@@ -393,7 +438,7 @@ export default function AdminServicesPage() {
                   type="text"
                   placeholder="e.g. Off-Grid Solar Setup"
                   {...register("title")}
-                  className={`w-full bg-[var(--admin-surface-2)] border ${errors.title ? 'border-[var(--admin-danger)]' : 'border-[var(--admin-border)]'} text-sm text-[var(--admin-text-primary)] rounded-lg p-2.5 outline-none focus:border-[var(--admin-accent)] transition`}
+                  className={`w-full bg-[var(--admin-surface-2)] border ${errors.title ? "border-[var(--admin-danger)]" : "border-[var(--admin-border)]"} text-sm text-[var(--admin-text-primary)] rounded-lg p-2.5 outline-none focus:border-[var(--admin-accent)] transition`}
                 />
                 {errors.title && (
                   <span className="text-[11px] text-[var(--admin-danger)] flex items-center gap-1">
@@ -411,7 +456,7 @@ export default function AdminServicesPage() {
                   type="text"
                   placeholder="e.g. off-grid-solar-setup"
                   {...register("slug")}
-                  className={`w-full bg-[var(--admin-surface-2)] border ${errors.slug ? 'border-[var(--admin-danger)]' : 'border-[var(--admin-border)]'} text-sm font-mono text-[var(--admin-text-primary)] rounded-lg p-2.5 outline-none focus:border-[var(--admin-accent)] transition`}
+                  className={`w-full bg-[var(--admin-surface-2)] border ${errors.slug ? "border-[var(--admin-danger)]" : "border-[var(--admin-border)]"} text-sm font-mono text-[var(--admin-text-primary)] rounded-lg p-2.5 outline-none focus:border-[var(--admin-accent)] transition`}
                 />
                 {errors.slug && (
                   <span className="text-[11px] text-[var(--admin-danger)] flex items-center gap-1">
@@ -438,7 +483,11 @@ export default function AdminServicesPage() {
                       <button
                         key={ico.name}
                         type="button"
-                        onClick={() => setValue("iconName", ico.name, { shouldValidate: true })}
+                        onClick={() =>
+                          setValue("iconName", ico.name, {
+                            shouldValidate: true,
+                          })
+                        }
                         className={`flex flex-col items-center justify-center p-2.5 rounded-lg border transition text-center gap-1 ${
                           isSelected
                             ? "bg-[var(--admin-accent-muted)] border-[var(--admin-accent)] text-[var(--admin-accent)]"
@@ -446,7 +495,9 @@ export default function AdminServicesPage() {
                         }`}
                       >
                         <IconComponent size={18} />
-                        <span className="text-[10px] font-medium block truncate max-w-full">{ico.name}</span>
+                        <span className="text-[10px] font-medium block truncate max-w-full">
+                          {ico.name}
+                        </span>
                       </button>
                     );
                   })}
@@ -483,7 +534,7 @@ export default function AdminServicesPage() {
                     type="text"
                     placeholder="e.g. Battery storage system inside a home garage"
                     {...register("alt")}
-                    className={`w-full bg-[var(--admin-surface-2)] border ${errors.alt ? 'border-[var(--admin-danger)]' : 'border-[var(--admin-border)]'} text-sm text-[var(--admin-text-primary)] rounded-lg p-2.5 outline-none focus:border-[var(--admin-accent)] transition`}
+                    className={`w-full bg-[var(--admin-surface-2)] border ${errors.alt ? "border-[var(--admin-danger)]" : "border-[var(--admin-border)]"} text-sm text-[var(--admin-text-primary)] rounded-lg p-2.5 outline-none focus:border-[var(--admin-accent)] transition`}
                   />
                   {errors.alt && (
                     <span className="text-[11px] text-[var(--admin-danger)] flex items-center gap-1">
@@ -502,7 +553,7 @@ export default function AdminServicesPage() {
                   rows={4}
                   placeholder="Provide details about what this service offers and how it helps clients..."
                   {...register("description")}
-                  className={`w-full bg-[var(--admin-surface-2)] border ${errors.description ? 'border-[var(--admin-danger)]' : 'border-[var(--admin-border)]'} text-sm text-[var(--admin-text-primary)] rounded-lg p-2.5 outline-none focus:border-[var(--admin-accent)] transition resize-none`}
+                  className={`w-full bg-[var(--admin-surface-2)] border ${errors.description ? "border-[var(--admin-danger)]" : "border-[var(--admin-border)]"} text-sm text-[var(--admin-text-primary)] rounded-lg p-2.5 outline-none focus:border-[var(--admin-accent)] transition resize-none`}
                 />
                 {errors.description && (
                   <span className="text-[11px] text-[var(--admin-danger)] flex items-center gap-1">
@@ -543,3 +594,4 @@ export default function AdminServicesPage() {
     </div>
   );
 }
+

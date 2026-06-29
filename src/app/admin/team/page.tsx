@@ -1,13 +1,20 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { ImageUploadInput } from "@/components/Admin/ImageUploadInput";
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-import { 
-  Search, Plus, Edit2, Trash2, X, AlertCircle, Users, Briefcase, UserCheck
+import {
+  AlertCircle,
+  Briefcase,
+  Edit2,
+  Plus,
+  Search,
+  Trash2,
+  Users,
+  X,
 } from "lucide-react";
-import { ImageUploadInput } from "@/components/admin/ImageUploadInput";
+import { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import * as yup from "yup";
 
 export interface TeamMember {
   id: number;
@@ -39,8 +46,14 @@ export const DEFAULT_TEAM: TeamMember[] = [
 ];
 
 const teamSchema = yup.object({
-  name: yup.string().required("Full name is required").min(3, "Must be at least 3 characters"),
-  role: yup.string().required("Role/Title is required").min(3, "Must be at least 3 characters"),
+  name: yup
+    .string()
+    .required("Full name is required")
+    .min(3, "Must be at least 3 characters"),
+  role: yup
+    .string()
+    .required("Role/Title is required")
+    .min(3, "Must be at least 3 characters"),
   image: yup.string().required("Profile image is required"),
   bio: yup.string().optional().default(""),
 });
@@ -85,15 +98,15 @@ export default function AdminTeamPage() {
     handleSubmit,
     control,
     reset,
-    formState: { errors, isSubmitting }
+    formState: { errors, isSubmitting },
   } = useForm<TeamFormData>({
     resolver: yupResolver(teamSchema) as any,
     defaultValues: {
       name: "",
       role: "",
       image: "/images/about/team-image-1.jpg",
-      bio: ""
-    }
+      bio: "",
+    },
   });
 
   const handleAddClick = () => {
@@ -102,7 +115,7 @@ export default function AdminTeamPage() {
       name: "",
       role: "Solar Systems Specialist",
       image: "/images/about/team-image-1.jpg",
-      bio: ""
+      bio: "",
     });
     setIsOpen(true);
   };
@@ -113,7 +126,7 @@ export default function AdminTeamPage() {
       name: member.name,
       role: member.role,
       image: member.image,
-      bio: member.bio || ""
+      bio: member.bio || "",
     });
     setIsOpen(true);
   };
@@ -131,8 +144,14 @@ export default function AdminTeamPage() {
     if (editingMember) {
       const updatedList = team.map((m) =>
         m.id === editingMember.id
-          ? { ...m, name: data.name, role: data.role, image: data.image, bio: data.bio }
-          : m
+          ? {
+              ...m,
+              name: data.name,
+              role: data.role,
+              image: data.image,
+              bio: data.bio,
+            }
+          : m,
       );
       saveTeam(updatedList);
     } else {
@@ -148,16 +167,19 @@ export default function AdminTeamPage() {
     setIsOpen(false);
   };
 
-  const filteredTeam = team.filter((m) =>
-    m.name.toLowerCase().includes(search.toLowerCase()) ||
-    m.role.toLowerCase().includes(search.toLowerCase())
+  const filteredTeam = team.filter(
+    (m) =>
+      m.name.toLowerCase().includes(search.toLowerCase()) ||
+      m.role.toLowerCase().includes(search.toLowerCase()),
   );
 
   if (!isLoaded) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px]">
         <div className="w-10 h-10 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
-        <p className="mt-4 text-[var(--admin-text-secondary)] font-medium">Loading Team Directory...</p>
+        <p className="mt-4 text-[var(--admin-text-secondary)] font-medium">
+          Loading Team Directory...
+        </p>
       </div>
     );
   }
@@ -168,7 +190,8 @@ export default function AdminTeamPage() {
         <div>
           <h2 className="admin-page-header-title">Expert Team</h2>
           <p className="admin-page-header-sub">
-            Manage engineers and specialists displayed on the About Us page ({team.length} members)
+            Manage engineers and specialists displayed on the About Us page (
+            {team.length} members)
           </p>
         </div>
         <div className="admin-page-header-actions">
@@ -208,7 +231,8 @@ export default function AdminTeamPage() {
             </div>
             <p className="admin-empty-title">No team members found</p>
             <p className="admin-empty-desc">
-              Add engineers and specialists to showcase your team expertise on the About page.
+              Add engineers and specialists to showcase your team expertise on
+              the About page.
             </p>
           </div>
         ) : (
@@ -226,18 +250,23 @@ export default function AdminTeamPage() {
                   <tr key={member.id}>
                     <td>
                       <div className="flex items-center gap-3">
-                        <div 
+                        <div
                           className="w-10 h-10 rounded-full bg-cover bg-center border border-[var(--admin-border-strong)] flex-shrink-0"
                           style={{ backgroundImage: `url(${member.image})` }}
                         />
                         <div>
-                          <p className="font-bold text-[14.5px] text-[var(--admin-text-primary)]">{member.name}</p>
+                          <p className="font-bold text-[14.5px] text-[var(--admin-text-primary)]">
+                            {member.name}
+                          </p>
                         </div>
                       </div>
                     </td>
                     <td>
                       <div className="flex items-center gap-1.5 text-sm text-[var(--admin-text-secondary)] font-medium">
-                        <Briefcase size={14} className="text-[var(--admin-accent)]" />
+                        <Briefcase
+                          size={14}
+                          className="text-[var(--admin-accent)]"
+                        />
                         {member.role}
                       </div>
                     </td>
@@ -275,7 +304,7 @@ export default function AdminTeamPage() {
                 <Users size={18} className="text-[var(--admin-accent)]" />
                 {editingMember ? "Edit Team Member" : "Add Team Member"}
               </h3>
-              <button 
+              <button
                 onClick={() => setIsOpen(false)}
                 className="text-[var(--admin-text-muted)] hover:text-[var(--admin-text-primary)] transition"
               >
@@ -283,7 +312,10 @@ export default function AdminTeamPage() {
               </button>
             </div>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="p-6 overflow-y-auto space-y-4 flex-1">
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="p-6 overflow-y-auto space-y-4 flex-1"
+            >
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-semibold text-[var(--admin-text-secondary)] uppercase tracking-wider">
                   Full Name *
@@ -292,7 +324,7 @@ export default function AdminTeamPage() {
                   type="text"
                   placeholder="e.g. Sarah Connor"
                   {...register("name")}
-                  className={`w-full bg-[var(--admin-surface-2)] border ${errors.name ? 'border-[var(--admin-danger)]' : 'border-[var(--admin-border)]'} text-sm text-[var(--admin-text-primary)] rounded-lg p-2.5 outline-none focus:border-[var(--admin-accent)] transition`}
+                  className={`w-full bg-[var(--admin-surface-2)] border ${errors.name ? "border-[var(--admin-danger)]" : "border-[var(--admin-border)]"} text-sm text-[var(--admin-text-primary)] rounded-lg p-2.5 outline-none focus:border-[var(--admin-accent)] transition`}
                 />
                 {errors.name && (
                   <span className="text-[11px] text-[var(--admin-danger)] flex items-center gap-1">
@@ -309,7 +341,7 @@ export default function AdminTeamPage() {
                   type="text"
                   placeholder="e.g. Lead Solar Architect"
                   {...register("role")}
-                  className={`w-full bg-[var(--admin-surface-2)] border ${errors.role ? 'border-[var(--admin-danger)]' : 'border-[var(--admin-border)]'} text-sm text-[var(--admin-text-primary)] rounded-lg p-2.5 outline-none focus:border-[var(--admin-accent)] transition`}
+                  className={`w-full bg-[var(--admin-surface-2)] border ${errors.role ? "border-[var(--admin-danger)]" : "border-[var(--admin-border)]"} text-sm text-[var(--admin-text-primary)] rounded-lg p-2.5 outline-none focus:border-[var(--admin-accent)] transition`}
                 />
                 {errors.role && (
                   <span className="text-[11px] text-[var(--admin-danger)] flex items-center gap-1">
@@ -357,3 +389,4 @@ export default function AdminTeamPage() {
     </div>
   );
 }
+
