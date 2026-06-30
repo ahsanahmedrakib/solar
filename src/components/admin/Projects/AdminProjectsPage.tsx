@@ -58,7 +58,8 @@ const projectSchema = yup.object().shape({
   projectDetails: yup
     .string()
     .required("Project details is required")
-    .min(20, "Project details must be at least 20 characters"),
+    .min(20, "Project details must be at least 20 characters")
+    .max(4000, "Project details can not be more than 4000 characters"),
 });
 
 type ProjectFormData = yup.InferType<typeof projectSchema>;
