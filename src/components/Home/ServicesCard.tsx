@@ -23,7 +23,7 @@ const ServicesCard = ({ services }: { services: ServiceCard[] }) => {
                   className="object-cover"
                 />
                 {/* Floating badge icon */}
-                <div className="absolute top-4 left-4 w-11 h-11 rounded-full bg-[#44B549] text-white flex items-center justify-center shadow-md">
+                <div className="absolute top-4 left-4 w-11 h-11 rounded-full bg-accent-600 text-white flex items-center justify-center shadow-md">
                   {service.iconSvg}
                 </div>
               </div>
@@ -40,9 +40,9 @@ const ServicesCard = ({ services }: { services: ServiceCard[] }) => {
 
             <div className="pt-6">
               <Link href={"services/" + service.slug}>
-                <button className="inline-flex cursor-pointer items-center gap-2 font-bold text-sm text-[#051720] group-hover:text-[#44B549] transition-colors">
+                <button className="inline-flex cursor-pointer items-center gap-2 font-bold text-sm text-[#051720] group-hover:text-accent-600 transition-colors">
                   Learn More
-                  <div className="w-5 h-5 rounded-full bg-[#44B549] text-white flex items-center justify-center text-[10px]">
+                  <div className="w-5 h-5 rounded-full bg-accent-600 text-white flex items-center justify-center text-[10px]">
                     ➔
                   </div>
                 </button>

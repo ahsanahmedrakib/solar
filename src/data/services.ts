@@ -2,6 +2,7 @@ export interface Service {
   id: number;
   title: string;
   description: string;
+  serviceDetails: string;
   image: string;
   alt: string;
   iconName: string;
@@ -12,7 +13,10 @@ export const DEFAULT_SERVICES: Service[] = [
   {
     id: 1,
     title: "Solar Battery Storage",
-    description: "Reliable energy storage solutions that store excess solar power for use during peak hours or blackouts.",
+    description:
+      "Reliable energy storage solutions that store excess solar power for use during peak hours or blackouts.",
+    serviceDetails:
+      "Reliable energy storage solutions that store excess solar power for use during peak hours or blackouts.",
     image: "/images/services/service-item-image-1.jpg",
     alt: "Solar Battery Storage field",
     iconName: "Battery",
@@ -21,7 +25,10 @@ export const DEFAULT_SERVICES: Service[] = [
   {
     id: 2,
     title: "Residential Solar Solutions",
-    description: "Custom designed solar systems for homes that help reduce electricity bills and support clean energy goals.",
+    description:
+      "Custom designed solar systems for homes that help reduce electricity bills and support clean energy goals.",
+    serviceDetails:
+      "Custom designed solar systems for homes that help reduce electricity bills and support clean energy goals.",
     image: "/images/services/service-item-image-2.jpg",
     alt: "Engineers working on home solar design",
     iconName: "Sun",
@@ -30,7 +37,10 @@ export const DEFAULT_SERVICES: Service[] = [
   {
     id: 3,
     title: "Solar System Maintenance",
-    description: "Regular inspection, cleaning, and performance checks to ensure your solar panels are producing at maximum efficiency.",
+    description:
+      "Regular inspection, cleaning, and performance checks to ensure your solar panels are producing at maximum efficiency.",
+    serviceDetails:
+      "Regular inspection, cleaning, and performance checks to ensure your solar panels are producing at maximum efficiency.",
     image: "/images/services/service-item-image-3.jpg",
     alt: "Engineer maintaining panels",
     iconName: "Wrench",
@@ -39,7 +49,10 @@ export const DEFAULT_SERVICES: Service[] = [
   {
     id: 4,
     title: "Rooftop Solar Solutions",
-    description: "Space efficient rooftop systems designed to maximize energy generation on residential and commercial roofs.",
+    description:
+      "Space efficient rooftop systems designed to maximize energy generation on residential and commercial roofs.",
+    serviceDetails:
+      "Space efficient rooftop systems designed to maximize energy generation on residential and commercial roofs.",
     image: "/images/services/service-item-image-4.jpg",
     alt: "A smiling couple standing in front of their house with rooftop solar panels",
     iconName: "Zap",
@@ -48,7 +61,10 @@ export const DEFAULT_SERVICES: Service[] = [
   {
     id: 5,
     title: "Solar Panel Installation",
-    description: "Professional design, permitting, and high-quality installation services for reliable green energy production.",
+    description:
+      "Professional design, permitting, and high-quality installation services for reliable green energy production.",
+    serviceDetails:
+      "Professional design, permitting, and high-quality installation services for reliable green energy production.",
     image: "/images/services/service-item-image-5.jpg",
     alt: "Two technicians installing and checking solar panels on a sunny day",
     iconName: "Shield",
@@ -57,10 +73,14 @@ export const DEFAULT_SERVICES: Service[] = [
   {
     id: 6,
     title: "Hybrid Solar Systems",
-    description: "A smart combination of grid-tied solar panels and battery storage to ensure continuous power supply.",
+    description:
+      "A smart combination of grid-tied solar panels and battery storage to ensure continuous power supply.",
+    serviceDetails:
+      "A smart combination of grid-tied solar panels and battery storage to ensure continuous power supply.",
     image: "/images/services/service-item-image-6.jpg",
     alt: "Engineers inspecting a massive commercial hybrid solar system farm",
     iconName: "Globe",
     slug: "hybrid-solar-systems",
   },
 ];
+

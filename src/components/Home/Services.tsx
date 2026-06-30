@@ -1,90 +1,49 @@
-import { ServiceCard } from "@/types/services";
+"use client";
+
+import { DEFAULT_SERVICES, type Service } from "@/data/services";
+import { useEffect, useState } from "react";
+import { iconRenderer } from "@/lib/iconRenderer";
+import type { ServiceCard } from "@/types/services";
 import ServicesCard from "./ServicesCard";
 
-const services: ServiceCard[] = [
-  {
-    id: 1,
-    title: "Solar Battery Storage",
-    description:
-      "Reliable energy storage solutions that store excess solar power for use.",
-    image: "/images/home/service-item-image-1.jpg",
-    alt: "Solar Battery Storage field",
-    iconSvg: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        strokeWidth={2}
-        stroke="currentColor"
-        className="w-5 h-5"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M9.53 16.122a3 3 0 00-5.78 1.128 2.25 2.25 0 01-2.4 2.245 4.5 4.5 0 008.4-2.245c0-.399-.078-.78-.22-1.128zm0 0a15.998 15.998 0 003.388-1.62m-5.043-.025a15.994 15.994 0 011.622-3.395m3.42 3.42a15.995 15.995 0 004.764-4.648l3.876-5.814a1.151 1.151 0 00-1.597-1.597L14.146 6.32a15.996 15.996 0 00-4.649 4.763m3.42 3.42a15.997 15.997 0 01-3.42-3.42"
-        />
-      </svg>
-    ),
-    slug: "residential-solar-solutions",
-  },
-  {
-    id: 2,
-    title: "Residential Solar Solutions",
-    description:
-      "Custom designed solar systems for homes that help reduce electricity bills, etc.",
-    image: "/images/home/service-item-image-2.jpg",
-    alt: "Engineers working on home solar design",
-    iconSvg: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        strokeWidth={2}
-        stroke="currentColor"
-        className="w-5 h-5"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.637 10.642z"
-        />
-      </svg>
-    ),
-    slug: "residential-solar-solutions",
-  },
-  {
-    id: 3,
-    title: "Solar System Maintenance",
-    description:
-      "Regular inspection, cleaning & performance checks to ensure your solar system.",
-    image: "/images/home/service-item-image-3.jpg",
-    alt: "Engineer maintaining panels",
-    iconSvg: (
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        strokeWidth={2}
-        stroke="currentColor"
-        className="w-5 h-5"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M10.5 6a7.5 7.5 0 107.5 7.5h-7.5V6z"
-        />
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M13.5 10.5H21A7.5 7.5 0 0013.5 3v7.5z"
-        />
-      </svg>
-    ),
-    slug: "residential-solar-solutions",
-  },
-];
+function toServiceCard(service: Service): ServiceCard {
+  return {
+    id: service.id,
+    title: service.title,
+    description: service.description,
+    image: service.image,
+    alt: service.alt,
+    iconSvg: iconRenderer(service.iconName),
+    slug: service.slug,
+  };
+}
+
+const SKELETON_COUNT = 3;
 
 export default function Services() {
+  const [services, setServices] = useState<ServiceCard[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadServices() {
+      try {
+        const res = await fetch("/api/services");
+        const json = await res.json();
+        if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+          setServices(json.data.map(toServiceCard));
+        } else {
+          setServices(DEFAULT_SERVICES.map(toServiceCard));
+        }
+      } catch (error) {
+        console.error("Failed to load services", error);
+        setServices(DEFAULT_SERVICES.map(toServiceCard));
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadServices();
+  }, []);
+
   return (
     <div className="bg-white font-sans overflow-x-hidden">
       {/* OUR SERVICES */}
@@ -107,7 +66,7 @@ export default function Services() {
                 From system design and professional installation to energy
                 storage, our smart solar solutions deliver reliable performance.
               </p>
-              <button className="mt-4 inline-flex items-center gap-2 bg-[#44B549] hover:bg-[#399d3e] transition-colors text-white font-semibold text-sm px-5 py-3 rounded-lg shadow-sm whitespace-nowrap">
+              <button className="mt-4 inline-flex items-center gap-2 bg-accent-600 hover:bg-[#399d3e] transition-colors text-white font-semibold text-sm px-5 py-3 rounded-lg shadow-sm whitespace-nowrap">
                 View All Services
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -127,7 +86,28 @@ export default function Services() {
             </div>
           </div>
 
-          <ServicesCard services={services} />
+          {loading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pt-4">
+              {Array.from({ length: SKELETON_COUNT }).map((_, i) => (
+                <div
+                  key={i}
+                  className="bg-white rounded-4xl p-6 shadow-sm border border-gray-100/60 animate-pulse"
+                >
+                  <div className="w-full aspect-1.5/1 rounded-2xl bg-gray-200" />
+                  <div className="mt-5 space-y-3">
+                    <div className="h-5 w-3/4 rounded bg-gray-200" />
+                    <div className="h-4 w-full rounded bg-gray-200" />
+                    <div className="h-4 w-2/3 rounded bg-gray-200" />
+                  </div>
+                  <div className="pt-6">
+                    <div className="h-4 w-28 rounded bg-gray-200" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <ServicesCard services={services} />
+          )}
         </div>
       </section>
     </div>

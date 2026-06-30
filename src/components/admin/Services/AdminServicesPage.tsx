@@ -1,8 +1,9 @@
 "use client";
 
 import { ImageUploadInput } from "@/components/Admin/ImageUploadInput";
+import { RichTextEditor } from "@/components/Admin/RichTextEditor";
+import type { Service } from "@/data/services";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { toast } from "react-toastify";
 import * as Icons from "lucide-react";
 import {
   Activity,
@@ -22,8 +23,8 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
+import { toast } from "react-toastify";
 import * as yup from "yup";
-import type { Service } from "@/data/services";
 
 // Available Lucide Icons for selection
 const AVAILABLE_ICONS = [
@@ -53,7 +54,13 @@ const serviceSchema = yup.object().shape({
   description: yup
     .string()
     .required("Description is required")
-    .min(10, "Description must be at least 10 characters"),
+    .min(10, "Description must be at least 10 characters")
+    .max(500, "Description must not exceed 500 characters"),
+  serviceDetails: yup
+    .string()
+    .required("serviceDetails is required")
+    .min(10, "serviceDetails must be at least 10 characters")
+    .max(4000, "serviceDetails must not exceed 4000 characters"),
   image: yup.string().required("Image is required"),
   alt: yup
     .string()
@@ -105,9 +112,10 @@ export default function AdminServicesPage() {
       title: "",
       slug: "",
       description: "",
-      image: "/images/services/service-item-image-1.jpg",
+      serviceDetails: "",
+      image: "",
       alt: "",
-      iconName: "Battery",
+      iconName: "",
     },
   });
 
@@ -118,11 +126,11 @@ export default function AdminServicesPage() {
   useEffect(() => {
     if (formTitle && !editingService) {
       const generatedSlug = formTitle
-          .toLowerCase()
-          .replace(/[^a-z0-9\s-]/g, "")
-          .trim()
-          .replace(/\s+/g, "-")
-          .replace(/-+/g, "-");
+        .toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, "")
+        .trim()
+        .replace(/\s+/g, "-")
+        .replace(/-+/g, "-");
       setValue("slug", generatedSlug, { shouldValidate: true });
     }
   }, [formTitle, setValue, editingService]);
@@ -133,9 +141,10 @@ export default function AdminServicesPage() {
       title: "",
       slug: "",
       description: "",
-      image: "/images/services/service-item-image-1.jpg",
+      serviceDetails: "",
+      image: "",
       alt: "",
-      iconName: "Battery",
+      iconName: "",
     });
     setIsOpen(true);
   };
@@ -146,6 +155,7 @@ export default function AdminServicesPage() {
       title: service.title,
       slug: service.slug,
       description: service.description,
+      serviceDetails: service.serviceDetails,
       image: service.image,
       alt: service.alt,
       iconName: service.iconName,
@@ -166,9 +176,10 @@ export default function AdminServicesPage() {
         } else {
           toast.error("Failed to delete service: " + json.error);
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
         console.error("Failed to delete service", error);
-        toast.error("Failed to delete service: " + error.message);
+        toast.error("Failed to delete service: " + message);
       }
     }
   };
@@ -184,7 +195,9 @@ export default function AdminServicesPage() {
         const json = await res.json();
         if (json.success) {
           setServices((prev) =>
-            prev.map((s) => (s.id === editingService.id ? { ...s, ...data } : s))
+            prev.map((s) =>
+              s.id === editingService.id ? { ...s, ...data } : s,
+            ),
           );
           toast.success("Service updated successfully!");
         } else {
@@ -205,15 +218,16 @@ export default function AdminServicesPage() {
         }
       }
       setIsOpen(false);
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
       console.error("Failed to save service", error);
-      toast.error("Failed to save service: " + error.message);
+      toast.error("Failed to save service: " + message);
     }
   };
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[400px]">
+      <div className="flex flex-col items-center justify-center min-h-100">
         <div className="w-10 h-10 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
         <p className="mt-4 text-(--admin-text-secondary) font-medium">
           Loading Services...
@@ -221,7 +235,6 @@ export default function AdminServicesPage() {
       </div>
     );
   }
-
 
   const filteredServices = services.filter(
     (s) =>
@@ -242,17 +255,6 @@ export default function AdminServicesPage() {
       <Icons.HelpCircle className={className} />
     );
   };
-
-  // if (!isLoaded) {
-  //   return (
-  //     <div className="flex flex-col items-center justify-center min-h-[400px]">
-  //       <div className="w-10 h-10 border-4 border-amber-500 border-t-transparent rounded-full animate-spin"></div>
-  //       <p className="mt-4 text-(--admin-text-secondary) font-medium">
-  //         Loading Services...
-  //       </p>
-  //     </div>
-  //   );
-  // }
 
   return (
     <div className="space-y-6">
@@ -377,7 +379,7 @@ export default function AdminServicesPage() {
       {/* Modal */}
       {isOpen && (
         <div className="fixed inset-0 z-100 flex items-center justify-center px-4 bg-black/60 backdrop-blur-xs">
-          <div className="w-full max-w-xl bg-(--admin-surface) border border-(--admin-border-strong) rounded-xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
+          <div className="w-full max-w-[70%] bg-(--admin-surface) border border-(--admin-border-strong) rounded-xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
             <div className="flex items-center justify-between p-5 border-b border-(--admin-border) bg-(--admin-surface-2)">
               <h3 className="text-base font-bold text-(--admin-text-primary) flex items-center gap-2">
                 <Wrench size={18} className="text-(--admin-accent)" />
@@ -517,6 +519,19 @@ export default function AdminServicesPage() {
                   </span>
                 )}
               </div>
+
+              <Controller
+                name="serviceDetails"
+                control={control}
+                render={({ field }) => (
+                  <RichTextEditor
+                    label="Service Details (Rich Content)"
+                    value={field.value}
+                    onChange={field.onChange}
+                    error={errors.serviceDetails?.message}
+                  />
+                )}
+              />
 
               <div className="flex justify-end gap-3 pt-3 border-t border-(--admin-border)">
                 <button
