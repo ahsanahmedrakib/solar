@@ -1,11 +1,14 @@
-import ServicesPage from "@/components/Services/ServicesPage";
+import dynamic from "next/dynamic";
+import { MainSitePageLoading } from "@/components/Common/MainSitePageLoading";
 
-const page = () => {
+const ServicesPage = dynamic(() => import("@/components/Services/ServicesPage"), {
+  loading: () => <MainSitePageLoading />,
+});
+
+export default function Page() {
   return (
     <div>
       <ServicesPage />
     </div>
   );
-};
-
-export default page;
+}

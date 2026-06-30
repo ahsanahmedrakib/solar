@@ -1,18 +1,23 @@
-import SingleService from "@/components/Services/SingleService";
-import SingleServicesBanner from "@/components/Services/SingleServicesBanner";
+import dynamic from "next/dynamic";
+import { MainSitePageLoading } from "@/components/Common/MainSitePageLoading";
+
+const SingleServicePage = dynamic(
+  () => import("@/components/Services/SingleServicePage"),
+  { loading: () => <MainSitePageLoading /> },
+);
 
 interface Props {
   params: Promise<{ slug: string }>;
 }
 
-const page = async ({ params }: Props) => {
+export default async function Page({ params }: Props) {
   const { slug } = await params;
+  const title = slug
+    .replace(/-/g, " ")
+    .replace(/\b\w/g, (c) => c.toUpperCase());
   return (
     <div>
-      <SingleServicesBanner title={slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())} />
-      <SingleService slug={slug} />
+      <SingleServicePage slug={slug} title={title} />
     </div>
   );
-};
-
-export default page;
+}

@@ -2,6 +2,8 @@
 
 import { ImageUploadInput } from "@/components/Admin/ImageUploadInput";
 import { RichTextEditor } from "@/components/Admin/RichTextEditor";
+import { DEFAULT_ADMIN_LOGO } from "@/data/settings";
+import Image from "next/image";
 import type { Service } from "@/data/services";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Icons from "lucide-react";
@@ -200,6 +202,7 @@ export default function AdminServicesPage() {
             ),
           );
           toast.success("Service updated successfully!");
+          setIsOpen(false);
         } else {
           toast.error("Failed to update service: " + json.error);
         }
@@ -213,11 +216,11 @@ export default function AdminServicesPage() {
         if (json.success) {
           setServices((prev) => [...prev, json.data]);
           toast.success("Service added successfully!");
+          setIsOpen(false);
         } else {
           toast.error("Failed to add service: " + json.error);
         }
       }
-      setIsOpen(false);
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : String(error);
       console.error("Failed to save service", error);
@@ -228,7 +231,7 @@ export default function AdminServicesPage() {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-100">
-        <div className="w-10 h-10 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+        <Image src={DEFAULT_ADMIN_LOGO} alt="Loading" width={0} height={0} sizes="100vw" className="h-16 w-auto animate-pulse opacity-70" priority />
         <p className="mt-4 text-(--admin-text-secondary) font-medium">
           Loading Services...
         </p>
@@ -549,7 +552,7 @@ export default function AdminServicesPage() {
                 >
                   {isSubmitting ? (
                     <div className="flex items-center gap-2">
-                      <span className="w-3.5 h-3.5 border-2 border-slate-900 border-t-transparent rounded-full animate-spin"></span>
+                      <Image src="/images/loader.svg" alt="Loading" width={14} height={14} className="w-3.5 h-3.5" />
                       Saving...
                     </div>
                   ) : (

@@ -1,11 +1,11 @@
-import AdminContactQueriesPage from "@/components/Admin/Contact/AdminContactPage";
+import dynamic from "next/dynamic";
+import { AdminPageLoading } from "@/components/Admin/AdminPageLoading";
 
-const page = () => {
-  return (
-    <div>
-      <AdminContactQueriesPage />
-    </div>
-  );
-};
+const AdminContactQueriesPage = dynamic(
+  () => import("@/components/Admin/Contact/AdminContactPage"),
+  { loading: () => <AdminPageLoading /> },
+);
 
-export default page;
+export default function Page() {
+  return <AdminContactQueriesPage />;
+}

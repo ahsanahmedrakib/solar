@@ -1,5 +1,5 @@
-import { AdminHeader } from "@/components/Admin/AdminHeader";
-import { AdminSidebar } from "@/components/Admin/AdminSidebar";
+import { AdminGuard } from "@/components/Auth/AdminGuard";
+import { AdminShell } from "@/components/Admin/AdminShell";
 import type { Metadata } from "next";
 import "./admin.css";
 
@@ -15,14 +15,9 @@ export default function AdminLayout({
 }) {
   return (
     <div className="admin-layout-root">
-      <div className="admin-layout">
-        <AdminSidebar />
-        <div className="admin-main">
-          <AdminHeader />
-          <main className="admin-page">{children}</main>
-        </div>
-      </div>
+      <AdminGuard>
+        <AdminShell>{children}</AdminShell>
+      </AdminGuard>
     </div>
   );
 }
-

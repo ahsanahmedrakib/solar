@@ -35,7 +35,7 @@
   --admin-text-primary: #f0f4ff;
   --admin-text-secondary: #8b95b0;
   --admin-text-muted: #5a6380;
-  --admin-accent: #4CAF50;
+  --admin-accent: #4caf50;
   --admin-accent-hover: #43a047;
   --admin-accent-muted: rgba(76, 175, 80, 0.12);
   --admin-accent-glow: rgba(76, 175, 80, 0.25);
@@ -221,7 +221,6 @@
   gap: 10px;
   padding: 14px 16px;
   border-top: 1px solid var(--admin-border);
-  cursor: pointer;
   transition: background 0.15s;
 }
 .sidebar-user:hover {
@@ -231,7 +230,7 @@
   width: 34px;
   height: 34px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--admin-accent), #d97706);
+  background: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -374,7 +373,7 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--admin-accent), #d97706);
+  background: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -410,7 +409,9 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  transition: border-color 0.2s, transform 0.2s;
+  transition:
+    border-color 0.2s,
+    transform 0.2s;
 }
 .admin-stat-card:hover {
   border-color: var(--admin-border-strong);
@@ -814,7 +815,9 @@ tbody tr:hover {
   font-weight: 700;
   border: none;
   cursor: pointer;
-  transition: background 0.15s, transform 0.15s;
+  transition:
+    background 0.15s,
+    transform 0.15s;
 }
 .admin-btn-primary:hover {
   background: var(--admin-accent-hover);
@@ -932,3 +935,4 @@ tbody tr:hover {
     padding: 16px;
   }
 }
+

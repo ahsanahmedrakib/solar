@@ -1,12 +1,11 @@
-import AdminPlansPage from "@/components/Admin/Plans/AdminPlansPage";
+import dynamic from "next/dynamic";
+import { AdminPageLoading } from "@/components/Admin/AdminPageLoading";
 
-const page = () => {
-  return (
-    <div>
-      <AdminPlansPage />
-    </div>
-  );
-};
+const AdminPlansPage = dynamic(
+  () => import("@/components/Admin/Plans/AdminPlansPage"),
+  { loading: () => <AdminPageLoading /> },
+);
 
-export default page;
-
+export default function Page() {
+  return <AdminPlansPage />;
+}

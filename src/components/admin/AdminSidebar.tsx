@@ -1,6 +1,8 @@
 "use client";
 
+import { useAuth } from "@/components/Auth/AuthProvider";
 import { DEFAULT_SECTIONS } from "@/data/settings";
+import { fetchSettings } from "@/lib/settings-cache";
 import { cn } from "@/lib/utils";
 import {
   Briefcase,
@@ -10,6 +12,8 @@ import {
   ImageIcon,
   Layers,
   LayoutDashboard,
+  Lock,
+  LogOut,
   Mail,
   Settings,
   Users,
@@ -60,6 +64,11 @@ const navItems = [
     href: "/admin/contact",
     icon: Mail,
   },
+  {
+    title: "Users",
+    href: "/admin/users",
+    icon: Lock,
+  },
 ];
 
 const bottomNavItems = [
@@ -76,6 +85,7 @@ const FALLBACK_LOGO =
   )?.value ?? "/logo-white.svg";
 
 export function AdminSidebar() {
+  const { user, logout } = useAuth();
   const pathname = usePathname();
   const [logoSrc, setLogoSrc] = useState(FALLBACK_LOGO);
 
@@ -89,14 +99,13 @@ export function AdminSidebar() {
   useEffect(() => {
     async function loadLogo() {
       try {
-        const res = await fetch("/api/settings");
-        const json = await res.json();
-        if (json.success && json.data) {
-          const general = json.data.find(
-            (section: { id: string }) => section.id === "general",
+        const data = await fetchSettings();
+        if (data) {
+          const general = data.find(
+            (section) => section.id === "general",
           );
           const logoField = general?.fields?.find(
-            (field: { id: string; value: string }) => field.id === "site-logo",
+            (field) => field.id === "site-logo",
           );
           if (logoField?.value) {
             setLogoSrc(logoField.value);
@@ -176,18 +185,27 @@ export function AdminSidebar() {
       </nav>
 
       {/* User Profile */}
-      <div className="sidebar-user">
-        <div className="sidebar-user-avatar">
-          <span>A</span>
+      <div className="sidebar-user flex justify-between items-center">
+        <div className="flex gap-2 items-center">
+          <div className="sidebar-user-avatar">
+            <span>{user?.name?.charAt(0) || "A"}</span>
+          </div>
+          <div className="sidebar-user-info">
+            <p className="sidebar-user-name">{user?.name || "Admin"}</p>
+            <p className="sidebar-user-role">
+              {user?.role === "superadmin" ? "Super Admin" : "Admin"}
+            </p>
+          </div>
         </div>
-        <div className="sidebar-user-info">
-          <p className="sidebar-user-name">Admin User</p>
-          <p className="sidebar-user-role">Super Admin</p>
-        </div>
-        <Settings size={14} className="sidebar-user-settings" />
+        <button
+          onClick={logout}
+          className="text-(--admin-text-muted) hover:text-(--admin-danger) transition cursor-pointer"
+          title="Logout"
+        >
+          <LogOut className="text-red-500" />
+        </button>
       </div>
     </aside>
   );
 }
-
 

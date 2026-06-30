@@ -1,6 +1,7 @@
 "use client";
 
 import { DEFAULT_SECTIONS } from "@/data/settings";
+import { fetchSettings } from "@/lib/settings-cache";
 import { SOCIAL_ICONS } from "@/lib/const";
 import { ArrowUpRight, ChevronDown, Mail, Menu, Phone, X } from "lucide-react";
 import Image from "next/image";
@@ -44,27 +45,26 @@ export default function Navbar() {
   useEffect(() => {
     async function loadData() {
       try {
-        const res = await fetch("/api/settings");
-        const json = await res.json();
-        if (json.success && json.data) {
+        const data = await fetchSettings();
+        if (data) {
           setSettings({
             phone:
-              getField(json.data, "general", "phone-number") || FALLBACK.phone,
+              getField(data, "general", "phone-number") || FALLBACK.phone,
             email:
-              getField(json.data, "general", "contact-email") || FALLBACK.email,
+              getField(data, "general", "contact-email") || FALLBACK.email,
             socialFb:
-              getField(json.data, "social", "social-fb") || FALLBACK.socialFb,
+              getField(data, "social", "social-fb") || FALLBACK.socialFb,
             socialX:
-              getField(json.data, "social", "social-x") || FALLBACK.socialX,
+              getField(data, "social", "social-x") || FALLBACK.socialX,
             socialLi:
-              getField(json.data, "social", "social-li") || FALLBACK.socialLi,
+              getField(data, "social", "social-li") || FALLBACK.socialLi,
             socialIg:
-              getField(json.data, "social", "social-ig") || FALLBACK.socialIg,
+              getField(data, "social", "social-ig") || FALLBACK.socialIg,
             logo:
-              getField(json.data, "general", "site-logo") || FALLBACK.logo,
+              getField(data, "general", "site-logo") || FALLBACK.logo,
           });
           setLogoSrc(
-            getField(json.data, "general", "site-logo") || FALLBACK.logo,
+            getField(data, "general", "site-logo") || FALLBACK.logo,
           );
         }
       } catch (error) {

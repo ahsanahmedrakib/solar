@@ -1,10 +1,8 @@
-import Footer from "@/components/Common/Footer";
-import Navbar from "@/components/Common/Navbar";
-import FloatingChatWidget from "@/components/Common/FloatingChatWidget";
-import ToastProvider from "@/components/Common/ToastProvider";
-import { connectToDatabase } from "@/lib/db";
+import ClientProviders from "@/components/Common/ClientProviders";
+import { LazyLayout } from "@/components/Common/LazyLayout";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { connectToDatabase } from "@/lib/db";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -17,15 +15,29 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+type SettingsField = {
+  id?: string;
+  value?: string;
+};
+
+type SettingsSection = {
+  id?: string;
+  fields?: SettingsField[];
+};
+
+type SettingsDocument = {
+  sections?: SettingsSection[];
+};
+
 export async function generateMetadata(): Promise<Metadata> {
   try {
     const { db } = await connectToDatabase();
-    const settings = await db
+    const settings = (await db
       .collection("settings")
-      .findOne({ settingsId: "global" });
+      .findOne({ settingsId: "global" })) as SettingsDocument | null;
     const faviconField = settings?.sections
-      ?.find((s: any) => s.id === "general")
-      ?.fields?.find((f: any) => f.id === "site-favicon");
+      ?.find((s: SettingsSection) => s.id === "general")
+      ?.fields?.find((f: SettingsField) => f.id === "site-favicon");
     const favicon = faviconField?.value || "/favicon.png";
     return {
       title: "Sunex - Solar & Renewable Energy",
@@ -52,11 +64,9 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <Navbar />
-        {children}
-        <Footer />
-        <FloatingChatWidget />
-        <ToastProvider />
+        <ClientProviders>
+          <LazyLayout>{children}</LazyLayout>
+        </ClientProviders>
       </body>
     </html>
   );

@@ -1,6 +1,8 @@
 "use client";
 
 import { ImageUploadInput } from "@/components/Admin/ImageUploadInput";
+import { DEFAULT_ADMIN_LOGO } from "@/data/settings";
+import Image from "next/image";
 import type { HeroSlide } from "@/data/hero-slides";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
@@ -149,6 +151,7 @@ export default function AdminHeroPage() {
             prev.map((s) => (s.id === editingSlide.id ? { ...s, ...data } : s)),
           );
           toast.success("Hero slide updated successfully!");
+          setIsOpen(false);
         } else {
           toast.error("Failed to update hero slide: " + json.error);
         }
@@ -162,11 +165,11 @@ export default function AdminHeroPage() {
         if (json.success) {
           setSlides((prev) => [...prev, json.data]);
           toast.success("Hero slide added successfully!");
+          setIsOpen(false);
         } else {
           toast.error("Failed to add hero slide: " + json.error);
         }
       }
-      setIsOpen(false);
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "Unknown error";
       console.error("Failed to save hero slide", error);
@@ -177,7 +180,7 @@ export default function AdminHeroPage() {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-100">
-        <div className="w-10 h-10 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+        <Image src={DEFAULT_ADMIN_LOGO} alt="Loading" width={0} height={0} sizes="100vw" className="h-16 w-auto animate-pulse opacity-70" priority />
         <p className="mt-4 text-(--admin-text-secondary) font-medium">
           Loading hero slides...
         </p>

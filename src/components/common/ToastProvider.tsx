@@ -16,7 +16,7 @@ export default function ToastProvider() {
       pauseOnHover
       theme="colored"
       limit={4}
-      toastClassName="!font-sans !text-sm !rounded-xl !shadow-lg"
+      toastClassName="!font-sans !text-sm"
     />
   );
 }

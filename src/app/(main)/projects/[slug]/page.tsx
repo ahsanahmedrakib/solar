@@ -1,18 +1,23 @@
-import SingleProject from "@/components/Projects/SingleProject";
-import SingleProjectsBanner from "@/components/Projects/SingleProjectsBanner";
+import dynamic from "next/dynamic";
+import { MainSitePageLoading } from "@/components/Common/MainSitePageLoading";
+
+const SingleProjectPage = dynamic(
+  () => import("@/components/Projects/SingleProjectPage"),
+  { loading: () => <MainSitePageLoading /> },
+);
 
 interface Props {
   params: Promise<{ slug: string }>;
 }
 
-const page = async ({ params }: Props) => {
+export default async function Page({ params }: Props) {
   const { slug } = await params;
+  const title = slug
+    .replace(/-/g, " ")
+    .replace(/\b\w/g, (c) => c.toUpperCase());
   return (
     <div>
-      <SingleProjectsBanner title={slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())} />
-      <SingleProject slug={slug} />
+      <SingleProjectPage slug={slug} title={title} />
     </div>
   );
-};
-
-export default page;
+}

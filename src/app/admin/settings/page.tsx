@@ -1,11 +1,11 @@
-import AdminSettingsPage from "@/components/Admin/Settings/AdminSettingsPage";
+import dynamic from "next/dynamic";
+import { AdminPageLoading } from "@/components/Admin/AdminPageLoading";
 
-const page = () => {
-  return (
-    <div>
-      <AdminSettingsPage />
-    </div>
-  );
-};
+const AdminSettingsPage = dynamic(
+  () => import("@/components/Admin/Settings/AdminSettingsPage"),
+  { loading: () => <AdminPageLoading /> },
+);
 
-export default page;
+export default function Page() {
+  return <AdminSettingsPage />;
+}

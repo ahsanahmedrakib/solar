@@ -1,6 +1,7 @@
 "use client";
 
 import { DEFAULT_SECTIONS } from "@/data/settings";
+import { fetchSettings } from "@/lib/settings-cache";
 import { SOCIAL_ICONS } from "@/lib/const";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -36,30 +37,29 @@ export default function Footer() {
   useEffect(() => {
     async function loadSettings() {
       try {
-        const res = await fetch("/api/settings");
-        const json = await res.json();
-        if (json.success && json.data) {
+        const data = await fetchSettings();
+        if (data) {
           setSettings({
             companyName:
-              getField(json.data, "general", "company-name") ||
+              getField(data, "general", "company-name") ||
               FALLBACK.companyName,
             tagline:
-              getField(json.data, "general", "brand-tagline") ||
+              getField(data, "general", "brand-tagline") ||
               FALLBACK.tagline,
             phone:
-              getField(json.data, "general", "phone-number") || FALLBACK.phone,
+              getField(data, "general", "phone-number") || FALLBACK.phone,
             email:
-              getField(json.data, "general", "contact-email") || FALLBACK.email,
+              getField(data, "general", "contact-email") || FALLBACK.email,
             address:
-              getField(json.data, "general", "hq-address") || FALLBACK.address,
+              getField(data, "general", "hq-address") || FALLBACK.address,
             socialFb:
-              getField(json.data, "social", "social-fb") || FALLBACK.socialFb,
+              getField(data, "social", "social-fb") || FALLBACK.socialFb,
             socialX:
-              getField(json.data, "social", "social-x") || FALLBACK.socialX,
+              getField(data, "social", "social-x") || FALLBACK.socialX,
             socialLi:
-              getField(json.data, "social", "social-li") || FALLBACK.socialLi,
+              getField(data, "social", "social-li") || FALLBACK.socialLi,
             socialIg:
-              getField(json.data, "social", "social-ig") || FALLBACK.socialIg,
+              getField(data, "social", "social-ig") || FALLBACK.socialIg,
           });
         }
       } catch (error) {

@@ -52,12 +52,6 @@ export const DEFAULT_SECTIONS: Section[] = [
         id: "site-favicon",
       },
       {
-        label: "Admin Logo",
-        type: "image",
-        value: "/logo-white.svg",
-        id: "admin-logo",
-      },
-      {
         label: "Brand Tagline",
         type: "text",
         value: "Empowering Your Clean Energy Future",
@@ -98,7 +92,8 @@ export const DEFAULT_SECTIONS: Section[] = [
       {
         label: "WhatsApp Default Greeting Message",
         type: "text",
-        value: "Hello Sunex Solar, I would like to inquire about solar energy solutions.",
+        value:
+          "Hello Sunex Solar, I would like to inquire about solar energy solutions.",
         id: "whatsapp-message",
       },
       {
@@ -135,7 +130,8 @@ export const DEFAULT_SECTIONS: Section[] = [
       {
         label: "Top Bar Announcement Text",
         type: "text",
-        value: "\u26a1 Get up to 30% Federal Tax Credits on Residential Solar Systems!",
+        value:
+          "\u26a1 Get up to 30% Federal Tax Credits on Residential Solar Systems!",
         id: "header-announcement",
       },
       {
@@ -179,7 +175,8 @@ export const DEFAULT_SECTIONS: Section[] = [
       {
         label: "Hero Subtitle Description",
         type: "text",
-        value: "Clean, reliable, and affordable solar power systems tailored to reduce your energy bills.",
+        value:
+          "Clean, reliable, and affordable solar power systems tailored to reduce your energy bills.",
         id: "hero-subtitle",
       },
       {
@@ -243,13 +240,15 @@ export const DEFAULT_SECTIONS: Section[] = [
       {
         label: "Meta Description",
         type: "text",
-        value: "Top-rated solar panel installation, battery storage, and maintenance for residential and commercial properties.",
+        value:
+          "Top-rated solar panel installation, battery storage, and maintenance for residential and commercial properties.",
         id: "meta-desc",
       },
       {
         label: "Keywords (Comma Separated)",
         type: "text",
-        value: "solar panels, green energy, battery storage, renewable energy, solar installation",
+        value:
+          "solar panels, green energy, battery storage, renewable energy, solar installation",
         id: "meta-keywords",
       },
     ],
@@ -287,7 +286,8 @@ export const DEFAULT_SECTIONS: Section[] = [
       {
         label: "Google Map Embed URL",
         type: "url",
-        value: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d193595.25280821213!2d-74.11976373059876!3d40.69767006346294!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2sNew%20York%2C%20NY!5e0!3m2!1sen!2sus!4v1710000000000!5m2!1sen!2sus",
+        value:
+          "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d193595.25280821213!2d-74.11976373059876!3d40.69767006346294!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2sNew%20York%2C%20NY!5e0!3m2!1sen!2sus!4v1710000000000!5m2!1sen!2sus",
         id: "google-map",
       },
     ],
@@ -316,3 +316,17 @@ export const DEFAULT_SECTIONS: Section[] = [
     ],
   },
 ];
+
+export const DEFAULT_LOGO =
+  getDefaultField("general", "site-logo") || "/logo.svg";
+
+export const DEFAULT_ADMIN_LOGO =
+  getDefaultField("general", "admin-logo") || "/logo-white.svg";
+
+export function getDefaultField(sectionId: string, fieldId: string): string {
+  return (
+    DEFAULT_SECTIONS.find((s) => s.id === sectionId)?.fields?.find(
+      (f) => f.id === fieldId,
+    )?.value ?? ""
+  );
+}

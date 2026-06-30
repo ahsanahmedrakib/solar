@@ -1,11 +1,14 @@
-import ProjectsPage from "@/components/Projects/ProjectsPage";
+import dynamic from "next/dynamic";
+import { MainSitePageLoading } from "@/components/Common/MainSitePageLoading";
 
-const page = () => {
+const ProjectsPage = dynamic(() => import("@/components/Projects/ProjectsPage"), {
+  loading: () => <MainSitePageLoading />,
+});
+
+export default function Page() {
   return (
     <div>
       <ProjectsPage />
     </div>
   );
-};
-
-export default page;
+}

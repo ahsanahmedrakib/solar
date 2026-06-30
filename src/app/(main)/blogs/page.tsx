@@ -1,11 +1,14 @@
-import BlogsPage from "@/components/Blogs/BlogsPage";
+import dynamic from "next/dynamic";
+import { MainSitePageLoading } from "@/components/Common/MainSitePageLoading";
 
-const page = () => {
+const BlogsPage = dynamic(() => import("@/components/Blogs/BlogsPage"), {
+  loading: () => <MainSitePageLoading />,
+});
+
+export default function Page() {
   return (
     <div>
       <BlogsPage />
     </div>
   );
-};
-
-export default page;
+}

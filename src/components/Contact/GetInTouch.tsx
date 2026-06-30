@@ -6,6 +6,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { toast } from "react-toastify";
 import type { Section } from "@/data/settings";
+import { fetchSettings } from "@/lib/settings-cache";
 
 interface ContactInfo {
   phone: string;
@@ -76,10 +77,9 @@ export default function GetInTouch() {
   useEffect(() => {
     async function loadSettings() {
       try {
-        const res = await fetch("/api/settings");
-        const json = await res.json();
-        if (json.success && Array.isArray(json.data) && json.data.length > 0) {
-          setContactInfo(extractContactInfo(json.data));
+        const data = await fetchSettings();
+        if (data && Array.isArray(data) && data.length > 0) {
+          setContactInfo(extractContactInfo(data));
         } else {
           setContactInfo(DEFAULT_CONTACT_INFO);
         }

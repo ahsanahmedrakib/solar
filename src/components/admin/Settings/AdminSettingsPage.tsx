@@ -1,5 +1,7 @@
 "use client";
 
+import { DEFAULT_ADMIN_LOGO } from "@/data/settings";
+import Image from "next/image";
 import {
   FileText,
   Globe,
@@ -155,7 +157,7 @@ export default function AdminSettingsPage() {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-100">
-        <div className="w-10 h-10 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+        <Image src={DEFAULT_ADMIN_LOGO} alt="Loading" width={0} height={0} sizes="100vw" className="h-16 w-auto animate-pulse opacity-70" priority />
         <p className="mt-4 text-(--admin-text-secondary) font-medium">
           Loading settings...
         </p>
