@@ -1,6 +1,7 @@
 "use strict";
 "use client";
 
+import { DEFAULT_SECTIONS } from "@/data/settings";
 import {
   ArrowUpRight,
   ChevronDown,
@@ -11,14 +12,20 @@ import {
   Phone,
   X,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
+const FALLBACK_LOGO =
+  DEFAULT_SECTIONS.find((s) => s.id === "general")?.fields?.find(
+    (f) => f.id === "site-logo",
+  )?.value ?? "/logo.svg";
+
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobilePagesOpen, setIsMobilePagesOpen] = useState(false);
-  const [logoSrc, setLogoSrc] = useState("/logo.svg");
+  const [logoSrc, setLogoSrc] = useState(FALLBACK_LOGO);
 
   const pathname = usePathname();
   const mainPages = ["Demo 1", "Demo 2"];
@@ -96,8 +103,7 @@ export default function Navbar() {
           {/* LOGO */}
           <div className="flex items-center space-x-2">
             <Link href="/">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <Image
                 src={logoSrc}
                 width={160}
                 height={50}

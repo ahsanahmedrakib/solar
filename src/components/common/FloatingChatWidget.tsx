@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { X, MessageCircle } from "lucide-react";
+import { DEFAULT_SECTIONS } from "@/data/settings";
 
 interface ChatSettings {
   showChatWidgets: boolean;
@@ -13,13 +14,23 @@ interface ChatSettings {
   messengerUsername: string;
 }
 
+const chatSection = DEFAULT_SECTIONS.find((s) => s.id === "chat-widgets");
+
+function fv(id: string, fallback: string): string {
+  return chatSection?.fields?.find((f) => f.id === id)?.value ?? fallback;
+}
+
+function tv(id: string, fallback: boolean): boolean {
+  return chatSection?.toggles?.find((t) => t.id === id)?.checked ?? fallback;
+}
+
 const DEFAULTS: ChatSettings = {
-  showChatWidgets: true,
-  showWhatsapp: true,
-  whatsappNumber: "18005557652",
-  whatsappMessage: "Hello! I would like to inquire about solar energy solutions.",
-  showMessenger: true,
-  messengerUsername: "sunexsolar",
+  showChatWidgets: tv("show-chat-widgets", true),
+  showWhatsapp: tv("show-whatsapp", true),
+  whatsappNumber: fv("whatsapp-number", "18005557652").replace(/[^0-9]/g, ""),
+  whatsappMessage: fv("whatsapp-message", "Hello! I would like to inquire about solar energy solutions."),
+  showMessenger: tv("show-messenger", true),
+  messengerUsername: fv("messenger-username", "sunexsolar"),
 };
 
 function readSettings(): ChatSettings {
@@ -31,21 +42,15 @@ function readSettings(): ChatSettings {
     const sec = sections.find((s: any) => s.id === "chat-widgets");
     if (!sec) return DEFAULTS;
 
-    const fv = (id: string, d: string) =>
-      sec.fields?.find((f: any) => f.id === id)?.value ?? d;
-    const tv = (id: string, d: boolean) =>
-      sec.toggles?.find((t: any) => t.id === id)?.checked ?? d;
-
-    const rawPhone = fv("whatsapp-number", DEFAULTS.whatsappNumber);
-    const cleanPhone = rawPhone.replace(/[^0-9]/g, "");
+    const rawPhone = (sec.fields?.find((f: any) => f.id === "whatsapp-number")?.value ?? DEFAULTS.whatsappNumber).replace(/[^0-9]/g, "");
 
     return {
-      showChatWidgets: tv("show-chat-widgets", true),
-      showWhatsapp: tv("show-whatsapp", true),
-      whatsappNumber: cleanPhone,
-      whatsappMessage: fv("whatsapp-message", DEFAULTS.whatsappMessage),
-      showMessenger: tv("show-messenger", true),
-      messengerUsername: fv("messenger-username", DEFAULTS.messengerUsername),
+      showChatWidgets: sec.toggles?.find((t: any) => t.id === "show-chat-widgets")?.checked ?? DEFAULTS.showChatWidgets,
+      showWhatsapp: sec.toggles?.find((t: any) => t.id === "show-whatsapp")?.checked ?? DEFAULTS.showWhatsapp,
+      whatsappNumber: rawPhone,
+      whatsappMessage: sec.fields?.find((f: any) => f.id === "whatsapp-message")?.value ?? DEFAULTS.whatsappMessage,
+      showMessenger: sec.toggles?.find((t: any) => t.id === "show-messenger")?.checked ?? DEFAULTS.showMessenger,
+      messengerUsername: sec.fields?.find((f: any) => f.id === "messenger-username")?.value ?? DEFAULTS.messengerUsername,
     };
   } catch {
     return DEFAULTS;

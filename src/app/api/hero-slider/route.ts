@@ -1,55 +1,16 @@
 import { connectToDatabase } from "@/lib/db";
 import { deleteImage, saveImage } from "@/lib/imageHelper";
 import { NextResponse } from "next/server";
-
-export interface HeroSlide {
-  id: number;
-  tagline: string;
-  title: string;
-  titleAccent: string;
-  description: string;
-  image: string;
-  ctaText: string;
-  ctaLink: string;
-  showVideoButton: boolean;
-  isActive: boolean;
-  order: number;
-}
-
-const DEFAULT_HERO_SLIDES = [
-  {
-    id: 1,
-    tagline: "Solar Energy for Tomorrow",
-    title: "Power Your Future with",
-    titleAccent: "Clean Solar Energy",
-    description:
-      "From expert system design to seamless installation and ongoing support, we combine technical expertise with a commitment to performance, safety.",
-    image: "/images/home/hero-bg-image.jpg",
-    ctaText: "Get Free Consultation",
-    ctaLink: "#consultation",
-    showVideoButton: true,
-    isActive: true,
-    order: 1,
-  },
-];
+import type { HeroSlide } from "@/data/hero-slides";
 
 export async function GET() {
   try {
     const { db } = await connectToDatabase();
-    let slides = await db
+    const slides = await db
       .collection("hero_slides")
       .find({})
       .sort({ order: 1 })
       .toArray();
-
-    if (slides.length === 0) {
-      await db.collection("hero_slides").insertMany(DEFAULT_HERO_SLIDES);
-      slides = await db
-        .collection("hero_slides")
-        .find({})
-        .sort({ order: 1 })
-        .toArray();
-    }
 
     return NextResponse.json({ success: true, data: slides });
   } catch (error: unknown) {

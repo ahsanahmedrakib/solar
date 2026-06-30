@@ -39,7 +39,7 @@ export default function About() {
                 strokeLinejoin="round"
               />
               {/* Bright Green Text Ring */}
-              <text className="text-[9.5px] font-extrabold fill-[#44B549] tracking-[2.2px]">
+              <text className="text-[9.5px] font-extrabold fill-accent-600 tracking-[2.2px]">
                 <textPath href="#contactBadgePath">
                   * Contact Us * Contact Us * Contact Us{" "}
                 </textPath>
@@ -175,7 +175,7 @@ export default function About() {
           {/* Bottom Action Footer Container */}
           <div className="pt-4 flex flex-row flex-wrap items-center gap-6">
             {/* CTA Button */}
-            <button className="inline-flex items-center gap-2 bg-[#44B549] hover:bg-[#399d3e] transition-colors text-white font-semibold text-sm px-6 py-3.5 rounded-lg shadow-sm group">
+            <button className="inline-flex items-center gap-2 bg-accent-600 hover:bg-[#399d3e] transition-colors text-white font-semibold text-sm px-6 py-3.5 rounded-lg shadow-sm group">
               More About Us
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -205,7 +205,7 @@ export default function About() {
                   <path d="M8 5v14l11-7z" />
                 </svg>
               </div>
-              <span className="text-sm font-bold text-[#051720] group-hover:text-[#44B549] transition-colors">
+              <span className="text-sm font-bold text-[#051720] group-hover:text-accent-600 transition-colors">
                 Watch Our Story
               </span>
             </button>

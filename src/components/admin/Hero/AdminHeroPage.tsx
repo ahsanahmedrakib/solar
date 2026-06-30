@@ -15,37 +15,7 @@ import {
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
-
-export interface HeroSlide {
-  id: number;
-  tagline: string;
-  title: string;
-  titleAccent: string;
-  description: string;
-  image: string;
-  ctaText: string;
-  ctaLink: string;
-  showVideoButton: boolean;
-  isActive: boolean;
-  order: number;
-}
-
-const DEFAULT_SLIDES: HeroSlide[] = [
-  {
-    id: 1,
-    tagline: "Solar Energy for Tomorrow",
-    title: "Power Your Future with",
-    titleAccent: "Clean Solar Energy",
-    description:
-      "From expert system design to seamless installation and ongoing support, we combine technical expertise with a commitment to performance, safety.",
-    image: "/images/home/hero-bg-image.jpg",
-    ctaText: "Get Free Consultation",
-    ctaLink: "#consultation",
-    showVideoButton: true,
-    isActive: true,
-    order: 1,
-  },
-];
+import type { HeroSlide } from "@/data/hero-slides";
 
 const slideSchema = yup.object({
   tagline: yup.string().required("Tagline is required"),
@@ -63,7 +33,7 @@ const slideSchema = yup.object({
 type SlideFormData = yup.InferType<typeof slideSchema>;
 
 export default function AdminHeroPage() {
-  const [slides, setSlides] = useState<HeroSlide[]>(DEFAULT_SLIDES);
+  const [slides, setSlides] = useState<HeroSlide[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [isOpen, setIsOpen] = useState(false);
@@ -82,11 +52,11 @@ export default function AdminHeroPage() {
       title: "",
       titleAccent: "",
       description: "",
-      image: "/images/home/hero-bg-image.jpg",
-      ctaText: "Get Free Consultation",
-      ctaLink: "#consultation",
-      showVideoButton: true,
-      isActive: true,
+      image: "",
+      ctaText: "",
+      ctaLink: "",
+      showVideoButton: false,
+      isActive: false,
       order: 1,
     },
   });
@@ -96,10 +66,13 @@ export default function AdminHeroPage() {
       try {
         const res = await fetch("/api/hero-slides");
         const json = await res.json();
-        if (json.success) {
+        if (json.success && Array.isArray(json.data)) {
           setSlides(json.data);
         } else {
-          toast.error("Failed to load hero slides: " + json.error);
+          setSlides([]);
+          if (!json.success) {
+            toast.error("Failed to load hero slides: " + json.error);
+          }
         }
       } catch (error) {
         console.error("Failed to load hero slides", error);
@@ -114,15 +87,15 @@ export default function AdminHeroPage() {
   const handleAddClick = () => {
     setEditingSlide(null);
     reset({
-      tagline: "Solar Energy for Tomorrow",
-      title: "Power Your Future with",
-      titleAccent: "Clean Solar Energy",
+      tagline: "",
+      title: "",
+      titleAccent: "",
       description: "",
-      image: "/images/home/hero-bg-image.jpg",
-      ctaText: "Get Free Consultation",
-      ctaLink: "#consultation",
-      showVideoButton: true,
-      isActive: true,
+      image: "",
+      ctaText: "",
+      ctaLink: "",
+      showVideoButton: false,
+      isActive: false,
       order: slides.length + 1,
     });
     setIsOpen(true);
@@ -209,7 +182,7 @@ export default function AdminHeroPage() {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[400px]">
+      <div className="flex flex-col items-center justify-center min-h-100">
         <div className="w-10 h-10 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin" />
         <p className="mt-4 text-(--admin-text-secondary) font-medium">
           Loading hero slides...

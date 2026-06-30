@@ -18,87 +18,13 @@ import {
 import { useEffect, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import * as yup from "yup";
-
-// Define the Project Interface
-interface Project {
-  id: number;
-  title: string;
-  imageUrl: string;
-  slug: string;
-  category: string;
-  isFeatured: boolean;
-  client: string;
-  location: string;
-}
+import type { Project } from "@/data/projects";
 
 const CATEGORIES = [
   "Residential Solar",
   "Commercial Solar",
   "Industrial Solar",
   "Community Solar",
-];
-
-const DEFAULT_PROJECTS: Project[] = [
-  {
-    id: 1,
-    title: "Rooftop Solar Installation for Residential Homes",
-    imageUrl: "/images/projects/project-1.jpg",
-    slug: "rooftop-solar-installation-for-residential-homes",
-    category: "Residential Solar",
-    isFeatured: true,
-    client: "Johnson Family",
-    location: "Austin, TX",
-  },
-  {
-    id: 2,
-    title: "Industrial Solar Power Installation Manufacturing Unit",
-    imageUrl: "/images/projects/project-2.jpg",
-    slug: "industrial-solar-power-installation-manufacturing-unit",
-    category: "Industrial Solar",
-    isFeatured: false,
-    client: "Apex Manufacturing",
-    location: "Detroit, MI",
-  },
-  {
-    id: 3,
-    title: "Sustainable Solar Energy Project for Communities",
-    imageUrl: "/images/projects/project-3.jpg",
-    slug: "sustainable-solar-energy-project-for-communities",
-    category: "Community Solar",
-    isFeatured: false,
-    client: "Oakwood Community Council",
-    location: "Portland, OR",
-  },
-  {
-    id: 4,
-    title: "Commercial Solar Plant for Office Building",
-    imageUrl: "/images/projects/project-4.jpg",
-    slug: "commercial-solar-plant-for-office-building",
-    category: "Commercial Solar",
-    isFeatured: true,
-    client: "Vanguard Corporate Center",
-    location: "Phoenix, AZ",
-  },
-  {
-    id: 5,
-    title: "Solar Installation for Educational Institute",
-    imageUrl: "/images/projects/project-5.jpg",
-    slug: "solar-installation-for-educational-institute",
-    category: "Community Solar",
-    isFeatured: false,
-    client: "Pinecrest High School",
-    location: "Denver, CO",
-  },
-  {
-    id: 6,
-    title: "Hybrid Solar System for Hospital Facility",
-    imageUrl: "/images/projects/project-6.jpg",
-    slug: "hybrid-solar-system-for-hospital-facility",
-    category: "Commercial Solar",
-    isFeatured: false,
-    client: "St. Jude Medical Center",
-    location: "Miami, FL",
-  },
 ];
 
 // Validation Schema using Yup
@@ -133,7 +59,7 @@ const projectSchema = yup.object().shape({
 type ProjectFormData = yup.InferType<typeof projectSchema>;
 
 export default function AdminProjectsPage() {
-  const [projects, setProjects] = useState<Project[]>(DEFAULT_PROJECTS);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");

@@ -9,35 +9,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/effect-fade";
 import "swiper/css/pagination";
-
-interface HeroSlide {
-  id: number;
-  tagline: string;
-  title: string;
-  titleAccent: string;
-  description: string;
-  image: string;
-  ctaText: string;
-  ctaLink: string;
-  showVideoButton: boolean;
-  isActive: boolean;
-  order: number;
-}
-
-const FALLBACK_SLIDE: HeroSlide = {
-  id: 0,
-  tagline: "Solar Energy for Tomorrow",
-  title: "Power Your Future with",
-  titleAccent: "Clean Solar Energy",
-  description:
-    "From expert system design to seamless installation and ongoing support, we combine technical expertise with a commitment to performance, safety.",
-  image: "/images/home/hero-bg-image.jpg",
-  ctaText: "Get Free Consultation",
-  ctaLink: "#consultation",
-  showVideoButton: true,
-  isActive: true,
-  order: 1,
-};
+import { DEFAULT_HERO_SLIDES, type HeroSlide } from "@/data/hero-slides";
 
 const avatars = [
   { src: "/images/home/author-1.jpg", alt: "User review 1" },
@@ -46,7 +18,7 @@ const avatars = [
 ];
 
 export default function Hero() {
-  const [slides, setSlides] = useState<HeroSlide[]>([FALLBACK_SLIDE]);
+  const [slides, setSlides] = useState<HeroSlide[]>(DEFAULT_HERO_SLIDES);
 
   useEffect(() => {
     async function loadSlides() {

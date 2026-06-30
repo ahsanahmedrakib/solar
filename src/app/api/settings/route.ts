@@ -1,6 +1,6 @@
-import { NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/db";
-import { saveImage, deleteImage } from "@/lib/imageHelper";
+import { deleteImage, saveImage } from "@/lib/imageHelper";
+import { NextResponse } from "next/server";
 
 function processImageFields(
   sections: Array<{
@@ -42,13 +42,19 @@ function processImageFields(
 export async function GET() {
   try {
     const { db } = await connectToDatabase();
-    const settings = await db.collection("settings").findOne({ settingsId: "global" });
+    const settings = await db
+      .collection("settings")
+      .findOne({ settingsId: "global" });
     if (!settings) {
       return NextResponse.json({ success: true, data: null });
     }
     return NextResponse.json({ success: true, data: settings.sections });
-  } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    return NextResponse.json(
+      { success: false, error: message },
+      { status: 500 },
+    );
   }
 }
 
@@ -61,19 +67,23 @@ export async function POST(request: Request) {
     const existing = await db
       .collection("settings")
       .findOne({ settingsId: "global" });
-    const processedSections = processImageFields(
-      sections,
-      existing?.sections,
-    );
+    const processedSections = processImageFields(sections, existing?.sections);
 
-    const result = await db.collection("settings").updateOne(
-      { settingsId: "global" },
-      { $set: { sections: processedSections, updatedAt: new Date() } },
-      { upsert: true },
-    );
+    const result = await db
+      .collection("settings")
+      .updateOne(
+        { settingsId: "global" },
+        { $set: { sections: processedSections, updatedAt: new Date() } },
+        { upsert: true },
+      );
 
     return NextResponse.json({ success: true, result });
-  } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    return NextResponse.json(
+      { success: false, error: message },
+      { status: 500 },
+    );
   }
 }
+

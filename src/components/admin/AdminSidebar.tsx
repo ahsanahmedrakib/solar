@@ -1,26 +1,23 @@
 "use client";
 
+import { DEFAULT_SECTIONS } from "@/data/settings";
+import { cn } from "@/lib/utils";
+import {
+  Briefcase,
+  ChevronRight,
+  CreditCard,
+  FileText,
+  ImageIcon,
+  Layers,
+  LayoutDashboard,
+  Mail,
+  Settings,
+  Users,
+} from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  LayoutDashboard,
-  Package,
-  ShoppingCart,
-  Users,
-  BarChart3,
-  Settings,
-  Zap,
-  ChevronRight,
-  Bell,
-  HelpCircle,
-  Briefcase,
-  Layers,
-  FileText,
-  CreditCard,
-  Mail,
-  ImageIcon,
-} from "lucide-react";
-import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
 
 const navItems = [
   {
@@ -73,8 +70,14 @@ const bottomNavItems = [
   },
 ];
 
+const FALLBACK_LOGO =
+  DEFAULT_SECTIONS.find((s) => s.id === "general")?.fields?.find(
+    (f) => f.id === "admin-logo",
+  )?.value ?? "/logo-white.svg";
+
 export function AdminSidebar() {
   const pathname = usePathname();
+  const [logoSrc, setLogoSrc] = useState(FALLBACK_LOGO);
 
   const isActive = (href: string) => {
     if (href === "/admin") {
@@ -83,17 +86,42 @@ export function AdminSidebar() {
     return pathname.startsWith(href);
   };
 
+  useEffect(() => {
+    async function loadLogo() {
+      try {
+        const res = await fetch("/api/settings");
+        const json = await res.json();
+        if (json.success && json.data) {
+          const general = json.data.find(
+            (section: { id: string }) => section.id === "general",
+          );
+          const logoField = general?.fields?.find(
+            (field: { id: string; value: string }) => field.id === "site-logo",
+          );
+          if (logoField?.value) {
+            setLogoSrc(logoField.value);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to load site logo", error);
+      }
+    }
+    loadLogo();
+  }, []);
+
   return (
     <aside className="admin-sidebar">
       {/* Logo */}
-      <div className="sidebar-logo">
-        <div className="sidebar-logo-icon">
-          <Zap size={20} />
-        </div>
-        <div className="sidebar-logo-text">
-          <span className="sidebar-brand">Sunex</span>
-          <span className="sidebar-brand-sub">Admin Panel</span>
-        </div>
+      <div className="flex items-center justify-center py-2">
+        <Link href="/">
+          <Image
+            src={logoSrc}
+            width={160}
+            height={50}
+            alt="Sunex logo"
+            className="h-12 w-auto object-contain"
+          />
+        </Link>
       </div>
 
       {/* Navigation */}
@@ -161,3 +189,5 @@ export function AdminSidebar() {
     </aside>
   );
 }
+
+
