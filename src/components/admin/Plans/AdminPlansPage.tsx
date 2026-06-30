@@ -1,7 +1,7 @@
 "use client";
 
+import type { Plan } from "@/data/plans";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { toast } from "react-toastify";
 import {
   AlertCircle,
   CreditCard,
@@ -12,10 +12,14 @@ import {
   Trash2,
   X,
 } from "lucide-react";
-import { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
+import { useFieldArray, useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 import * as yup from "yup";
-import type { Plan } from "@/data/plans";
+
+const featureItemSchema = yup.object({
+  value: yup.string().required("Feature cannot be empty"),
+});
 
 const planSchema = yup.object({
   name: yup
@@ -36,23 +40,25 @@ const planSchema = yup.object({
     .typeError("Must be a valid number")
     .required("Annual price is required")
     .min(0, "Cannot be negative"),
-  featuresString: yup
-    .string()
-    .required("At least one feature is required")
-    .matches(
-      /^[^,\n]+(,\s*[^,\n]+)*$/,
-      "Features must be comma-separated strings",
-    ),
+  features: yup
+    .array()
+    .of(featureItemSchema)
+    .min(1, "At least one feature is required")
+    .defined(),
   isPopular: yup.boolean().defined().default(false),
   badge: yup.string().optional().default(""),
 });
+
+interface FeatureItem {
+  value: string;
+}
 
 interface PlanFormData {
   name: string;
   description: string;
   monthlyPrice: number;
   annualPrice: number;
-  featuresString: string;
+  features: FeatureItem[];
   isPopular: boolean;
   badge: string;
 }
@@ -87,18 +93,24 @@ export default function AdminPlansPage() {
     register,
     handleSubmit,
     reset,
+    control,
     formState: { errors, isSubmitting },
   } = useForm<PlanFormData>({
     resolver: yupResolver(planSchema),
     defaultValues: {
       name: "",
       description: "",
-      monthlyPrice: 299,
-      annualPrice: 249,
-      featuresString: "",
+      monthlyPrice: 0,
+      annualPrice: 0,
+      features: [{ value: "" }],
       isPopular: false,
       badge: "",
     },
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "features",
   });
 
   const handleAddClick = () => {
@@ -106,10 +118,9 @@ export default function AdminPlansPage() {
     reset({
       name: "",
       description: "",
-      monthlyPrice: 299,
-      annualPrice: 249,
-      featuresString:
-        "High-Efficiency Solar Panels, Real-Time Performance Monitoring, Priority Support",
+      monthlyPrice: 0,
+      annualPrice: 0,
+      features: [{ value: "" }],
       isPopular: false,
       badge: "",
     });
@@ -123,7 +134,10 @@ export default function AdminPlansPage() {
       description: plan.description,
       monthlyPrice: plan.monthlyPrice,
       annualPrice: plan.annualPrice,
-      featuresString: plan.features.join(", "),
+      features:
+        plan.features.length > 0
+          ? plan.features.map((f) => ({ value: f }))
+          : [{ value: "" }],
       isPopular: !!plan.isPopular,
       badge: plan.badge || "",
     });
@@ -143,17 +157,17 @@ export default function AdminPlansPage() {
         } else {
           toast.error("Failed to delete pricing plan: " + json.error);
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
         console.error("Failed to delete plan", error);
-        toast.error("Failed to delete pricing plan: " + error.message);
+        toast.error("Failed to delete pricing plan: " + message);
       }
     }
   };
 
   const onSubmit = async (data: PlanFormData) => {
-    const parsedFeatures = data.featuresString
-      .split(",")
-      .map((f) => f.trim())
+    const parsedFeatures = data.features
+      .map((f) => f.value.trim())
       .filter((f) => f.length > 0);
 
     const payload = {
@@ -176,7 +190,9 @@ export default function AdminPlansPage() {
         const json = await res.json();
         if (json.success) {
           setPlans((prev) =>
-            prev.map((p) => (p.id === editingPlan.id ? { ...p, ...payload } : p))
+            prev.map((p) =>
+              p.id === editingPlan.id ? { ...p, ...payload } : p,
+            ),
           );
           toast.success("Pricing plan updated successfully!");
         } else {
@@ -197,15 +213,16 @@ export default function AdminPlansPage() {
         }
       }
       setIsOpen(false);
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
       console.error("Failed to save plan", error);
-      toast.error("Failed to save pricing plan: " + error.message);
+      toast.error("Failed to save pricing plan: " + message);
     }
   };
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[400px]">
+      <div className="flex flex-col items-center justify-center min-h-100">
         <div className="w-10 h-10 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
         <p className="mt-4 text-(--admin-text-secondary) font-medium">
           Loading Solar Plans...
@@ -213,7 +230,6 @@ export default function AdminPlansPage() {
       </div>
     );
   }
-
 
   const filteredPlans = plans.filter(
     (p) =>
@@ -468,19 +484,42 @@ export default function AdminPlansPage() {
 
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-semibold text-(--admin-text-secondary) uppercase tracking-wider">
-                  Features List (Comma-separated) *
+                  Features List *
                 </label>
-                <input
-                  type="text"
-                  placeholder="High-Efficiency Panels, 25-Year Warranty, Smart Inverter"
-                  {...register("featuresString")}
-                  className={`w-full bg-(--admin-surface-2) border ${errors.featuresString ? "border-(--admin-danger)" : "border-(--admin-border)"} text-sm text-(--admin-text-primary) rounded-lg p-2.5 outline-none focus:border-(--admin-accent) transition`}
-                />
-                {errors.featuresString && (
-                  <span className="text-[11px] text-(--admin-danger) flex items-center gap-1">
-                    <AlertCircle size={10} /> {errors.featuresString.message}
-                  </span>
-                )}
+                <div className="space-y-2">
+                  {fields.map((field, index) => (
+                    <div key={field.id} className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        placeholder={`Feature ${index + 1}`}
+                        {...register(`features.${index}.value`)}
+                        className={`flex-1 bg-(--admin-surface-2) border ${errors.features?.[index]?.value ? "border-(--admin-danger)" : "border-(--admin-border)"} text-sm text-(--admin-text-primary) rounded-lg p-2.5 outline-none focus:border-(--admin-accent) transition`}
+                      />
+                      {fields.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => remove(index)}
+                          className="text-(--admin-danger) hover:bg-(--admin-danger)/10 p-2 rounded-lg transition"
+                          title="Remove feature"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                  {errors.features && !Array.isArray(errors.features) && (
+                    <span className="text-[11px] text-(--admin-danger) flex items-center gap-1">
+                      <AlertCircle size={10} /> {errors.features.message}
+                    </span>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => append({ value: "" })}
+                    className="text-xs font-semibold text-(--admin-accent) hover:opacity-80 flex items-center gap-1.5 transition"
+                  >
+                    <Plus size={12} /> Add Feature
+                  </button>
+                </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
