@@ -103,7 +103,7 @@ export default function SingleService({ slug }: { slug: string }) {
                   />
                 </section>
 
-                <section className="border-t border-gray-100 pt-10">
+                {/* <section className="border-t border-gray-100 pt-10">
                   <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight mb-4">
                     What we offer
                   </h2>
@@ -195,7 +195,7 @@ export default function SingleService({ slug }: { slug: string }) {
                       </div>
                     </div>
                   </div>
-                </section>
+                </section> */}
               </>
             ) : (
               <div className="flex flex-col items-center justify-center py-20 text-gray-400">

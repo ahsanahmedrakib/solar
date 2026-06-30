@@ -1,8 +1,9 @@
 "use client";
 
 import { ImageUploadInput } from "@/components/Admin/ImageUploadInput";
+import { RichTextEditor } from "@/components/Admin/RichTextEditor";
+import type { Project } from "@/data/projects";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { toast } from "react-toastify";
 import {
   AlertCircle,
   Check,
@@ -17,8 +18,8 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
+import { toast } from "react-toastify";
 import * as yup from "yup";
-import type { Project } from "@/data/projects";
 
 const CATEGORIES = [
   "Residential Solar",
@@ -54,6 +55,10 @@ const projectSchema = yup.object().shape({
     .string()
     .required("Location is required")
     .min(3, "Location must be at least 3 characters"),
+  projectDetails: yup
+    .string()
+    .required("Project details is required")
+    .min(20, "Project details must be at least 20 characters"),
 });
 
 type ProjectFormData = yup.InferType<typeof projectSchema>;
@@ -81,11 +86,12 @@ export default function AdminProjectsPage() {
     defaultValues: {
       title: "",
       slug: "",
-      category: "Residential Solar",
-      imageUrl: "/images/projects/project-1.jpg",
+      category: "",
+      imageUrl: "",
       isFeatured: false,
       client: "",
       location: "",
+      projectDetails: "",
     },
   });
 
@@ -131,11 +137,12 @@ export default function AdminProjectsPage() {
     reset({
       title: "",
       slug: "",
-      category: "Residential Solar",
-      imageUrl: "/images/projects/project-1.jpg",
+      category: "",
+      imageUrl: "",
       isFeatured: false,
       client: "",
       location: "",
+      projectDetails: "",
     });
     setIsOpen(true);
   };
@@ -150,6 +157,7 @@ export default function AdminProjectsPage() {
       isFeatured: project.isFeatured,
       client: project.client,
       location: project.location,
+      projectDetails: project.projectDetails,
     });
     setIsOpen(true);
   };
@@ -167,9 +175,10 @@ export default function AdminProjectsPage() {
         } else {
           toast.error("Failed to delete project: " + json.error);
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
         console.error("Failed to delete project", error);
-        toast.error("Failed to delete project: " + error.message);
+        toast.error("Failed to delete project: " + message);
       }
     }
   };
@@ -185,7 +194,9 @@ export default function AdminProjectsPage() {
         const json = await res.json();
         if (json.success) {
           setProjects((prev) =>
-            prev.map((p) => (p.id === editingProject.id ? { ...p, ...data } : p))
+            prev.map((p) =>
+              p.id === editingProject.id ? { ...p, ...data } : p,
+            ),
           );
           toast.success("Project updated successfully!");
         } else {
@@ -206,9 +217,10 @@ export default function AdminProjectsPage() {
         }
       }
       setIsOpen(false);
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
       console.error("Failed to save project", error);
-      toast.error("Failed to save project: " + error.message);
+      toast.error("Failed to save project: " + message);
     }
   };
 
@@ -395,7 +407,7 @@ export default function AdminProjectsPage() {
       {/* CRUD Edit/Add Modal Overlay */}
       {isOpen && (
         <div className="fixed inset-0 z-100 flex items-center justify-center px-4 bg-black/60 backdrop-blur-xs">
-          <div className="w-full max-w-xl bg-(--admin-surface) border border-(--admin-border-strong) rounded-xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
+          <div className="w-full max-w-[70%] bg-(--admin-surface) border border-(--admin-border-strong) rounded-xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
             {/* Modal Header */}
             <div className="flex items-center justify-between p-5 border-b border-(--admin-border) bg-(--admin-surface-2)">
               <h3 className="text-base font-bold text-(--admin-text-primary) flex items-center gap-2">
@@ -538,6 +550,20 @@ export default function AdminProjectsPage() {
                     onChange={field.onChange}
                     error={errors.imageUrl?.message}
                     placeholder="/images/projects/project-1.jpg"
+                  />
+                )}
+              />
+
+              {/* Project Details (Rich Content) */}
+              <Controller
+                name="projectDetails"
+                control={control}
+                render={({ field }) => (
+                  <RichTextEditor
+                    label="Project Details (Rich Content)"
+                    value={field.value}
+                    onChange={field.onChange}
+                    error={errors.projectDetails?.message}
                   />
                 )}
               />

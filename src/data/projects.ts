@@ -7,6 +7,7 @@ export interface Project {
   isFeatured: boolean;
   client: string;
   location: string;
+  projectDetails: string;
 }
 
 export const DEFAULT_PROJECTS: Project[] = [
@@ -19,6 +20,7 @@ export const DEFAULT_PROJECTS: Project[] = [
     isFeatured: true,
     client: "Johnson Family",
     location: "Austin, TX",
+    projectDetails: "Details",
   },
   {
     id: 2,
@@ -29,6 +31,7 @@ export const DEFAULT_PROJECTS: Project[] = [
     isFeatured: false,
     client: "Apex Manufacturing",
     location: "Detroit, MI",
+    projectDetails: "Details",
   },
   {
     id: 3,
@@ -39,6 +42,7 @@ export const DEFAULT_PROJECTS: Project[] = [
     isFeatured: false,
     client: "Oakwood Community Council",
     location: "Portland, OR",
+    projectDetails: "Details",
   },
   {
     id: 4,
@@ -49,6 +53,7 @@ export const DEFAULT_PROJECTS: Project[] = [
     isFeatured: true,
     client: "Vanguard Corporate Center",
     location: "Phoenix, AZ",
+    projectDetails: "Details",
   },
   {
     id: 5,
@@ -59,6 +64,7 @@ export const DEFAULT_PROJECTS: Project[] = [
     isFeatured: false,
     client: "Pinecrest High School",
     location: "Denver, CO",
+    projectDetails: "Details",
   },
   {
     id: 6,
@@ -69,5 +75,7 @@ export const DEFAULT_PROJECTS: Project[] = [
     isFeatured: false,
     client: "St. Jude Medical Center",
     location: "Miami, FL",
+    projectDetails: "Details",
   },
 ];
+
