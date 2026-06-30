@@ -5,7 +5,6 @@ import { DEFAULT_SECTIONS } from "@/data/settings";
 import {
   ArrowUpRight,
   ChevronDown,
-  ChevronRight,
   Globe,
   Mail,
   Menu,
@@ -172,7 +171,7 @@ export default function Navbar() {
             </Link>
 
             {/* Demo Dropdown */}
-            <div className="relative group py-4">
+            {/* <div className="relative group py-4">
               <button className="hover:text-[#4CAF50] transition-colors flex items-center space-x-1 focus:outline-none">
                 <span>Demo</span>
                 <ChevronDown
@@ -224,7 +223,7 @@ export default function Navbar() {
                   </div>
                 </div>
               </div>
-            </div>
+            </div> */}
           </nav>
 
           {/* CTA Button */}

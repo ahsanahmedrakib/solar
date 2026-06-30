@@ -12,11 +12,12 @@ const pageTitles: Record<string, string> = {
   "/admin/blogs": "Blogs",
   "/admin/contact": "Contact",
   "/admin/settings": "Settings",
+  "/admin/analytics": "Analytics",
 };
 
 export function AdminHeader() {
   const pathname = usePathname();
-  const title = pageTitles[pathname] ?? "Admin Panel";
+  const title = pageTitles[pathname] ?? "Page Not Found";
 
   return (
     <header className="admin-header min-h-15">
