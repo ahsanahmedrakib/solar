@@ -1,4 +1,76 @@
+"use client";
+
+import { DEFAULT_SECTIONS } from "@/data/settings";
+import { SOCIAL_ICONS } from "@/lib/const";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+
+function getField(
+  sections: { id: string; fields?: { id: string; value: string }[] }[],
+  sectionId: string,
+  fieldId: string,
+): string {
+  return (
+    sections
+      .find((s) => s.id === sectionId)
+      ?.fields?.find((f) => f.id === fieldId)?.value ?? ""
+  );
+}
+
+const FALLBACK = {
+  companyName: getField(DEFAULT_SECTIONS, "general", "company-name"),
+  tagline: getField(DEFAULT_SECTIONS, "general", "brand-tagline"),
+  phone: getField(DEFAULT_SECTIONS, "general", "phone-number"),
+  email: getField(DEFAULT_SECTIONS, "general", "contact-email"),
+  address: getField(DEFAULT_SECTIONS, "general", "hq-address"),
+  socialFb: getField(DEFAULT_SECTIONS, "social", "social-fb"),
+  socialX: getField(DEFAULT_SECTIONS, "social", "social-x"),
+  socialLi: getField(DEFAULT_SECTIONS, "social", "social-li"),
+  socialIg: getField(DEFAULT_SECTIONS, "social", "social-ig"),
+};
+
 export default function Footer() {
+  const [settings, setSettings] = useState(FALLBACK);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadSettings() {
+      try {
+        const res = await fetch("/api/settings");
+        const json = await res.json();
+        if (json.success && json.data) {
+          setSettings({
+            companyName:
+              getField(json.data, "general", "company-name") ||
+              FALLBACK.companyName,
+            tagline:
+              getField(json.data, "general", "brand-tagline") ||
+              FALLBACK.tagline,
+            phone:
+              getField(json.data, "general", "phone-number") || FALLBACK.phone,
+            email:
+              getField(json.data, "general", "contact-email") || FALLBACK.email,
+            address:
+              getField(json.data, "general", "hq-address") || FALLBACK.address,
+            socialFb:
+              getField(json.data, "social", "social-fb") || FALLBACK.socialFb,
+            socialX:
+              getField(json.data, "social", "social-x") || FALLBACK.socialX,
+            socialLi:
+              getField(json.data, "social", "social-li") || FALLBACK.socialLi,
+            socialIg:
+              getField(json.data, "social", "social-ig") || FALLBACK.socialIg,
+          });
+        }
+      } catch (error) {
+        console.error("Failed to load footer settings", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadSettings();
+  }, []);
+
   return (
     <footer
       className="bg-[#03141F] text-white pt-16 pb-8 px-4 sm:px-6 lg:px-8 font-sans relative overflow-hidden"
@@ -8,8 +80,65 @@ export default function Footer() {
         backgroundSize: "40px 40px",
       }}
     >
-      {/* Subtle top horizontal separator line */}
       <div className="max-w-7xl mx-auto">
+        {loading ? (
+          <div className="animate-pulse space-y-12">
+            {/* UPPER GRID SKELETON */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-start mb-16">
+              <div className="lg:col-span-4 space-y-6">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-10 h-10 rounded-full bg-white/10" />
+                  <div className="h-7 w-44 rounded-md bg-white/10" />
+                </div>
+                <div className="space-y-2">
+                  <div className="h-4 w-72 rounded bg-white/10" />
+                  <div className="h-4 w-56 rounded bg-white/10" />
+                </div>
+                <div className="space-y-3 pt-2">
+                  <div className="h-4 w-32 rounded bg-white/10" />
+                  <div className="flex items-center gap-3">
+                    {[1, 2, 3, 4].map((i) => (
+                      <div key={i} className="w-9 h-9 rounded-full bg-white/10" />
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <div className="lg:col-span-8 rounded-3xl p-8 sm:p-10 bg-white/5 border border-white/5 grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-6">
+                {[1, 2, 3].map((col) => (
+                  <div key={col} className="space-y-4">
+                    <div className="h-5 w-28 rounded bg-white/10" />
+                    <div className="space-y-2.5">
+                      {[1, 2, 3, 4, 5].map((row) => (
+                        <div key={row} className="h-4 w-full rounded bg-white/10" />
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* CONTACT ROW SKELETON */}
+            <div className="py-8 border-t border-b border-white/5">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-4">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="flex items-center gap-4 pl-0 sm:pl-4">
+                    <div className="w-11 h-11 rounded-full bg-white/10 shrink-0" />
+                    <div className="space-y-1.5">
+                      <div className="h-3 w-24 rounded bg-white/10" />
+                      <div className="h-5 w-40 rounded bg-white/10" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* COPYRIGHT SKELETON */}
+            <div className="pt-8 text-center">
+              <div className="h-4 w-64 rounded bg-white/10 mx-auto" />
+            </div>
+          </div>
+        ) : (
+          <>
         {/* ========================================================================= */}
         {/* UPPER FOOTER GRID SECTION                                                 */}
         {/* ========================================================================= */}
@@ -18,7 +147,7 @@ export default function Footer() {
           <div className="lg:col-span-4 space-y-6">
             {/* Logo */}
             <div className="flex items-center gap-2.5">
-              <div className="w-10 h-10 rounded-full bg-[#44B549] text-white flex items-center justify-center shadow-sm">
+              <div className="w-10 h-10 rounded-full bg-accent-600 text-white flex items-center justify-center shadow-sm">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="currentColor"
@@ -29,14 +158,14 @@ export default function Footer() {
                 </svg>
               </div>
               <span className="text-2xl font-bold tracking-tight text-white">
-                Sunex<span className="text-[#44B549]">.</span>
+                {settings.companyName}
+                <span className="text-accent-600">.</span>
               </span>
             </div>
 
             {/* Description Paragraph */}
             <p className="text-gray-400 text-sm leading-relaxed max-w-sm">
-              Empowering homes & business with reliable solar energy solutions.
-              We design, install, & maintain high-performance
+              {settings.tagline}
             </p>
 
             {/* Social Links Row */}
@@ -45,19 +174,42 @@ export default function Footer() {
                 Follow Us On Socials:
               </h4>
               <div className="flex items-center gap-3">
-                {["pinterest", "twitter", "facebook", "instagram"].map(
-                  (platform, idx) => (
-                    <a
-                      key={idx}
-                      href="#"
-                      className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-all text-xs"
-                    >
-                      {platform === "pinterest" && "P"}
-                      {platform === "twitter" && "X"}
-                      {platform === "facebook" && "F"}
-                      {platform === "instagram" && "I"}
-                    </a>
-                  ),
+                {(
+                  [
+                    {
+                      key: "socialFb",
+                      label: "facebook" as const,
+                      href: settings.socialFb,
+                    },
+                    {
+                      key: "socialX",
+                      label: "x" as const,
+                      href: settings.socialX,
+                    },
+                    {
+                      key: "socialIg",
+                      label: "instagram" as const,
+                      href: settings.socialIg,
+                    },
+                    {
+                      key: "socialLi",
+                      label: "linkedin" as const,
+                      href: settings.socialLi,
+                    },
+                  ] as const
+                ).map(
+                  (platform) =>
+                    platform.href && (
+                      <Link
+                        key={platform.key}
+                        href={platform.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-9 h-9 p-1 flex items-center justify-center transition-all "
+                      >
+                        {SOCIAL_ICONS[platform.label]}
+                      </Link>
+                    ),
                 )}
               </div>
             </div>
@@ -82,7 +234,7 @@ export default function Footer() {
                     key={link}
                     className="flex items-center gap-2 text-xs sm:text-sm text-gray-400 hover:text-white font-medium transition-colors cursor-pointer"
                   >
-                    <span className="w-1.5 h-1.5 bg-[#44B549] rounded-full shrink-0" />
+                    <span className="w-1.5 h-1.5 bg-accent-600 rounded-full shrink-0" />
                     {link}
                   </li>
                 ))}
@@ -106,7 +258,7 @@ export default function Footer() {
                     key={link}
                     className="flex items-center gap-2 text-xs sm:text-sm text-gray-400 hover:text-white font-medium transition-colors cursor-pointer"
                   >
-                    <span className="w-1.5 h-1.5 bg-[#44B549] rounded-full shrink-0" />
+                    <span className="w-1.5 h-1.5 bg-accent-600 rounded-full shrink-0" />
                     {link}
                   </li>
                 ))}
@@ -128,11 +280,11 @@ export default function Footer() {
                 <input
                   type="email"
                   placeholder="Enter Email Address *"
-                  className="w-full bg-transparent text-sm border-b border-white/20 pb-2.5 pr-10 text-white placeholder-gray-500 focus:outline-none focus:border-[#44B549] transition-colors"
+                  className="w-full bg-transparent text-sm border-b border-white/20 pb-2.5 pr-10 text-white placeholder-gray-500 focus:outline-none focus:border-accent-600 transition-colors"
                 />
                 <button
                   type="button"
-                  className="absolute right-0 bottom-2 w-6 h-6 rounded-full bg-[#44B549] text-white flex items-center justify-center hover:bg-[#399d3e] transition-colors"
+                  className="absolute right-0 bottom-2 w-6 h-6 rounded-full bg-accent-600 text-white flex items-center justify-center hover:bg-[#399d3e] transition-colors"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -161,7 +313,7 @@ export default function Footer() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-4">
             {/* Phone Entry */}
             <div className="flex items-center gap-4 pl-0 sm:pl-4">
-              <div className="w-11 h-11 rounded-full bg-[#44B549]/10 text-[#44B549] flex items-center justify-center shrink-0">
+              <div className="w-11 h-11 rounded-full bg-accent-600/10 text-accent-600 flex items-center justify-center shrink-0">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -182,14 +334,14 @@ export default function Footer() {
                   Phone Number
                 </p>
                 <p className="text-base sm:text-lg font-bold text-white tracking-tight">
-                  +1 (123) 456-789
+                  {settings.phone}
                 </p>
               </div>
             </div>
 
             {/* Email Entry */}
             <div className="flex items-center gap-4 pl-0 md:pl-6 md:border-l md:border-white/5">
-              <div className="w-11 h-11 rounded-full bg-[#44B549]/10 text-[#44B549] flex items-center justify-center shrink-0">
+              <div className="w-11 h-11 rounded-full bg-accent-600/10 text-accent-600 flex items-center justify-center shrink-0">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -210,14 +362,14 @@ export default function Footer() {
                   Email Address
                 </p>
                 <p className="text-base sm:text-lg font-bold text-white tracking-tight">
-                  info@domainname.com
+                  {settings.email}
                 </p>
               </div>
             </div>
 
             {/* Location Entry */}
             <div className="flex items-center gap-4 pl-0 md:pl-6 md:border-l md:border-white/5">
-              <div className="w-11 h-11 rounded-full bg-[#44B549]/10 text-[#44B549] flex items-center justify-center shrink-0">
+              <div className="w-11 h-11 rounded-full bg-accent-600/10 text-accent-600 flex items-center justify-center shrink-0">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -243,7 +395,7 @@ export default function Footer() {
                   Our Location
                 </p>
                 <p className="text-base sm:text-lg font-bold text-white tracking-tight">
-                  2118 Thornridge Cir. Syracuse
+                  {settings.address}
                 </p>
               </div>
             </div>
@@ -255,9 +407,11 @@ export default function Footer() {
         {/* ========================================================================= */}
         <div className="pt-8 text-center">
           <p className="text-xs sm:text-sm text-gray-500 font-medium tracking-wide">
-            Copyright © 2026 Sunex. All rights reserved.
+            Copyright © {new Date().getFullYear()} {settings.companyName}. All rights reserved.
           </p>
         </div>
+          </>
+        )}
       </div>
     </footer>
   );

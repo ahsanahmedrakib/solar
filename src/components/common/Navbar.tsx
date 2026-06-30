@@ -26,6 +26,7 @@ export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobilePagesOpen, setIsMobilePagesOpen] = useState(false);
   const [logoSrc, setLogoSrc] = useState(FALLBACK_LOGO);
+  const [logoLoading, setLogoLoading] = useState(true);
 
   const pathname = usePathname();
   const mainPages = ["Demo 1", "Demo 2"];
@@ -48,6 +49,8 @@ export default function Navbar() {
         }
       } catch (error) {
         console.error("Failed to load site logo", error);
+      } finally {
+        setLogoLoading(false);
       }
     }
     loadLogo();
@@ -103,13 +106,17 @@ export default function Navbar() {
           {/* LOGO */}
           <div className="flex items-center space-x-2">
             <Link href="/">
-              <Image
-                src={logoSrc}
-                width={160}
-                height={50}
-                alt="Sunex logo"
-                className="h-12 w-auto object-contain"
-              />
+              {logoLoading ? (
+                <div className="h-12 w-40 rounded-md bg-gray-200 animate-pulse" />
+              ) : (
+                <Image
+                  src={logoSrc}
+                  width={160}
+                  height={50}
+                  alt="Sunex logo"
+                  className="h-12 w-auto object-contain"
+                />
+              )}
             </Link>
           </div>
 
