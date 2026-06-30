@@ -1,8 +1,9 @@
 "use client";
 
 import { ImageUploadInput } from "@/components/Admin/ImageUploadInput";
+import { RichTextEditor } from "@/components/Admin/RichTextEditor";
+import type { Blog } from "@/data/blogs";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { toast } from "react-toastify";
 import {
   AlertCircle,
   Calendar,
@@ -16,8 +17,8 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
+import { toast } from "react-toastify";
 import * as yup from "yup";
-import type { Blog } from "@/data/blogs";
 
 const CATEGORIES = [
   "Residential Solar",
@@ -57,6 +58,10 @@ const blogSchema = yup.object().shape({
       /^[^,]+(,[^,]+)*$/,
       "Tags must be comma-separated strings (e.g. Solar, Batteries, Green)",
     ),
+  blogDetails: yup
+    .string()
+    .required("Blog details is required")
+    .min(20, "Blog details must be at least 20 characters"),
 });
 
 type BlogFormData = yup.InferType<typeof blogSchema>;
@@ -102,10 +107,11 @@ export default function AdminBlogsPage() {
     defaultValues: {
       title: "",
       slug: "",
-      category: "Residential Solar",
-      imageUrl: "/images/blogs/post-1.jpg",
+      category: "",
+      imageUrl: "",
       content: "",
       tagsString: "",
+      blogDetails: "",
     },
   });
 
@@ -132,10 +138,11 @@ export default function AdminBlogsPage() {
     reset({
       title: "",
       slug: "",
-      category: "Residential Solar",
-      imageUrl: "/images/blogs/post-1.jpg",
+      category: "",
+      imageUrl: "",
       content: "",
       tagsString: "",
+      blogDetails: "",
     });
     setIsOpen(true);
   };
@@ -149,6 +156,7 @@ export default function AdminBlogsPage() {
       imageUrl: blog.imageUrl,
       content: blog.content,
       tagsString: blog.tags.join(", "),
+      blogDetails: blog.blogDetails,
     });
     setIsOpen(true);
   };
@@ -166,9 +174,10 @@ export default function AdminBlogsPage() {
         } else {
           toast.error("Failed to delete blog post: " + json.error);
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
+        const message = error instanceof Error ? error.message : String(error);
         console.error("Failed to delete blog", error);
-        toast.error("Failed to delete blog post: " + error.message);
+        toast.error("Failed to delete blog post: " + message);
       }
     }
   };
@@ -205,7 +214,9 @@ export default function AdminBlogsPage() {
         const json = await res.json();
         if (json.success) {
           setBlogs((prev) =>
-            prev.map((b) => (b.id === editingBlog.id ? { ...b, ...payload } : b))
+            prev.map((b) =>
+              b.id === editingBlog.id ? { ...b, ...payload } : b,
+            ),
           );
           toast.success("Blog post updated successfully!");
         } else {
@@ -226,9 +237,10 @@ export default function AdminBlogsPage() {
         }
       }
       setIsOpen(false);
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
       console.error("Failed to save blog post", error);
-      toast.error("Failed to save blog post: " + error.message);
+      toast.error("Failed to save blog post: " + message);
     }
   };
 
@@ -408,7 +420,7 @@ export default function AdminBlogsPage() {
       {/* CRUD Edit/Add Modal Overlay */}
       {isOpen && (
         <div className="fixed inset-0 z-100 flex items-center justify-center px-4 bg-black/60 backdrop-blur-xs">
-          <div className="w-full max-w-xl bg-(--admin-surface) border border-(--admin-border-strong) rounded-xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
+          <div className="w-full max-w-[70%] bg-(--admin-surface) border border-(--admin-border-strong) rounded-xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
             {/* Modal Header */}
             <div className="flex items-center justify-between p-5 border-b border-(--admin-border) bg-(--admin-surface-2)">
               <h3 className="text-base font-bold text-(--admin-text-primary) flex items-center gap-2">
@@ -538,6 +550,20 @@ export default function AdminBlogsPage() {
                 )}
               </div>
 
+              {/* Blog Details (Rich Content) */}
+              <Controller
+                name="blogDetails"
+                control={control}
+                render={({ field }) => (
+                  <RichTextEditor
+                    label="Blog Details (Rich Content)"
+                    value={field.value}
+                    onChange={field.onChange}
+                    error={errors.blogDetails?.message}
+                  />
+                )}
+              />
+
               {/* Form Actions */}
               <div className="flex justify-end gap-3 pt-3 border-t border-(--admin-border)">
                 <button
@@ -570,5 +596,3 @@ export default function AdminBlogsPage() {
     </div>
   );
 }
-
- 
