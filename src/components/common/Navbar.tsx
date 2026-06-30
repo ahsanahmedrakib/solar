@@ -1,58 +1,79 @@
-"use strict";
 "use client";
 
 import { DEFAULT_SECTIONS } from "@/data/settings";
-import {
-  ArrowUpRight,
-  ChevronDown,
-  Globe,
-  Mail,
-  Menu,
-  Phone,
-  X,
-} from "lucide-react";
+import { SOCIAL_ICONS } from "@/lib/const";
+import { ArrowUpRight, ChevronDown, Mail, Menu, Phone, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
-const FALLBACK_LOGO =
-  DEFAULT_SECTIONS.find((s) => s.id === "general")?.fields?.find(
-    (f) => f.id === "site-logo",
-  )?.value ?? "/logo.svg";
+function getField(
+  sections: { id: string; fields?: { id: string; value: string }[] }[],
+  sectionId: string,
+  fieldId: string,
+): string {
+  return (
+    sections
+      .find((s) => s.id === sectionId)
+      ?.fields?.find((f) => f.id === fieldId)?.value ?? ""
+  );
+}
+
+const FALLBACK = {
+  phone: getField(DEFAULT_SECTIONS, "general", "phone-number"),
+  email: getField(DEFAULT_SECTIONS, "general", "contact-email"),
+  socialFb: getField(DEFAULT_SECTIONS, "social", "social-fb"),
+  socialX: getField(DEFAULT_SECTIONS, "social", "social-x"),
+  socialLi: getField(DEFAULT_SECTIONS, "social", "social-li"),
+  socialIg: getField(DEFAULT_SECTIONS, "social", "social-ig"),
+  logo:
+    getField(DEFAULT_SECTIONS, "general", "site-logo") || "/logo.svg",
+};
 
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobilePagesOpen, setIsMobilePagesOpen] = useState(false);
-  const [logoSrc, setLogoSrc] = useState(FALLBACK_LOGO);
-  const [logoLoading, setLogoLoading] = useState(true);
+  const [logoSrc, setLogoSrc] = useState(FALLBACK.logo);
+  const [settings, setSettings] = useState(FALLBACK);
+  const [loading, setLoading] = useState(true);
 
   const pathname = usePathname();
   const mainPages = ["Demo 1", "Demo 2"];
 
   useEffect(() => {
-    async function loadLogo() {
+    async function loadData() {
       try {
         const res = await fetch("/api/settings");
         const json = await res.json();
         if (json.success && json.data) {
-          const general = json.data.find(
-            (section: { id: string }) => section.id === "general",
+          setSettings({
+            phone:
+              getField(json.data, "general", "phone-number") || FALLBACK.phone,
+            email:
+              getField(json.data, "general", "contact-email") || FALLBACK.email,
+            socialFb:
+              getField(json.data, "social", "social-fb") || FALLBACK.socialFb,
+            socialX:
+              getField(json.data, "social", "social-x") || FALLBACK.socialX,
+            socialLi:
+              getField(json.data, "social", "social-li") || FALLBACK.socialLi,
+            socialIg:
+              getField(json.data, "social", "social-ig") || FALLBACK.socialIg,
+            logo:
+              getField(json.data, "general", "site-logo") || FALLBACK.logo,
+          });
+          setLogoSrc(
+            getField(json.data, "general", "site-logo") || FALLBACK.logo,
           );
-          const logoField = general?.fields?.find(
-            (field: { id: string; value: string }) => field.id === "site-logo",
-          );
-          if (logoField?.value) {
-            setLogoSrc(logoField.value);
-          }
         }
       } catch (error) {
-        console.error("Failed to load site logo", error);
+        console.error("Failed to load navbar settings", error);
       } finally {
-        setLogoLoading(false);
+        setLoading(false);
       }
     }
-    loadLogo();
+    loadData();
   }, []);
 
   const isActive = (href: string) => {
@@ -67,34 +88,58 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center space-x-6">
             <a
-              href="tel:+1123456789"
+              href={`tel:${settings.phone.replace(/\s/g, "")}`}
               className="hover:underline flex items-center space-x-2"
             >
               <Phone size={14} />
-              <span>Phone Number: +(123) 456-789</span>
+              <span>Phone Number: {settings.phone}</span>
             </a>
             <a
-              href="mailto:info@domainname.com"
+              href={`mailto:${settings.email}`}
               className="hover:underline flex items-center space-x-2"
             >
               <Mail size={14} />
-              <span>Email Address: info@domainname.com</span>
+              <span>Email Address: {settings.email}</span>
             </a>
           </div>
-
-          <div className="flex items-center space-x-4">
-            <span>Follow Us On Social:</span>
-            <div className="flex items-center space-x-3">
-              <Link href="#" className="hover:text-gray-200">
-                <X size={16} />
-              </Link>
-              <Link href="#" className="hover:text-gray-200">
-                <X size={16} />
-              </Link>
-              <Link href="#" className="hover:text-gray-200">
-                <Globe size={16} />
-              </Link>
-            </div>
+          <div className="flex items-center gap-1">
+            {(
+              [
+                {
+                  key: "socialFb",
+                  label: "facebook" as const,
+                  href: settings.socialFb,
+                },
+                {
+                  key: "socialX",
+                  label: "x" as const,
+                  href: settings.socialX,
+                },
+                {
+                  key: "socialIg",
+                  label: "instagram" as const,
+                  href: settings.socialIg,
+                },
+                {
+                  key: "socialLi",
+                  label: "linkedin" as const,
+                  href: settings.socialLi,
+                },
+              ] as const
+            ).map(
+              (platform) =>
+                platform.href && (
+                  <Link
+                    key={platform.key}
+                    href={platform.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-9 h-9 p-2 flex items-center justify-center transition-all "
+                  >
+                    {SOCIAL_ICONS[platform.label]}
+                  </Link>
+                ),
+            )}
           </div>
         </div>
       </div>
@@ -105,7 +150,7 @@ export default function Navbar() {
           {/* LOGO */}
           <div className="flex items-center space-x-2">
             <Link href="/">
-              {logoLoading ? (
+              {loading ? (
                 <div className="h-12 w-40 rounded-md bg-gray-200 animate-pulse" />
               ) : (
                 <Image
