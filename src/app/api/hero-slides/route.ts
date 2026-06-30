@@ -1,7 +1,7 @@
+import type { HeroSlide } from "@/data/hero-slides";
 import { connectToDatabase } from "@/lib/db";
 import { deleteImage, saveImage } from "@/lib/imageHelper";
 import { NextResponse } from "next/server";
-import type { HeroSlide } from "@/data/hero-slides";
 
 export async function GET() {
   try {

@@ -1,8 +1,8 @@
 "use client";
 
 import { ImageUploadInput } from "@/components/Admin/ImageUploadInput";
+import type { HeroSlide } from "@/data/hero-slides";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { toast } from "react-toastify";
 import {
   AlertCircle,
   Edit2,
@@ -14,8 +14,8 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 import * as yup from "yup";
-import type { HeroSlide } from "@/data/hero-slides";
 
 const slideSchema = yup.object({
   tagline: yup.string().required("Tagline is required"),
@@ -23,8 +23,7 @@ const slideSchema = yup.object({
   titleAccent: yup.string().required("Accent title is required"),
   description: yup.string().required("Description is required"),
   image: yup.string().required("Background image is required"),
-  ctaText: yup.string().required("CTA text is required"),
-  ctaLink: yup.string().required("CTA link is required"),
+  videoUrl: yup.string().required("Video URL is required"),
   showVideoButton: yup.boolean().default(true),
   isActive: yup.boolean().default(true),
   order: yup.number().min(1).default(1),
@@ -53,8 +52,7 @@ export default function AdminHeroPage() {
       titleAccent: "",
       description: "",
       image: "",
-      ctaText: "",
-      ctaLink: "",
+      videoUrl: "",
       showVideoButton: false,
       isActive: false,
       order: 1,
@@ -92,8 +90,7 @@ export default function AdminHeroPage() {
       titleAccent: "",
       description: "",
       image: "",
-      ctaText: "",
-      ctaLink: "",
+      videoUrl: "",
       showVideoButton: false,
       isActive: false,
       order: slides.length + 1,
@@ -109,8 +106,7 @@ export default function AdminHeroPage() {
       titleAccent: slide.titleAccent,
       description: slide.description,
       image: slide.image,
-      ctaText: slide.ctaText,
-      ctaLink: slide.ctaLink,
+      videoUrl: slide.videoUrl,
       showVideoButton: slide.showVideoButton,
       isActive: slide.isActive,
       order: slide.order,
@@ -150,9 +146,7 @@ export default function AdminHeroPage() {
         const json = await res.json();
         if (json.success) {
           setSlides((prev) =>
-            prev.map((s) =>
-              s.id === editingSlide.id ? { ...s, ...data } : s,
-            ),
+            prev.map((s) => (s.id === editingSlide.id ? { ...s, ...data } : s)),
           );
           toast.success("Hero slide updated successfully!");
         } else {
@@ -252,7 +246,7 @@ export default function AdminHeroPage() {
               <thead>
                 <tr>
                   <th>Slide</th>
-                  <th>CTA</th>
+                    <th>Video</th>
                   <th className="text-center">Order</th>
                   <th className="text-center">Status</th>
                   <th className="text-center w-32">Actions</th>
@@ -284,12 +278,15 @@ export default function AdminHeroPage() {
                       </div>
                     </td>
                     <td>
-                      <p className="text-sm text-(--admin-text-primary)">
-                        {slide.ctaText}
-                      </p>
-                      <p className="font-mono text-[11px] text-(--admin-text-muted) mt-0.5">
-                        {slide.ctaLink}
-                      </p>
+                      {slide.videoUrl ? (
+                        <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                          Video Attached
+                        </span>
+                      ) : (
+                        <span className="text-xs text-(--admin-text-muted)">
+                          -
+                        </span>
+                      )}
                     </td>
                     <td className="text-center">
                       <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-(--admin-surface-2) text-(--admin-text-secondary) border border-(--admin-border)">
@@ -335,7 +332,7 @@ export default function AdminHeroPage() {
 
       {isOpen && (
         <div className="fixed inset-0 z-100 flex items-center justify-center px-4 bg-black/60 backdrop-blur-xs">
-          <div className="w-full max-w-2xl bg-(--admin-surface) border border-(--admin-border-strong) rounded-xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
+          <div className="w-full max-w-[70%] bg-(--admin-surface) border border-(--admin-border-strong) rounded-xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
             <div className="flex items-center justify-between p-5 border-b border-(--admin-border) bg-(--admin-surface-2)">
               <h3 className="text-base font-bold text-(--admin-text-primary) flex items-center gap-2">
                 <ImageIcon size={18} className="text-(--admin-accent)" />
@@ -429,26 +426,20 @@ export default function AdminHeroPage() {
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-semibold text-(--admin-text-secondary) uppercase tracking-wider">
-                    CTA Button Text *
-                  </label>
-                  <input
-                    {...register("ctaText")}
-                    className="w-full bg-(--admin-surface-2) border border-(--admin-border) text-sm text-(--admin-text-primary) rounded-lg p-2.5 outline-none focus:border-(--admin-accent) transition"
-                  />
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-semibold text-(--admin-text-secondary) uppercase tracking-wider">
-                    CTA Link *
-                  </label>
-                  <input
-                    {...register("ctaLink")}
-                    className="w-full bg-(--admin-surface-2) border border-(--admin-border) text-sm text-(--admin-text-primary) rounded-lg p-2.5 outline-none focus:border-(--admin-accent) transition"
-                  />
-                </div>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold text-(--admin-text-secondary) uppercase tracking-wider">
+                  Video URL (YouTube / MP4) *
+                </label>
+                <input
+                  {...register("videoUrl")}
+                  placeholder="https://www.youtube.com/embed/..."
+                  className={`w-full bg-(--admin-surface-2) border ${errors.videoUrl ? "border-(--admin-danger)" : "border-(--admin-border)"} text-sm text-(--admin-text-primary) rounded-lg p-2.5 outline-none focus:border-(--admin-accent) transition`}
+                />
+                {errors.videoUrl && (
+                  <span className="text-[11px] text-(--admin-danger) flex items-center gap-1">
+                    <AlertCircle size={10} /> {errors.videoUrl.message}
+                  </span>
+                )}
               </div>
 
               <div className="flex flex-wrap gap-6 pt-2">
@@ -489,3 +480,4 @@ export default function AdminHeroPage() {
     </div>
   );
 }
+

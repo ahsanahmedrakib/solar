@@ -1,5 +1,6 @@
 "use client";
 
+import type { ContactQuery } from "@/data/contact";
 import {
   Archive,
   CheckCircle,
@@ -17,7 +18,6 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import type { ContactQuery } from "@/data/contact";
 
 export default function AdminContactQueriesPage() {
   const [queries, setQueries] = useState<ContactQuery[]>([]);
@@ -65,7 +65,7 @@ export default function AdminContactQueriesPage() {
       const json = await res.json();
       if (json.success) {
         setQueries((prev) =>
-          prev.map((q) => (q.id === id ? { ...q, status: newStatus } : q))
+          prev.map((q) => (q.id === id ? { ...q, status: newStatus } : q)),
         );
         if (selectedQuery && selectedQuery.id === id) {
           setSelectedQuery({ ...selectedQuery, status: newStatus });
@@ -105,7 +105,8 @@ export default function AdminContactQueriesPage() {
 
   const handleSendReplyNote = async () => {
     if (!selectedQuery || !replyText.trim()) return;
-    const newNotes = (selectedQuery.notes ? selectedQuery.notes + "\n\n" : "") +
+    const newNotes =
+      (selectedQuery.notes ? selectedQuery.notes + "\n\n" : "") +
       `[Replied on ${new Date().toLocaleDateString()}]: ` +
       replyText;
 
@@ -113,7 +114,11 @@ export default function AdminContactQueriesPage() {
       const res = await fetch("/api/contact", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: selectedQuery.id, status: "replied", notes: newNotes }),
+        body: JSON.stringify({
+          id: selectedQuery.id,
+          status: "replied",
+          notes: newNotes,
+        }),
       });
       const json = await res.json();
       if (json.success) {
@@ -121,8 +126,8 @@ export default function AdminContactQueriesPage() {
           prev.map((q) =>
             q.id === selectedQuery.id
               ? { ...q, status: "replied", notes: newNotes }
-              : q
-          )
+              : q,
+          ),
         );
         setSelectedQuery({
           ...selectedQuery,
@@ -467,7 +472,7 @@ export default function AdminContactQueriesPage() {
       {/* Detailed Modal View */}
       {selectedQuery && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4 animate-fade-in">
-          <div className="bg-admin- border border-white/10 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl flex flex-col">
+          <div className="bg-admin- border border-white/10 rounded-2xl w-full max-w-[70%] max-h-[90vh] overflow-y-auto shadow-2xl flex flex-col">
             {/* Modal Header */}
             <div className="p-6 border-b border-white/10 flex justify-between items-start bg-admin-surface-2/50">
               <div>
@@ -598,7 +603,7 @@ export default function AdminContactQueriesPage() {
                   onChange={(e) =>
                     handleStatusChange(
                       selectedQuery.id,
-                      e.target.value as ContactQuery['status'],
+                      e.target.value as ContactQuery["status"],
                     )
                   }
                   className="bg-admin-bg border border-white/10 text-xs text-white rounded-lg px-3 py-1.5 focus:outline-none focus:border-warning"
