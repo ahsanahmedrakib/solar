@@ -1,8 +1,8 @@
 "use client";
 
 import { ImageUploadInput } from "@/components/Admin/ImageUploadInput";
+import type { TeamMember } from "@/data/team";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { toast } from "react-toastify";
 import {
   AlertCircle,
   Briefcase,
@@ -15,8 +15,8 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 import * as yup from "yup";
-import type { TeamMember } from "@/data/team";
 
 const teamSchema = yup.object({
   name: yup
@@ -29,6 +29,10 @@ const teamSchema = yup.object({
     .min(3, "Must be at least 3 characters"),
   image: yup.string().required("Profile image is required"),
   bio: yup.string().optional().default(""),
+  facebook: yup.string().optional().default(""),
+  instagram: yup.string().optional().default(""),
+  x: yup.string().optional().default(""),
+  linkedin: yup.string().optional().default(""),
 });
 
 interface TeamFormData {
@@ -36,6 +40,10 @@ interface TeamFormData {
   role: string;
   image: string;
   bio?: string;
+  facebook?: string;
+  instagram?: string;
+  x?: string;
+  linkedin?: string;
 }
 
 export default function AdminTeamPage() {
@@ -77,6 +85,10 @@ export default function AdminTeamPage() {
       role: "",
       image: "/images/about/team-image-1.jpg",
       bio: "",
+      facebook: "",
+      instagram: "",
+      x: "",
+      linkedin: "",
     },
   });
 
@@ -84,9 +96,13 @@ export default function AdminTeamPage() {
     setEditingMember(null);
     reset({
       name: "",
-      role: "Solar Systems Specialist",
-      image: "/images/about/team-image-1.jpg",
+      role: "",
+      image: "",
       bio: "",
+      facebook: "",
+      instagram: "",
+      x: "",
+      linkedin: "",
     });
     setIsOpen(true);
   };
@@ -98,6 +114,10 @@ export default function AdminTeamPage() {
       role: member.role,
       image: member.image,
       bio: member.bio || "",
+      facebook: member.socialLinks?.facebook || "",
+      instagram: member.socialLinks?.instagram || "",
+      x: member.socialLinks?.x || "",
+      linkedin: member.socialLinks?.linkedin || "",
     });
     setIsOpen(true);
   };
@@ -115,25 +135,34 @@ export default function AdminTeamPage() {
         } else {
           toast.error("Failed to remove team member: " + json.error);
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
+        const message =
+          error instanceof Error ? error.message : "Unknown error";
         console.error("Failed to remove team member", error);
-        toast.error("Failed to remove team member: " + error.message);
+        toast.error("Failed to remove team member: " + message);
       }
     }
   };
 
   const onSubmit = async (data: TeamFormData) => {
     try {
+      const { facebook, instagram, x, linkedin, ...rest } = data;
+      const socialLinks = { facebook, instagram, x, linkedin };
+      const hasSocial = Object.values(socialLinks).some(Boolean);
+      const payload = hasSocial ? { ...rest, socialLinks } : rest;
+
       if (editingMember) {
         const res = await fetch("/api/team", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ id: editingMember.id, ...data }),
+          body: JSON.stringify({ id: editingMember.id, ...payload }),
         });
         const json = await res.json();
         if (json.success) {
           setTeam((prev) =>
-            prev.map((m) => (m.id === editingMember.id ? { ...m, ...data } : m))
+            prev.map((m) =>
+              m.id === editingMember.id ? { ...m, ...payload } : m,
+            ),
           );
           toast.success("Team member updated successfully!");
         } else {
@@ -143,7 +172,7 @@ export default function AdminTeamPage() {
         const res = await fetch("/api/team", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data),
+          body: JSON.stringify(payload),
         });
         const json = await res.json();
         if (json.success) {
@@ -154,9 +183,10 @@ export default function AdminTeamPage() {
         }
       }
       setIsOpen(false);
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Unknown error";
       console.error("Failed to save team member", error);
-      toast.error("Failed to save team member: " + error.message);
+      toast.error("Failed to save team member: " + message);
     }
   };
 
@@ -358,6 +388,32 @@ export default function AdminTeamPage() {
                 )}
               />
 
+              <div className="border-t border-(--admin-border) pt-4">
+                <p className="text-xs font-semibold text-(--admin-text-secondary) uppercase tracking-wider mb-3">
+                  Social Links (optional)
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {(["facebook", "instagram", "x", "linkedin"] as const).map(
+                    (platform) => (
+                      <div key={platform} className="flex flex-col gap-1">
+                        <label className="text-[11px] font-semibold text-(--admin-text-muted) uppercase tracking-wider">
+                          {platform === "x"
+                            ? "X / Twitter"
+                            : platform.charAt(0).toUpperCase() +
+                              platform.slice(1)}
+                        </label>
+                        <input
+                          type="url"
+                          placeholder={`https://${platform}.com/...`}
+                          {...register(platform)}
+                          className="w-full bg-(--admin-surface-2) border border-(--admin-border) text-sm text-(--admin-text-primary) rounded-lg p-2.5 outline-none focus:border-(--admin-accent) transition"
+                        />
+                      </div>
+                    ),
+                  )}
+                </div>
+              </div>
+
               <div className="flex justify-end gap-3 pt-3 border-t border-(--admin-border)">
                 <button
                   type="button"
@@ -382,4 +438,3 @@ export default function AdminTeamPage() {
     </div>
   );
 }
-

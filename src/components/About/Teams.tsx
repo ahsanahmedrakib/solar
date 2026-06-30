@@ -1,50 +1,80 @@
 "use client";
 
+import { DEFAULT_TEAM, type TeamMember } from "@/data/team";
 import Image from "next/image";
-import { useState } from "react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
-interface TeamMember {
-  name: string;
-  role: string;
-  image: string;
-}
-
-const initialTeamMembers: TeamMember[] = [
-  {
-    name: "Leslie Alexander",
-    role: "Lead Solar Engineer",
-    image: "/images/about/team-image-1.jpg",
-  },
-  {
-    name: "Marvin McKinney",
-    role: "Lead Solar Engineer",
-    image: "/images/about/team-image-2.jpg",
-  },
-  {
-    name: "Kathryn Murphy",
-    role: "Lead Solar Engineer",
-    image: "/images/about/team-image-3.jpg",
-  },
-];
+const SOCIAL_ICONS = {
+  facebook: (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="200"
+      height="200"
+      viewBox="0 0 24 24"
+      fill="#1877F2"
+    >
+      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+    </svg>
+  ),
+  instagram: (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="200"
+      height="200"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="#E4405F"
+      strokeWidth="2"
+      strokeLinejoin="round"
+      strokeLinecap="round"
+    >
+      <rect x="3" y="3" width="18" height="18" rx="5" ry="5" />
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+    </svg>
+  ),
+  x: (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="200"
+      height="200"
+      viewBox="0 0 24 24"
+      fill="#000000"
+    >
+      <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.847h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.806l5.38 7.12 6.715-7.12zM17.61 20.644h2.039L6.486 3.24H4.298L17.61 20.644z" />
+    </svg>
+  ),
+  linkedin: (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="200"
+      height="200"
+      viewBox="0 0 24 24"
+      fill="#0A66C2"
+    >
+      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.854 0-2.137 1.446-2.137 2.94v5.666H9.351V9.358h3.414v1.513h.048c.475-.9 1.633-1.85 3.36-1.85 3.593 0 4.256 2.363 4.256 5.437v5.994zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9.358h3.564v11.094zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z" />
+    </svg>
+  ),
+} as const;
 
 export default function Teams() {
-  const [teamMembers] = useState<TeamMember[]>(() => {
-    try {
-      const stored =
-        typeof window !== "undefined"
-          ? localStorage.getItem("admin_team")
-          : null;
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed as TeamMember[];
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>(DEFAULT_TEAM);
+
+  useEffect(() => {
+    async function loadTeam() {
+      try {
+        const res = await fetch("/api/team");
+        const json = await res.json();
+        if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+          setTeamMembers(json.data);
         }
+      } catch (error) {
+        console.error("Failed to load team members", error);
       }
-    } catch (e) {
-      console.error("Error loading team members", e);
     }
-    return initialTeamMembers;
-  });
+    loadTeam();
+  }, []);
   return (
     <section className="relative w-full bg-white px-4 py-12 md:px-8 lg:px-16 lg:py-24">
       <div className="mx-auto max-w-7xl">
@@ -120,37 +150,29 @@ export default function Teams() {
                   {member.role}
                 </p>
 
-                {/* Social Share Icons Footer */}
-                <div className="mt-6 flex items-center gap-3 border-t border-gray-200/60 pt-6 w-full justify-center">
-                  {/* Pinterest Placeholder */}
-                  <a
-                    href="#"
-                    className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 text-gray-400 bg-white transition-colors hover:text-red-600 hover:border-red-200"
-                  >
-                    <span className="text-xs font-serif font-bold">P</span>
-                  </a>
-                  {/* X / Twitter Placeholder */}
-                  <a
-                    href="#"
-                    className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 text-gray-400 bg-white transition-colors hover:text-black hover:border-black"
-                  >
-                    <span className="text-xs font-bold font-mono">X</span>
-                  </a>
-                  {/* Facebook Placeholder */}
-                  <a
-                    href="#"
-                    className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 text-gray-400 bg-white transition-colors hover:text-blue-600 hover:border-blue-200"
-                  >
-                    <span className="text-xs font-bold">f</span>
-                  </a>
-                  {/* Instagram Placeholder */}
-                  <a
-                    href="#"
-                    className="flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 text-gray-400 bg-white transition-colors hover:text-pink-600 hover:border-pink-200"
-                  >
-                    <span className="text-xs font-bold">📷</span>
-                  </a>
-                </div>
+                {member.socialLinks && (
+                  <div className="mt-6 flex items-center gap-3 border-t border-gray-200/60 pt-6 w-full justify-center">
+                    {(
+                      Object.keys(SOCIAL_ICONS) as Array<
+                        keyof typeof SOCIAL_ICONS
+                      >
+                    ).map((platform) => {
+                      const url = member.socialLinks?.[platform];
+                      if (!url) return null;
+                      return (
+                        <Link
+                          key={platform}
+                          href={url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 text-gray-400 bg-white transition-colors`}
+                        >
+                          {SOCIAL_ICONS[platform]}
+                        </Link>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             </div>
           ))}
