@@ -18,6 +18,14 @@ const PUBLIC_PATHS = [
   "/api/comments",
 ];
 
+function getToken(request: NextRequest): string | null {
+  const authHeader = request.headers.get("Authorization");
+  if (authHeader?.startsWith("Bearer ")) {
+    return authHeader.slice(7);
+  }
+  return request.cookies.get("accessToken")?.value ?? null;
+}
+
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const method = request.method;
@@ -39,8 +47,8 @@ export function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const authHeader = request.headers.get("Authorization");
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+  const token = getToken(request);
+  if (!token) {
     return NextResponse.json(
       { success: false, error: "Authorization header missing or invalid" },
       { status: 401 },

@@ -46,7 +46,7 @@ export async function POST(request: Request) {
     const accessToken = generateAccessToken(payload);
     const refreshToken = generateRefreshToken(payload);
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       success: true,
       data: {
         accessToken,
@@ -59,6 +59,24 @@ export async function POST(request: Request) {
         },
       },
     });
+
+    response.cookies.set("accessToken", accessToken, {
+      httpOnly: false,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 15,
+    });
+
+    response.cookies.set("refreshToken", refreshToken, {
+      httpOnly: false,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7,
+    });
+
+    return response;
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
     return NextResponse.json(

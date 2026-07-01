@@ -19,10 +19,20 @@ export async function POST(request: Request) {
       role: payload.role,
     });
 
-    return NextResponse.json({
+    const response = NextResponse.json({
       success: true,
       data: { accessToken },
     });
+
+    response.cookies.set("accessToken", accessToken, {
+      httpOnly: false,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 15,
+    });
+
+    return response;
   } catch {
     return NextResponse.json(
       { success: false, error: "Invalid or expired refresh token" },
