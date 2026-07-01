@@ -74,7 +74,7 @@ export default function Hero() {
           speed={900}
           loop={slides.length > 1}
           autoplay={{
-            delay: 6000,
+            delay: 2000,
             disableOnInteraction: false,
           }}
           pagination={{

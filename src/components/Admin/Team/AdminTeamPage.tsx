@@ -19,6 +19,7 @@ import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import * as yup from "yup";
+import { apiClient } from "@/lib/apiClient";
 
 const teamSchema = yup.object({
   name: yup
@@ -59,7 +60,7 @@ export default function AdminTeamPage() {
   useEffect(() => {
     async function loadTeam() {
       try {
-        const res = await fetch("/api/team");
+        const res = await apiClient("/api/team");
         const json = await res.json();
         if (json.success) {
           setTeam(json.data);
@@ -127,7 +128,7 @@ export default function AdminTeamPage() {
   const handleDeleteClick = async (id: number) => {
     if (confirm("Are you sure you want to remove this team member?")) {
       try {
-        const res = await fetch(`/api/team?id=${id}`, {
+        const res = await apiClient(`/api/team?id=${id}`, {
           method: "DELETE",
         });
         const json = await res.json();
@@ -154,7 +155,7 @@ export default function AdminTeamPage() {
       const payload = hasSocial ? { ...rest, socialLinks } : rest;
 
       if (editingMember) {
-        const res = await fetch("/api/team", {
+        const res = await apiClient("/api/team", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ id: editingMember.id, ...payload }),
@@ -172,7 +173,7 @@ export default function AdminTeamPage() {
           toast.error("Failed to update team member: " + json.error);
         }
       } else {
-        const res = await fetch("/api/team", {
+        const res = await apiClient("/api/team", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),

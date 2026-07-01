@@ -18,6 +18,7 @@ import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import * as yup from "yup";
+import { apiClient } from "@/lib/apiClient";
 
 const featureItemSchema = yup.object({
   value: yup.string().required("Feature cannot be empty"),
@@ -76,7 +77,7 @@ export default function AdminPlansPage() {
   useEffect(() => {
     async function loadPlans() {
       try {
-        const res = await fetch("/api/plans");
+        const res = await apiClient("/api/plans");
         const json = await res.json();
         if (json.success) {
           setPlans(json.data);
@@ -149,7 +150,7 @@ export default function AdminPlansPage() {
   const handleDeleteClick = async (id: number) => {
     if (confirm("Are you sure you want to delete this pricing plan?")) {
       try {
-        const res = await fetch(`/api/plans?id=${id}`, {
+        const res = await apiClient(`/api/plans?id=${id}`, {
           method: "DELETE",
         });
         const json = await res.json();
@@ -184,7 +185,7 @@ export default function AdminPlansPage() {
 
     try {
       if (editingPlan) {
-        const res = await fetch("/api/plans", {
+        const res = await apiClient("/api/plans", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ id: editingPlan.id, ...payload }),
@@ -202,7 +203,7 @@ export default function AdminPlansPage() {
           toast.error("Failed to update pricing plan: " + json.error);
         }
       } else {
-        const res = await fetch("/api/plans", {
+        const res = await apiClient("/api/plans", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),

@@ -27,6 +27,7 @@ import { useEffect, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { toast } from "react-toastify";
 import * as yup from "yup";
+import { apiClient } from "@/lib/apiClient";
 
 // Available Lucide Icons for selection
 const AVAILABLE_ICONS = [
@@ -61,8 +62,7 @@ const serviceSchema = yup.object().shape({
   serviceDetails: yup
     .string()
     .required("serviceDetails is required")
-    .min(10, "serviceDetails must be at least 10 characters")
-    .max(4000, "serviceDetails must not exceed 4000 characters"),
+    .min(10, "serviceDetails must be at least 10 characters"),
   image: yup.string().required("Image is required"),
   alt: yup
     .string()
@@ -85,7 +85,7 @@ export default function AdminServicesPage() {
   useEffect(() => {
     async function loadServices() {
       try {
-        const res = await fetch("/api/services");
+        const res = await apiClient("/api/services");
         const json = await res.json();
         if (json.success) {
           setServices(json.data);
@@ -168,7 +168,7 @@ export default function AdminServicesPage() {
   const handleDeleteClick = async (id: number) => {
     if (confirm("Are you sure you want to delete this service?")) {
       try {
-        const res = await fetch(`/api/services?id=${id}`, {
+        const res = await apiClient(`/api/services?id=${id}`, {
           method: "DELETE",
         });
         const json = await res.json();
@@ -189,7 +189,7 @@ export default function AdminServicesPage() {
   const onSubmit = async (data: ServiceFormData) => {
     try {
       if (editingService) {
-        const res = await fetch("/api/services", {
+        const res = await apiClient("/api/services", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ id: editingService.id, ...data }),
@@ -207,7 +207,7 @@ export default function AdminServicesPage() {
           toast.error("Failed to update service: " + json.error);
         }
       } else {
-        const res = await fetch("/api/services", {
+        const res = await apiClient("/api/services", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data),

@@ -2,9 +2,8 @@
 
 import { ImageUploadInput } from "@/components/Admin/ImageUploadInput";
 import { RichTextEditor } from "@/components/Admin/RichTextEditor";
-import { DEFAULT_ADMIN_LOGO } from "@/data/settings";
-import Image from "next/image";
 import type { Project } from "@/data/projects";
+import { DEFAULT_ADMIN_LOGO } from "@/data/settings";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
   AlertCircle,
@@ -18,10 +17,12 @@ import {
   User,
   X,
 } from "lucide-react";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { toast } from "react-toastify";
 import * as yup from "yup";
+import { apiClient } from "@/lib/apiClient";
 
 const CATEGORIES = [
   "Residential Solar",
@@ -60,8 +61,7 @@ const projectSchema = yup.object().shape({
   projectDetails: yup
     .string()
     .required("Project details is required")
-    .min(20, "Project details must be at least 20 characters")
-    .max(4000, "Project details can not be more than 4000 characters"),
+    .min(20, "Project details must be at least 20 characters"),
 });
 
 type ProjectFormData = yup.InferType<typeof projectSchema>;
@@ -102,7 +102,7 @@ export default function AdminProjectsPage() {
   useEffect(() => {
     async function loadProjects() {
       try {
-        const res = await fetch("/api/projects");
+        const res = await apiClient("/api/projects");
         const json = await res.json();
         if (json.success) {
           setProjects(json.data);
@@ -168,7 +168,7 @@ export default function AdminProjectsPage() {
   const handleDeleteClick = async (id: number) => {
     if (confirm("Are you sure you want to delete this project?")) {
       try {
-        const res = await fetch(`/api/projects?id=${id}`, {
+        const res = await apiClient(`/api/projects?id=${id}`, {
           method: "DELETE",
         });
         const json = await res.json();
@@ -189,7 +189,7 @@ export default function AdminProjectsPage() {
   const onSubmit = async (data: ProjectFormData) => {
     try {
       if (editingProject) {
-        const res = await fetch("/api/projects", {
+        const res = await apiClient("/api/projects", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ id: editingProject.id, ...data }),
@@ -207,7 +207,7 @@ export default function AdminProjectsPage() {
           toast.error("Failed to update project: " + json.error);
         }
       } else {
-        const res = await fetch("/api/projects", {
+        const res = await apiClient("/api/projects", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data),
@@ -242,7 +242,15 @@ export default function AdminProjectsPage() {
   if (!isLoaded) {
     return (
       <div className="flex flex-col items-center justify-center min-h-100">
-        <Image src={DEFAULT_ADMIN_LOGO} alt="Loading" width={0} height={0} sizes="100vw" className="h-16 w-auto animate-pulse opacity-70" priority />
+        <Image
+          src={DEFAULT_ADMIN_LOGO}
+          alt="Loading"
+          width={0}
+          height={0}
+          sizes="100vw"
+          className="h-16 w-auto animate-pulse opacity-70"
+          priority
+        />
         <p className="mt-4 text-(--admin-text-secondary) font-medium">
           Loading Projects...
         </p>
@@ -589,7 +597,13 @@ export default function AdminProjectsPage() {
                 >
                   {isSubmitting ? (
                     <div className="flex items-center gap-2">
-                      <Image src="/images/loader.svg" alt="Loading" width={14} height={14} className="w-3.5 h-3.5" />
+                      <Image
+                        src="/images/loader.svg"
+                        alt="Loading"
+                        width={14}
+                        height={14}
+                        className="w-3.5 h-3.5"
+                      />
                       Saving...
                     </div>
                   ) : (

@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { usePathname } from "next/navigation";
-import { X, MessageCircle } from "lucide-react";
+import type { Section } from "@/data/settings";
 import { DEFAULT_SECTIONS } from "@/data/settings";
+import { fetchSettings } from "@/lib/settings-cache";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
 interface ChatSettings {
-  showChatWidgets: boolean;
   showWhatsapp: boolean;
   whatsappNumber: string;
   whatsappMessage: string;
@@ -14,48 +14,42 @@ interface ChatSettings {
   messengerUsername: string;
 }
 
-const chatSection = DEFAULT_SECTIONS.find((s) => s.id === "chat-widgets");
-
-function fv(id: string, fallback: string): string {
-  return chatSection?.fields?.find((f) => f.id === id)?.value ?? fallback;
+function getField(
+  sec: Section | undefined,
+  id: string,
+  fallback: string,
+): string {
+  return sec?.fields?.find((f) => f.id === id)?.value ?? fallback;
 }
 
-function tv(id: string, fallback: boolean): boolean {
-  return chatSection?.toggles?.find((t) => t.id === id)?.checked ?? fallback;
+function getToggle(
+  sec: Section | undefined,
+  id: string,
+  fallback: boolean,
+): boolean {
+  return sec?.toggles?.find((t) => t.id === id)?.checked ?? fallback;
 }
 
-const DEFAULTS: ChatSettings = {
-  showChatWidgets: tv("show-chat-widgets", true),
-  showWhatsapp: tv("show-whatsapp", true),
-  whatsappNumber: fv("whatsapp-number", "18005557652").replace(/[^0-9]/g, ""),
-  whatsappMessage: fv("whatsapp-message", "Hello! I would like to inquire about solar energy solutions."),
-  showMessenger: tv("show-messenger", true),
-  messengerUsername: fv("messenger-username", "sunexsolar"),
-};
-
-function readSettings(): ChatSettings {
-  try {
-    const raw = localStorage.getItem("admin_settings");
-    if (!raw) return DEFAULTS;
-    const sections = JSON.parse(raw);
-    if (!Array.isArray(sections)) return DEFAULTS;
-    const sec = sections.find((s: any) => s.id === "chat-widgets");
-    if (!sec) return DEFAULTS;
-
-    const rawPhone = (sec.fields?.find((f: any) => f.id === "whatsapp-number")?.value ?? DEFAULTS.whatsappNumber).replace(/[^0-9]/g, "");
-
-    return {
-      showChatWidgets: sec.toggles?.find((t: any) => t.id === "show-chat-widgets")?.checked ?? DEFAULTS.showChatWidgets,
-      showWhatsapp: sec.toggles?.find((t: any) => t.id === "show-whatsapp")?.checked ?? DEFAULTS.showWhatsapp,
-      whatsappNumber: rawPhone,
-      whatsappMessage: sec.fields?.find((f: any) => f.id === "whatsapp-message")?.value ?? DEFAULTS.whatsappMessage,
-      showMessenger: sec.toggles?.find((t: any) => t.id === "show-messenger")?.checked ?? DEFAULTS.showMessenger,
-      messengerUsername: sec.fields?.find((f: any) => f.id === "messenger-username")?.value ?? DEFAULTS.messengerUsername,
-    };
-  } catch {
-    return DEFAULTS;
-  }
+function buildSettings(sections: Section[]): ChatSettings {
+  const sec = sections.find((s) => s.id === "chat-widgets");
+  const rawPhone = getField(sec, "whatsapp-number", "18005557652").replace(
+    /[^0-9]/g,
+    "",
+  );
+  return {
+    showWhatsapp: getToggle(sec, "show-whatsapp", true),
+    whatsappNumber: rawPhone,
+    whatsappMessage: getField(
+      sec,
+      "whatsapp-message",
+      "Hello! I would like to inquire about solar energy solutions.",
+    ),
+    showMessenger: getToggle(sec, "show-messenger", true),
+    messengerUsername: getField(sec, "messenger-username", "sunexsolar"),
+  };
 }
+
+const DEFAULTS = buildSettings(DEFAULT_SECTIONS);
 
 const WhatsAppIcon = () => (
   <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
@@ -76,18 +70,15 @@ export default function FloatingChatWidget() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
-    setSettings(readSettings());
-
-    const onStorage = () => setSettings(readSettings());
-    window.addEventListener("storage", onStorage);
-    return () => window.removeEventListener("storage", onStorage);
+    fetchSettings()
+      .then((data) => {
+        if (data) setSettings(buildSettings(data));
+      })
+      .finally(() => setMounted(true));
   }, []);
 
-  // SSR guard + admin pages + disabled
   if (!mounted) return null;
   if (pathname?.startsWith("/admin")) return null;
-  if (!settings.showChatWidgets) return null;
   if (!settings.showWhatsapp && !settings.showMessenger) return null;
 
   const waUrl = `https://wa.me/${settings.whatsappNumber}?text=${encodeURIComponent(settings.whatsappMessage)}`;
@@ -95,176 +86,15 @@ export default function FloatingChatWidget() {
 
   return (
     <>
-      {/* Backdrop when open (mobile) */}
       {isOpen && (
-        <div
-          className="fixed inset-0 z-40"
-          onClick={() => setIsOpen(false)}
-        />
+        <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
       )}
 
-      {/* Widget container — fixed bottom-right */}
       <div
         style={{ position: "fixed", bottom: "24px", right: "24px", zIndex: 50 }}
         className="flex flex-col items-end gap-3"
       >
-        {/* Popup card */}
-        {isOpen && (
-          <div
-            style={{
-              background: "#0d1b2a",
-              border: "1px solid rgba(255,255,255,0.12)",
-              borderRadius: "20px",
-              padding: "20px",
-              width: "280px",
-              boxShadow: "0 25px 60px rgba(0,0,0,0.5)",
-              marginBottom: "4px",
-            }}
-          >
-            {/* Card header */}
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                marginBottom: "12px",
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                <span
-                  style={{
-                    width: "8px",
-                    height: "8px",
-                    borderRadius: "50%",
-                    background: "#4ade80",
-                    display: "inline-block",
-                    animation: "pulse 2s infinite",
-                  }}
-                />
-                <span
-                  style={{
-                    color: "#e2e8f0",
-                    fontSize: "11px",
-                    fontWeight: 700,
-                    textTransform: "uppercase",
-                    letterSpacing: "0.08em",
-                  }}
-                >
-                  Live Support
-                </span>
-              </div>
-              <button
-                onClick={() => setIsOpen(false)}
-                style={{
-                  background: "rgba(255,255,255,0.08)",
-                  border: "none",
-                  borderRadius: "8px",
-                  padding: "4px",
-                  cursor: "pointer",
-                  color: "#94a3b8",
-                  display: "flex",
-                  alignItems: "center",
-                }}
-              >
-                <X size={14} />
-              </button>
-            </div>
-
-            <p style={{ color: "#94a3b8", fontSize: "12px", lineHeight: 1.6, marginBottom: "14px" }}>
-              Chat with our team about solar installation, pricing, or any questions.
-            </p>
-
-            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-              {settings.showWhatsapp && (
-                <a
-                  href={waUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "12px",
-                    padding: "10px 14px",
-                    borderRadius: "12px",
-                    background: "#25D366",
-                    color: "#fff",
-                    textDecoration: "none",
-                    fontSize: "13px",
-                    fontWeight: 600,
-                    transition: "opacity 0.2s",
-                  }}
-                  onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.9")}
-                  onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
-                >
-                  <div
-                    style={{
-                      width: "30px",
-                      height: "30px",
-                      borderRadius: "50%",
-                      background: "rgba(255,255,255,0.2)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      flexShrink: 0,
-                    }}
-                  >
-                    <WhatsAppIcon />
-                  </div>
-                  <div>
-                    <div>WhatsApp</div>
-                    <div style={{ fontSize: "10px", opacity: 0.8, fontWeight: 400 }}>Typically replies instantly</div>
-                  </div>
-                </a>
-              )}
-
-              {settings.showMessenger && (
-                <a
-                  href={meUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "12px",
-                    padding: "10px 14px",
-                    borderRadius: "12px",
-                    background: "#0084FF",
-                    color: "#fff",
-                    textDecoration: "none",
-                    fontSize: "13px",
-                    fontWeight: 600,
-                    transition: "opacity 0.2s",
-                  }}
-                  onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.9")}
-                  onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
-                >
-                  <div
-                    style={{
-                      width: "30px",
-                      height: "30px",
-                      borderRadius: "50%",
-                      background: "rgba(255,255,255,0.2)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      flexShrink: 0,
-                    }}
-                  >
-                    <MessengerIcon />
-                  </div>
-                  <div>
-                    <div>Messenger</div>
-                    <div style={{ fontSize: "10px", opacity: 0.8, fontWeight: 400 }}>Facebook Messenger</div>
-                  </div>
-                </a>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Bottom row: individual icons + main toggle */}
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          {/* WhatsApp standalone button (shown when popup is closed) */}
+        <div className="flex flex-col gap-2">
           {!isOpen && settings.showWhatsapp && (
             <div style={{ position: "relative" }} className="group">
               <a
@@ -284,13 +114,16 @@ export default function FloatingChatWidget() {
                   textDecoration: "none",
                   transition: "transform 0.2s",
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.12)")}
-                onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.transform = "scale(1.12)")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.transform = "scale(1)")
+                }
                 title="Chat on WhatsApp"
               >
                 <WhatsAppIcon />
               </a>
-              {/* Tooltip */}
               <span
                 className="group-hover:opacity-100"
                 style={{
@@ -316,7 +149,6 @@ export default function FloatingChatWidget() {
             </div>
           )}
 
-          {/* Messenger standalone button (shown when popup is closed) */}
           {!isOpen && settings.showMessenger && (
             <div style={{ position: "relative" }} className="group">
               <a
@@ -336,13 +168,16 @@ export default function FloatingChatWidget() {
                   textDecoration: "none",
                   transition: "transform 0.2s",
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.12)")}
-                onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.transform = "scale(1.12)")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.transform = "scale(1)")
+                }
                 title="Chat on Messenger"
               >
                 <MessengerIcon />
               </a>
-              {/* Tooltip */}
               <span
                 className="group-hover:opacity-100"
                 style={{
@@ -367,39 +202,9 @@ export default function FloatingChatWidget() {
               </span>
             </div>
           )}
-
-          {/* Main toggle button */}
-          <button
-            onClick={() => setIsOpen((v) => !v)}
-            title={isOpen ? "Close" : "Chat with us"}
-            style={{
-              width: "56px",
-              height: "56px",
-              borderRadius: "50%",
-              background: isOpen ? "#334155" : "#4CAF50",
-              color: "#fff",
-              border: "none",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              boxShadow: isOpen
-                ? "0 4px 16px rgba(0,0,0,0.3)"
-                : "0 4px 24px rgba(76,175,80,0.5)",
-              transform: isOpen ? "rotate(45deg)" : "rotate(0deg)",
-              transition: "background 0.25s, transform 0.3s, box-shadow 0.25s",
-            }}
-            onMouseEnter={(e) => {
-              if (!isOpen) e.currentTarget.style.background = "#43a047";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = isOpen ? "#334155" : "#4CAF50";
-            }}
-          >
-            {isOpen ? <X size={24} /> : <MessageCircle size={24} />}
-          </button>
         </div>
       </div>
     </>
   );
 }
+

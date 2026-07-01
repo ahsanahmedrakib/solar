@@ -105,11 +105,6 @@ export const DEFAULT_SECTIONS: Section[] = [
     ],
     toggles: [
       {
-        label: "Show Floating Chat Widgets on Main Site",
-        checked: true,
-        id: "show-chat-widgets",
-      },
-      {
         label: "Enable WhatsApp Direct Chat Button",
         checked: true,
         id: "show-whatsapp",
@@ -118,110 +113,6 @@ export const DEFAULT_SECTIONS: Section[] = [
         label: "Enable Facebook Messenger Button",
         checked: true,
         id: "show-messenger",
-      },
-    ],
-  },
-  {
-    id: "header",
-    title: "Header & Navigation Settings",
-    iconName: "Globe",
-    color: "#3b82f6",
-    fields: [
-      {
-        label: "Top Bar Announcement Text",
-        type: "text",
-        value:
-          "\u26a1 Get up to 30% Federal Tax Credits on Residential Solar Systems!",
-        id: "header-announcement",
-      },
-      {
-        label: "Header CTA Button Text",
-        type: "text",
-        value: "Get Free Quote",
-        id: "header-cta-text",
-      },
-      {
-        label: "Header CTA Target Link",
-        type: "text",
-        value: "/contact",
-        id: "header-cta-link",
-      },
-    ],
-    toggles: [
-      {
-        label: "Show Top Announcement Banner",
-        checked: true,
-        id: "show-top-banner",
-      },
-      {
-        label: "Show Emergency Call Button in Header",
-        checked: true,
-        id: "show-header-phone",
-      },
-    ],
-  },
-  {
-    id: "homepage",
-    title: "Homepage & Hero Content Defaults",
-    iconName: "Layout",
-    color: "#8b5cf6",
-    fields: [
-      {
-        label: "Hero Main Heading",
-        type: "text",
-        value: "Sustainable Solar Energy Solutions For Your Home & Business",
-        id: "hero-title",
-      },
-      {
-        label: "Hero Subtitle Description",
-        type: "text",
-        value:
-          "Clean, reliable, and affordable solar power systems tailored to reduce your energy bills.",
-        id: "hero-subtitle",
-      },
-      {
-        label: "Primary CTA Button Text",
-        type: "text",
-        value: "Calculate Savings",
-        id: "hero-cta-primary",
-      },
-      {
-        label: "Secondary CTA Button Text",
-        type: "text",
-        value: "Explore Projects",
-        id: "hero-cta-secondary",
-      },
-    ],
-  },
-  {
-    id: "solar-stats",
-    title: "Solar Stats & Impact Counters",
-    iconName: "Sun",
-    color: "#eab308",
-    fields: [
-      {
-        label: "Total Solar Systems Installed",
-        type: "text",
-        value: "12,500+",
-        id: "stat-installations",
-      },
-      {
-        label: "CO2 Emissions Reduced (Tons)",
-        type: "text",
-        value: "450,000+",
-        id: "stat-co2",
-      },
-      {
-        label: "Customer Satisfaction Rate (%)",
-        type: "text",
-        value: "99.4%",
-        id: "stat-satisfaction",
-      },
-      {
-        label: "Standard Panel Warranty (Years)",
-        type: "text",
-        value: "25 Years",
-        id: "stat-warranty",
       },
     ],
   },
@@ -292,29 +183,6 @@ export const DEFAULT_SECTIONS: Section[] = [
       },
     ],
   },
-  {
-    id: "security",
-    title: "Security & Admin Governance",
-    iconName: "Shield",
-    color: "#ef4444",
-    toggles: [
-      {
-        label: "Two-Factor Authentication for Admins",
-        checked: true,
-        id: "2fa",
-      },
-      {
-        label: "Detailed Audit Logging for Content Edits",
-        checked: true,
-        id: "audit-log",
-      },
-      {
-        label: "Automatic Session Lock (30 Minutes)",
-        checked: false,
-        id: "session-timeout",
-      },
-    ],
-  },
 ];
 
 export const DEFAULT_LOGO =
@@ -330,3 +198,4 @@ export function getDefaultField(sectionId: string, fieldId: string): string {
     )?.value ?? ""
   );
 }
+

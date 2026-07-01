@@ -20,6 +20,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import * as yup from "yup";
+import { apiClient } from "@/lib/apiClient";
 
 interface UserData {
   id: string;
@@ -74,7 +75,7 @@ export default function AdminUsersPage() {
   async function loadUsers() {
     try {
       const token = localStorage.getItem("accessToken");
-      const res = await fetch("/api/users", {
+      const res = await apiClient("/api/users", {
         headers: { Authorization: `Bearer ${token}` },
       });
       const json = await res.json();
@@ -111,7 +112,7 @@ export default function AdminUsersPage() {
     if (!confirm("Are you sure you want to delete this user?")) return;
     try {
       const token = localStorage.getItem("accessToken");
-      const res = await fetch(`/api/users?id=${id}`, {
+      const res = await apiClient(`/api/users?id=${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -142,7 +143,7 @@ export default function AdminUsersPage() {
         if (data.password) body.password = data.password;
         if (data.role && isSuperadmin) body.role = data.role;
 
-        const res = await fetch("/api/users", {
+        const res = await apiClient("/api/users", {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -164,7 +165,7 @@ export default function AdminUsersPage() {
         body.password = data.password;
         body.role = data.role;
 
-        const res = await fetch("/api/users", {
+        const res = await apiClient("/api/users", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

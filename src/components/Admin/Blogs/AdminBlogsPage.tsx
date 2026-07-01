@@ -21,6 +21,7 @@ import { useEffect, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { toast } from "react-toastify";
 import * as yup from "yup";
+import { apiClient } from "@/lib/apiClient";
 
 const CATEGORIES = [
   "Residential Solar",
@@ -81,7 +82,7 @@ export default function AdminBlogsPage() {
   useEffect(() => {
     async function loadBlogs() {
       try {
-        const res = await fetch("/api/blogs");
+        const res = await apiClient("/api/blogs");
         const json = await res.json();
         if (json.success) {
           setBlogs(json.data);
@@ -166,7 +167,7 @@ export default function AdminBlogsPage() {
   const handleDeleteClick = async (id: number) => {
     if (confirm("Are you sure you want to delete this blog post?")) {
       try {
-        const res = await fetch(`/api/blogs?id=${id}`, {
+        const res = await apiClient(`/api/blogs?id=${id}`, {
           method: "DELETE",
         });
         const json = await res.json();
@@ -208,7 +209,7 @@ export default function AdminBlogsPage() {
 
     try {
       if (editingBlog) {
-        const res = await fetch("/api/blogs", {
+        const res = await apiClient("/api/blogs", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ id: editingBlog.id, ...payload }),
@@ -226,7 +227,7 @@ export default function AdminBlogsPage() {
           toast.error("Failed to update blog post: " + json.error);
         }
       } else {
-        const res = await fetch("/api/blogs", {
+        const res = await apiClient("/api/blogs", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),

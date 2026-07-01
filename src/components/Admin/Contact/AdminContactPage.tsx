@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { apiClient } from "@/lib/apiClient";
 
 export default function AdminContactQueriesPage() {
   const [queries, setQueries] = useState<ContactQuery[]>([]);
@@ -33,7 +34,7 @@ export default function AdminContactQueriesPage() {
 
   const loadQueries = async () => {
     try {
-      const res = await fetch("/api/contact");
+      const res = await apiClient("/api/contact");
       const json = await res.json();
       if (json.success) {
         setQueries(json.data);
@@ -59,7 +60,7 @@ export default function AdminContactQueriesPage() {
     newStatus: "new" | "replied" | "archived",
   ) => {
     try {
-      const res = await fetch("/api/contact", {
+      const res = await apiClient("/api/contact", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id, status: newStatus }),
@@ -85,7 +86,7 @@ export default function AdminContactQueriesPage() {
   const handleDelete = async (id: string) => {
     if (confirm("Are you sure you want to delete this contact query?")) {
       try {
-        const res = await fetch(`/api/contact?id=${id}`, {
+        const res = await apiClient(`/api/contact?id=${id}`, {
           method: "DELETE",
         });
         const json = await res.json();
@@ -113,7 +114,7 @@ export default function AdminContactQueriesPage() {
       replyText;
 
     try {
-      const res = await fetch("/api/contact", {
+      const res = await apiClient("/api/contact", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

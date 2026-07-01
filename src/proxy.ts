@@ -15,6 +15,7 @@ const PUBLIC_PATHS = [
   "/api/auth/refresh",
   "/api/auth/logout",
   "/api/contact",
+  "/api/comments",
 ];
 
 export function proxy(request: NextRequest) {

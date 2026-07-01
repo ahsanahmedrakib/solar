@@ -17,6 +17,7 @@ import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { ImageUploadInput } from "@/components/Admin/ImageUploadInput";
 import { DEFAULT_SECTIONS, type Section } from "@/data/settings";
+import { apiClient } from "@/lib/apiClient";
 
 const ICON_MAP: Record<string, React.ComponentType<{ size?: number }>> = {
   Sliders,
@@ -79,7 +80,7 @@ export default function AdminSettingsPage() {
   useEffect(() => {
     async function loadSettings() {
       try {
-        const res = await fetch("/api/settings");
+        const res = await apiClient("/api/settings");
         const json = await res.json();
         if (json.success && Array.isArray(json.data) && json.data.length > 0) {
           setSections(mergeSectionsWithDefaults(json.data, DEFAULT_SECTIONS));
@@ -137,7 +138,7 @@ export default function AdminSettingsPage() {
 
   const handleSave = async () => {
     try {
-      const res = await fetch("/api/settings", {
+      const res = await apiClient("/api/settings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ sections }),

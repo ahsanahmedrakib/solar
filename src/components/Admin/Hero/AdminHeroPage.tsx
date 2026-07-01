@@ -18,6 +18,7 @@ import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import * as yup from "yup";
+import { apiClient } from "@/lib/apiClient";
 
 const slideSchema = yup.object({
   tagline: yup.string().required("Tagline is required"),
@@ -56,7 +57,7 @@ export default function AdminHeroPage() {
       image: "",
       videoUrl: "",
       showVideoButton: false,
-      isActive: false,
+      isActive: true,
       order: 1,
     },
   });
@@ -64,7 +65,7 @@ export default function AdminHeroPage() {
   useEffect(() => {
     async function loadSlides() {
       try {
-        const res = await fetch("/api/hero-slides");
+        const res = await apiClient("/api/hero-slides");
         const json = await res.json();
         if (json.success && Array.isArray(json.data)) {
           setSlides(json.data);
@@ -94,7 +95,7 @@ export default function AdminHeroPage() {
       image: "",
       videoUrl: "",
       showVideoButton: false,
-      isActive: false,
+      isActive: true,
       order: slides.length + 1,
     });
     setIsOpen(true);
@@ -120,7 +121,7 @@ export default function AdminHeroPage() {
     if (!confirm("Are you sure you want to delete this hero slide?")) return;
 
     try {
-      const res = await fetch(`/api/hero-slides?id=${id}`, {
+      const res = await apiClient(`/api/hero-slides?id=${id}`, {
         method: "DELETE",
       });
       const json = await res.json();
@@ -140,7 +141,7 @@ export default function AdminHeroPage() {
   const onSubmit = async (data: SlideFormData) => {
     try {
       if (editingSlide) {
-        const res = await fetch("/api/hero-slides", {
+        const res = await apiClient("/api/hero-slides", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ id: editingSlide.id, ...data }),
@@ -156,7 +157,7 @@ export default function AdminHeroPage() {
           toast.error("Failed to update hero slide: " + json.error);
         }
       } else {
-        const res = await fetch("/api/hero-slides", {
+        const res = await apiClient("/api/hero-slides", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data),
