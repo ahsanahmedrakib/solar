@@ -1,16 +1,22 @@
 import fs from "fs";
 import path from "path";
+import { saveImageToDB, deleteImageFromDB } from "./imageStore";
 
 /**
- * Saves a base64 image string to public/images/api/{folderName}
+ * Saves a base64 image string to public/images/api/{folderName} (local)
+ * or to MongoDB (serverless). Falls back to DB when filesystem is not writable.
  * @param base64Data Base64 representation of the image
  * @param folderName Subfolder name (e.g. 'services', 'projects')
  * @param id Identifier to prefix the file name
- * @returns The web-accessible URL path (e.g. /images/api/services/1_12345.jpg)
+ * @returns The web-accessible URL path (e.g. /images/api/services/1_12345.jpg or /api/image/abc123)
  */
-export function saveImage(base64Data: string, folderName: string, id: string | number): string {
+export async function saveImage(
+  base64Data: string,
+  folderName: string,
+  id: string | number,
+): Promise<string> {
   if (!base64Data || !base64Data.startsWith("data:image/")) {
-    return base64Data; // Already a URL or empty
+    return base64Data;
   }
 
   const matches = base64Data.match(/^data:image\/([A-Za-z-+\/]+);base64,(.+)$/);
@@ -25,25 +31,43 @@ export function saveImage(base64Data: string, folderName: string, id: string | n
   const relativeDir = `/images/api/${folderName}`;
   const targetDir = path.join(process.cwd(), "public", relativeDir);
 
-  if (!fs.existsSync(targetDir)) {
-    fs.mkdirSync(targetDir, { recursive: true });
+  try {
+    if (!fs.existsSync(targetDir)) {
+      fs.mkdirSync(targetDir, { recursive: true });
+    }
+
+    const fileName = `${id}_${Date.now()}.${extension}`;
+    const filePath = path.join(targetDir, fileName);
+
+    fs.writeFileSync(filePath, buffer);
+
+    return `${relativeDir}/${fileName}`;
+  } catch (err: unknown) {
+    if (
+      err instanceof Error &&
+      (err as NodeJS.ErrnoException).code === "ENOENT"
+    ) {
+      // Filesystem not writable (serverless) — store in MongoDB
+      return saveImageToDB(base64Data, folderName, id);
+    }
+    throw err;
   }
-
-  const fileName = `${id}_${Date.now()}.${extension}`;
-  const filePath = path.join(targetDir, fileName);
-
-  fs.writeFileSync(filePath, buffer);
-
-  return `${relativeDir}/${fileName}`;
 }
 
 /**
- * Deletes an image file from the public directory if it was uploaded/saved via the API
+ * Deletes an image file from the public directory or MongoDB
  * @param imageUrl The web-accessible URL path of the image
  */
-export function deleteImage(imageUrl: string): void {
-  if (!imageUrl || !imageUrl.startsWith("/images/api/")) {
-    return; // Don't delete static assets or external URLs
+export async function deleteImage(imageUrl: string): Promise<void> {
+  if (!imageUrl) return;
+
+  if (imageUrl.startsWith("/api/image/")) {
+    await deleteImageFromDB(imageUrl);
+    return;
+  }
+
+  if (!imageUrl.startsWith("/images/api/")) {
+    return;
   }
 
   try {

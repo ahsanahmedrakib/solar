@@ -34,7 +34,7 @@ export async function POST(request: Request) {
     const nextId =
       allSlides.length > 0 ? Math.max(...allSlides.map((s) => s.id)) + 1 : 1;
 
-    const savedImagePath = saveImage(body.image, "hero", nextId);
+    const savedImagePath = await saveImage(body.image, "hero", nextId);
 
     const newSlide = {
       ...body,
@@ -67,8 +67,8 @@ export async function PUT(request: Request) {
       .findOne({ id: Number(id) });
 
     if (existing && updateData.image && updateData.image !== existing.image) {
-      updateData.image = saveImage(updateData.image, "hero", id);
-      deleteImage(existing.image);
+      updateData.image = await saveImage(updateData.image, "hero", id);
+      await deleteImage(existing.image);
     }
 
     await db
@@ -102,7 +102,7 @@ export async function DELETE(request: Request) {
       .findOne({ id: Number(id) });
 
     if (existing) {
-      deleteImage(existing.image);
+      await deleteImage(existing.image);
     }
 
     await db.collection("hero_slides").deleteOne({ id: Number(id) });

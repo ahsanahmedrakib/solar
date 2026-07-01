@@ -25,7 +25,7 @@ export async function POST(request: Request) {
     const nextId =
       allMembers.length > 0 ? Math.max(...allMembers.map((m) => m.id)) + 1 : 1;
 
-    const savedImagePath = saveImage(body.image, "team", nextId);
+    const savedImagePath = await saveImage(body.image, "team", nextId);
 
     const newMember = {
       ...body,
@@ -54,8 +54,8 @@ export async function PUT(request: Request) {
     const existing = await db.collection("team").findOne({ id: Number(id) });
     if (existing) {
       if (updateData.image && updateData.image !== existing.image) {
-        updateData.image = saveImage(updateData.image, "team", id);
-        deleteImage(existing.image);
+        updateData.image = await saveImage(updateData.image, "team", id);
+        await deleteImage(existing.image);
       }
     }
 
@@ -86,7 +86,7 @@ export async function DELETE(request: Request) {
 
     const existing = await db.collection("team").findOne({ id: Number(id) });
     if (existing) {
-      deleteImage(existing.image);
+      await deleteImage(existing.image);
     }
 
     await db.collection("team").deleteOne({ id: Number(id) });

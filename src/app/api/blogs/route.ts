@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     const allBlogs = (await db.collection("blogs").find({}).toArray()) as unknown as Blog[];
     const nextId = allBlogs.length > 0 ? Math.max(...allBlogs.map((b: Blog) => b.id)) + 1 : 1;
     
-    const savedImagePath = saveImage(body.imageUrl, "blogs", nextId);
+    const savedImagePath = await saveImage(body.imageUrl, "blogs", nextId);
     
     const newBlog = {
       ...body,
@@ -48,8 +48,8 @@ export async function PUT(request: Request) {
     const existing = await db.collection("blogs").findOne({ id: Number(id) });
     if (existing) {
       if (updateData.imageUrl && updateData.imageUrl !== existing.imageUrl) {
-        updateData.imageUrl = saveImage(updateData.imageUrl, "blogs", id);
-        deleteImage(existing.imageUrl);
+        updateData.imageUrl = await saveImage(updateData.imageUrl, "blogs", id);
+        await deleteImage(existing.imageUrl);
       }
     }
     
@@ -72,7 +72,7 @@ export async function DELETE(request: Request) {
     
     const existing = await db.collection("blogs").findOne({ id: Number(id) });
     if (existing) {
-      deleteImage(existing.imageUrl);
+      await deleteImage(existing.imageUrl);
     }
     
     await db.collection("blogs").deleteOne({ id: Number(id) });

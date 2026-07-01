@@ -31,7 +31,7 @@ export async function POST(request: Request) {
         ? Math.max(...allServices.map((s) => s.id)) + 1
         : 1;
 
-    const savedImagePath = saveImage(body.image, "services", nextId);
+    const savedImagePath = await saveImage(body.image, "services", nextId);
 
     const newService = {
       ...body,
@@ -62,8 +62,8 @@ export async function PUT(request: Request) {
       .findOne({ id: Number(id) });
     if (existing) {
       if (updateData.image && updateData.image !== existing.image) {
-        updateData.image = saveImage(updateData.image, "services", id);
-        deleteImage(existing.image);
+        updateData.image = await saveImage(updateData.image, "services", id);
+        await deleteImage(existing.image);
       }
     }
 
@@ -96,7 +96,7 @@ export async function DELETE(request: Request) {
       .collection("services")
       .findOne({ id: Number(id) });
     if (existing) {
-      deleteImage(existing.image);
+      await deleteImage(existing.image);
     }
 
     await db.collection("services").deleteOne({ id: Number(id) });

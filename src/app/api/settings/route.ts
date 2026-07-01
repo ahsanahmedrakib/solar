@@ -2,7 +2,7 @@ import { connectToDatabase } from "@/lib/db";
 import { deleteImage, saveImage } from "@/lib/imageHelper";
 import { NextResponse } from "next/server";
 
-function processImageFields(
+async function processImageFields(
   sections: Array<{
     id: string;
     fields?: Array<{ id: string; type: string; value: string }>;
@@ -12,31 +12,37 @@ function processImageFields(
     fields?: Array<{ id: string; type: string; value: string }>;
   }>,
 ) {
-  return sections.map((section) => {
-    if (!section.fields) return section;
+  const result = [];
+  for (const section of sections) {
+    if (!section.fields) {
+      result.push(section);
+      continue;
+    }
 
     const existingSection = existingSections?.find((s) => s.id === section.id);
+    const processedFields = [];
 
-    return {
-      ...section,
-      fields: section.fields.map((field) => {
-        if (field.type !== "image" || !field.value?.startsWith("data:image/")) {
-          return field;
-        }
+    for (const field of section.fields) {
+      if (field.type !== "image" || !field.value?.startsWith("data:image/")) {
+        processedFields.push(field);
+        continue;
+      }
 
-        const existingField = existingSection?.fields?.find(
-          (f) => f.id === field.id,
-        );
-        const savedPath = saveImage(field.value, "settings", field.id);
+      const existingField = existingSection?.fields?.find(
+        (f) => f.id === field.id,
+      );
+      const savedPath = await saveImage(field.value, "settings", field.id);
 
-        if (existingField?.value && existingField.value !== savedPath) {
-          deleteImage(existingField.value);
-        }
+      if (existingField?.value && existingField.value !== savedPath) {
+        await deleteImage(existingField.value);
+      }
 
-        return { ...field, value: savedPath };
-      }),
-    };
-  });
+      processedFields.push({ ...field, value: savedPath });
+    }
+
+    result.push({ ...section, fields: processedFields });
+  }
+  return result;
 }
 
 export async function GET() {
@@ -67,7 +73,7 @@ export async function POST(request: Request) {
     const existing = await db
       .collection("settings")
       .findOne({ settingsId: "global" });
-    const processedSections = processImageFields(sections, existing?.sections);
+    const processedSections = await processImageFields(sections, existing?.sections);
 
     const result = await db
       .collection("settings")

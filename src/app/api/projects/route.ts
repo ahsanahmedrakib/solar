@@ -25,7 +25,7 @@ export async function POST(request: Request) {
         ? Math.max(...allProjects.map((p) => Number(p.id))) + 1
         : 1;
     
-    const savedImagePath = saveImage(body.imageUrl, "projects", nextId);
+    const savedImagePath = await saveImage(body.imageUrl, "projects", nextId);
     
     const newProject = {
       ...body,
@@ -51,8 +51,8 @@ export async function PUT(request: Request) {
     const existing = await db.collection("projects").findOne({ id: Number(id) });
     if (existing) {
       if (updateData.imageUrl && updateData.imageUrl !== existing.imageUrl) {
-        updateData.imageUrl = saveImage(updateData.imageUrl, "projects", id);
-        deleteImage(existing.imageUrl);
+        updateData.imageUrl = await saveImage(updateData.imageUrl, "projects", id);
+        await deleteImage(existing.imageUrl);
       }
     }
     
@@ -75,7 +75,7 @@ export async function DELETE(request: Request) {
     
     const existing = await db.collection("projects").findOne({ id: Number(id) });
     if (existing) {
-      deleteImage(existing.imageUrl);
+      await deleteImage(existing.imageUrl);
     }
     
     await db.collection("projects").deleteOne({ id: Number(id) });
