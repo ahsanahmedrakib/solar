@@ -18,11 +18,13 @@ import {
   MessageCircle,
   Settings,
   Users,
+  X,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useSidebar } from "./SidebarContext";
 
 const navItems = [
   {
@@ -92,6 +94,7 @@ const FALLBACK_LOGO =
 
 export function AdminSidebar() {
   const { user, logout } = useAuth();
+  const { mobileOpen, setMobileOpen } = useSidebar();
   const pathname = usePathname();
   const [logoSrc, setLogoSrc] = useState(FALLBACK_LOGO);
 
@@ -124,20 +127,43 @@ export function AdminSidebar() {
     loadLogo();
   }, []);
 
+  const closeMobile = () => setMobileOpen(false);
+
   return (
-    <aside className="admin-sidebar">
-      {/* Logo */}
-      <div className="flex items-center justify-center py-2">
-        <Link href="/">
-          <Image
-            src={logoSrc}
-            width={160}
-            height={50}
-            alt="Sunex logo"
-            className="h-12 w-auto object-contain"
-          />
-        </Link>
-      </div>
+    <>
+      {/* Mobile overlay */}
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          onClick={closeMobile}
+        />
+      )}
+
+      <aside
+        className="admin-sidebar"
+        style={mobileOpen ? { transform: "translateX(0)" } : undefined}
+      >
+        {/* Mobile close button */}
+        <button
+          onClick={closeMobile}
+          className="absolute top-4 right-4 text-(--admin-text-muted) hover:text-(--admin-text-primary) transition md:hidden cursor-pointer"
+          aria-label="Close menu"
+        >
+          <X size={20} />
+        </button>
+
+        {/* Logo */}
+        <div className="flex items-center justify-center py-2">
+          <Link href="/" onClick={closeMobile}>
+            <Image
+              src={logoSrc}
+              width={160}
+              height={50}
+              alt="Sunex logo"
+              className="h-12 w-auto object-contain"
+            />
+          </Link>
+        </div>
 
       {/* Navigation */}
       <nav className="sidebar-nav">
@@ -151,6 +177,7 @@ export function AdminSidebar() {
                 <li key={item.href}>
                   <Link
                     href={item.href}
+                    onClick={closeMobile}
                     className={cn("sidebar-nav-item", active && "active")}
                   >
                     <Icon size={18} className="sidebar-nav-icon" />
@@ -175,6 +202,7 @@ export function AdminSidebar() {
                 <li key={item.href}>
                   <Link
                     href={item.href}
+                    onClick={closeMobile}
                     className={cn("sidebar-nav-item", active && "active")}
                   >
                     <Icon size={18} className="sidebar-nav-icon" />
@@ -204,7 +232,7 @@ export function AdminSidebar() {
           </div>
         </div>
         <button
-          onClick={logout}
+          onClick={() => { logout(); closeMobile(); }}
           className="text-(--admin-text-muted) hover:text-(--admin-danger) transition cursor-pointer"
           title="Logout"
         >
@@ -212,6 +240,7 @@ export function AdminSidebar() {
         </button>
       </div>
     </aside>
+    </>
   );
 }
 

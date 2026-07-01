@@ -1,6 +1,7 @@
 "use client";
 
 import { useAuth } from "@/components/Auth/AuthProvider";
+import { useSidebar } from "@/components/Admin/SidebarContext";
 import { LogOut, Menu } from "lucide-react";
 import { usePathname } from "next/navigation";
 
@@ -19,13 +20,14 @@ const pageTitles: Record<string, string> = {
 
 export function AdminHeader() {
   const { user, logout } = useAuth();
+  const { toggle } = useSidebar();
   const pathname = usePathname();
   const title = pageTitles[pathname] ?? "Page Not Found";
 
   return (
     <header className="admin-header min-h-15">
       <div className="admin-header-left">
-        <button className="admin-header-menu-btn" aria-label="Toggle menu">
+        <button className="admin-header-menu-btn" aria-label="Toggle menu" onClick={toggle}>
           <Menu size={20} />
         </button>
         <div>
