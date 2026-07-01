@@ -15,6 +15,7 @@ import {
   Lock,
   LogOut,
   Mail,
+  MessageCircle,
   Settings,
   Users,
 } from "lucide-react";
@@ -53,6 +54,11 @@ const navItems = [
     title: "Blogs",
     href: "/admin/blogs",
     icon: FileText,
+  },
+  {
+    title: "Comments",
+    href: "/admin/comments",
+    icon: MessageCircle,
   },
   {
     title: "Hero Slider",
