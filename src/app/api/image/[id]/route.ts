@@ -15,7 +15,7 @@ export async function GET(
       );
     }
 
-    return new Response(image.data, {
+    return new Response(new Uint8Array(image.data), {
       headers: {
         "Content-Type": image.contentType,
         "Cache-Control": "public, max-age=31536000, immutable",
