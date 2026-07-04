@@ -274,7 +274,7 @@ export default function AdminServicesPage() {
         <div>
           <h2 className="admin-page-header-title">Services</h2>
           <p className="admin-page-header-sub">
-            Configure & manage client-facing solar services ({services.length}{" "}
+            Configure & manage client-facing solar services ({services?.length}{" "}
             services)
           </p>
         </div>
@@ -310,7 +310,7 @@ export default function AdminServicesPage() {
 
       {/* Services Table Card */}
       <div className="admin-table-card">
-        {filteredServices.length === 0 ? (
+        {filteredServices?.length === 0 ? (
           <div className="admin-empty-state">
             <div className="admin-empty-icon">
               <Wrench size={26} />

@@ -24,7 +24,7 @@ export default function Hero() {
           const activeSlides = json.data
             .filter((slide: HeroSlide) => slide.isActive)
             .sort((a: HeroSlide, b: HeroSlide) => a.order - b.order);
-          if (activeSlides.length > 0) {
+          if (activeSlides?.length > 0) {
             setSlides(activeSlides);
           } else {
             setSlides(DEFAULT_HERO_SLIDES);
@@ -72,7 +72,7 @@ export default function Hero() {
           modules={[Autoplay, EffectFade, Pagination]}
           effect="fade"
           speed={900}
-          loop={slides.length > 1}
+          loop={slides?.length > 1}
           autoplay={{
             delay: 2000,
             disableOnInteraction: false,

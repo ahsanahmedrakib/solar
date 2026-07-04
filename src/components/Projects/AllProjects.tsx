@@ -13,7 +13,7 @@ export default function AllProjects() {
       try {
         const res = await fetch("/api/projects");
         const json = await res.json();
-        if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+        if (json.success && Array.isArray(json.data) && json.data?.length > 0) {
           setProjects(json.data);
         } else {
           setProjects(DEFAULT_PROJECTS);

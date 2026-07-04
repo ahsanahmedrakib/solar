@@ -61,7 +61,7 @@ export default function Plans() {
       try {
         const res = await fetch("/api/plans");
         const json = await res.json();
-        if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+        if (json.success && Array.isArray(json.data) && json.data?.length > 0) {
           setPlans(json.data);
         } else {
           setPlans(DEFAULT_PLANS);
@@ -157,7 +157,7 @@ export default function Plans() {
                   <div className="space-y-6">
                     <div className="flex items-center gap-4">
                       <div className="w-11 h-11 rounded-full bg-accent-600 text-white flex items-center justify-center shadow-sm">
-                        {defaultIcons[idx % defaultIcons.length]}
+                        {defaultIcons[idx % defaultIcons?.length]}
                       </div>
                       <h3 className="text-xl font-bold text-[#051720]">
                         {plan.name}

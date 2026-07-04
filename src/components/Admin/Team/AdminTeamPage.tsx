@@ -226,7 +226,7 @@ export default function AdminTeamPage() {
           <h2 className="admin-page-header-title">Expert Team</h2>
           <p className="admin-page-header-sub">
             Manage engineers and specialists displayed on the About Us page (
-            {team.length} members)
+            {team?.length} members)
           </p>
         </div>
         <div className="admin-page-header-actions">
@@ -259,7 +259,7 @@ export default function AdminTeamPage() {
       </div>
 
       <div className="admin-table-card">
-        {filteredTeam.length === 0 ? (
+        {filteredTeam?.length === 0 ? (
           <div className="admin-empty-state">
             <div className="admin-empty-icon">
               <Users size={26} />
@@ -412,7 +412,7 @@ export default function AdminTeamPage() {
                           {platform === "x"
                             ? "X / Twitter"
                             : platform.charAt(0).toUpperCase() +
-                              platform.slice(1)}
+                              platform?.slice(1)}
                         </label>
                         <input
                           type="url"

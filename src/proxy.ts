@@ -22,7 +22,7 @@ const PUBLIC_PATHS = [
 function getToken(request: NextRequest): string | null {
   const authHeader = request.headers.get("Authorization");
   if (authHeader?.startsWith("Bearer ")) {
-    return authHeader.slice(7);
+    return authHeader?.slice(7);
   }
   return request.cookies.get("accessToken")?.value ?? null;
 }
@@ -62,3 +62,4 @@ export function proxy(request: NextRequest) {
 export const config = {
   matcher: "/api/:path*",
 };
+

@@ -138,7 +138,7 @@ export default function AdminPlansPage() {
       monthlyPrice: plan.monthlyPrice,
       annualPrice: plan.annualPrice,
       features:
-        plan.features.length > 0
+        plan.features?.length > 0
           ? plan.features?.map((f) => ({ value: f }))
           : [{ value: "" }],
       isPopular: !!plan.isPopular,
@@ -171,7 +171,7 @@ export default function AdminPlansPage() {
   const onSubmit = async (data: PlanFormData) => {
     const parsedFeatures = data.features
       ?.map((f) => f.value.trim())
-      .filter((f) => f.length > 0);
+      .filter((f) => f?.length > 0);
 
     const payload = {
       name: data.name,
@@ -267,7 +267,7 @@ export default function AdminPlansPage() {
           <h2 className="admin-page-header-title">Pricing Plans</h2>
           <p className="admin-page-header-sub">
             Manage solar installation and subscription packages displayed on
-            Homepage ({plans.length} active)
+            Homepage ({plans?.length} active)
           </p>
         </div>
         <div className="admin-page-header-actions">
@@ -300,7 +300,7 @@ export default function AdminPlansPage() {
       </div>
 
       <div className="admin-table-card">
-        {filteredPlans.length === 0 ? (
+        {filteredPlans?.length === 0 ? (
           <div className="admin-empty-state">
             <div className="admin-empty-icon">
               <CreditCard size={26} />
@@ -350,7 +350,7 @@ export default function AdminPlansPage() {
                     </td>
                     <td>
                       <div className="flex flex-wrap gap-1 max-w-xs">
-                        {plan.features.slice(0, 2)?.map((feat, idx) => (
+                        {plan.features?.slice(0, 2)?.map((feat, idx) => (
                           <span
                             key={idx}
                             className="text-[11px] bg-(--admin-surface-2) text-(--admin-text-secondary) px-2 py-0.5 rounded border border-(--admin-border)"
@@ -358,9 +358,9 @@ export default function AdminPlansPage() {
                             {feat}
                           </span>
                         ))}
-                        {plan.features.length > 2 && (
+                        {plan.features?.length > 2 && (
                           <span className="text-[11px] text-(--admin-text-muted) font-bold self-center">
-                            +{plan.features.length - 2} more
+                            +{plan.features?.length - 2} more
                           </span>
                         )}
                       </div>
@@ -507,7 +507,7 @@ export default function AdminPlansPage() {
                         {...register(`features.${index}.value`)}
                         className={`flex-1 bg-(--admin-surface-2) border ${errors.features?.[index]?.value ? "border-(--admin-danger)" : "border-(--admin-border)"} text-sm text-(--admin-text-primary) rounded-lg p-2.5 outline-none focus:border-(--admin-accent) transition`}
                       />
-                      {fields.length > 1 && (
+                      {fields?.length > 1 && (
                         <button
                           type="button"
                           onClick={() => remove(index)}

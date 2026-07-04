@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { saveImageToDB, deleteImageFromDB } from "./imageStore";
+import { deleteImageFromDB, saveImageToDB } from "./imageStore";
 
 /**
  * Saves a base64 image string to public/images/api/{folderName} (local)
@@ -20,7 +20,7 @@ export async function saveImage(
   }
 
   const matches = base64Data.match(/^data:image\/([A-Za-z-+\/]+);base64,(.+)$/);
-  if (!matches || matches.length !== 3) {
+  if (!matches || matches?.length !== 3) {
     throw new Error("Invalid base64 image data");
   }
 
@@ -79,3 +79,4 @@ export async function deleteImage(imageUrl: string): Promise<void> {
     console.error("Failed to delete image file:", imageUrl, error);
   }
 }
+

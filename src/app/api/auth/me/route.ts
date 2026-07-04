@@ -1,6 +1,6 @@
+import { toPublicUser, type User } from "@/data/users";
 import { verifyAccessToken } from "@/lib/auth";
 import { connectToDatabase } from "@/lib/db";
-import { toPublicUser, type User } from "@/data/users";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
@@ -13,7 +13,7 @@ export async function GET(request: Request) {
       );
     }
 
-    const token = authHeader.slice(7);
+    const token = authHeader?.slice(7);
     const payload = verifyAccessToken(token);
 
     const { db } = await connectToDatabase();
@@ -47,3 +47,4 @@ export async function GET(request: Request) {
     );
   }
 }
+

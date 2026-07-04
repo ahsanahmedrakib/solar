@@ -52,7 +52,7 @@ export async function POST(request: Request) {
 
     const existingComments = (blog.comments || []) as unknown as Comment[];
     const nextId =
-      existingComments.length > 0
+      existingComments?.length > 0
         ? Math.max(...existingComments?.map((c) => c.id)) + 1
         : 1;
 

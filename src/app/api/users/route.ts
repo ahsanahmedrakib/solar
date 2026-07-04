@@ -1,5 +1,9 @@
-import { ensureSuperadminExists, hashPassword, verifyAccessToken } from "@/lib/auth";
 import type { User } from "@/data/users";
+import {
+  ensureSuperadminExists,
+  hashPassword,
+  verifyAccessToken,
+} from "@/lib/auth";
 import { connectToDatabase } from "@/lib/db";
 import { NextResponse } from "next/server";
 
@@ -7,7 +11,7 @@ function getTokenPayload(request: Request) {
   const authHeader = request.headers.get("Authorization");
   if (!authHeader || !authHeader.startsWith("Bearer ")) return null;
   try {
-    return verifyAccessToken(authHeader.slice(7));
+    return verifyAccessToken(authHeader?.slice(7));
   } catch {
     return null;
   }
@@ -61,7 +65,7 @@ export async function POST(request: Request) {
       );
     }
 
-    if (password.length < 6) {
+    if (password?.length < 6) {
       return NextResponse.json(
         { success: false, error: "Password must be at least 6 characters" },
         { status: 400 },
@@ -84,8 +88,8 @@ export async function POST(request: Request) {
       .find({})
       .toArray()) as unknown as User[];
     const nextId =
-      allUsers.length > 0
-        ? "u-" + Date.now().toString(36) + "-" + (allUsers.length + 1)
+      allUsers?.length > 0
+        ? "u-" + Date.now().toString(36) + "-" + (allUsers?.length + 1)
         : "u-" + Date.now().toString(36);
 
     const hashedPassword = await hashPassword(password);

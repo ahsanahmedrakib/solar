@@ -27,7 +27,7 @@ export async function POST(request: Request) {
       .find({})
       .toArray()) as unknown as Service[];
     const nextId =
-      allServices.length > 0
+      allServices?.length > 0
         ? Math.max(...allServices?.map((s) => s.id)) + 1
         : 1;
 

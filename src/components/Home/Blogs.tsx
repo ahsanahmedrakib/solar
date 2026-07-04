@@ -14,12 +14,12 @@ export default function Blogs() {
       try {
         const res = await fetch("/api/blogs");
         const json = await res.json();
-        if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+        if (json.success && Array.isArray(json.data) && json.data?.length > 0) {
           const sorted = json.data.sort(
             (a: Blog, b: Blog) =>
               new Date(b.date).getTime() - new Date(a.date).getTime(),
           );
-          setBlogs(sorted.slice(0, 3));
+          setBlogs(sorted?.slice(0, 3));
         }
       } catch (error) {
         console.error("Failed to load blogs", error);
@@ -53,7 +53,7 @@ export default function Blogs() {
     );
   }
 
-  if (blogs.length === 0) return null;
+  if (blogs?.length === 0) return null;
 
   return (
     <section className="bg-white py-16 px-4 sm:px-6 lg:py-24 lg:px-20 mx-auto font-sans overflow-x-hidden">

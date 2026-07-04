@@ -15,7 +15,7 @@ export default function Teams() {
       try {
         const res = await fetch("/api/team");
         const json = await res.json();
-        if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+        if (json.success && Array.isArray(json.data) && json.data?.length > 0) {
           setTeamMembers(json.data);
         }
       } catch (error) {

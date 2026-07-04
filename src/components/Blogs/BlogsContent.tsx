@@ -13,7 +13,7 @@ export default function BlogsContents() {
       try {
         const res = await fetch("/api/blogs");
         const json = await res.json();
-        if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+        if (json.success && Array.isArray(json.data) && json.data?.length > 0) {
           setBlogs(json.data);
         } else {
           setBlogs(DEFAULT_BLOGS);

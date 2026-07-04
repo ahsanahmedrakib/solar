@@ -67,7 +67,7 @@ function SingleBlogPageInner({ slug }: { slug: string }) {
       try {
         const res = await fetch("/api/blogs");
         const json = await res.json();
-        if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+        if (json.success && Array.isArray(json.data) && json.data?.length > 0) {
           const found = json.data.find((b: Blog) => b.slug === slug);
           if (found) setBlog(found);
           else {
@@ -303,10 +303,10 @@ function SingleBlogPageInner({ slug }: { slug: string }) {
             {/* Comments Section */}
             <section className="mt-6">
               <h3 className="text-[#011c2b] text-xl font-bold tracking-tight mb-6">
-                Comments ({topLevelComments.length})
+                Comments ({topLevelComments?.length})
               </h3>
 
-              {topLevelComments.length > 0 ? (
+              {topLevelComments?.length > 0 ? (
                 <div className="flex flex-col gap-6">
                   {topLevelComments?.map((comment) => {
                     const replies = getReplies(comment.id);
@@ -424,7 +424,7 @@ function SingleBlogPageInner({ slug }: { slug: string }) {
                               </div>
                             )}
 
-                            {replies.length > 0 && (
+                            {replies?.length > 0 && (
                               <div className="mt-4 ml-2 border-l-2 border-[#4caf50]/30 pl-4 flex flex-col gap-4">
                                 {replies?.map((reply) => (
                                   <div key={reply.id} className="flex gap-3.5">

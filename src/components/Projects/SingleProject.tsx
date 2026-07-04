@@ -13,7 +13,7 @@ export default function SingleProject({ slug }: { slug: string }) {
       try {
         const res = await fetch("/api/projects");
         const json = await res.json();
-        if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+        if (json.success && Array.isArray(json.data) && json.data?.length > 0) {
           const found = json.data.find((p: Project) => p.slug === slug);
           if (found) setProject(found);
         } else {

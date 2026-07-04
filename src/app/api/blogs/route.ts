@@ -27,7 +27,7 @@ export async function POST(request: Request) {
       .find({})
       .toArray()) as unknown as Blog[];
     const nextId =
-      allBlogs.length > 0
+      allBlogs?.length > 0
         ? Math.max(...allBlogs?.map((b: Blog) => b.id)) + 1
         : 1;
 

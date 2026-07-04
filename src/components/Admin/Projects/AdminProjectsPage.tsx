@@ -265,7 +265,7 @@ export default function AdminProjectsPage() {
         <div>
           <h2 className="admin-page-header-title">Projects</h2>
           <p className="admin-page-header-sub">
-            Track and show off solar installation projects ({projects.length}{" "}
+            Track and show off solar installation projects ({projects?.length}{" "}
             total)
           </p>
         </div>
@@ -315,7 +315,7 @@ export default function AdminProjectsPage() {
 
       {/* Projects List Card */}
       <div className="admin-table-card">
-        {filteredProjects.length === 0 ? (
+        {filteredProjects?.length === 0 ? (
           <div className="admin-empty-state">
             <div className="admin-empty-icon">
               <Layers size={26} />

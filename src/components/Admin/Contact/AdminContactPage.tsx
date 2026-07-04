@@ -160,10 +160,10 @@ export default function AdminContactQueriesPage() {
   });
 
   // Stats
-  const totalCount = queries.length;
-  const newCount = queries.filter((q) => q.status === "new").length;
-  const repliedCount = queries.filter((q) => q.status === "replied").length;
-  const archivedCount = queries.filter((q) => q.status === "archived").length;
+  const totalCount = queries?.length;
+  const newCount = queries.filter((q) => q.status === "new")?.length;
+  const repliedCount = queries.filter((q) => q.status === "replied")?.length;
+  const archivedCount = queries.filter((q) => q.status === "archived")?.length;
 
   const formatDate = (dateString: string) => {
     try {
@@ -346,7 +346,7 @@ export default function AdminContactQueriesPage() {
 
       {/* Main Content Table */}
       <div className="bg-admin- rounded-xl border border-white/5 overflow-hidden">
-        {filteredQueries.length === 0 ? (
+        {filteredQueries?.length === 0 ? (
           <div className="py-16 text-center text-gray-400 space-y-3">
             <Mail size={40} className="mx-auto text-gray-600 opacity-50" />
             <p className="text-base font-semibold text-gray-300">

@@ -189,7 +189,7 @@ export default function AdminBlogsPage() {
     const parsedTags = data.tagsString
       .split(",")
       ?.map((t) => t.trim())
-      .filter((t) => t.length > 0);
+      .filter((t) => t?.length > 0);
 
     const currentDateString = new Date().toLocaleDateString("en-US", {
       month: "short",
@@ -285,7 +285,7 @@ export default function AdminBlogsPage() {
         <div>
           <h2 className="admin-page-header-title">Blogs</h2>
           <p className="admin-page-header-sub">
-            Publish and manage educational solar content ({blogs.length}{" "}
+            Publish and manage educational solar content ({blogs?.length}{" "}
             articles)
           </p>
         </div>
@@ -335,7 +335,7 @@ export default function AdminBlogsPage() {
 
       {/* Blogs List Table */}
       <div className="admin-table-card">
-        {filteredBlogs.length === 0 ? (
+        {filteredBlogs?.length === 0 ? (
           <div className="admin-empty-state">
             <div className="admin-empty-icon">
               <FileText size={26} />

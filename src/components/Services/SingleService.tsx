@@ -14,7 +14,7 @@ export default function SingleService({ slug }: { slug: string }) {
       try {
         const res = await fetch("/api/services");
         const json = await res.json();
-        if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+        if (json.success && Array.isArray(json.data) && json.data?.length > 0) {
           setAllServices(json.data);
           const found = json.data.find((s: Service) => s.slug === slug);
           if (found) setService(found);

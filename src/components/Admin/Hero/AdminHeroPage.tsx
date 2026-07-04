@@ -96,7 +96,7 @@ export default function AdminHeroPage() {
       videoUrl: "",
       showVideoButton: false,
       isActive: true,
-      order: slides.length + 1,
+      order: slides?.length + 1,
     });
     setIsOpen(true);
   };
@@ -212,7 +212,7 @@ export default function AdminHeroPage() {
         <div>
           <h2 className="admin-page-header-title">Hero Slider</h2>
           <p className="admin-page-header-sub">
-            Manage homepage hero background slides and content ({slides.length}{" "}
+            Manage homepage hero background slides and content ({slides?.length}{" "}
             slides)
           </p>
         </div>
@@ -244,7 +244,7 @@ export default function AdminHeroPage() {
       </div>
 
       <div className="admin-table-card">
-        {filteredSlides.length === 0 ? (
+        {filteredSlides?.length === 0 ? (
           <div className="admin-empty-state">
             <div className="admin-empty-icon">
               <ImageIcon size={26} />

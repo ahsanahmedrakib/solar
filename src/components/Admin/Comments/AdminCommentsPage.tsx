@@ -102,7 +102,7 @@ export default function AdminCommentsPage() {
         <div>
           <h2 className="admin-page-header-title">Comments</h2>
           <p className="admin-page-header-sub">
-            Manage visitor comments across all blog posts ({comments.length}{" "}
+            Manage visitor comments across all blog posts ({comments?.length}{" "}
             total)
           </p>
         </div>
@@ -130,14 +130,14 @@ export default function AdminCommentsPage() {
       </div>
 
       <div className="admin-table-card">
-        {filteredComments.length === 0 ? (
+        {filteredComments?.length === 0 ? (
           <div className="admin-empty-state">
             <div className="admin-empty-icon">
               <MessageCircle size={26} />
             </div>
             <p className="admin-empty-title">No comments found</p>
             <p className="admin-empty-desc">
-              {comments.length === 0
+              {comments?.length === 0
                 ? "No comments have been submitted yet."
                 : "Try a different search query."}
             </p>

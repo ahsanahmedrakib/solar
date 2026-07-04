@@ -218,7 +218,7 @@ export default function AdminUsersPage() {
         <div>
           <h2 className="admin-page-header-title">Users</h2>
           <p className="admin-page-header-sub">
-            Manage admin panel users ({users.length} total)
+            Manage admin panel users ({users?.length} total)
           </p>
         </div>
         <div className="admin-page-header-actions">
@@ -251,7 +251,7 @@ export default function AdminUsersPage() {
       </div>
 
       <div className="admin-table-card">
-        {filteredUsers.length === 0 ? (
+        {filteredUsers?.length === 0 ? (
           <div className="admin-empty-state">
             <div className="admin-empty-icon">
               <UserCog size={26} />

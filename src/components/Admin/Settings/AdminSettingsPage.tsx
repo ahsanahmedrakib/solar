@@ -59,8 +59,8 @@ function mergeSectionsWithDefaults(
     return {
       ...defaultSection,
       ...loadedSection,
-      fields: mergedFields.length > 0 ? mergedFields : undefined,
-      toggles: mergedToggles.length > 0 ? mergedToggles : undefined,
+      fields: mergedFields?.length > 0 ? mergedFields : undefined,
+      toggles: mergedToggles?.length > 0 ? mergedToggles : undefined,
     };
   });
 }
@@ -68,8 +68,8 @@ function mergeSectionsWithDefaults(
 function createEmptySections(): Section[] {
   return DEFAULT_SECTIONS?.map((section) => ({
     ...section,
-    fields: section.fields??.map((f) => ({ ...f, value: "" })),
-    toggles: section.toggles??.map((t) => ({ ...t, checked: false })),
+    fields: section.fields?.map((f) => ({ ...f, value: "" })),
+    toggles: section.toggles?.map((t) => ({ ...t, checked: false })),
   }));
 }
 
@@ -82,7 +82,7 @@ export default function AdminSettingsPage() {
       try {
         const res = await apiClient("/api/settings");
         const json = await res.json();
-        if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+        if (json.success && Array.isArray(json.data) && json.data?.length > 0) {
           setSections(mergeSectionsWithDefaults(json.data, DEFAULT_SECTIONS));
         } else if (json.success) {
           setSections(createEmptySections());
@@ -174,7 +174,7 @@ export default function AdminSettingsPage() {
           <h2 className="admin-page-header-title">Website & Portal Settings</h2>
           <p className="admin-page-header-sub">
             Manage comprehensive site-wide information, branding, hero content,
-            SEO, and system defaults ({sections.length} sections)
+            SEO, and system defaults ({sections?.length} sections)
           </p>
         </div>
       </div>

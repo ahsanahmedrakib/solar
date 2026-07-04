@@ -7,11 +7,12 @@ export async function saveImageToDB(
   id: string | number,
 ): Promise<string> {
   const matches = base64Data.match(/^data:image\/([A-Za-z-+\/]+);base64,(.+)$/);
-  if (!matches || matches.length !== 3) {
+  if (!matches || matches?.length !== 3) {
     throw new Error("Invalid base64 image data");
   }
 
-  const contentType = matches[1] === "jpeg" ? "image/jpeg" : `image/${matches[1]}`;
+  const contentType =
+    matches[1] === "jpeg" ? "image/jpeg" : `image/${matches[1]}`;
   const buffer = Buffer.from(matches[2], "base64");
 
   const { db } = await connectToDatabase();
@@ -54,3 +55,4 @@ export async function deleteImageFromDB(imageUrl: string): Promise<void> {
     console.error("Failed to delete image from DB:", imageUrl, error);
   }
 }
+

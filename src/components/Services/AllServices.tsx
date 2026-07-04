@@ -27,7 +27,7 @@ const AllServices = () => {
       try {
         const res = await fetch("/api/services");
         const json = await res.json();
-        if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+        if (json.success && Array.isArray(json.data) && json.data?.length > 0) {
           setServices(json.data?.map(toServiceCard));
         } else {
           setServices(DEFAULT_SERVICES?.map(toServiceCard));

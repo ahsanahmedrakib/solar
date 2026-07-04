@@ -77,7 +77,7 @@ export default function GetInTouch() {
     async function loadSettings() {
       try {
         const data = await fetchSettings();
-        if (data && Array.isArray(data) && data.length > 0) {
+        if (data && Array.isArray(data) && data?.length > 0) {
           setContactInfo(extractContactInfo(data));
         } else {
           setContactInfo(DEFAULT_CONTACT_INFO);

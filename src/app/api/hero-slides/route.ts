@@ -32,7 +32,7 @@ export async function POST(request: Request) {
       .find({})
       .toArray()) as unknown as HeroSlide[];
     const nextId =
-      allSlides.length > 0 ? Math.max(...allSlides?.map((s) => s.id)) + 1 : 1;
+      allSlides?.length > 0 ? Math.max(...allSlides?.map((s) => s.id)) + 1 : 1;
 
     const savedImagePath = await saveImage(body.image, "hero", nextId);
 
@@ -40,7 +40,7 @@ export async function POST(request: Request) {
       ...body,
       image: savedImagePath,
       id: nextId,
-      order: body.order ?? allSlides.length + 1,
+      order: body.order ?? allSlides?.length + 1,
       isActive: body.isActive ?? true,
       createdAt: new Date(),
     };

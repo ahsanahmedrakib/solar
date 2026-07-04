@@ -50,7 +50,7 @@ export default function Footer() {
       try {
         const res = await fetch("/api/services");
         const json = await res.json();
-        if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+        if (json.success && Array.isArray(json.data) && json.data?.length > 0) {
           setServices(json.data);
         }
       } catch (error) {
@@ -285,7 +285,7 @@ export default function Footer() {
                     </div>
                   ) : (
                     <ul className="space-y-2.5">
-                      {(services.length > 0
+                      {(services?.length > 0
                         ? services?.map((s) => s.title)
                         : FALLBACK_SERVICE_TITLES
                       )?.map((title) => (
