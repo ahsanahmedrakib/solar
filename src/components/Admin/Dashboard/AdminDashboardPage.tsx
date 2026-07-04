@@ -304,17 +304,6 @@ export default function AdminDashboardPage() {
               <p className="admin-section-title">Recent Orders</p>
               <p className="admin-section-subtitle">Latest 5 transactions</p>
             </div>
-            <a
-              href="/admin/orders"
-              style={{
-                fontSize: 12,
-                color: "var(--admin-accent)",
-                textDecoration: "none",
-                fontWeight: 600,
-              }}
-            >
-              View all →
-            </a>
           </div>
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>

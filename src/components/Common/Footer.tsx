@@ -288,7 +288,7 @@ export default function Footer() {
                       {(services.length > 0
                         ? services.map((s) => s.title)
                         : FALLBACK_SERVICE_TITLES
-                      ).map((title) => (
+                      )?.map((title) => (
                         <li
                           key={title}
                           className="flex items-center gap-2 text-xs sm:text-sm text-gray-400 hover:text-white font-medium transition-colors cursor-pointer"
