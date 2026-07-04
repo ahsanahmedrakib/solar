@@ -50,7 +50,9 @@ function SingleBlogPageInner({ slug }: { slug: string }) {
     website: "",
     saveInfo: false,
   });
-  const [commentErrors, setCommentErrors] = useState<Record<string, string>>({});
+  const [commentErrors, setCommentErrors] = useState<Record<string, string>>(
+    {},
+  );
 
   const [replyData, setReplyData] = useState({
     comment: "",
@@ -146,7 +148,13 @@ function SingleBlogPageInner({ slug }: { slug: string }) {
       addCommentLocally(optimistic);
     }
 
-    setCommentData({ comment: "", name: "", email: "", website: "", saveInfo: false });
+    setCommentData({
+      comment: "",
+      name: "",
+      email: "",
+      website: "",
+      saveInfo: false,
+    });
     if (commentData.saveInfo) {
       localStorage.setItem("commentName", commentData.name);
       localStorage.setItem("commentEmail", commentData.email);
@@ -213,14 +221,24 @@ function SingleBlogPageInner({ slug }: { slug: string }) {
 
   const comments = blog?.comments || [];
   const topLevelComments = comments.filter((c) => c.parentId === null);
-  const getReplies = (parentId: number) => comments.filter((c) => c.parentId === parentId);
+  const getReplies = (parentId: number) =>
+    comments.filter((c) => c.parentId === parentId);
 
   const renderFieldError = (errors: Record<string, string>, field: string) => {
     if (!errors[field]) return null;
     return (
       <span className="text-[11px] text-red-500 flex items-center gap-1 mt-0.5">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="w-3 h-3 shrink-0">
-          <path fillRule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14ZM8 4a.75.75 0 0 1 .75.75v3a.75.75 0 0 1-1.5 0v-3A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clipRule="evenodd" />
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 16 16"
+          fill="currentColor"
+          className="w-3 h-3 shrink-0"
+        >
+          <path
+            fillRule="evenodd"
+            d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14ZM8 4a.75.75 0 0 1 .75.75v3a.75.75 0 0 1-1.5 0v-3A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
+            clipRule="evenodd"
+          />
         </svg>
         {errors[field]}
       </span>
@@ -251,15 +269,15 @@ function SingleBlogPageInner({ slug }: { slug: string }) {
             />
 
             <article className="prose prose-gray max-w-none text-sm sm:text-base text-gray-600 leading-relaxed">
-              <div
-                dangerouslySetInnerHTML={{ __html: blog.blogDetails }}
-              />
+              <div dangerouslySetInnerHTML={{ __html: blog.blogDetails }} />
             </article>
 
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 border-y border-gray-100 py-6 my-4">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="text-[#011c2b] text-xs font-bold mr-1">Tags:</span>
-                {blog.tags.map((tag, idx) => (
+                <span className="text-[#011c2b] text-xs font-bold mr-1">
+                  Tags:
+                </span>
+                {blog.tags?.map((tag, idx) => (
                   <span
                     key={idx}
                     className="bg-[#4caf50] hover:bg-[#43a047] text-white text-xs font-medium px-3 py-1 rounded transition-colors cursor-pointer"
@@ -270,7 +288,7 @@ function SingleBlogPageInner({ slug }: { slug: string }) {
               </div>
 
               <div className="flex items-center gap-2">
-                {["f", "t", "in"].map((social, idx) => (
+                {["f", "t", "in"]?.map((social, idx) => (
                   <button
                     key={idx}
                     className="w-8 h-8 rounded bg-[#4caf50] hover:bg-[#43a047] text-white text-xs font-bold flex items-center justify-center transition-colors uppercase"
@@ -290,7 +308,7 @@ function SingleBlogPageInner({ slug }: { slug: string }) {
 
               {topLevelComments.length > 0 ? (
                 <div className="flex flex-col gap-6">
-                  {topLevelComments.map((comment) => {
+                  {topLevelComments?.map((comment) => {
                     const replies = getReplies(comment.id);
                     return (
                       <div key={comment.id}>
@@ -303,18 +321,24 @@ function SingleBlogPageInner({ slug }: { slug: string }) {
                               <span className="font-bold text-sm text-[#011c2b]">
                                 {comment.name}
                               </span>
-                              <span className="text-gray-400 text-xs">{comment.date}</span>
+                              <span className="text-gray-400 text-xs">
+                                {comment.date}
+                              </span>
                             </div>
                             <p className="text-gray-500 text-sm mt-1 leading-relaxed">
                               {comment.comment}
                             </p>
                             <button
                               onClick={() =>
-                                setReplyingTo(replyingTo === comment.id ? null : comment.id)
+                                setReplyingTo(
+                                  replyingTo === comment.id ? null : comment.id,
+                                )
                               }
                               className="text-xs font-semibold text-[#4caf50] hover:text-[#43a047] mt-1.5 transition-colors"
                             >
-                              {replyingTo === comment.id ? "Cancel Reply" : "Reply"}
+                              {replyingTo === comment.id
+                                ? "Cancel Reply"
+                                : "Reply"}
                             </button>
 
                             {replyingTo === comment.id && (
@@ -331,7 +355,10 @@ function SingleBlogPageInner({ slug }: { slug: string }) {
                                       className="w-full bg-white rounded-lg px-3 py-2 border border-gray-200 outline-none focus:ring-2 focus:ring-[#4caf50] text-sm text-[#011c2b] transition-all resize-none"
                                       value={replyData.comment}
                                       onChange={(e) =>
-                                        setReplyData({ ...replyData, comment: e.target.value })
+                                        setReplyData({
+                                          ...replyData,
+                                          comment: e.target.value,
+                                        })
                                       }
                                     />
                                     {renderFieldError(replyErrors, "comment")}
@@ -345,7 +372,10 @@ function SingleBlogPageInner({ slug }: { slug: string }) {
                                         className="w-full bg-white rounded-lg px-3 py-2 border border-gray-200 outline-none focus:ring-2 focus:ring-[#4caf50] text-sm text-[#011c2b] transition-all"
                                         value={replyData.name}
                                         onChange={(e) =>
-                                          setReplyData({ ...replyData, name: e.target.value })
+                                          setReplyData({
+                                            ...replyData,
+                                            name: e.target.value,
+                                          })
                                         }
                                       />
                                       {renderFieldError(replyErrors, "name")}
@@ -358,7 +388,10 @@ function SingleBlogPageInner({ slug }: { slug: string }) {
                                         className="w-full bg-white rounded-lg px-3 py-2 border border-gray-200 outline-none focus:ring-2 focus:ring-[#4caf50] text-sm text-[#011c2b] transition-all"
                                         value={replyData.email}
                                         onChange={(e) =>
-                                          setReplyData({ ...replyData, email: e.target.value })
+                                          setReplyData({
+                                            ...replyData,
+                                            email: e.target.value,
+                                          })
                                         }
                                       />
                                       {renderFieldError(replyErrors, "email")}
@@ -370,14 +403,19 @@ function SingleBlogPageInner({ slug }: { slug: string }) {
                                         className="w-full bg-white rounded-lg px-3 py-2 border border-gray-200 outline-none focus:ring-2 focus:ring-[#4caf50] text-sm text-[#011c2b] transition-all"
                                         value={replyData.website}
                                         onChange={(e) =>
-                                          setReplyData({ ...replyData, website: e.target.value })
+                                          setReplyData({
+                                            ...replyData,
+                                            website: e.target.value,
+                                          })
                                         }
                                       />
                                       {renderFieldError(replyErrors, "website")}
                                     </div>
                                   </div>
                                   <button
-                                    onClick={() => handleReplySubmit(comment.id)}
+                                    onClick={() =>
+                                      handleReplySubmit(comment.id)
+                                    }
                                     className="self-start bg-[#4caf50] hover:bg-[#43a047] text-white font-bold text-xs uppercase tracking-wider px-4 py-2.5 rounded-lg shadow-sm transition-colors duration-150"
                                   >
                                     Post Reply
@@ -388,7 +426,7 @@ function SingleBlogPageInner({ slug }: { slug: string }) {
 
                             {replies.length > 0 && (
                               <div className="mt-4 ml-2 border-l-2 border-[#4caf50]/30 pl-4 flex flex-col gap-4">
-                                {replies.map((reply) => (
+                                {replies?.map((reply) => (
                                   <div key={reply.id} className="flex gap-3.5">
                                     <div className="w-8 h-8 rounded-full bg-gray-300 text-white flex items-center justify-center text-xs font-bold shrink-0">
                                       {reply.name.charAt(0).toUpperCase()}
@@ -398,7 +436,9 @@ function SingleBlogPageInner({ slug }: { slug: string }) {
                                         <span className="font-bold text-sm text-[#011c2b]">
                                           {reply.name}
                                         </span>
-                                        <span className="text-gray-400 text-xs">{reply.date}</span>
+                                        <span className="text-gray-400 text-xs">
+                                          {reply.date}
+                                        </span>
                                       </div>
                                       <p className="text-gray-500 text-sm mt-1 leading-relaxed">
                                         {reply.comment}
@@ -415,7 +455,9 @@ function SingleBlogPageInner({ slug }: { slug: string }) {
                   })}
                 </div>
               ) : (
-                <p className="text-gray-400 text-sm">No comments yet. Be the first to comment!</p>
+                <p className="text-gray-400 text-sm">
+                  No comments yet. Be the first to comment!
+                </p>
               )}
             </section>
 
@@ -425,10 +467,14 @@ function SingleBlogPageInner({ slug }: { slug: string }) {
                 Leave a Reply
               </h3>
               <p className="text-gray-400 text-xs mb-6">
-                Your email address will not be published. Required fields are marked *
+                Your email address will not be published. Required fields are
+                marked *
               </p>
 
-              <form onSubmit={handleCommentSubmit} className="flex flex-col gap-4">
+              <form
+                onSubmit={handleCommentSubmit}
+                className="flex flex-col gap-4"
+              >
                 <div className="flex flex-col gap-2">
                   <label className="text-[#011c2b] text-xs font-bold tracking-wide">
                     Comment *
@@ -439,7 +485,10 @@ function SingleBlogPageInner({ slug }: { slug: string }) {
                     className="w-full bg-[#f4f7f9] rounded-xl px-4 py-3 border-none outline-none focus:ring-2 focus:ring-[#4caf50] text-sm text-[#011c2b] transition-all resize-none"
                     value={commentData.comment}
                     onChange={(e) =>
-                      setCommentData({ ...commentData, comment: e.target.value })
+                      setCommentData({
+                        ...commentData,
+                        comment: e.target.value,
+                      })
                     }
                   />
                   {renderFieldError(commentErrors, "comment")}
@@ -471,7 +520,10 @@ function SingleBlogPageInner({ slug }: { slug: string }) {
                       className="w-full bg-[#f4f7f9] rounded-xl px-4 py-3 border-none outline-none focus:ring-2 focus:ring-[#4caf50] text-sm text-[#011c2b] transition-all"
                       value={commentData.email}
                       onChange={(e) =>
-                        setCommentData({ ...commentData, email: e.target.value })
+                        setCommentData({
+                          ...commentData,
+                          email: e.target.value,
+                        })
                       }
                     />
                     {renderFieldError(commentErrors, "email")}
@@ -485,7 +537,10 @@ function SingleBlogPageInner({ slug }: { slug: string }) {
                       className="w-full bg-[#f4f7f9] rounded-xl px-4 py-3 border-none outline-none focus:ring-2 focus:ring-[#4caf50] text-sm text-[#011c2b] transition-all"
                       value={commentData.website}
                       onChange={(e) =>
-                        setCommentData({ ...commentData, website: e.target.value })
+                        setCommentData({
+                          ...commentData,
+                          website: e.target.value,
+                        })
                       }
                     />
                     {renderFieldError(commentErrors, "website")}
@@ -499,14 +554,18 @@ function SingleBlogPageInner({ slug }: { slug: string }) {
                     className="w-4 h-4 rounded text-[#4caf50] focus:ring-[#4caf50] border-gray-300 mt-0.5 accent-[#4caf50] cursor-pointer"
                     checked={commentData.saveInfo}
                     onChange={(e) =>
-                      setCommentData({ ...commentData, saveInfo: e.target.checked })
+                      setCommentData({
+                        ...commentData,
+                        saveInfo: e.target.checked,
+                      })
                     }
                   />
                   <label
                     htmlFor="saveInfo"
                     className="text-gray-500 text-xs select-none cursor-pointer leading-normal"
                   >
-                    Save my name, email, and website in this browser for the next time I comment.
+                    Save my name, email, and website in this browser for the
+                    next time I comment.
                   </label>
                 </div>
 
@@ -537,3 +596,4 @@ function SingleBlogPageInner({ slug }: { slug: string }) {
 export default function SingleBlogPage({ slug }: { slug: string }) {
   return <SingleBlogPageInner key={slug} slug={slug} />;
 }
+

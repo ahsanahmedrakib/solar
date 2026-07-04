@@ -165,7 +165,7 @@ export default function FAQAndStats() {
 
         {/* RIGHT COLUMN: ACCORDION COMPONENT LIST */}
         <div className="lg:col-span-7 divide-y divide-gray-100">
-          {faqs.map((faq) => {
+          {faqs?.map((faq) => {
             const isOpen = openId === faq.id;
             return (
               <div key={faq.id} className="py-5 first:pt-0 last:pb-0">
@@ -228,7 +228,7 @@ export default function FAQAndStats() {
       {/* ========================================================================= */}
       <div className="pt-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-4 items-center">
-          {stats.map((stat, idx) => (
+          {stats?.map((stat, idx) => (
             <div
               key={idx}
               className={`flex items-center gap-4 pl-2 sm:pl-6 ${

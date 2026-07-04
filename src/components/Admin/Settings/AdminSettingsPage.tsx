@@ -34,7 +34,7 @@ function mergeSectionsWithDefaults(
   loaded: Section[],
   defaults: Section[],
 ): Section[] {
-  return defaults.map((defaultSection) => {
+  return defaults?.map((defaultSection) => {
     const loadedSection = loaded.find((s) => s.id === defaultSection.id);
     if (!loadedSection) return defaultSection;
 
@@ -66,10 +66,10 @@ function mergeSectionsWithDefaults(
 }
 
 function createEmptySections(): Section[] {
-  return DEFAULT_SECTIONS.map((section) => ({
+  return DEFAULT_SECTIONS?.map((section) => ({
     ...section,
-    fields: section.fields?.map((f) => ({ ...f, value: "" })),
-    toggles: section.toggles?.map((t) => ({ ...t, checked: false })),
+    fields: section.fields??.map((f) => ({ ...f, value: "" })),
+    toggles: section.toggles??.map((t) => ({ ...t, checked: false })),
   }));
 }
 
@@ -106,11 +106,11 @@ export default function AdminSettingsPage() {
     newValue: string,
   ) => {
     setSections((prev) =>
-      prev.map((sec) => {
+      prev?.map((sec) => {
         if (sec.id === sectionId && sec.fields) {
           return {
             ...sec,
-            fields: sec.fields.map((f) =>
+            fields: sec.fields?.map((f) =>
               f.id === fieldId ? { ...f, value: newValue } : f,
             ),
           };
@@ -122,11 +122,11 @@ export default function AdminSettingsPage() {
 
   const handleToggleChange = (sectionId: string, toggleId: string) => {
     setSections((prev) =>
-      prev.map((sec) => {
+      prev?.map((sec) => {
         if (sec.id === sectionId && sec.toggles) {
           return {
             ...sec,
-            toggles: sec.toggles.map((t) =>
+            toggles: sec.toggles?.map((t) =>
               t.id === toggleId ? { ...t, checked: !t.checked } : t,
             ),
           };
@@ -180,7 +180,7 @@ export default function AdminSettingsPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {sections.map((section) => {
+        {sections?.map((section) => {
           const IconComponent = ICON_MAP[section.iconName] || Sliders;
           return (
             <div key={section.id} className="admin-section-card">
@@ -212,7 +212,7 @@ export default function AdminSettingsPage() {
                       gap: 16,
                     }}
                   >
-                    {section.fields.map((field) => (
+                    {section.fields?.map((field) => (
                       <div key={field.id}>
                         {field.type === "image" ? (
                           <ImageUploadInput
@@ -285,7 +285,7 @@ export default function AdminSettingsPage() {
                       paddingTop: section.fields ? 12 : 0,
                     }}
                   >
-                    {section.toggles.map((toggle) => (
+                    {section.toggles?.map((toggle) => (
                       <div
                         key={toggle.id}
                         style={{

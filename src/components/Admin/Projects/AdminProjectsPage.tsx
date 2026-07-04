@@ -4,6 +4,7 @@ import { ImageUploadInput } from "@/components/Admin/ImageUploadInput";
 import { RichTextEditor } from "@/components/Admin/RichTextEditor";
 import type { Project } from "@/data/projects";
 import { DEFAULT_ADMIN_LOGO } from "@/data/settings";
+import { apiClient } from "@/lib/apiClient";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
   AlertCircle,
@@ -22,7 +23,6 @@ import { useEffect, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { toast } from "react-toastify";
 import * as yup from "yup";
-import { apiClient } from "@/lib/apiClient";
 
 const CATEGORIES = [
   "Residential Solar",
@@ -197,7 +197,7 @@ export default function AdminProjectsPage() {
         const json = await res.json();
         if (json.success) {
           setProjects((prev) =>
-            prev.map((p) =>
+            prev?.map((p) =>
               p.id === editingProject.id ? { ...p, ...data } : p,
             ),
           );
@@ -281,7 +281,7 @@ export default function AdminProjectsPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         {/* Category Filter Chips */}
         <div className="admin-filter-bar flex-wrap gap-2">
-          {["All", ...CATEGORIES].map((cat) => (
+          {["All", ...CATEGORIES]?.map((cat) => (
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
@@ -339,7 +339,7 @@ export default function AdminProjectsPage() {
                 </tr>
               </thead>
               <tbody>
-                {filteredProjects.map((project) => (
+                {filteredProjects?.map((project) => (
                   <tr key={project.id}>
                     <td>
                       <div className="flex items-center gap-3">
@@ -485,7 +485,7 @@ export default function AdminProjectsPage() {
                     {...register("category")}
                     className="w-full bg-(--admin-surface-2) border border-(--admin-border) text-sm text-(--admin-text-primary) rounded-lg p-2.5 outline-none focus:border-(--admin-accent) transition"
                   >
-                    {CATEGORIES.map((cat) => (
+                    {CATEGORIES?.map((cat) => (
                       <option key={cat} value={cat}>
                         {cat}
                       </option>

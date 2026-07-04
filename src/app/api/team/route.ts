@@ -23,7 +23,7 @@ export async function POST(request: Request) {
 
     const allMembers = await db.collection("team").find({}).toArray();
     const nextId =
-      allMembers.length > 0 ? Math.max(...allMembers.map((m) => m.id)) + 1 : 1;
+      allMembers.length > 0 ? Math.max(...allMembers?.map((m) => m.id)) + 1 : 1;
 
     const savedImagePath = await saveImage(body.image, "team", nextId);
 

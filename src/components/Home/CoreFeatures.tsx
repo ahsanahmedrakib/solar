@@ -163,7 +163,7 @@ export default function CoreFeatures() {
           </div>
           {/* RIGHT AREA: 2X2 CONTENT CARDS GRID */}
           <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {features.map((feature) => (
+            {features?.map((feature) => (
               <div
                 key={feature.id}
                 className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-gray-100/40 hover:shadow-md transition-shadow duration-300 flex flex-col justify-between relative overflow-hidden min-h-55"

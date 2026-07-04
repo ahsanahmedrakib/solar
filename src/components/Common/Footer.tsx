@@ -117,7 +117,7 @@ export default function Footer() {
                 <div className="space-y-3 pt-2">
                   <div className="h-4 w-32 rounded bg-white/10" />
                   <div className="flex items-center gap-3">
-                    {[1, 2, 3, 4].map((i) => (
+                    {[1, 2, 3, 4]?.map((i) => (
                       <div
                         key={i}
                         className="w-9 h-9 rounded-full bg-white/10"
@@ -127,11 +127,11 @@ export default function Footer() {
                 </div>
               </div>
               <div className="lg:col-span-8 rounded-3xl p-8 sm:p-10 bg-white/5 border border-white/5 grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-6">
-                {[1, 2, 3].map((col) => (
+                {[1, 2, 3]?.map((col) => (
                   <div key={col} className="space-y-4">
                     <div className="h-5 w-28 rounded bg-white/10" />
                     <div className="space-y-2.5">
-                      {[1, 2, 3, 4, 5].map((row) => (
+                      {[1, 2, 3, 4, 5]?.map((row) => (
                         <div
                           key={row}
                           className="h-4 w-full rounded bg-white/10"
@@ -146,7 +146,7 @@ export default function Footer() {
             {/* CONTACT ROW SKELETON */}
             <div className="py-8 border-t border-b border-white/5">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-4">
-                {[1, 2, 3].map((i) => (
+                {[1, 2, 3]?.map((i) => (
                   <div key={i} className="flex items-center gap-4 pl-0 sm:pl-4">
                     <div className="w-11 h-11 rounded-full bg-white/10 shrink-0" />
                     <div className="space-y-1.5">
@@ -223,7 +223,7 @@ export default function Footer() {
                           href: settings.socialLi,
                         },
                       ] as const
-                    ).map(
+                    )?.map(
                       (platform) =>
                         platform.href && (
                           <Link
@@ -255,7 +255,7 @@ export default function Footer() {
                       { label: "Services", href: "/services" },
                       { label: "Projects", href: "/pojects" },
                       { label: "Blogs", href: "/blogs" },
-                    ].map((link) => (
+                    ]?.map((link) => (
                       <li
                         key={link.label}
                         className="flex items-center gap-2 text-xs sm:text-sm text-gray-400 hover:text-white font-medium transition-colors"
@@ -276,7 +276,7 @@ export default function Footer() {
                   </h3>
                   {servicesLoading ? (
                     <div className="space-y-3 animate-pulse">
-                      {[1, 2, 3, 4, 5].map((i) => (
+                      {[1, 2, 3, 4, 5]?.map((i) => (
                         <div key={i} className="flex items-center gap-2">
                           <div className="w-1.5 h-1.5 rounded-full bg-white/10 shrink-0" />
                           <div className="h-4 w-40 rounded bg-white/10" />
@@ -286,7 +286,7 @@ export default function Footer() {
                   ) : (
                     <ul className="space-y-2.5">
                       {(services.length > 0
-                        ? services.map((s) => s.title)
+                        ? services?.map((s) => s.title)
                         : FALLBACK_SERVICE_TITLES
                       )?.map((title) => (
                         <li

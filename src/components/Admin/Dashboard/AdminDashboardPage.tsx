@@ -186,7 +186,7 @@ function DonutChart() {
         </div>
       </div>
       <div className="admin-donut-legend">
-        {donutSegments.map((seg) => (
+        {donutSegments?.map((seg) => (
           <div key={seg.label} className="admin-donut-legend-item">
             <span className="admin-donut-legend-label">
               <span
@@ -208,7 +208,7 @@ export default function AdminDashboardPage() {
     <div>
       {/* Stats */}
       <div className="admin-stats-grid">
-        {stats.map((stat) => {
+        {stats?.map((stat) => {
           const Icon = stat.icon;
           return (
             <div key={stat.label} className="admin-stat-card">
@@ -266,7 +266,7 @@ export default function AdminDashboardPage() {
           </div>
           <div className="admin-section-body">
             <div className="admin-bar-chart">
-              {barData.map((bar) => (
+              {barData?.map((bar) => (
                 <div key={bar.label} className="admin-bar-group">
                   <div className="admin-bar-track">
                     <div
@@ -316,7 +316,7 @@ export default function AdminDashboardPage() {
               </tr>
             </thead>
             <tbody>
-              {recentOrders.map((order) => (
+              {recentOrders?.map((order) => (
                 <tr key={order.id}>
                   <td
                     style={{
@@ -354,7 +354,7 @@ export default function AdminDashboardPage() {
           </div>
           <div className="admin-section-body">
             <div className="admin-activity-list">
-              {activities.map((act, i) => (
+              {activities?.map((act, i) => (
                 <div key={i} className="admin-activity-item">
                   <div
                     className="admin-activity-dot"

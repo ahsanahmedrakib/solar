@@ -47,13 +47,13 @@ export default function SingleService({ slug }: { slug: string }) {
               </div>
               <nav className="flex flex-col">
                 {loading
-                  ? Array.from({ length: 6 }).map((_, i) => (
+                  ? Array.from({ length: 6 })?.map((_, i) => (
                       <div
                         key={i}
                         className="h-11 px-5 bg-gray-100 animate-pulse border-b border-gray-200/60"
                       />
                     ))
-                  : allServices.map((s) => (
+                  : allServices?.map((s) => (
                       <Link
                         key={s.id}
                         href={"/services/" + s.slug}
@@ -120,7 +120,7 @@ export default function SingleService({ slug }: { slug: string }) {
                       "Backup power during grid outages",
                       "Smart energy management & monitoring",
                       "Lower electricity bills using stored energy",
-                    ].map((offer, index) => (
+                    ]?.map((offer, index) => (
                       <div
                         key={index}
                         className="flex items-start gap-2.5 text-sm font-semibold text-gray-700"

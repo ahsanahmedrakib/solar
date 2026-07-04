@@ -2,8 +2,8 @@
 
 import { ImageUploadInput } from "@/components/Admin/ImageUploadInput";
 import { DEFAULT_ADMIN_LOGO } from "@/data/settings";
-import Image from "next/image";
 import type { TeamMember } from "@/data/team";
+import { apiClient } from "@/lib/apiClient";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
   AlertCircle,
@@ -15,11 +15,11 @@ import {
   Users,
   X,
 } from "lucide-react";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import * as yup from "yup";
-import { apiClient } from "@/lib/apiClient";
 
 const teamSchema = yup.object({
   name: yup
@@ -163,7 +163,7 @@ export default function AdminTeamPage() {
         const json = await res.json();
         if (json.success) {
           setTeam((prev) =>
-            prev.map((m) =>
+            prev?.map((m) =>
               m.id === editingMember.id ? { ...m, ...payload } : m,
             ),
           );
@@ -203,7 +203,15 @@ export default function AdminTeamPage() {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-100">
-        <Image src={DEFAULT_ADMIN_LOGO} alt="Loading" width={0} height={0} sizes="100vw" className="h-16 w-auto animate-pulse opacity-70" priority />
+        <Image
+          src={DEFAULT_ADMIN_LOGO}
+          alt="Loading"
+          width={0}
+          height={0}
+          sizes="100vw"
+          className="h-16 w-auto animate-pulse opacity-70"
+          priority
+        />
         <p className="mt-4 text-(--admin-text-secondary) font-medium">
           Loading Team Directory...
         </p>
@@ -273,7 +281,7 @@ export default function AdminTeamPage() {
                 </tr>
               </thead>
               <tbody>
-                {filteredTeam.map((member) => (
+                {filteredTeam?.map((member) => (
                   <tr key={member.id}>
                     <td>
                       <div className="flex items-center gap-3">
@@ -397,7 +405,7 @@ export default function AdminTeamPage() {
                   Social Links (optional)
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {(["facebook", "instagram", "x", "linkedin"] as const).map(
+                  {(["facebook", "instagram", "x", "linkedin"] as const)?.map(
                     (platform) => (
                       <div key={platform} className="flex flex-col gap-1">
                         <label className="text-[11px] font-semibold text-(--admin-text-muted) uppercase tracking-wider">

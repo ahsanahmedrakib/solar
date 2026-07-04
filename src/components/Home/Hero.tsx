@@ -84,7 +84,7 @@ export default function Hero() {
           }}
           className="h-full min-h-187.5"
         >
-          {slides.map((slide) => (
+          {slides?.map((slide) => (
             <SwiperSlide key={slide.id}>
               <div className="relative min-h-187.5 flex items-center bg-slate-900">
                 <div

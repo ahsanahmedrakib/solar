@@ -1,9 +1,9 @@
 "use client";
 
 import { DEFAULT_SERVICES, type Service } from "@/data/services";
-import { useEffect, useState } from "react";
 import { iconRenderer } from "@/lib/iconRenderer";
 import type { ServiceCard } from "@/types/services";
+import { useEffect, useState } from "react";
 import ServicesCard from "./ServicesCard";
 
 function toServiceCard(service: Service): ServiceCard {
@@ -30,13 +30,13 @@ export default function Services() {
         const res = await fetch("/api/services");
         const json = await res.json();
         if (json.success && Array.isArray(json.data) && json.data.length > 0) {
-          setServices(json.data.map(toServiceCard));
+          setServices(json.data?.map(toServiceCard));
         } else {
-          setServices(DEFAULT_SERVICES.map(toServiceCard));
+          setServices(DEFAULT_SERVICES?.map(toServiceCard));
         }
       } catch (error) {
         console.error("Failed to load services", error);
-        setServices(DEFAULT_SERVICES.map(toServiceCard));
+        setServices(DEFAULT_SERVICES?.map(toServiceCard));
       } finally {
         setLoading(false);
       }
@@ -88,7 +88,7 @@ export default function Services() {
 
           {loading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pt-4">
-              {Array.from({ length: SKELETON_COUNT }).map((_, i) => (
+              {Array.from({ length: SKELETON_COUNT })?.map((_, i) => (
                 <div
                   key={i}
                   className="bg-white rounded-4xl p-6 shadow-sm border border-gray-100/60 animate-pulse"

@@ -28,7 +28,7 @@ export async function POST(request: Request) {
       .toArray()) as unknown as Service[];
     const nextId =
       allServices.length > 0
-        ? Math.max(...allServices.map((s) => s.id)) + 1
+        ? Math.max(...allServices?.map((s) => s.id)) + 1
         : 1;
 
     const savedImagePath = await saveImage(body.image, "services", nextId);

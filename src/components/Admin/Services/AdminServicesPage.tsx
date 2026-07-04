@@ -2,9 +2,9 @@
 
 import { ImageUploadInput } from "@/components/Admin/ImageUploadInput";
 import { RichTextEditor } from "@/components/Admin/RichTextEditor";
-import { DEFAULT_ADMIN_LOGO } from "@/data/settings";
-import Image from "next/image";
 import type { Service } from "@/data/services";
+import { DEFAULT_ADMIN_LOGO } from "@/data/settings";
+import { apiClient } from "@/lib/apiClient";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Icons from "lucide-react";
 import {
@@ -23,11 +23,11 @@ import {
   X,
   Zap,
 } from "lucide-react";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { toast } from "react-toastify";
 import * as yup from "yup";
-import { apiClient } from "@/lib/apiClient";
 
 // Available Lucide Icons for selection
 const AVAILABLE_ICONS = [
@@ -197,7 +197,7 @@ export default function AdminServicesPage() {
         const json = await res.json();
         if (json.success) {
           setServices((prev) =>
-            prev.map((s) =>
+            prev?.map((s) =>
               s.id === editingService.id ? { ...s, ...data } : s,
             ),
           );
@@ -231,7 +231,15 @@ export default function AdminServicesPage() {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-100">
-        <Image src={DEFAULT_ADMIN_LOGO} alt="Loading" width={0} height={0} sizes="100vw" className="h-16 w-auto animate-pulse opacity-70" priority />
+        <Image
+          src={DEFAULT_ADMIN_LOGO}
+          alt="Loading"
+          width={0}
+          height={0}
+          sizes="100vw"
+          className="h-16 w-auto animate-pulse opacity-70"
+          priority
+        />
         <p className="mt-4 text-(--admin-text-secondary) font-medium">
           Loading Services...
         </p>
@@ -323,7 +331,7 @@ export default function AdminServicesPage() {
                 </tr>
               </thead>
               <tbody>
-                {filteredServices.map((service) => (
+                {filteredServices?.map((service) => (
                   <tr key={service.id}>
                     <td>
                       <div className="flex items-center gap-3">
@@ -440,7 +448,7 @@ export default function AdminServicesPage() {
                   Dashboard & Card Icon *
                 </label>
                 <div className="grid grid-cols-4 gap-2">
-                  {AVAILABLE_ICONS.map((ico) => {
+                  {AVAILABLE_ICONS?.map((ico) => {
                     const isSelected = selectedIcon === ico.name;
                     const IconComponent = ico.icon;
                     return (
@@ -552,7 +560,13 @@ export default function AdminServicesPage() {
                 >
                   {isSubmitting ? (
                     <div className="flex items-center gap-2">
-                      <Image src="/images/loader.svg" alt="Loading" width={14} height={14} className="w-3.5 h-3.5" />
+                      <Image
+                        src="/images/loader.svg"
+                        alt="Loading"
+                        width={14}
+                        height={14}
+                        className="w-3.5 h-3.5"
+                      />
                       Saving...
                     </div>
                   ) : (

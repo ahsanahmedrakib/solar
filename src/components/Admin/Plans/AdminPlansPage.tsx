@@ -1,8 +1,8 @@
 "use client";
 
-import { DEFAULT_ADMIN_LOGO } from "@/data/settings";
-import Image from "next/image";
 import type { Plan } from "@/data/plans";
+import { DEFAULT_ADMIN_LOGO } from "@/data/settings";
+import { apiClient } from "@/lib/apiClient";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
   AlertCircle,
@@ -14,11 +14,11 @@ import {
   Trash2,
   X,
 } from "lucide-react";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import * as yup from "yup";
-import { apiClient } from "@/lib/apiClient";
 
 const featureItemSchema = yup.object({
   value: yup.string().required("Feature cannot be empty"),
@@ -139,7 +139,7 @@ export default function AdminPlansPage() {
       annualPrice: plan.annualPrice,
       features:
         plan.features.length > 0
-          ? plan.features.map((f) => ({ value: f }))
+          ? plan.features?.map((f) => ({ value: f }))
           : [{ value: "" }],
       isPopular: !!plan.isPopular,
       badge: plan.badge || "",
@@ -170,7 +170,7 @@ export default function AdminPlansPage() {
 
   const onSubmit = async (data: PlanFormData) => {
     const parsedFeatures = data.features
-      .map((f) => f.value.trim())
+      ?.map((f) => f.value.trim())
       .filter((f) => f.length > 0);
 
     const payload = {
@@ -193,7 +193,7 @@ export default function AdminPlansPage() {
         const json = await res.json();
         if (json.success) {
           setPlans((prev) =>
-            prev.map((p) =>
+            prev?.map((p) =>
               p.id === editingPlan.id ? { ...p, ...payload } : p,
             ),
           );
@@ -227,7 +227,15 @@ export default function AdminPlansPage() {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-100">
-        <Image src={DEFAULT_ADMIN_LOGO} alt="Loading" width={0} height={0} sizes="100vw" className="h-16 w-auto animate-pulse opacity-70" priority />
+        <Image
+          src={DEFAULT_ADMIN_LOGO}
+          alt="Loading"
+          width={0}
+          height={0}
+          sizes="100vw"
+          className="h-16 w-auto animate-pulse opacity-70"
+          priority
+        />
         <p className="mt-4 text-(--admin-text-secondary) font-medium">
           Loading Solar Plans...
         </p>
@@ -317,7 +325,7 @@ export default function AdminPlansPage() {
                 </tr>
               </thead>
               <tbody>
-                {filteredPlans.map((plan) => (
+                {filteredPlans?.map((plan) => (
                   <tr key={plan.id}>
                     <td>
                       <div>
@@ -342,7 +350,7 @@ export default function AdminPlansPage() {
                     </td>
                     <td>
                       <div className="flex flex-wrap gap-1 max-w-xs">
-                        {plan.features.slice(0, 2).map((feat, idx) => (
+                        {plan.features.slice(0, 2)?.map((feat, idx) => (
                           <span
                             key={idx}
                             className="text-[11px] bg-(--admin-surface-2) text-(--admin-text-secondary) px-2 py-0.5 rounded border border-(--admin-border)"
@@ -491,7 +499,7 @@ export default function AdminPlansPage() {
                   Features List *
                 </label>
                 <div className="space-y-2">
-                  {fields.map((field, index) => (
+                  {fields?.map((field, index) => (
                     <div key={field.id} className="flex items-center gap-2">
                       <input
                         type="text"

@@ -74,7 +74,7 @@ export default function Teams() {
         {/* ================= SKELETON LOADING ================= */}
         {loading && (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {Array.from({ length: 3 }).map((_, index) => (
+            {Array.from({ length: 3 })?.map((_, index) => (
               <div
                 key={index}
                 className="flex flex-col overflow-hidden rounded-3xl bg-[#f4f7fa] animate-pulse"
@@ -99,7 +99,7 @@ export default function Teams() {
         {/* ================= TEAM CARDS GRID ================= */}
         {!loading && (
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {teamMembers.map((member, index) => (
+            {teamMembers?.map((member, index) => (
               <div
                 key={index}
                 className="group flex flex-col overflow-hidden rounded-3xl bg-[#f4f7fa] transition-all duration-300 hover:shadow-md"
@@ -133,7 +133,7 @@ export default function Teams() {
                         Object.keys(SOCIAL_ICONS) as Array<
                           keyof typeof SOCIAL_ICONS
                         >
-                      ).map((platform) => {
+                      )?.map((platform) => {
                         const url = member.socialLinks?.[platform];
                         if (!url) return null;
                         return (

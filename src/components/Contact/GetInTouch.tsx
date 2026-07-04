@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-import { toast } from "react-toastify";
 import type { Section } from "@/data/settings";
 import { fetchSettings } from "@/lib/settings-cache";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import * as yup from "yup";
 
 interface ContactInfo {
   phone: string;
@@ -30,8 +30,7 @@ function extractContactInfo(sections: Section[]): ContactInfo {
   const social = sections.find((s) => s.id === "social");
   const fields = general?.fields ?? [];
 
-  const getValue = (id: string) =>
-    fields.find((f) => f.id === id)?.value ?? "";
+  const getValue = (id: string) => fields.find((f) => f.id === id)?.value ?? "";
   const getSocialValue = (id: string) =>
     social?.fields?.find((f) => f.id === id)?.value ?? "";
 
@@ -151,7 +150,7 @@ export default function GetInTouch() {
               <div className="w-full h-56 rounded-xl bg-gray-700" />
               <div className="h-6 w-48 rounded bg-gray-700" />
               <hr className="border-gray-700" />
-              {Array.from({ length: 3 }).map((_, i) => (
+              {Array.from({ length: 3 })?.map((_, i) => (
                 <div key={i} className="flex items-center gap-4">
                   <div className="w-11 h-11 rounded-full bg-gray-700 shrink-0" />
                   <div className="space-y-1.5 flex-1">
@@ -281,14 +280,28 @@ export default function GetInTouch() {
 
           {isSubmitted && (
             <div className="bg-[#e8f5e9] text-brand-900 p-4 rounded-xl text-sm font-medium border border-[#c8e6c9] mb-6 flex items-center gap-2 transition-all">
-              <svg className="w-5 h-5 shrink-0 text-[#4caf50]" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+              <svg
+                className="w-5 h-5 shrink-0 text-[#4caf50]"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clipRule="evenodd"
+                />
               </svg>
-              <span>Thank you! Your message has been sent successfully. We will get back to you soon.</span>
+              <span>
+                Thank you! Your message has been sent successfully. We will get
+                back to you soon.
+              </span>
             </div>
           )}
 
-          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="flex flex-col gap-5"
+          >
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div className="flex flex-col gap-2">
                 <label className="text-[#011c2b] text-xs font-bold tracking-wide">
@@ -297,9 +310,13 @@ export default function GetInTouch() {
                 <input
                   type="text"
                   placeholder="Enter First Name"
-                  className={`w-full bg-white px-4 py-3 rounded-xl border ${errors.firstName ? "border-red-500" : "border-transparent"
-                    } outline-none placeholder-gray-400 text-sm focus:ring-2 ${errors.firstName ? "focus:ring-red-500" : "focus:ring-[#39a838]"
-                    } transition-all`}
+                  className={`w-full bg-white px-4 py-3 rounded-xl border ${
+                    errors.firstName ? "border-red-500" : "border-transparent"
+                  } outline-none placeholder-gray-400 text-sm focus:ring-2 ${
+                    errors.firstName
+                      ? "focus:ring-red-500"
+                      : "focus:ring-[#39a838]"
+                  } transition-all`}
                   {...register("firstName")}
                 />
                 {errors.firstName && (
@@ -315,9 +332,13 @@ export default function GetInTouch() {
                 <input
                   type="text"
                   placeholder="Enter Last Name"
-                  className={`w-full bg-white px-4 py-3 rounded-xl border ${errors.lastName ? "border-red-500" : "border-transparent"
-                    } outline-none placeholder-gray-400 text-sm focus:ring-2 ${errors.lastName ? "focus:ring-red-500" : "focus:ring-[#39a838]"
-                    } transition-all`}
+                  className={`w-full bg-white px-4 py-3 rounded-xl border ${
+                    errors.lastName ? "border-red-500" : "border-transparent"
+                  } outline-none placeholder-gray-400 text-sm focus:ring-2 ${
+                    errors.lastName
+                      ? "focus:ring-red-500"
+                      : "focus:ring-[#39a838]"
+                  } transition-all`}
                   {...register("lastName")}
                 />
                 {errors.lastName && (
@@ -336,9 +357,13 @@ export default function GetInTouch() {
                 <input
                   type="tel"
                   placeholder="Enter Phone Number"
-                  className={`w-full bg-white px-4 py-3 rounded-xl border ${errors.phoneNumber ? "border-red-500" : "border-transparent"
-                    } outline-none placeholder-gray-400 text-sm focus:ring-2 ${errors.phoneNumber ? "focus:ring-red-500" : "focus:ring-[#39a838]"
-                    } transition-all`}
+                  className={`w-full bg-white px-4 py-3 rounded-xl border ${
+                    errors.phoneNumber ? "border-red-500" : "border-transparent"
+                  } outline-none placeholder-gray-400 text-sm focus:ring-2 ${
+                    errors.phoneNumber
+                      ? "focus:ring-red-500"
+                      : "focus:ring-[#39a838]"
+                  } transition-all`}
                   {...register("phoneNumber")}
                 />
                 {errors.phoneNumber && (
@@ -354,9 +379,15 @@ export default function GetInTouch() {
                 <input
                   type="email"
                   placeholder="Enter Email Address"
-                  className={`w-full bg-white px-4 py-3 rounded-xl border ${errors.emailAddress ? "border-red-500" : "border-transparent"
-                    } outline-none placeholder-gray-400 text-sm focus:ring-2 ${errors.emailAddress ? "focus:ring-red-500" : "focus:ring-[#39a838]"
-                    } transition-all`}
+                  className={`w-full bg-white px-4 py-3 rounded-xl border ${
+                    errors.emailAddress
+                      ? "border-red-500"
+                      : "border-transparent"
+                  } outline-none placeholder-gray-400 text-sm focus:ring-2 ${
+                    errors.emailAddress
+                      ? "focus:ring-red-500"
+                      : "focus:ring-[#39a838]"
+                  } transition-all`}
                   {...register("emailAddress")}
                 />
                 {errors.emailAddress && (
@@ -374,9 +405,11 @@ export default function GetInTouch() {
               <textarea
                 rows={5}
                 placeholder="Any Message..."
-                className={`w-full bg-white px-4 py-3 rounded-xl border ${errors.message ? "border-red-500" : "border-transparent"
-                  } outline-none placeholder-gray-400 text-sm resize-none focus:ring-2 ${errors.message ? "focus:ring-red-500" : "focus:ring-[#39a838]"
-                  } transition-all`}
+                className={`w-full bg-white px-4 py-3 rounded-xl border ${
+                  errors.message ? "border-red-500" : "border-transparent"
+                } outline-none placeholder-gray-400 text-sm resize-none focus:ring-2 ${
+                  errors.message ? "focus:ring-red-500" : "focus:ring-[#39a838]"
+                } transition-all`}
                 {...register("message")}
               />
               {errors.message && (
@@ -401,3 +434,4 @@ export default function GetInTouch() {
     </div>
   );
 }
+

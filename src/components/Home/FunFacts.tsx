@@ -123,7 +123,7 @@ export default function FunFacts() {
               <div className="absolute top-1/2 left-0 right-0 h-px bg-gray-200/60 transform -translate-y-1/2 hidden sm:block" />
               <div className="absolute top-0 bottom-0 left-1/2 w-px bg-gray-200/60 transform -translate-x-1/2 hidden sm:block" />
 
-              {facts.map((fact, index) => (
+              {facts?.map((fact, index) => (
                 <div
                   key={index}
                   className={`flex flex-col items-center text-center p-2 sm:p-4 space-y-3 ${

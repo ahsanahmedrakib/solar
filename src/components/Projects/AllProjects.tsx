@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { DEFAULT_PROJECTS, type Project } from "@/data/projects";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function AllProjects() {
@@ -32,13 +32,13 @@ export default function AllProjects() {
     <div className="mx-auto px-4 md:px-8 lg:px-20 py-20 bg-gray-50 select-none">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
         {loading
-          ? Array.from({ length: 6 }).map((_, i) => (
+          ? Array.from({ length: 6 })?.map((_, i) => (
               <div
                 key={i}
                 className="h-115 rounded-2xl overflow-hidden bg-gray-200 animate-pulse"
               />
             ))
-          : projects.map((project, index) => (
+          : projects?.map((project, index) => (
               <div
                 key={project.id || index}
                 className="relative h-115 rounded-2xl overflow-hidden shadow-sm group flex flex-col justify-end p-4 transition-transform duration-300 hover:-translate-y-1"
@@ -100,3 +100,4 @@ export default function AllProjects() {
     </div>
   );
 }
+

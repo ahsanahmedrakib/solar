@@ -49,7 +49,7 @@ const monthlyData = [
 ];
 
 export default function AdminAnalyticsPage() {
-  const maxRevenue = Math.max(...monthlyData.map((d) => d.revenue));
+  const maxRevenue = Math.max(...monthlyData?.map((d) => d.revenue));
 
   return (
     <div>
@@ -68,7 +68,7 @@ export default function AdminAnalyticsPage() {
 
       {/* KPI cards */}
       <div className="admin-stats-grid" style={{ marginBottom: 24 }}>
-        {kpis.map((kpi) => (
+        {kpis?.map((kpi) => (
           <div key={kpi.label} className="admin-stat-card">
             <span className="admin-stat-label">{kpi.label}</span>
             <div className="admin-stat-value">{kpi.value}</div>
@@ -143,7 +143,7 @@ export default function AdminAnalyticsPage() {
                 height: 160,
               }}
             >
-              {monthlyData.map((d) => {
+              {monthlyData?.map((d) => {
                 const revH = (d.revenue / maxRevenue) * 140;
                 const ordH = (d.orders / 220) * 140;
                 return (
@@ -213,7 +213,7 @@ export default function AdminAnalyticsPage() {
               { source: "Social Media", pct: 18, color: "#3b82f6" },
               { source: "Referral", pct: 8, color: "#8b5cf6" },
               { source: "Email", pct: 4, color: "#ef4444" },
-            ].map((s) => (
+            ]?.map((s) => (
               <div key={s.source} style={{ marginBottom: 16 }}>
                 <div
                   style={{
@@ -279,7 +279,7 @@ export default function AdminAnalyticsPage() {
             </tr>
           </thead>
           <tbody>
-            {topProducts.map((p, i) => (
+            {topProducts?.map((p, i) => (
               <tr key={p.name}>
                 <td style={{ display: "flex", alignItems: "center", gap: 10 }}>
                   <span

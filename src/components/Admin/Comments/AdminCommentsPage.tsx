@@ -2,12 +2,7 @@
 
 import { DEFAULT_ADMIN_LOGO } from "@/data/settings";
 import { apiClient } from "@/lib/apiClient";
-import {
-  Calendar,
-  MessageCircle,
-  Search,
-  Trash2,
-} from "lucide-react";
+import { Calendar, MessageCircle, Search, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -55,7 +50,11 @@ export default function AdminCommentsPage() {
         );
         const json = await res.json();
         if (json.success) {
-          setComments((prev) => prev.filter((c) => c.id !== item.id || c.blogSlug !== item.blogSlug));
+          setComments((prev) =>
+            prev.filter(
+              (c) => c.id !== item.id || c.blogSlug !== item.blogSlug,
+            ),
+          );
           toast.success("Comment deleted successfully!");
         } else {
           toast.error("Failed to delete comment: " + json.error);
@@ -81,7 +80,15 @@ export default function AdminCommentsPage() {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-100">
-        <Image src={DEFAULT_ADMIN_LOGO} alt="Loading" width={0} height={0} sizes="100vw" className="h-16 w-auto animate-pulse opacity-70" priority />
+        <Image
+          src={DEFAULT_ADMIN_LOGO}
+          alt="Loading"
+          width={0}
+          height={0}
+          sizes="100vw"
+          className="h-16 w-auto animate-pulse opacity-70"
+          priority
+        />
         <p className="mt-4 text-(--admin-text-secondary) font-medium">
           Loading comments...
         </p>
@@ -95,7 +102,8 @@ export default function AdminCommentsPage() {
         <div>
           <h2 className="admin-page-header-title">Comments</h2>
           <p className="admin-page-header-sub">
-            Manage visitor comments across all blog posts ({comments.length} total)
+            Manage visitor comments across all blog posts ({comments.length}{" "}
+            total)
           </p>
         </div>
       </div>
@@ -147,7 +155,7 @@ export default function AdminCommentsPage() {
                 </tr>
               </thead>
               <tbody>
-                {filteredComments.map((item) => (
+                {filteredComments?.map((item) => (
                   <tr key={`${item.blogSlug}-${item.id}`}>
                     <td>
                       <div className="flex flex-col gap-0.5 max-w-48">
@@ -171,7 +179,10 @@ export default function AdminCommentsPage() {
                     </td>
                     <td>
                       <div className="flex items-center gap-1.5 text-xs text-(--admin-text-secondary)">
-                        <Calendar size={12} className="text-(--admin-text-muted)" />
+                        <Calendar
+                          size={12}
+                          className="text-(--admin-text-muted)"
+                        />
                         {item.date}
                       </div>
                     </td>
@@ -196,3 +207,4 @@ export default function AdminCommentsPage() {
     </div>
   );
 }
+

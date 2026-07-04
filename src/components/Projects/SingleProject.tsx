@@ -43,7 +43,7 @@ export default function SingleProject({ slug }: { slug: string }) {
               </div>
               <div className="flex flex-col">
                 {loading
-                  ? Array.from({ length: 5 }).map((_, i) => (
+                  ? Array.from({ length: 5 })?.map((_, i) => (
                       <div
                         key={i}
                         className="h-12 px-5 bg-gray-100 animate-pulse border-b border-gray-200/60"
@@ -56,7 +56,7 @@ export default function SingleProject({ slug }: { slug: string }) {
                         { label: "Client:", value: project.client },
                         { label: "Location:", value: project.location },
                         { label: "Status:", value: "Completed" },
-                      ].map((item, index) => (
+                      ]?.map((item, index) => (
                         <div
                           key={index}
                           className="flex items-center justify-between px-5 py-4 border-b border-gray-200/60 last:border-0 text-xs sm:text-sm"
@@ -269,7 +269,7 @@ export default function SingleProject({ slug }: { slug: string }) {
                         answer:
                           "Panels generate power on cloudy days at lower efficiency, while batteries handle night power needs.",
                       },
-                    ].map((faq) => (
+                    ]?.map((faq) => (
                       <div
                         key={faq.id}
                         className="border-b border-gray-100 pb-4"

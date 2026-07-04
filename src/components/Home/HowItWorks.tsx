@@ -153,7 +153,7 @@ export default function HowItWorks() {
         {/* INTERACTIVE THREE-COLUMN STEPS VIEWPORTS                                   */}
         {/* ========================================================================= */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-8 pt-8">
-          {steps.map((step, idx) => (
+          {steps?.map((step, idx) => (
             <div
               key={idx}
               className={`flex flex-col items-center text-center space-y-6 max-w-sm mx-auto ${

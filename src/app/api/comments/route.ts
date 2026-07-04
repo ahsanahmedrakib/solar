@@ -1,6 +1,6 @@
 import { type Comment } from "@/data/blogs";
 import { connectToDatabase } from "@/lib/db";
-import type { UpdateFilter, Document } from "mongodb";
+import type { Document, UpdateFilter } from "mongodb";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
@@ -15,9 +15,12 @@ export async function GET(request: Request) {
       return NextResponse.json({ success: true, data: comments });
     }
 
-    const blogs = await db.collection("blogs").find({}, { projection: { title: 1, slug: 1, comments: 1 } }).toArray();
+    const blogs = await db
+      .collection("blogs")
+      .find({}, { projection: { title: 1, slug: 1, comments: 1 } })
+      .toArray();
     const allComments = blogs.flatMap((blog: Record<string, unknown>) =>
-      ((blog.comments as Comment[]) || []).map((c: Comment) => ({
+      ((blog.comments as Comment[]) || [])?.map((c: Comment) => ({
         ...c,
         blogTitle: blog.title as string,
         blogSlug: blog.slug as string,
@@ -50,7 +53,7 @@ export async function POST(request: Request) {
     const existingComments = (blog.comments || []) as unknown as Comment[];
     const nextId =
       existingComments.length > 0
-        ? Math.max(...existingComments.map((c) => c.id)) + 1
+        ? Math.max(...existingComments?.map((c) => c.id)) + 1
         : 1;
 
     const newComment = {
@@ -63,10 +66,9 @@ export async function POST(request: Request) {
       }),
     };
 
-    await db.collection("blogs").updateOne(
-      { slug: blogSlug },
-      { $push: { comments: newComment } },
-    );
+    await db
+      .collection("blogs")
+      .updateOne({ slug: blogSlug }, { $push: { comments: newComment } });
 
     return NextResponse.json({ success: true, data: newComment });
   } catch (error: unknown) {
@@ -92,11 +94,12 @@ export async function DELETE(request: Request) {
     }
 
     const { db } = await connectToDatabase();
-    const pullOp = ({ $pull: { comments: { id: Number(commentId) } } } as unknown) as UpdateFilter<Document>;
-    const result = await db.collection("blogs").updateOne(
-      { slug: blogSlug },
-      pullOp,
-    );
+    const pullOp = {
+      $pull: { comments: { id: Number(commentId) } },
+    } as unknown as UpdateFilter<Document>;
+    const result = await db
+      .collection("blogs")
+      .updateOne({ slug: blogSlug }, pullOp);
 
     if (result.modifiedCount === 0) {
       return NextResponse.json(
@@ -114,3 +117,4 @@ export async function DELETE(request: Request) {
     );
   }
 }
+

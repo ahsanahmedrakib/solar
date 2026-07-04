@@ -75,7 +75,7 @@ export default function Testimonials() {
                   4.9/5
                 </span>
                 <div className="flex text-[#44B549]">
-                  {[...Array(5)].map((_, i) => (
+                  {[...Array(5)]?.map((_, i) => (
                     <svg
                       key={i}
                       xmlns="http://www.w3.org/2000/svg"
@@ -132,7 +132,7 @@ export default function Testimonials() {
           {/* RIGHT COLUMN: SCROLLABLE CARDS TRACK SLIDER LAYER                         */}
           {/* ========================================================================= */}
           <div className="lg:col-span-7 w-full overflow-x-auto pb-6 scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0 snap-x snap-mandatory flex gap-6">
-            {testimonials.map((item) => (
+            {testimonials?.map((item) => (
               <div
                 key={item.id}
                 className="bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-sm shrink-0 w-72.5 sm:w-85 snap-start flex flex-col justify-between space-y-8 transition-all duration-300 hover:shadow-md"
@@ -140,7 +140,7 @@ export default function Testimonials() {
                 <div className="space-y-4">
                   {/* Card Micro-Star Ratings Row */}
                   <div className="flex text-[#44B549]">
-                    {[...Array(item.rating)].map((_, idx) => (
+                    {[...Array(item.rating)]?.map((_, idx) => (
                       <svg
                         key={idx}
                         xmlns="http://www.w3.org/2000/svg"

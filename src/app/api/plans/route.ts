@@ -22,7 +22,7 @@ export async function POST(request: Request) {
 
     const allPlans = await db.collection("plans").find({}).toArray();
     const nextId =
-      allPlans.length > 0 ? Math.max(...allPlans.map((p) => p.id)) + 1 : 1;
+      allPlans.length > 0 ? Math.max(...allPlans?.map((p) => p.id)) + 1 : 1;
 
     const newPlan = {
       ...body,

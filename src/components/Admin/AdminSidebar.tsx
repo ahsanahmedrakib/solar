@@ -110,9 +110,7 @@ export function AdminSidebar() {
       try {
         const data = await fetchSettings();
         if (data) {
-          const general = data.find(
-            (section) => section.id === "general",
-          );
+          const general = data.find((section) => section.id === "general");
           const logoField = general?.fields?.find(
             (field) => field.id === "site-logo",
           );
@@ -165,81 +163,84 @@ export function AdminSidebar() {
           </Link>
         </div>
 
-      {/* Navigation */}
-      <nav className="sidebar-nav">
-        <div className="sidebar-section">
-          <p className="sidebar-section-label">Main Menu</p>
-          <ul className="sidebar-nav-list">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const active = isActive(item.href);
-              return (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    onClick={closeMobile}
-                    className={cn("sidebar-nav-item", active && "active")}
-                  >
-                    <Icon size={18} className="sidebar-nav-icon" />
-                    <span className="sidebar-nav-label">{item.title}</span>
-                    {active && (
-                      <ChevronRight size={14} className="sidebar-nav-arrow" />
-                    )}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-
-        <div className="sidebar-section">
-          <p className="sidebar-section-label">Support</p>
-          <ul className="sidebar-nav-list">
-            {bottomNavItems.map((item) => {
-              const Icon = item.icon;
-              const active = isActive(item.href);
-              return (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    onClick={closeMobile}
-                    className={cn("sidebar-nav-item", active && "active")}
-                  >
-                    <Icon size={18} className="sidebar-nav-icon" />
-                    <span className="sidebar-nav-label">{item.title}</span>
-                    {active && (
-                      <ChevronRight size={14} className="sidebar-nav-arrow" />
-                    )}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      </nav>
-
-      {/* User Profile */}
-      <div className="sidebar-user flex justify-between items-center">
-        <div className="flex gap-2 items-center">
-          <div className="sidebar-user-avatar">
-            <span>{user?.name?.charAt(0) || "A"}</span>
+        {/* Navigation */}
+        <nav className="sidebar-nav">
+          <div className="sidebar-section">
+            <p className="sidebar-section-label">Main Menu</p>
+            <ul className="sidebar-nav-list">
+              {navItems?.map((item) => {
+                const Icon = item.icon;
+                const active = isActive(item.href);
+                return (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      onClick={closeMobile}
+                      className={cn("sidebar-nav-item", active && "active")}
+                    >
+                      <Icon size={18} className="sidebar-nav-icon" />
+                      <span className="sidebar-nav-label">{item.title}</span>
+                      {active && (
+                        <ChevronRight size={14} className="sidebar-nav-arrow" />
+                      )}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
           </div>
-          <div className="sidebar-user-info">
-            <p className="sidebar-user-name">{user?.name || "Admin"}</p>
-            <p className="sidebar-user-role">
-              {user?.role === "superadmin" ? "Super Admin" : "Admin"}
-            </p>
+
+          <div className="sidebar-section">
+            <p className="sidebar-section-label">Support</p>
+            <ul className="sidebar-nav-list">
+              {bottomNavItems?.map((item) => {
+                const Icon = item.icon;
+                const active = isActive(item.href);
+                return (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      onClick={closeMobile}
+                      className={cn("sidebar-nav-item", active && "active")}
+                    >
+                      <Icon size={18} className="sidebar-nav-icon" />
+                      <span className="sidebar-nav-label">{item.title}</span>
+                      {active && (
+                        <ChevronRight size={14} className="sidebar-nav-arrow" />
+                      )}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
           </div>
+        </nav>
+
+        {/* User Profile */}
+        <div className="sidebar-user flex justify-between items-center">
+          <div className="flex gap-2 items-center">
+            <div className="sidebar-user-avatar">
+              <span>{user?.name?.charAt(0) || "A"}</span>
+            </div>
+            <div className="sidebar-user-info">
+              <p className="sidebar-user-name">{user?.name || "Admin"}</p>
+              <p className="sidebar-user-role">
+                {user?.role === "superadmin" ? "Super Admin" : "Admin"}
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => {
+              logout();
+              closeMobile();
+            }}
+            className="text-(--admin-text-muted) hover:text-(--admin-danger) transition cursor-pointer"
+            title="Logout"
+          >
+            <LogOut className="text-red-500" />
+          </button>
         </div>
-        <button
-          onClick={() => { logout(); closeMobile(); }}
-          className="text-(--admin-text-muted) hover:text-(--admin-danger) transition cursor-pointer"
-          title="Logout"
-        >
-          <LogOut className="text-red-500" />
-        </button>
-      </div>
-    </aside>
+      </aside>
     </>
   );
 }

@@ -2,9 +2,9 @@
 
 import { ImageUploadInput } from "@/components/Admin/ImageUploadInput";
 import { RichTextEditor } from "@/components/Admin/RichTextEditor";
-import { DEFAULT_ADMIN_LOGO } from "@/data/settings";
-import Image from "next/image";
 import type { Blog } from "@/data/blogs";
+import { DEFAULT_ADMIN_LOGO } from "@/data/settings";
+import { apiClient } from "@/lib/apiClient";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
   AlertCircle,
@@ -17,11 +17,11 @@ import {
   Trash2,
   X,
 } from "lucide-react";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { toast } from "react-toastify";
 import * as yup from "yup";
-import { apiClient } from "@/lib/apiClient";
 
 const CATEGORIES = [
   "Residential Solar",
@@ -188,7 +188,7 @@ export default function AdminBlogsPage() {
   const onSubmit = async (data: BlogFormData) => {
     const parsedTags = data.tagsString
       .split(",")
-      .map((t) => t.trim())
+      ?.map((t) => t.trim())
       .filter((t) => t.length > 0);
 
     const currentDateString = new Date().toLocaleDateString("en-US", {
@@ -217,7 +217,7 @@ export default function AdminBlogsPage() {
         const json = await res.json();
         if (json.success) {
           setBlogs((prev) =>
-            prev.map((b) =>
+            prev?.map((b) =>
               b.id === editingBlog.id ? { ...b, ...payload } : b,
             ),
           );
@@ -262,7 +262,15 @@ export default function AdminBlogsPage() {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-100">
-        <Image src={DEFAULT_ADMIN_LOGO} alt="Loading" width={0} height={0} sizes="100vw" className="h-16 w-auto animate-pulse opacity-70" priority />
+        <Image
+          src={DEFAULT_ADMIN_LOGO}
+          alt="Loading"
+          width={0}
+          height={0}
+          sizes="100vw"
+          className="h-16 w-auto animate-pulse opacity-70"
+          priority
+        />
         <p className="mt-4 text-(--admin-text-secondary) font-medium">
           Loading Blogs inventory...
         </p>
@@ -293,7 +301,7 @@ export default function AdminBlogsPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         {/* Category Filter Chips */}
         <div className="admin-filter-bar flex-wrap gap-2">
-          {["All", ...CATEGORIES].map((cat) => (
+          {["All", ...CATEGORIES]?.map((cat) => (
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
@@ -351,7 +359,7 @@ export default function AdminBlogsPage() {
                 </tr>
               </thead>
               <tbody>
-                {filteredBlogs.map((blog) => (
+                {filteredBlogs?.map((blog) => (
                   <tr key={blog.id}>
                     <td>
                       <div className="flex items-center gap-3">
@@ -376,7 +384,7 @@ export default function AdminBlogsPage() {
                     </td>
                     <td>
                       <div className="flex flex-wrap gap-1 max-w-45">
-                        {blog.tags.map((t, idx) => (
+                        {blog.tags?.map((t, idx) => (
                           <span
                             key={idx}
                             className="text-[10px] bg-(--admin-surface-2) text-(--admin-text-secondary) px-1.5 py-0.5 rounded border border-(--admin-border) flex items-center gap-0.5"
@@ -490,7 +498,7 @@ export default function AdminBlogsPage() {
                     {...register("category")}
                     className="w-full bg-(--admin-surface-2) border border-(--admin-border) text-sm text-(--admin-text-primary) rounded-lg p-2.5 outline-none focus:border-(--admin-accent) transition"
                   >
-                    {CATEGORIES.map((cat) => (
+                    {CATEGORIES?.map((cat) => (
                       <option key={cat} value={cat}>
                         {cat}
                       </option>
@@ -585,7 +593,13 @@ export default function AdminBlogsPage() {
                 >
                   {isSubmitting ? (
                     <div className="flex items-center gap-2">
-                      <Image src="/images/loader.svg" alt="Loading" width={14} height={14} className="w-3.5 h-3.5" />
+                      <Image
+                        src="/images/loader.svg"
+                        alt="Loading"
+                        width={14}
+                        height={14}
+                        className="w-3.5 h-3.5"
+                      />
                       Publishing...
                     </div>
                   ) : (

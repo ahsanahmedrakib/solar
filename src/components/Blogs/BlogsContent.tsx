@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { DEFAULT_BLOGS, type Blog } from "@/data/blogs";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function BlogsContents() {
@@ -32,13 +32,13 @@ export default function BlogsContents() {
     <div className="mx-auto px-4 md:px-8 lg:px-20 py-20 bg-gray-50">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {loading
-          ? Array.from({ length: 6 }).map((_, i) => (
+          ? Array.from({ length: 6 })?.map((_, i) => (
               <div
                 key={i}
                 className="h-105 rounded-2xl overflow-hidden bg-gray-200 animate-pulse"
               />
             ))
-          : blogs.map((blog, index) => (
+          : blogs?.map((blog, index) => (
               <div
                 key={blog.id || index}
                 className="relative h-105 rounded-2xl overflow-hidden shadow-md group flex flex-col justify-between p-6 text-white"
@@ -90,3 +90,4 @@ export default function BlogsContents() {
     </div>
   );
 }
+

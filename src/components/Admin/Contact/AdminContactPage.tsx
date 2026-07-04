@@ -2,7 +2,7 @@
 
 import type { ContactQuery } from "@/data/contact";
 import { DEFAULT_ADMIN_LOGO } from "@/data/settings";
-import Image from "next/image";
+import { apiClient } from "@/lib/apiClient";
 import {
   Archive,
   CheckCircle,
@@ -18,9 +18,9 @@ import {
   User,
   X,
 } from "lucide-react";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { apiClient } from "@/lib/apiClient";
 
 export default function AdminContactQueriesPage() {
   const [queries, setQueries] = useState<ContactQuery[]>([]);
@@ -68,7 +68,7 @@ export default function AdminContactQueriesPage() {
       const json = await res.json();
       if (json.success) {
         setQueries((prev) =>
-          prev.map((q) => (q.id === id ? { ...q, status: newStatus } : q)),
+          prev?.map((q) => (q.id === id ? { ...q, status: newStatus } : q)),
         );
         if (selectedQuery && selectedQuery.id === id) {
           setSelectedQuery({ ...selectedQuery, status: newStatus });
@@ -126,7 +126,7 @@ export default function AdminContactQueriesPage() {
       const json = await res.json();
       if (json.success) {
         setQueries((prev) =>
-          prev.map((q) =>
+          prev?.map((q) =>
             q.id === selectedQuery.id
               ? { ...q, status: "replied", notes: newNotes }
               : q,
@@ -183,7 +183,15 @@ export default function AdminContactQueriesPage() {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-100">
-        <Image src={DEFAULT_ADMIN_LOGO} alt="Loading" width={0} height={0} sizes="100vw" className="h-16 w-auto animate-pulse opacity-70" priority />
+        <Image
+          src={DEFAULT_ADMIN_LOGO}
+          alt="Loading"
+          width={0}
+          height={0}
+          sizes="100vw"
+          className="h-16 w-auto animate-pulse opacity-70"
+          priority
+        />
         <p className="mt-4 text-(--admin-text-secondary) font-medium">
           Loading contact queries...
         </p>
@@ -306,7 +314,7 @@ export default function AdminContactQueriesPage() {
       {/* Filter Tabs & Search */}
       <div className="flex flex-col sm:flex-row gap-4 justify-between items-stretch sm:items-center bg-admin-surface p-4 rounded-xl border border-white/5">
         <div className="flex items-center gap-1.5 bg-admin-bg p-1.5 rounded-lg border border-white/5">
-          {(["all", "new", "replied", "archived"] as const).map((tab) => (
+          {(["all", "new", "replied", "archived"] as const)?.map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -362,7 +370,7 @@ export default function AdminContactQueriesPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5 text-gray-300">
-                {filteredQueries.map((query) => (
+                {filteredQueries?.map((query) => (
                   <tr
                     key={query.id}
                     className="hover:bg-white/2 transition-colors group"

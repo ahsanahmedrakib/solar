@@ -7,7 +7,7 @@ const ServicesCard = ({ services }: { services: ServiceCard[] }) => {
     <div>
       {/* SERVICES CARD GRID */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pt-4">
-        {services.map((service) => (
+        {services?.map((service) => (
           <div
             key={service.id}
             className="bg-white rounded-4xl p-6 shadow-sm border border-gray-100/60 flex flex-col justify-between hover:shadow-md transition-shadow group"

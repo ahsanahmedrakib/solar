@@ -1,8 +1,8 @@
 "use client";
 
 import { DEFAULT_SECTIONS } from "@/data/settings";
-import { fetchSettings } from "@/lib/settings-cache";
 import { SOCIAL_ICONS } from "@/lib/const";
+import { fetchSettings } from "@/lib/settings-cache";
 import { ArrowUpRight, ChevronDown, Mail, Menu, Phone, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -28,8 +28,7 @@ const FALLBACK = {
   socialX: getField(DEFAULT_SECTIONS, "social", "social-x"),
   socialLi: getField(DEFAULT_SECTIONS, "social", "social-li"),
   socialIg: getField(DEFAULT_SECTIONS, "social", "social-ig"),
-  logo:
-    getField(DEFAULT_SECTIONS, "general", "site-logo") || "/logo.svg",
+  logo: getField(DEFAULT_SECTIONS, "general", "site-logo") || "/logo.svg",
 };
 
 export default function Navbar() {
@@ -48,20 +47,15 @@ export default function Navbar() {
         const data = await fetchSettings();
         if (data) {
           setSettings({
-            phone:
-              getField(data, "general", "phone-number") || FALLBACK.phone,
-            email:
-              getField(data, "general", "contact-email") || FALLBACK.email,
+            phone: getField(data, "general", "phone-number") || FALLBACK.phone,
+            email: getField(data, "general", "contact-email") || FALLBACK.email,
             socialFb: getField(data, "social", "social-fb"),
             socialX: getField(data, "social", "social-x"),
             socialLi: getField(data, "social", "social-li"),
             socialIg: getField(data, "social", "social-ig"),
-            logo:
-              getField(data, "general", "site-logo") || FALLBACK.logo,
+            logo: getField(data, "general", "site-logo") || FALLBACK.logo,
           });
-          setLogoSrc(
-            getField(data, "general", "site-logo") || FALLBACK.logo,
-          );
+          setLogoSrc(getField(data, "general", "site-logo") || FALLBACK.logo);
         }
       } catch (error) {
         console.error("Failed to load navbar settings", error);
@@ -89,7 +83,7 @@ export default function Navbar() {
                 <div className="h-4 w-48 rounded bg-white/20" />
               </div>
               <div className="flex items-center gap-1">
-                {[1, 2, 3, 4].map((i) => (
+                {[1, 2, 3, 4]?.map((i) => (
                   <div key={i} className="w-9 h-9 rounded-full bg-white/20" />
                 ))}
               </div>
@@ -100,7 +94,7 @@ export default function Navbar() {
             <div className="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between">
               <div className="h-12 w-40 rounded-md bg-gray-200" />
               <div className="hidden lg:flex items-center gap-8">
-                {[1, 2, 3, 4, 5].map((i) => (
+                {[1, 2, 3, 4, 5]?.map((i) => (
                   <div key={i} className="h-4 w-16 rounded bg-gray-200" />
                 ))}
               </div>
@@ -154,7 +148,7 @@ export default function Navbar() {
                       href: settings.socialLi,
                     },
                   ] as const
-                ).map(
+                )?.map(
                   (platform) =>
                     platform.href && (
                       <Link
@@ -202,7 +196,9 @@ export default function Navbar() {
                 <Link
                   href="/about"
                   className={`py-4 transition-colors ${
-                    isActive("/about") ? "text-[#4CAF50]" : "hover:text-[#4CAF50]"
+                    isActive("/about")
+                      ? "text-[#4CAF50]"
+                      : "hover:text-[#4CAF50]"
                   }`}
                 >
                   About Us
@@ -233,7 +229,9 @@ export default function Navbar() {
                 <Link
                   href="/blogs"
                   className={`py-4 transition-colors ${
-                    isActive("/blogs") ? "text-[#4CAF50]" : "hover:text-[#4CAF50]"
+                    isActive("/blogs")
+                      ? "text-[#4CAF50]"
+                      : "hover:text-[#4CAF50]"
                   }`}
                 >
                   Blogs
@@ -276,7 +274,9 @@ export default function Navbar() {
                 <Link
                   href="/about"
                   className={`py-2 border-b border-gray-100 ${
-                    isActive("/about") ? "text-[#4CAF50]" : "hover:text-[#4CAF50]"
+                    isActive("/about")
+                      ? "text-[#4CAF50]"
+                      : "hover:text-[#4CAF50]"
                   }`}
                 >
                   About Us
@@ -304,7 +304,9 @@ export default function Navbar() {
                 <Link
                   href="/blogs"
                   className={`py-2 border-b border-gray-100 ${
-                    isActive("/blogs") ? "text-[#4CAF50]" : "hover:text-[#4CAF50]"
+                    isActive("/blogs")
+                      ? "text-[#4CAF50]"
+                      : "hover:text-[#4CAF50]"
                   }`}
                 >
                   Blogs
@@ -325,7 +327,7 @@ export default function Navbar() {
 
                   {isMobilePagesOpen && (
                     <div className="pl-4 mt-3 space-y-3 bg-gray-50 p-4 rounded-md text-sm">
-                      {mainPages.map((item) => (
+                      {mainPages?.map((item) => (
                         <Link
                           key={item}
                           href="#"

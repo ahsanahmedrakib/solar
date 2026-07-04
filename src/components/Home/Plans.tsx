@@ -119,7 +119,7 @@ export default function Plans() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pt-6 text-left">
           {loading
-            ? Array.from({ length: 3 }).map((_, i) => (
+            ? Array.from({ length: 3 })?.map((_, i) => (
                 <div
                   key={i}
                   className="bg-[#F3F7F9] rounded-3xl p-6 sm:p-8 shadow-sm border border-gray-100/50 animate-pulse"
@@ -139,7 +139,7 @@ export default function Plans() {
                     <div className="h-4 w-28 rounded bg-gray-200 mb-4" />
                     <div className="w-full h-px bg-gray-100 mb-4" />
                     <div className="space-y-3">
-                      {Array.from({ length: 4 }).map((_, j) => (
+                      {Array.from({ length: 4 })?.map((_, j) => (
                         <div
                           key={j}
                           className="h-4 w-full rounded bg-gray-200"
@@ -149,7 +149,7 @@ export default function Plans() {
                   </div>
                 </div>
               ))
-            : plans.map((plan, idx) => (
+            : plans?.map((plan, idx) => (
                 <div
                   key={plan.id}
                   className="bg-[#F3F7F9] rounded-3xl p-6 sm:p-8 flex flex-col justify-between shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100/50"
@@ -208,7 +208,7 @@ export default function Plans() {
                     <div className="w-full h-px bg-gray-100 mb-4" />
 
                     <ul className="space-y-3.5">
-                      {plan.features.map((feature, idx) => (
+                      {plan.features?.map((feature, idx) => (
                         <li
                           key={idx}
                           className="flex gap-3 items-center text-xs sm:text-sm text-gray-600 font-medium"

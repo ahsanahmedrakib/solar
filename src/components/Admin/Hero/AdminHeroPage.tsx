@@ -1,9 +1,9 @@
 "use client";
 
 import { ImageUploadInput } from "@/components/Admin/ImageUploadInput";
-import { DEFAULT_ADMIN_LOGO } from "@/data/settings";
-import Image from "next/image";
 import type { HeroSlide } from "@/data/hero-slides";
+import { DEFAULT_ADMIN_LOGO } from "@/data/settings";
+import { apiClient } from "@/lib/apiClient";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
   AlertCircle,
@@ -14,11 +14,11 @@ import {
   Trash2,
   X,
 } from "lucide-react";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import * as yup from "yup";
-import { apiClient } from "@/lib/apiClient";
 
 const slideSchema = yup.object({
   tagline: yup.string().required("Tagline is required"),
@@ -149,7 +149,9 @@ export default function AdminHeroPage() {
         const json = await res.json();
         if (json.success) {
           setSlides((prev) =>
-            prev.map((s) => (s.id === editingSlide.id ? { ...s, ...data } : s)),
+            prev?.map((s) =>
+              s.id === editingSlide.id ? { ...s, ...data } : s,
+            ),
           );
           toast.success("Hero slide updated successfully!");
           setIsOpen(false);
@@ -181,7 +183,15 @@ export default function AdminHeroPage() {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-100">
-        <Image src={DEFAULT_ADMIN_LOGO} alt="Loading" width={0} height={0} sizes="100vw" className="h-16 w-auto animate-pulse opacity-70" priority />
+        <Image
+          src={DEFAULT_ADMIN_LOGO}
+          alt="Loading"
+          width={0}
+          height={0}
+          sizes="100vw"
+          className="h-16 w-auto animate-pulse opacity-70"
+          priority
+        />
         <p className="mt-4 text-(--admin-text-secondary) font-medium">
           Loading hero slides...
         </p>
@@ -250,14 +260,14 @@ export default function AdminHeroPage() {
               <thead>
                 <tr>
                   <th>Slide</th>
-                    <th>Video</th>
+                  <th>Video</th>
                   <th className="text-center">Order</th>
                   <th className="text-center">Status</th>
                   <th className="text-center w-32">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {filteredSlides.map((slide) => (
+                {filteredSlides?.map((slide) => (
                   <tr key={slide.id}>
                     <td>
                       <div className="flex items-center gap-3">

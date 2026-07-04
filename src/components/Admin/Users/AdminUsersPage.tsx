@@ -2,7 +2,6 @@
 
 import { useAuth } from "@/components/Auth/AuthProvider";
 import { DEFAULT_ADMIN_LOGO } from "@/data/settings";
-import Image from "next/image";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
   AlertCircle,
@@ -15,12 +14,13 @@ import {
   UserCog,
   X,
 } from "lucide-react";
+import Image from "next/image";
 
+import { apiClient } from "@/lib/apiClient";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import * as yup from "yup";
-import { apiClient } from "@/lib/apiClient";
 
 interface UserData {
   id: string;
@@ -190,7 +190,15 @@ export default function AdminUsersPage() {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-100">
-        <Image src={DEFAULT_ADMIN_LOGO} alt="Loading" width={0} height={0} sizes="100vw" className="h-16 w-auto animate-pulse opacity-70" priority />
+        <Image
+          src={DEFAULT_ADMIN_LOGO}
+          alt="Loading"
+          width={0}
+          height={0}
+          sizes="100vw"
+          className="h-16 w-auto animate-pulse opacity-70"
+          priority
+        />
         <p className="mt-4 text-(--admin-text-secondary) font-medium">
           Loading users...
         </p>
@@ -268,7 +276,7 @@ export default function AdminUsersPage() {
                 </tr>
               </thead>
               <tbody>
-                {filteredUsers.map((u) => (
+                {filteredUsers?.map((u) => (
                   <tr key={u.id}>
                     <td>
                       <div className="flex items-center gap-3">

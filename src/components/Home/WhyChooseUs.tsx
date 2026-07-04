@@ -133,7 +133,7 @@ const WhyChooseUs: React.FC = () => {
                   "Green Energy",
                   "Residential Solar",
                   "Solar Installation",
-                ].map((label, idx) => (
+                ]?.map((label, idx) => (
                   <span
                     key={idx}
                     className={`text-[9px] sm:text-[11px] font-medium text-white px-2.5 py-1 rounded-md backdrop-blur-md bg-black/30 whitespace-nowrap ${
@@ -189,7 +189,7 @@ const WhyChooseUs: React.FC = () => {
       {/* Bottom Services & CTA */}
       <div className="w-full mx-auto px-4 py-8 bg-white">
         <div className="flex flex-wrap justify-center gap-3 mb-8">
-          {services.map((service, index) => (
+          {services?.map((service, index) => (
             <div
               key={index}
               className="group flex items-center gap-2 bg-white hover:bg-gray-50 transition-all duration-200 px-5 py-3 rounded-3xl shadow-sm border border-gray-800 hover:shadow-md cursor-pointer active:scale-95"
