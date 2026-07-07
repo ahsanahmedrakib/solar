@@ -176,7 +176,7 @@ export default function Navbar() {
                     src={logoSrc}
                     width={160}
                     height={50}
-                    alt="Sunex logo"
+                    alt="Ahead Solar logo"
                     className="h-12 w-auto object-contain"
                   />
                 </Link>

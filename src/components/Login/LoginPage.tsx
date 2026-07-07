@@ -48,7 +48,15 @@ function LoginForm() {
   if (loading || transitioning) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <Image src={DEFAULT_LOGO} alt="Loading" width={0} height={0} sizes="100vw" className="h-16 w-auto animate-pulse opacity-70" priority />
+        <Image
+          src={DEFAULT_LOGO}
+          alt="Loading"
+          width={0}
+          height={0}
+          sizes="100vw"
+          className="h-16 w-auto animate-pulse opacity-70"
+          priority
+        />
       </div>
     );
   }
@@ -62,7 +70,7 @@ function LoginForm() {
               src="/logo.svg"
               width={160}
               height={50}
-              alt="Sunex logo"
+              alt="Ahead Solar logo"
               className="h-10 w-auto mx-auto mb-6"
             />
             <h1 className="text-2xl font-bold text-[#051720]">Admin Login</h1>
@@ -140,7 +148,15 @@ export default function LoginPage() {
     <Suspense
       fallback={
         <div className="min-h-screen flex items-center justify-center bg-gray-50">
-          <Image src={DEFAULT_LOGO} alt="Loading" width={0} height={0} sizes="100vw" className="h-16 w-auto animate-pulse opacity-70" priority />
+          <Image
+            src={DEFAULT_LOGO}
+            alt="Loading"
+            width={0}
+            height={0}
+            sizes="100vw"
+            className="h-16 w-auto animate-pulse opacity-70"
+            priority
+          />
         </div>
       }
     >
@@ -148,3 +164,4 @@ export default function LoginPage() {
     </Suspense>
   );
 }
+

@@ -1,7 +1,12 @@
 "use client";
 
-import { DEFAULT_ADMIN_LOGO } from "@/data/settings";
-import Image from "next/image";
+import { ImageUploadInput } from "@/components/Admin/ImageUploadInput";
+import {
+  DEFAULT_ADMIN_LOGO,
+  DEFAULT_SECTIONS,
+  type Section,
+} from "@/data/settings";
+import { apiClient } from "@/lib/apiClient";
 import {
   FileText,
   Globe,
@@ -13,11 +18,9 @@ import {
   Sparkles,
   Sun,
 } from "lucide-react";
-import React, { useState, useEffect } from "react";
+import Image from "next/image";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { ImageUploadInput } from "@/components/Admin/ImageUploadInput";
-import { DEFAULT_SECTIONS, type Section } from "@/data/settings";
-import { apiClient } from "@/lib/apiClient";
 
 const ICON_MAP: Record<string, React.ComponentType<{ size?: number }>> = {
   Sliders,
@@ -158,14 +161,21 @@ export default function AdminSettingsPage() {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-100">
-        <Image src={DEFAULT_ADMIN_LOGO} alt="Loading" width={0} height={0} sizes="100vw" className="h-16 w-auto animate-pulse opacity-70" priority />
+        <Image
+          src={DEFAULT_ADMIN_LOGO}
+          alt="Loading"
+          width={0}
+          height={0}
+          sizes="100vw"
+          className="h-16 w-auto animate-pulse opacity-70"
+          priority
+        />
         <p className="mt-4 text-(--admin-text-secondary) font-medium">
           Loading settings...
         </p>
       </div>
     );
   }
-
 
   return (
     <div className="space-y-6 pb-12">
@@ -369,4 +379,3 @@ export default function AdminSettingsPage() {
     </div>
   );
 }
-

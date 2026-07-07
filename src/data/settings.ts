@@ -30,7 +30,7 @@ export const DEFAULT_SECTIONS: Section[] = [
       {
         label: "Company Name",
         type: "text",
-        value: "Sunex Solar & Renewable Energy",
+        value: "Ahead Solar",
         id: "company-name",
       },
       {
@@ -42,7 +42,7 @@ export const DEFAULT_SECTIONS: Section[] = [
       {
         label: "Admin Logo",
         type: "image",
-        value: "/logo-white.svg",
+        value: "/logo.svg",
         id: "admin-logo",
       },
       {
@@ -93,7 +93,7 @@ export const DEFAULT_SECTIONS: Section[] = [
         label: "WhatsApp Default Greeting Message",
         type: "text",
         value:
-          "Hello Sunex Solar, I would like to inquire about solar energy solutions.",
+          "Hello Ahead Solar, I would like to inquire about solar energy solutions.",
         id: "whatsapp-message",
       },
       {
@@ -125,7 +125,7 @@ export const DEFAULT_SECTIONS: Section[] = [
       {
         label: "Default Site Meta Title",
         type: "text",
-        value: "Sunex Solar - Leading Renewable Energy Solutions",
+        value: "Ahead Solar - Leading Renewable Energy Solutions",
         id: "meta-title",
       },
       {
@@ -189,7 +189,7 @@ export const DEFAULT_LOGO =
   getDefaultField("general", "site-logo") || "/logo.svg";
 
 export const DEFAULT_ADMIN_LOGO =
-  getDefaultField("general", "admin-logo") || "/logo-white.svg";
+  getDefaultField("general", "admin-logo") || "/logo.svg";
 
 export function getDefaultField(sectionId: string, fieldId: string): string {
   return (

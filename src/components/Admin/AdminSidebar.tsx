@@ -90,7 +90,7 @@ const bottomNavItems = [
 const FALLBACK_LOGO =
   DEFAULT_SECTIONS.find((s) => s.id === "general")?.fields?.find(
     (f) => f.id === "admin-logo",
-  )?.value ?? "/logo-white.svg";
+  )?.value ?? "/logo.svg";
 
 export function AdminSidebar() {
   const { user, logout } = useAuth();
@@ -157,8 +157,8 @@ export function AdminSidebar() {
               src={logoSrc}
               width={160}
               height={50}
-              alt="Sunex logo"
-              className="h-12 w-auto object-contain"
+              alt="Admin logo"
+              className="h-10 w-auto object-contain"
             />
           </Link>
         </div>

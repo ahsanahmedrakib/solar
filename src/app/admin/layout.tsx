@@ -1,11 +1,11 @@
-import { AdminGuard } from "@/components/Auth/AdminGuard";
 import { AdminShell } from "@/components/Admin/AdminShell";
+import { AdminGuard } from "@/components/Auth/AdminGuard";
 import type { Metadata } from "next";
 import "./admin.css";
 
 export const metadata: Metadata = {
-  title: "Admin Dashboard - Sunex Solar",
-  description: "Sunex Solar Admin Panel",
+  title: "Admin Dashboard - Ahead Solar",
+  description: "Ahead Solar Admin Panel",
 };
 
 export default function AdminLayout({
@@ -21,3 +21,4 @@ export default function AdminLayout({
     </div>
   );
 }
+
