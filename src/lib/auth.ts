@@ -2,9 +2,18 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import type { Db } from "mongodb";
 
-const JWT_SECRET = process.env.JWT_SECRET || "fallback-secret";
-const JWT_REFRESH_SECRET =
-  process.env.JWT_REFRESH_SECRET || "fallback-refresh-secret";
+function getEnv(name: string): string {
+  const value = process.env[name];
+  if (!value) {
+    throw new Error(
+      `Missing required environment variable: ${name}. Set it in your .env file or hosting panel.`,
+    );
+  }
+  return value;
+}
+
+const JWT_SECRET = getEnv("JWT_SECRET");
+const JWT_REFRESH_SECRET = getEnv("JWT_REFRESH_SECRET");
 
 export interface TokenPayload {
   userId: string;
@@ -42,10 +51,8 @@ export function verifyRefreshToken(token: string): TokenPayload {
 export async function ensureSuperadminExists(db: Db) {
   const count = await db.collection("users").countDocuments({ role: "superadmin" });
   if (count === 0) {
-    const email =
-      process.env.DEFAULT_SUPERADMIN_EMAIL || "admin@sunexsolar.com";
-    const password =
-      process.env.DEFAULT_SUPERADMIN_PASSWORD || "Admin@123";
+    const email = getEnv("DEFAULT_SUPERADMIN_EMAIL");
+    const password = getEnv("DEFAULT_SUPERADMIN_PASSWORD");
     const hashed = await hashPassword(password);
     const superadmin = {
       id: "sa-" + Date.now().toString(36),

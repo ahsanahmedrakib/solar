@@ -28,6 +28,10 @@ export async function saveImage(
   const extension = fileType === "jpeg" ? "jpg" : fileType;
   const buffer = Buffer.from(matches[2], "base64");
 
+  if (process.env.NODE_ENV === "production") {
+    return saveImageToDB(base64Data, folderName, id);
+  }
+
   const relativeDir = `/images/api/${folderName}`;
   const targetDir = path.join(process.cwd(), "public", relativeDir);
 
@@ -42,15 +46,8 @@ export async function saveImage(
     fs.writeFileSync(filePath, buffer);
 
     return `${relativeDir}/${fileName}`;
-  } catch (err: unknown) {
-    if (
-      err instanceof Error &&
-      (err as NodeJS.ErrnoException).code === "ENOENT"
-    ) {
-      // Filesystem not writable (serverless) — store in MongoDB
-      return saveImageToDB(base64Data, folderName, id);
-    }
-    throw err;
+  } catch {
+    return saveImageToDB(base64Data, folderName, id);
   }
 }
 

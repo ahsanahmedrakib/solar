@@ -5,7 +5,7 @@ export async function POST() {
     const response = NextResponse.json({ success: true, message: "Logged out successfully" });
 
     response.cookies.set("accessToken", "", {
-      httpOnly: false,
+      httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       path: "/",
@@ -13,7 +13,7 @@ export async function POST() {
     });
 
     response.cookies.set("refreshToken", "", {
-      httpOnly: false,
+      httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       path: "/",
