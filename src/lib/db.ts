@@ -25,6 +25,10 @@ if (process.env.NODE_ENV === "development") {
   clientPromise = client.connect();
 }
 
+clientPromise
+  .then(() => console.log("Database successfully connected"))
+  .catch((err) => console.error("Database connection failed:", err.message));
+
 export async function connectToDatabase(): Promise<{ client: MongoClient; db: Db }> {
   const client = await clientPromise;
   const db = client.db();
