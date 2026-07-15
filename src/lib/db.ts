@@ -1,14 +1,11 @@
 import { MongoClient, Db } from "mongodb";
+import "./env";
 
 const uri = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/solar";
 const options = {};
 
 let client: MongoClient;
 let clientPromise: Promise<MongoClient>;
-
-if (!process.env.MONGODB_URI) {
-  console.warn("Please add MONGODB_URI to your .env file or environment variables.");
-}
 
 if (process.env.NODE_ENV === "development") {
   // In development mode, use a global variable so that the value

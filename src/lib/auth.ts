@@ -1,13 +1,13 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import type { Db } from "mongodb";
+import "./env";
 
 function getEnv(name: string): string {
   const value = process.env[name];
   if (!value) {
-    throw new Error(
-      `Missing required environment variable: ${name}. Set it in your .env file or hosting panel.`,
-    );
+    console.warn(`[auth] Missing "${name}" — auth operations will fail.`);
+    return "";
   }
   return value;
 }
