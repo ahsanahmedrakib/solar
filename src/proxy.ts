@@ -9,6 +9,7 @@ const PUBLIC_GET_PREFIXES = [
   "/api/hero-slides",
   "/api/team",
   "/api/image",
+  "/api/db",
 ];
 
 const PUBLIC_PATHS = [
