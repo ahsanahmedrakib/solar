@@ -2,10 +2,11 @@
 
 import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
-import { useEditor, EditorContent, type Content } from "@tiptap/react";
+import { EditorContent, useEditor, type Content } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import {
   Bold,
+  Code,
   Heading1,
   Heading2,
   Heading3,
@@ -13,12 +14,10 @@ import {
   Link as LinkIcon,
   List,
   ListOrdered,
-  ImageIcon,
+  Quote,
+  Redo,
   Strikethrough,
   Undo,
-  Redo,
-  Quote,
-  Code,
 } from "lucide-react";
 import { useCallback, useEffect } from "react";
 
@@ -80,22 +79,22 @@ export function RichTextEditor({
     },
   });
 
-  const handleImageUpload = useCallback(() => {
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = "image/*";
-    input.onchange = () => {
-      const file = input.files?.[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const url = e.target?.result as string;
-        editor?.chain().focus().setImage({ src: url }).run();
-      };
-      reader.readAsDataURL(file);
-    };
-    input.click();
-  }, [editor]);
+  // const handleImageUpload = useCallback(() => {
+  //   const input = document.createElement("input");
+  //   input.type = "file";
+  //   input.accept = "image/*";
+  //   input.onchange = () => {
+  //     const file = input.files?.[0];
+  //     if (!file) return;
+  //     const reader = new FileReader();
+  //     reader.onload = (e) => {
+  //       const url = e.target?.result as string;
+  //       editor?.chain().focus().setImage({ src: url }).run();
+  //     };
+  //     reader.readAsDataURL(file);
+  //   };
+  //   input.click();
+  // }, [editor]);
 
   const handleLinkClick = useCallback(() => {
     const previousUrl = editor?.getAttributes("link").href || "";
@@ -209,9 +208,9 @@ export function RichTextEditor({
 
           <span className="w-px h-5 bg-(--admin-border) mx-1" />
 
-          <MenuButton onClick={handleImageUpload} active={false}>
+          {/* <MenuButton onClick={handleImageUpload} active={false}>
             <ImageIcon size={15} />
-          </MenuButton>
+          </MenuButton> */}
           <MenuButton
             onClick={handleLinkClick}
             active={editor.isActive("link")}
@@ -246,3 +245,4 @@ export function RichTextEditor({
     </div>
   );
 }
+

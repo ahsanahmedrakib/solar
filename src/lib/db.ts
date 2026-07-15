@@ -1,7 +1,13 @@
-import { MongoClient, Db } from "mongodb";
+import { Db, MongoClient } from "mongodb";
 import "./env";
 
 const uri = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/solar";
+console.log("=== DEBUG ===");
+console.log(
+  "MONGODB_URI from env:",
+  process.env.MONGODB_URI ? "✅ SET" : "❌ NOT SET",
+);
+console.log("Final URI being used:", uri);
 const options = {};
 
 let client: MongoClient;
@@ -29,8 +35,12 @@ clientPromise
   .then(() => console.log("Database successfully connected"))
   .catch((err) => console.error("Database connection failed:", err.message));
 
-export async function connectToDatabase(): Promise<{ client: MongoClient; db: Db }> {
+export async function connectToDatabase(): Promise<{
+  client: MongoClient;
+  db: Db;
+}> {
   const client = await clientPromise;
   const db = client.db();
   return { client, db };
 }
+
