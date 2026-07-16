@@ -1,19 +1,21 @@
-import type { HeroSlide } from "@/data/hero-slides";
-import { connectToDatabase } from "@/lib/db";
+import { db } from "@/lib/db";
+import { isTableNotExistsError } from "@/lib/db-helpers";
+import { heroSlides } from "@/lib/schema";
 import { deleteImage, saveImage } from "@/lib/imageHelper";
 import { NextResponse } from "next/server";
+import { eq, asc, sql } from "drizzle-orm";
 
 export async function GET() {
   try {
-    const { db } = await connectToDatabase();
     const slides = await db
-      .collection("hero_slides")
-      .find({})
-      .sort({ order: 1 })
-      .toArray();
-
+      .select()
+      .from(heroSlides)
+      .orderBy(asc(heroSlides.order));
     return NextResponse.json({ success: true, data: slides });
   } catch (error: unknown) {
+    if (isTableNotExistsError(error)) {
+      return NextResponse.json({ success: true, data: [] });
+    }
     const message = error instanceof Error ? error.message : "Unknown error";
     return NextResponse.json(
       { success: false, error: message },
@@ -25,27 +27,45 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { db } = await connectToDatabase();
+    const { tagline, title, titleAccent, description, image, videoUrl, showVideoButton, isActive, order } = body;
 
-    const allSlides = (await db
-      .collection("hero_slides")
-      .find({})
-      .toArray()) as unknown as HeroSlide[];
-    const nextId =
-      allSlides?.length > 0 ? Math.max(...allSlides?.map((s) => s.id)) + 1 : 1;
+    if (!title) {
+      return NextResponse.json(
+        { success: false, error: "title is required" },
+        { status: 400 },
+      );
+    }
 
-    const savedImagePath = await saveImage(body.image, "hero", nextId);
+    const savedImagePath = image ? await saveImage(image, "hero", 0) : "";
 
-    const newSlide = {
-      ...body,
-      image: savedImagePath,
-      id: nextId,
-      order: body.order ?? allSlides?.length + 1,
-      isActive: body.isActive ?? true,
-      createdAt: new Date(),
-    };
+    const nextOrder = order ?? (() => {
+      // This will be resolved below
+      return 0;
+    })();
 
-    await db.collection("hero_slides").insertOne(newSlide);
+    let finalOrder = order;
+    if (finalOrder === undefined) {
+      const [result] = await db
+        .select({ maxOrder: sql<number>`coalesce(max(${heroSlides.order}), 0)` })
+        .from(heroSlides);
+      finalOrder = (result?.maxOrder ?? 0) + 1;
+    }
+
+    const [newSlide] = await db
+      .insert(heroSlides)
+      .values({
+        tagline: tagline ?? "",
+        title,
+        titleAccent: titleAccent ?? "",
+        description: description ?? "",
+        image: savedImagePath,
+        videoUrl: videoUrl ?? "",
+        showVideoButton: showVideoButton ?? true,
+        isActive: isActive ?? true,
+        order: finalOrder,
+      })
+      .returning();
+
     return NextResponse.json({ success: true, data: newSlide });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Unknown error";
@@ -59,21 +79,51 @@ export async function POST(request: Request) {
 export async function PUT(request: Request) {
   try {
     const body = await request.json();
-    const { id, ...updateData } = body;
-    const { db } = await connectToDatabase();
+    const { id, tagline, title, titleAccent, description, image, videoUrl, showVideoButton, isActive, order } = body;
 
-    const existing = await db
-      .collection("hero_slides")
-      .findOne({ id: Number(id) });
+    if (!id) {
+      return NextResponse.json(
+        { success: false, error: "ID is required" },
+        { status: 400 },
+      );
+    }
 
-    if (existing && updateData.image && updateData.image !== existing.image) {
-      updateData.image = await saveImage(updateData.image, "hero", id);
+    const [existing] = await db
+      .select()
+      .from(heroSlides)
+      .where(eq(heroSlides.id, Number(id)))
+      .limit(1);
+
+    if (!existing) {
+      return NextResponse.json(
+        { success: false, error: "Slide not found" },
+        { status: 404 },
+      );
+    }
+
+    const updateData: Record<string, unknown> = {};
+    if (tagline !== undefined) updateData.tagline = tagline;
+    if (title !== undefined) updateData.title = title;
+    if (titleAccent !== undefined) updateData.titleAccent = titleAccent;
+    if (description !== undefined) updateData.description = description;
+    if (videoUrl !== undefined) updateData.videoUrl = videoUrl;
+    if (showVideoButton !== undefined) updateData.showVideoButton = showVideoButton;
+    if (isActive !== undefined) updateData.isActive = isActive;
+    if (order !== undefined) updateData.order = order;
+
+    if (image && image !== existing.image) {
+      updateData.image = await saveImage(image, "hero", id);
       await deleteImage(existing.image);
     }
 
+    if (Object.keys(updateData).length === 0) {
+      return NextResponse.json({ success: true, data: existing });
+    }
+
     await db
-      .collection("hero_slides")
-      .updateOne({ id: Number(id) }, { $set: updateData });
+      .update(heroSlides)
+      .set(updateData)
+      .where(eq(heroSlides.id, Number(id)));
 
     return NextResponse.json({ success: true, data: { id, ...updateData } });
   } catch (error: unknown) {
@@ -96,16 +146,17 @@ export async function DELETE(request: Request) {
       );
     }
 
-    const { db } = await connectToDatabase();
-    const existing = await db
-      .collection("hero_slides")
-      .findOne({ id: Number(id) });
+    const [existing] = await db
+      .select()
+      .from(heroSlides)
+      .where(eq(heroSlides.id, Number(id)))
+      .limit(1);
 
     if (existing) {
       await deleteImage(existing.image);
     }
 
-    await db.collection("hero_slides").deleteOne({ id: Number(id) });
+    await db.delete(heroSlides).where(eq(heroSlides.id, Number(id)));
     return NextResponse.json({ success: true });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Unknown error";
@@ -115,4 +166,3 @@ export async function DELETE(request: Request) {
     );
   }
 }
-

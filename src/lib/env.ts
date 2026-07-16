@@ -1,5 +1,5 @@
 const required = [
-  "MONGODB_URI",
+  "DATABASE_URL",
   "JWT_SECRET",
   "JWT_REFRESH_SECRET",
   "DEFAULT_SUPERADMIN_EMAIL",
@@ -18,10 +18,16 @@ function checkEnv() {
   }
 
   if (missing.length > 0) {
-    console.warn(
+    const msg =
       `\n[env] ⚠ Missing required environment variables:\n  → ${missing.join("\n  → ")}\n` +
-        "  API routes will fail without these. Set them in your .env file or hosting panel.\n",
-    );
+      "  API routes will fail without these. Set them in your .env file or hosting panel.\n";
+    console.warn(msg);
+
+    if (process.env.NODE_ENV === "production") {
+      throw new Error(
+        `[env] Missing required environment variables: ${missing.join(", ")}`,
+      );
+    }
   }
 
   for (const key of optional) {
@@ -31,13 +37,6 @@ function checkEnv() {
       );
     }
   }
-
-  if (!process.env.MONGODB_URI) {
-    console.warn(
-      '[env] MONGODB_URI is missing. Falling back to "mongodb://127.0.0.1:27017/solar".',
-    );
-  }
 }
 
 checkEnv();
-

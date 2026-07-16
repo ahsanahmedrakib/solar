@@ -4,7 +4,10 @@ import {
   generateAccessToken,
   generateRefreshToken,
 } from "@/lib/auth";
-import { connectToDatabase } from "@/lib/db";
+import { db } from "@/lib/db";
+import { isTableNotExistsError } from "@/lib/db-helpers";
+import { users } from "@/lib/schema";
+import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
@@ -18,9 +21,13 @@ export async function POST(request: Request) {
       );
     }
 
-    const { db } = await connectToDatabase();
-    await ensureSuperadminExists(db);
-    const user = await db.collection("users").findOne({ email });
+    try {
+      await ensureSuperadminExists();
+    } catch {
+      // Table may not exist yet — skip seeding
+    }
+
+    const [user] = await db.select().from(users).where(eq(users.email, email)).limit(1);
 
     if (!user) {
       return NextResponse.json(
@@ -78,6 +85,12 @@ export async function POST(request: Request) {
 
     return response;
   } catch (error: unknown) {
+    if (isTableNotExistsError(error)) {
+      return NextResponse.json(
+        { success: false, error: "Database tables not set up yet. Run: pnpm db:push" },
+        { status: 503 },
+      );
+    }
     const message = error instanceof Error ? error.message : String(error);
     return NextResponse.json(
       { success: false, error: message },

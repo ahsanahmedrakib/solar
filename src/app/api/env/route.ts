@@ -1,7 +1,19 @@
+import { verifyAccessToken } from "@/lib/auth";
 import { NextResponse } from "next/server";
 
+function isSuperadmin(request: Request): boolean {
+  const authHeader = request.headers.get("Authorization");
+  if (!authHeader || !authHeader.startsWith("Bearer ")) return false;
+  try {
+    const payload = verifyAccessToken(authHeader.slice(7));
+    return payload.role === "superadmin";
+  } catch {
+    return false;
+  }
+}
+
 const required = [
-  "MONGODB_URI",
+  "DATABASE_URL",
   "JWT_SECRET",
   "JWT_REFRESH_SECRET",
   "DEFAULT_SUPERADMIN_EMAIL",
@@ -10,7 +22,14 @@ const required = [
 
 const optional = ["NODE_ENV"] as const;
 
-export async function GET() {
+export async function GET(request: Request) {
+  if (!isSuperadmin(request)) {
+    return NextResponse.json(
+      { success: false, error: "Unauthorized" },
+      { status: 401 },
+    );
+  }
+
   try {
     const requiredStatus = required.map((key) => ({
       key,

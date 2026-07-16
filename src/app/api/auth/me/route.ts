@@ -1,6 +1,9 @@
 import { toPublicUser, type User } from "@/data/users";
 import { verifyAccessToken } from "@/lib/auth";
-import { connectToDatabase } from "@/lib/db";
+import { db } from "@/lib/db";
+import { isTableNotExistsError } from "@/lib/db-helpers";
+import { users } from "@/lib/schema";
+import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
@@ -16,8 +19,11 @@ export async function GET(request: Request) {
     const token = authHeader?.slice(7);
     const payload = verifyAccessToken(token);
 
-    const { db } = await connectToDatabase();
-    const doc = await db.collection("users").findOne({ id: payload.userId });
+    const [doc] = await db
+      .select()
+      .from(users)
+      .where(eq(users.id, payload.userId))
+      .limit(1);
 
     if (!doc) {
       return NextResponse.json(
@@ -31,7 +37,7 @@ export async function GET(request: Request) {
       name: doc.name,
       email: doc.email,
       password: doc.password,
-      role: doc.role,
+      role: doc.role as "superadmin" | "admin",
       createdAt: doc.createdAt,
       updatedAt: doc.updatedAt,
     };
@@ -40,11 +46,16 @@ export async function GET(request: Request) {
       success: true,
       data: toPublicUser(user),
     });
-  } catch {
+  } catch (error: unknown) {
+    if (isTableNotExistsError(error)) {
+      return NextResponse.json(
+        { success: false, error: "Database tables not set up yet" },
+        { status: 503 },
+      );
+    }
     return NextResponse.json(
       { success: false, error: "Invalid or expired token" },
       { status: 401 },
     );
   }
 }
-

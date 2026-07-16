@@ -1,14 +1,18 @@
-import type { Project } from "@/data/projects";
-import { connectToDatabase } from "@/lib/db";
+import { db } from "@/lib/db";
+import { isTableNotExistsError } from "@/lib/db-helpers";
+import { projects } from "@/lib/schema";
 import { deleteImage, saveImage } from "@/lib/imageHelper";
 import { NextResponse } from "next/server";
+import { eq } from "drizzle-orm";
 
 export async function GET() {
   try {
-    const { db } = await connectToDatabase();
-    const projects = await db.collection("projects").find({}).toArray();
-    return NextResponse.json({ success: true, data: projects });
+    const allProjects = await db.select().from(projects);
+    return NextResponse.json({ success: true, data: allProjects });
   } catch (error: unknown) {
+    if (isTableNotExistsError(error)) {
+      return NextResponse.json({ success: true, data: [] });
+    }
     const message = error instanceof Error ? error.message : String(error);
     return NextResponse.json(
       { success: false, error: message },
@@ -20,27 +24,33 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { db } = await connectToDatabase();
+    const { title, imageUrl, slug, category, client, location, projectDetails, isFeatured } = body;
 
-    const allProjects = (await db
-      .collection("projects")
-      .find({})
-      .toArray()) as unknown as Project[];
-    const nextId =
-      allProjects?.length > 0
-        ? Math.max(...allProjects?.map((p) => Number(p.id))) + 1
-        : 1;
+    if (!title || !slug) {
+      return NextResponse.json(
+        { success: false, error: "title and slug are required" },
+        { status: 400 },
+      );
+    }
 
-    const savedImagePath = await saveImage(body.imageUrl, "projects", nextId);
+    const savedImagePath = imageUrl
+      ? await saveImage(imageUrl, "projects", 0)
+      : "";
 
-    const newProject = {
-      ...body,
-      imageUrl: savedImagePath,
-      id: nextId,
-      createdAt: new Date(),
-    };
+    const [newProject] = await db
+      .insert(projects)
+      .values({
+        title,
+        imageUrl: savedImagePath,
+        slug,
+        category: category ?? "",
+        isFeatured: isFeatured ?? false,
+        client: client ?? "",
+        location: location ?? "",
+        projectDetails: projectDetails ?? "",
+      })
+      .returning();
 
-    await db.collection("projects").insertOne(newProject);
     return NextResponse.json({ success: true, data: newProject });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
@@ -54,26 +64,51 @@ export async function POST(request: Request) {
 export async function PUT(request: Request) {
   try {
     const body = await request.json();
-    const { id, ...updateData } = body;
-    const { db } = await connectToDatabase();
+    const { id, title, imageUrl, slug, category, client, location, projectDetails, isFeatured } = body;
 
-    const existing = await db
-      .collection("projects")
-      .findOne({ id: Number(id) });
-    if (existing) {
-      if (updateData.imageUrl && updateData.imageUrl !== existing.imageUrl) {
-        updateData.imageUrl = await saveImage(
-          updateData.imageUrl,
-          "projects",
-          id,
-        );
-        await deleteImage(existing.imageUrl);
-      }
+    if (!id) {
+      return NextResponse.json(
+        { success: false, error: "ID is required" },
+        { status: 400 },
+      );
+    }
+
+    const [existing] = await db
+      .select()
+      .from(projects)
+      .where(eq(projects.id, Number(id)))
+      .limit(1);
+
+    if (!existing) {
+      return NextResponse.json(
+        { success: false, error: "Project not found" },
+        { status: 404 },
+      );
+    }
+
+    const updateData: Record<string, unknown> = {};
+    if (title !== undefined) updateData.title = title;
+    if (slug !== undefined) updateData.slug = slug;
+    if (category !== undefined) updateData.category = category;
+    if (client !== undefined) updateData.client = client;
+    if (location !== undefined) updateData.location = location;
+    if (projectDetails !== undefined) updateData.projectDetails = projectDetails;
+    if (isFeatured !== undefined) updateData.isFeatured = isFeatured;
+
+    if (imageUrl && imageUrl !== existing.imageUrl) {
+      updateData.imageUrl = await saveImage(imageUrl, "projects", id);
+      await deleteImage(existing.imageUrl);
+    }
+
+    if (Object.keys(updateData).length === 0) {
+      return NextResponse.json({ success: true, data: existing });
     }
 
     await db
-      .collection("projects")
-      .updateOne({ id: Number(id) }, { $set: updateData });
+      .update(projects)
+      .set(updateData)
+      .where(eq(projects.id, Number(id)));
+
     return NextResponse.json({ success: true, data: { id, ...updateData } });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
@@ -94,16 +129,17 @@ export async function DELETE(request: Request) {
         { status: 400 },
       );
     }
-    const { db } = await connectToDatabase();
 
-    const existing = await db
-      .collection("projects")
-      .findOne({ id: Number(id) });
+    const [existing] = await db
+      .select()
+      .from(projects)
+      .where(eq(projects.id, Number(id)))
+      .limit(1);
     if (existing) {
       await deleteImage(existing.imageUrl);
     }
 
-    await db.collection("projects").deleteOne({ id: Number(id) });
+    await db.delete(projects).where(eq(projects.id, Number(id)));
     return NextResponse.json({ success: true });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
@@ -113,4 +149,3 @@ export async function DELETE(request: Request) {
     );
   }
 }
-

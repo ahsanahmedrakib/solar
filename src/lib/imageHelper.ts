@@ -2,14 +2,21 @@ import fs from "fs";
 import path from "path";
 import { deleteImageFromDB, saveImageToDB } from "./imageStore";
 
-/**
- * Saves a base64 image string to public/images/api/{folderName} (local)
- * or to MongoDB (serverless). Falls back to DB when filesystem is not writable.
- * @param base64Data Base64 representation of the image
- * @param folderName Subfolder name (e.g. 'services', 'projects')
- * @param id Identifier to prefix the file name
- * @returns The web-accessible URL path (e.g. /images/api/services/1_12345.jpg or /api/image/abc123)
- */
+const ALLOWED_FOLDERS = [
+  "services",
+  "projects",
+  "blogs",
+  "team",
+  "hero",
+  "settings",
+];
+
+function validateFolderName(folderName: string): void {
+  if (!ALLOWED_FOLDERS.includes(folderName)) {
+    throw new Error(`Invalid folder name: "${folderName}"`);
+  }
+}
+
 export async function saveImage(
   base64Data: string,
   folderName: string,
@@ -19,7 +26,11 @@ export async function saveImage(
     return base64Data;
   }
 
-  const matches = base64Data.match(/^data:image\/([A-Za-z-+\/]+);base64,(.+)$/);
+  validateFolderName(folderName);
+
+  const matches = base64Data.match(
+    /^data:image\/([A-Za-z-+\/]+);base64,(.+)$/,
+  );
   if (!matches || matches?.length !== 3) {
     throw new Error("Invalid base64 image data");
   }
@@ -46,15 +57,12 @@ export async function saveImage(
     fs.writeFileSync(filePath, buffer);
 
     return `${relativeDir}/${fileName}`;
-  } catch {
+  } catch (error) {
+    console.warn("Filesystem write failed, falling back to DB:", error);
     return saveImageToDB(base64Data, folderName, id);
   }
 }
 
-/**
- * Deletes an image file from the public directory or MongoDB
- * @param imageUrl The web-accessible URL path of the image
- */
 export async function deleteImage(imageUrl: string): Promise<void> {
   if (!imageUrl) return;
 
@@ -76,4 +84,3 @@ export async function deleteImage(imageUrl: string): Promise<void> {
     console.error("Failed to delete image file:", imageUrl, error);
   }
 }
-

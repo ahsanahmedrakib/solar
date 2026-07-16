@@ -1,11 +1,14 @@
-import type { User } from "@/data/users";
 import {
   ensureSuperadminExists,
   hashPassword,
   verifyAccessToken,
 } from "@/lib/auth";
-import { connectToDatabase } from "@/lib/db";
+import { db } from "@/lib/db";
+import { isTableNotExistsError } from "@/lib/db-helpers";
+import { users } from "@/lib/schema";
+import crypto from "crypto";
 import { NextResponse } from "next/server";
+import { eq, count } from "drizzle-orm";
 
 function getTokenPayload(request: Request) {
   const authHeader = request.headers.get("Authorization");
@@ -27,17 +30,24 @@ export async function GET(request: Request) {
       );
     }
 
-    const { db } = await connectToDatabase();
-    await ensureSuperadminExists(db);
+    await ensureSuperadminExists();
 
-    const users = await db
-      .collection("users")
-      .find({})
-      .project({ password: 0 })
-      .toArray();
+    const allUsers = await db
+      .select({
+        id: users.id,
+        name: users.name,
+        email: users.email,
+        role: users.role,
+        createdAt: users.createdAt,
+        updatedAt: users.updatedAt,
+      })
+      .from(users);
 
-    return NextResponse.json({ success: true, data: users });
+    return NextResponse.json({ success: true, data: allUsers });
   } catch (error: unknown) {
+    if (isTableNotExistsError(error)) {
+      return NextResponse.json({ success: true, data: [] });
+    }
     const message = error instanceof Error ? error.message : String(error);
     return NextResponse.json(
       { success: false, error: message },
@@ -65,49 +75,52 @@ export async function POST(request: Request) {
       );
     }
 
-    if (password?.length < 6) {
+    if (password.length < 6) {
       return NextResponse.json(
         { success: false, error: "Password must be at least 6 characters" },
         { status: 400 },
       );
     }
 
-    const { db } = await connectToDatabase();
-    await ensureSuperadminExists(db);
+    if (role && !["admin", "superadmin"].includes(role)) {
+      return NextResponse.json(
+        { success: false, error: "Role must be 'admin' or 'superadmin'" },
+        { status: 400 },
+      );
+    }
 
-    const existing = await db.collection("users").findOne({ email });
-    if (existing) {
+    await ensureSuperadminExists();
+
+    const existing = await db.select().from(users).where(eq(users.email, email)).limit(1);
+    if (existing.length > 0) {
       return NextResponse.json(
         { success: false, error: "A user with this email already exists" },
         { status: 409 },
       );
     }
 
-    const allUsers = (await db
-      .collection("users")
-      .find({})
-      .toArray()) as unknown as User[];
-    const nextId =
-      allUsers?.length > 0
-        ? "u-" + Date.now().toString(36) + "-" + (allUsers?.length + 1)
-        : "u-" + Date.now().toString(36);
+    const nextId = "u-" + crypto.randomUUID().slice(0, 12);
 
     const hashedPassword = await hashPassword(password);
-    const newUser = {
-      id: nextId,
-      name,
-      email,
-      password: hashedPassword,
-      role: role || "admin",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
+    const [newUser] = await db
+      .insert(users)
+      .values({
+        id: nextId,
+        name,
+        email,
+        password: hashedPassword,
+        role: role || "admin",
+      })
+      .returning({
+        id: users.id,
+        name: users.name,
+        email: users.email,
+        role: users.role,
+        createdAt: users.createdAt,
+        updatedAt: users.updatedAt,
+      });
 
-    await db.collection("users").insertOne(newUser);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password: _, ...userWithoutPassword } = newUser;
-
-    return NextResponse.json({ success: true, data: userWithoutPassword });
+    return NextResponse.json({ success: true, data: newUser });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
     return NextResponse.json(
@@ -135,9 +148,7 @@ export async function PUT(request: Request) {
       );
     }
 
-    const { db } = await connectToDatabase();
-    const targetUser = await db.collection("users").findOne({ id });
-
+    const [targetUser] = await db.select().from(users).where(eq(users.id, id)).limit(1);
     if (!targetUser) {
       return NextResponse.json(
         { success: false, error: "User not found" },
@@ -162,16 +173,24 @@ export async function PUT(request: Request) {
       );
     }
 
+    if (role && !["admin", "superadmin"].includes(role)) {
+      return NextResponse.json(
+        { success: false, error: "Role must be 'admin' or 'superadmin'" },
+        { status: 400 },
+      );
+    }
+
     const updateData: Record<string, unknown> = { updatedAt: new Date() };
 
     if (name && isOwnProfile) updateData.name = name;
     if (name && isSuperadmin) updateData.name = name;
     if (email && isSuperadmin) {
-      const emailExists = await db.collection("users").findOne({
-        email,
-        id: { $ne: id },
-      });
-      if (emailExists) {
+      const emailExists = await db
+        .select()
+        .from(users)
+        .where(eq(users.email, email))
+        .limit(1);
+      if (emailExists.length > 0 && emailExists[0].id !== id) {
         return NextResponse.json(
           { success: false, error: "Email already in use" },
           { status: 409 },
@@ -181,14 +200,29 @@ export async function PUT(request: Request) {
     }
     if (role && isSuperadmin) updateData.role = role;
     if (password) {
+      if (password.length < 6) {
+        return NextResponse.json(
+          { success: false, error: "Password must be at least 6 characters" },
+          { status: 400 },
+        );
+      }
       updateData.password = await hashPassword(password);
     }
 
-    await db.collection("users").updateOne({ id }, { $set: updateData });
+    await db.update(users).set(updateData).where(eq(users.id, id));
 
-    const updated = await db
-      .collection("users")
-      .findOne({ id }, { projection: { password: 0 } });
+    const [updated] = await db
+      .select({
+        id: users.id,
+        name: users.name,
+        email: users.email,
+        role: users.role,
+        createdAt: users.createdAt,
+        updatedAt: users.updatedAt,
+      })
+      .from(users)
+      .where(eq(users.id, id))
+      .limit(1);
 
     return NextResponse.json({ success: true, data: updated });
   } catch (error: unknown) {
@@ -220,9 +254,7 @@ export async function DELETE(request: Request) {
       );
     }
 
-    const { db } = await connectToDatabase();
-    const targetUser = await db.collection("users").findOne({ id });
-
+    const [targetUser] = await db.select().from(users).where(eq(users.id, id)).limit(1);
     if (!targetUser) {
       return NextResponse.json(
         { success: false, error: "User not found" },
@@ -231,10 +263,11 @@ export async function DELETE(request: Request) {
     }
 
     if (targetUser.role === "superadmin") {
-      const superadminCount = await db
-        .collection("users")
-        .countDocuments({ role: "superadmin" });
-      if (superadminCount <= 1) {
+      const [result] = await db
+        .select({ count: count() })
+        .from(users)
+        .where(eq(users.role, "superadmin"));
+      if ((result?.count ?? 0) <= 1) {
         return NextResponse.json(
           {
             success: false,
@@ -245,8 +278,7 @@ export async function DELETE(request: Request) {
       }
     }
 
-    await db.collection("users").deleteOne({ id });
-
+    await db.delete(users).where(eq(users.id, id));
     return NextResponse.json({ success: true });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
@@ -256,4 +288,3 @@ export async function DELETE(request: Request) {
     );
   }
 }
-

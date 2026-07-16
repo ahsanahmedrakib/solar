@@ -1,9 +1,12 @@
 import ClientProviders from "@/components/Common/ClientProviders";
 import { LazyLayout } from "@/components/Common/LazyLayout";
 import { DEFAULT_SECTIONS } from "@/data/settings";
+import { db } from "@/lib/db";
+import { isTableNotExistsError } from "@/lib/db-helpers";
+import { settings } from "@/lib/schema";
+import { eq } from "drizzle-orm";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { connectToDatabase } from "@/lib/db";
 import "./globals.css";
 
 export const dynamic = "force-dynamic";
@@ -40,11 +43,14 @@ type SettingsDocument = {
 
 export async function generateMetadata(): Promise<Metadata> {
   try {
-    const { db } = await connectToDatabase();
-    const settings = (await db
-      .collection("settings")
-      .findOne({ settingsId: "global" })) as SettingsDocument | null;
-    const generalFields = settings?.sections
+    const rows = await db
+      .select()
+      .from(settings)
+      .where(eq(settings.settingsId, "global"))
+      .limit(1);
+
+    const settingsData = rows[0] as SettingsDocument | undefined;
+    const generalFields = settingsData?.sections
       ?.find((s: SettingsSection) => s.id === "general")
       ?.fields;
     const companyName = generalFields?.find(
@@ -63,7 +69,14 @@ export async function generateMetadata(): Promise<Metadata> {
     if (tagline) metadata.description = tagline;
     if (favicon) metadata.icons = { icon: favicon };
     return metadata;
-  } catch {
+  } catch (error: unknown) {
+    if (isTableNotExistsError(error)) {
+      return {
+        title: df("company-name"),
+        description: df("brand-tagline"),
+        icons: { icon: df("site-favicon") },
+      };
+    }
     return {
       title: df("company-name"),
       description: df("brand-tagline"),

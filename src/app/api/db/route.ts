@@ -1,49 +1,79 @@
+import { verifyAccessToken } from "@/lib/auth";
 import { NextResponse } from "next/server";
 
-export async function GET() {
-  const uri = process.env.MONGODB_URI;
+function isSuperadmin(request: Request): boolean {
+  const authHeader = request.headers.get("Authorization");
+  if (!authHeader || !authHeader.startsWith("Bearer ")) return false;
+  try {
+    const payload = verifyAccessToken(authHeader.slice(7));
+    return payload.role === "superadmin";
+  } catch {
+    return false;
+  }
+}
 
-  if (!uri) {
-    return NextResponse.json({
-      success: false,
-      error: "MONGODB_URI is not set",
-      data: { envSet: false, status: "disconnected" },
-    });
+export async function GET(request: Request) {
+  if (!isSuperadmin(request)) {
+    return NextResponse.json(
+      { success: false, error: "Unauthorized" },
+      { status: 401 },
+    );
   }
 
-  const protocol = uri.split("@")[0]?.split("://")[0] ?? "unknown";
-
   try {
-    const { connectToDatabase } = await import("@/lib/db");
-    const { client, db } = await connectToDatabase();
+    const url = process.env.DATABASE_URL;
 
-    const ping = await db.command({ ping: 1 });
-    const dbName = db.databaseName;
-    const collections = await db.listCollections().toArray();
-    const collectionNames = collections.map((c) => c.name);
-    const host = client.options?.hosts?.[0] ?? "unknown";
+    if (!url) {
+      return NextResponse.json({
+        success: false,
+        error: "DATABASE_URL is not set",
+        data: { envSet: false, status: "disconnected" },
+      });
+    }
 
-    return NextResponse.json({
-      success: true,
-      data: {
-        status: "connected",
-        envSet: true,
-        protocol,
-        ping,
-        database: dbName,
-        host,
-        collections: collectionNames,
-        collectionCount: collectionNames.length,
-      },
-    });
+    try {
+      const { db } = await import("@/lib/db");
+      const { sql } = await import("drizzle-orm");
+      const result = await db.execute(sql`SELECT 1 as ping`);
+
+      let tableNames: string[] = [];
+      try {
+        const tablesResult = await db.execute(sql`
+          SELECT table_name FROM information_schema.tables
+          WHERE table_schema = 'public'
+        `);
+        tableNames = (tablesResult.rows as { table_name: string }[]).map(
+          (r) => r.table_name,
+        );
+      } catch {
+        tableNames = [];
+      }
+
+      return NextResponse.json({
+        success: true,
+        data: {
+          status: "connected",
+          envSet: true,
+          ping: result.rows,
+          tables: tableNames,
+          tableCount: tableNames.length,
+        },
+      });
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      return NextResponse.json(
+        {
+          success: false,
+          error: message,
+          data: { envSet: true, status: "disconnected" },
+        },
+        { status: 500 },
+      );
+    }
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
     return NextResponse.json(
-      {
-        success: false,
-        error: message,
-        data: { envSet: true, protocol, status: "disconnected" },
-      },
+      { success: false, error: message },
       { status: 500 },
     );
   }
