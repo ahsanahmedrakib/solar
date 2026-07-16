@@ -10,6 +10,7 @@ const PUBLIC_GET_PREFIXES = [
   "/api/team",
   "/api/image",
   "/api/db",
+  "/api/env",
 ];
 
 const PUBLIC_PATHS = [
