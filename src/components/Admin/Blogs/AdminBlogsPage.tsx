@@ -22,6 +22,8 @@ import { useEffect, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { toast } from "react-toastify";
 import * as yup from "yup";
+import { useQueryBlogs, queryKeys } from "@/lib/queries";
+import { useQueryClient } from "@tanstack/react-query";
 
 const CATEGORIES = [
   "Residential Solar",
@@ -70,32 +72,14 @@ const blogSchema = yup.object().shape({
 type BlogFormData = yup.InferType<typeof blogSchema>;
 
 export default function AdminBlogsPage() {
-  const [blogs, setBlogs] = useState<Blog[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: blogs = [], isLoading: loading } = useQueryBlogs();
+  const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
 
   // Modal State
   const [isOpen, setIsOpen] = useState(false);
   const [editingBlog, setEditingBlog] = useState<Blog | null>(null);
-
-  useEffect(() => {
-    async function loadBlogs() {
-      try {
-        const res = await apiClient("/api/blogs");
-        const json = await res.json();
-        if (json.success) {
-          setBlogs(json.data);
-        }
-      } catch (error) {
-        console.error("Failed to load blogs", error);
-        toast.error("Failed to load blog posts.");
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadBlogs();
-  }, []);
 
   // Form Setup
   const {
@@ -172,7 +156,7 @@ export default function AdminBlogsPage() {
         });
         const json = await res.json();
         if (json.success) {
-          setBlogs((prev) => prev.filter((b) => b.id !== id));
+          queryClient.invalidateQueries({ queryKey: queryKeys.blogs });
           toast.success("Blog post deleted successfully!");
         } else {
           toast.error("Failed to delete blog post: " + json.error);
@@ -216,11 +200,7 @@ export default function AdminBlogsPage() {
         });
         const json = await res.json();
         if (json.success) {
-          setBlogs((prev) =>
-            prev?.map((b) =>
-              b.id === editingBlog.id ? { ...b, ...payload } : b,
-            ),
-          );
+          queryClient.invalidateQueries({ queryKey: queryKeys.blogs });
           toast.success("Blog post updated successfully!");
           setIsOpen(false);
         } else {
@@ -234,7 +214,7 @@ export default function AdminBlogsPage() {
         });
         const json = await res.json();
         if (json.success) {
-          setBlogs((prev) => [...prev, json.data]);
+          queryClient.invalidateQueries({ queryKey: queryKeys.blogs });
           toast.success("Blog post added successfully!");
           setIsOpen(false);
         } else {

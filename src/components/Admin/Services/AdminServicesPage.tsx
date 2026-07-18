@@ -28,6 +28,8 @@ import { useEffect, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { toast } from "react-toastify";
 import * as yup from "yup";
+import { useQueryServices, queryKeys } from "@/lib/queries";
+import { useQueryClient } from "@tanstack/react-query";
 
 // Available Lucide Icons for selection
 const AVAILABLE_ICONS = [
@@ -74,31 +76,13 @@ const serviceSchema = yup.object().shape({
 type ServiceFormData = yup.InferType<typeof serviceSchema>;
 
 export default function AdminServicesPage() {
-  const [services, setServices] = useState<Service[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: services = [], isLoading: loading } = useQueryServices();
+  const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
 
   // Modal State
   const [isOpen, setIsOpen] = useState(false);
   const [editingService, setEditingService] = useState<Service | null>(null);
-
-  useEffect(() => {
-    async function loadServices() {
-      try {
-        const res = await apiClient("/api/services");
-        const json = await res.json();
-        if (json.success) {
-          setServices(json.data);
-        }
-      } catch (error) {
-        console.error("Failed to load services", error);
-        toast.error("Failed to load services.");
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadServices();
-  }, []);
 
   // Form Setup
   const {
@@ -173,7 +157,7 @@ export default function AdminServicesPage() {
         });
         const json = await res.json();
         if (json.success) {
-          setServices((prev) => prev.filter((s) => s.id !== id));
+          queryClient.invalidateQueries({ queryKey: queryKeys.services });
           toast.success("Service deleted successfully!");
         } else {
           toast.error("Failed to delete service: " + json.error);
@@ -196,11 +180,7 @@ export default function AdminServicesPage() {
         });
         const json = await res.json();
         if (json.success) {
-          setServices((prev) =>
-            prev?.map((s) =>
-              s.id === editingService.id ? { ...s, ...data } : s,
-            ),
-          );
+          queryClient.invalidateQueries({ queryKey: queryKeys.services });
           toast.success("Service updated successfully!");
           setIsOpen(false);
         } else {
@@ -214,7 +194,7 @@ export default function AdminServicesPage() {
         });
         const json = await res.json();
         if (json.success) {
-          setServices((prev) => [...prev, json.data]);
+          queryClient.invalidateQueries({ queryKey: queryKeys.services });
           toast.success("Service added successfully!");
           setIsOpen(false);
         } else {

@@ -3,8 +3,8 @@
 import dynamic from "next/dynamic";
 import type { ReactNode } from "react";
 
-const Navbar = dynamic(() => import("@/components/Common/Navbar"), { ssr: false });
-const Footer = dynamic(() => import("@/components/Common/Footer"), { ssr: false });
+const Navbar = dynamic(() => import("@/components/Common/Navbar"));
+const Footer = dynamic(() => import("@/components/Common/Footer"));
 const FloatingChatWidget = dynamic(
   () => import("@/components/Common/FloatingChatWidget"),
   { ssr: false },

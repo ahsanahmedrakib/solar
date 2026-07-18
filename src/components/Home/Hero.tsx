@@ -1,9 +1,10 @@
 "use client";
 
-import { DEFAULT_HERO_SLIDES, type HeroSlide } from "@/data/hero-slides";
+import { DEFAULT_HERO_SLIDES } from "@/data/hero-slides";
+import { useQueryHeroSlides } from "@/lib/queries";
 import { Play, X } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import "swiper/css";
 import "swiper/css/effect-fade";
 import "swiper/css/pagination";
@@ -11,35 +12,19 @@ import { Autoplay, EffectFade, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 export default function Hero() {
-  const [slides, setSlides] = useState<HeroSlide[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: rawSlides = [], isFetching: loading } =
+    useQueryHeroSlides();
   const [activeVideo, setActiveVideo] = useState<string | null>(null);
 
-  useEffect(() => {
-    async function loadSlides() {
-      try {
-        const res = await fetch("/api/hero-slides");
-        const json = await res.json();
-        if (json.success && Array.isArray(json.data)) {
-          const activeSlides = json.data
-            .filter((slide: HeroSlide) => slide.isActive)
-            .sort((a: HeroSlide, b: HeroSlide) => a.order - b.order);
-          if (activeSlides?.length > 0) {
-            setSlides(activeSlides);
-          } else {
-            setSlides(DEFAULT_HERO_SLIDES);
-          }
-        } else {
-          setSlides(DEFAULT_HERO_SLIDES);
-        }
-      } catch {
-        setSlides(DEFAULT_HERO_SLIDES);
-      } finally {
-        setLoading(false);
-      }
+  const slides = useMemo(() => {
+    if (rawSlides?.length > 0) {
+      const active = rawSlides
+        .filter((s) => s.isActive)
+        .sort((a, b) => a.order - b.order);
+      return active.length > 0 ? active : DEFAULT_HERO_SLIDES;
     }
-    loadSlides();
-  }, []);
+    return DEFAULT_HERO_SLIDES;
+  }, [rawSlides]);
 
   if (loading) {
     return (

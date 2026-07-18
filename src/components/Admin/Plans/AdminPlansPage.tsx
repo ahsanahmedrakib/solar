@@ -15,10 +15,12 @@ import {
   X,
 } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import * as yup from "yup";
+import { useQueryPlans, queryKeys } from "@/lib/queries";
+import { useQueryClient } from "@tanstack/react-query";
 
 const featureItemSchema = yup.object({
   value: yup.string().required("Feature cannot be empty"),
@@ -67,30 +69,12 @@ interface PlanFormData {
 }
 
 export default function AdminPlansPage() {
-  const [plans, setPlans] = useState<Plan[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: plans = [], isLoading: loading } = useQueryPlans();
+  const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
 
   const [isOpen, setIsOpen] = useState(false);
   const [editingPlan, setEditingPlan] = useState<Plan | null>(null);
-
-  useEffect(() => {
-    async function loadPlans() {
-      try {
-        const res = await apiClient("/api/plans");
-        const json = await res.json();
-        if (json.success) {
-          setPlans(json.data);
-        }
-      } catch (error) {
-        console.error("Failed to load plans", error);
-        toast.error("Failed to load pricing plans.");
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadPlans();
-  }, []);
 
   const {
     register,
@@ -155,7 +139,7 @@ export default function AdminPlansPage() {
         });
         const json = await res.json();
         if (json.success) {
-          setPlans((prev) => prev.filter((p) => p.id !== id));
+          queryClient.invalidateQueries({ queryKey: queryKeys.plans });
           toast.success("Pricing plan deleted successfully!");
         } else {
           toast.error("Failed to delete pricing plan: " + json.error);
@@ -192,11 +176,7 @@ export default function AdminPlansPage() {
         });
         const json = await res.json();
         if (json.success) {
-          setPlans((prev) =>
-            prev?.map((p) =>
-              p.id === editingPlan.id ? { ...p, ...payload } : p,
-            ),
-          );
+          queryClient.invalidateQueries({ queryKey: queryKeys.plans });
           toast.success("Pricing plan updated successfully!");
           setIsOpen(false);
         } else {
@@ -210,7 +190,7 @@ export default function AdminPlansPage() {
         });
         const json = await res.json();
         if (json.success) {
-          setPlans((prev) => [...prev, json.data]);
+          queryClient.invalidateQueries({ queryKey: queryKeys.plans });
           toast.success("Pricing plan added successfully!");
           setIsOpen(false);
         } else {

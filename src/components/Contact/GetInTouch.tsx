@@ -1,9 +1,10 @@
 "use client";
 
 import type { Section } from "@/data/settings";
-import { fetchSettings } from "@/lib/settings-cache";
+import { apiClient } from "@/lib/apiClient";
+import { useQuerySettings } from "@/lib/queries";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import * as yup from "yup";
@@ -70,26 +71,14 @@ type ContactFormData = yup.InferType<typeof contactSchema>;
 
 export default function GetInTouch() {
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [contactInfo, setContactInfo] = useState<ContactInfo | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { data, isFetching: loading } = useQuerySettings();
 
-  useEffect(() => {
-    async function loadSettings() {
-      try {
-        const data = await fetchSettings();
-        if (data && Array.isArray(data) && data?.length > 0) {
-          setContactInfo(extractContactInfo(data));
-        } else {
-          setContactInfo(DEFAULT_CONTACT_INFO);
-        }
-      } catch {
-        setContactInfo(DEFAULT_CONTACT_INFO);
-      } finally {
-        setLoading(false);
-      }
+  const contactInfo = useMemo(() => {
+    if (data && Array.isArray(data) && data?.length > 0) {
+      return extractContactInfo(data);
     }
-    loadSettings();
-  }, []);
+    return DEFAULT_CONTACT_INFO;
+  }, [data]);
 
   const {
     register,
@@ -116,7 +105,7 @@ export default function GetInTouch() {
         subject: "Inquiry from website contact form",
         message: data.message,
       };
-      const res = await fetch("/api/contact", {
+      const res = await apiClient("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -138,7 +127,7 @@ export default function GetInTouch() {
     }
   };
 
-  const info = contactInfo ?? DEFAULT_CONTACT_INFO;
+  const info = contactInfo;
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 sm:p-8">

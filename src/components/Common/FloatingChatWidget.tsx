@@ -2,9 +2,9 @@
 
 import type { Section } from "@/data/settings";
 import { DEFAULT_SECTIONS } from "@/data/settings";
-import { fetchSettings } from "@/lib/settings-cache";
+import { useQuerySettings } from "@/lib/queries";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 
 interface ChatSettings {
   showWhatsapp: boolean;
@@ -65,17 +65,15 @@ const MessengerIcon = () => (
 
 export default function FloatingChatWidget() {
   const pathname = usePathname();
+  const { data, isFetching: settingsLoading } = useQuerySettings();
   const [isOpen, setIsOpen] = useState(false);
-  const [settings, setSettings] = useState<ChatSettings>(DEFAULTS);
-  const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    fetchSettings()
-      .then((data) => {
-        if (data) setSettings(buildSettings(data));
-      })
-      .finally(() => setMounted(true));
-  }, []);
+  const settings = useMemo(
+    () => (data ? buildSettings(data) : DEFAULTS),
+    [data],
+  );
+
+  const mounted = !settingsLoading;
 
   if (!mounted) return null;
   if (pathname?.startsWith("/admin")) return null;

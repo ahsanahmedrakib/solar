@@ -2,7 +2,7 @@
 
 import { useAuth } from "@/components/Auth/AuthProvider";
 import { DEFAULT_SECTIONS } from "@/data/settings";
-import { fetchSettings } from "@/lib/settings-cache";
+import { useQuerySettings } from "@/lib/queries";
 import { cn } from "@/lib/utils";
 import {
   Briefcase,
@@ -23,7 +23,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import { useSidebar } from "./SidebarContext";
 
 const navItems = [
@@ -96,7 +96,18 @@ export function AdminSidebar() {
   const { user, logout } = useAuth();
   const { mobileOpen, setMobileOpen } = useSidebar();
   const pathname = usePathname();
-  const [logoSrc, setLogoSrc] = useState(FALLBACK_LOGO);
+  const { data } = useQuerySettings();
+
+  const logoSrc = useMemo(() => {
+    if (data) {
+      const general = data.find((section) => section.id === "general");
+      const logoField = general?.fields?.find(
+        (field) => field.id === "site-logo",
+      );
+      if (logoField?.value) return logoField.value;
+    }
+    return FALLBACK_LOGO;
+  }, [data]);
 
   const isActive = (href: string) => {
     if (href === "/admin") {
@@ -104,26 +115,6 @@ export function AdminSidebar() {
     }
     return pathname.startsWith(href);
   };
-
-  useEffect(() => {
-    async function loadLogo() {
-      try {
-        const data = await fetchSettings();
-        if (data) {
-          const general = data.find((section) => section.id === "general");
-          const logoField = general?.fields?.find(
-            (field) => field.id === "site-logo",
-          );
-          if (logoField?.value) {
-            setLogoSrc(logoField.value);
-          }
-        }
-      } catch (error) {
-        console.error("Failed to load site logo", error);
-      }
-    }
-    loadLogo();
-  }, []);
 
   const closeMobile = () => setMobileOpen(false);
 

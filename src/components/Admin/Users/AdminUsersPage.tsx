@@ -2,6 +2,9 @@
 
 import { useAuth } from "@/components/Auth/AuthProvider";
 import { DEFAULT_ADMIN_LOGO } from "@/data/settings";
+import { apiClient } from "@/lib/apiClient";
+import { queryKeys, useQueryUsers } from "@/lib/queries";
+import { useQueryClient } from "@tanstack/react-query";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
   AlertCircle,
@@ -15,21 +18,10 @@ import {
   X,
 } from "lucide-react";
 import Image from "next/image";
-
-import { apiClient } from "@/lib/apiClient";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import * as yup from "yup";
-
-interface UserData {
-  id: string;
-  name: string;
-  email: string;
-  role: "superadmin" | "admin";
-  createdAt: string;
-  updatedAt: string;
-}
 
 const userSchema = yup.object({
   name: yup.string().required("Name is required").min(2),
@@ -47,11 +39,16 @@ interface UserFormData {
 
 export default function AdminUsersPage() {
   const { user: currentUser, refreshUser } = useAuth();
-  const [users, setUsers] = useState<UserData[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: users = [], isLoading } = useQueryUsers();
+  const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-  const [editingUser, setEditingUser] = useState<UserData | null>(null);
+  const [editingUser, setEditingUser] = useState<{
+    id: string;
+    name: string;
+    email: string;
+    role: "superadmin" | "admin";
+  } | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isUpdatingSelf, setIsUpdatingSelf] = useState(false);
 
@@ -68,26 +65,6 @@ export default function AdminUsersPage() {
     defaultValues: { name: "", email: "", password: "", role: "admin" },
   });
 
-  useEffect(() => {
-    loadUsers();
-  }, []);
-
-  async function loadUsers() {
-    try {
-      const token = localStorage.getItem("accessToken");
-      const res = await apiClient("/api/users", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const json = await res.json();
-      if (json.success) setUsers(json.data);
-      else toast.error("Failed to load users");
-    } catch {
-      toast.error("Failed to load users");
-    } finally {
-      setLoading(false);
-    }
-  }
-
   const handleAddClick = () => {
     setEditingUser(null);
     setIsUpdatingSelf(false);
@@ -95,7 +72,12 @@ export default function AdminUsersPage() {
     setIsOpen(true);
   };
 
-  const handleEditClick = (u: UserData) => {
+  const handleEditClick = (u: {
+    id: string;
+    name: string;
+    email: string;
+    role: "superadmin" | "admin";
+  }) => {
     setEditingUser(u);
     const isSelf = u.id === currentUser?.id;
     setIsUpdatingSelf(isSelf);
@@ -111,14 +93,12 @@ export default function AdminUsersPage() {
   const handleDeleteClick = async (id: string) => {
     if (!confirm("Are you sure you want to delete this user?")) return;
     try {
-      const token = localStorage.getItem("accessToken");
       const res = await apiClient(`/api/users?id=${id}`, {
         method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
       });
       const json = await res.json();
       if (json.success) {
-        setUsers((prev) => prev.filter((u) => u.id !== id));
+        queryClient.invalidateQueries({ queryKey: queryKeys.users });
         toast.success("User deleted");
       } else {
         toast.error(json.error || "Failed to delete user");
@@ -132,7 +112,6 @@ export default function AdminUsersPage() {
     const data = raw as UserFormData;
 
     try {
-      const token = localStorage.getItem("accessToken");
       const body: Record<string, unknown> = { name: data.name };
 
       if (editingUser) {
@@ -145,16 +124,13 @@ export default function AdminUsersPage() {
 
         const res = await apiClient("/api/users", {
           method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(body),
         });
         const json = await res.json();
         if (json.success) {
           toast.success("User updated");
-          loadUsers();
+          queryClient.invalidateQueries({ queryKey: queryKeys.users });
           if (editingUser.id === currentUser?.id) refreshUser();
           setIsOpen(false);
         } else {
@@ -167,16 +143,13 @@ export default function AdminUsersPage() {
 
         const res = await apiClient("/api/users", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(body),
         });
         const json = await res.json();
         if (json.success) {
           toast.success("User created");
-          loadUsers();
+          queryClient.invalidateQueries({ queryKey: queryKeys.users });
           setIsOpen(false);
         } else {
           toast.error(json.error || "Failed to create user");
@@ -187,7 +160,7 @@ export default function AdminUsersPage() {
     }
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-100">
         <Image
@@ -458,4 +431,3 @@ export default function AdminUsersPage() {
     </div>
   );
 }
-

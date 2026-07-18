@@ -5,6 +5,8 @@ import { RichTextEditor } from "@/components/Admin/RichTextEditor";
 import type { Project } from "@/data/projects";
 import { DEFAULT_ADMIN_LOGO } from "@/data/settings";
 import { apiClient } from "@/lib/apiClient";
+import { queryKeys, useQueryProjects } from "@/lib/queries";
+import { useQueryClient } from "@tanstack/react-query";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
   AlertCircle,
@@ -31,7 +33,6 @@ const CATEGORIES = [
   "Community Solar",
 ];
 
-// Validation Schema using Yup
 const projectSchema = yup.object().shape({
   title: yup
     .string()
@@ -67,8 +68,8 @@ const projectSchema = yup.object().shape({
 type ProjectFormData = yup.InferType<typeof projectSchema>;
 
 export default function AdminProjectsPage() {
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const { data: projects = [], isLoading } = useQueryProjects();
+  const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
 
@@ -97,25 +98,6 @@ export default function AdminProjectsPage() {
       projectDetails: "",
     },
   });
-
-  // Load from database on mount
-  useEffect(() => {
-    async function loadProjects() {
-      try {
-        const res = await apiClient("/api/projects");
-        const json = await res.json();
-        if (json.success) {
-          setProjects(json.data);
-        }
-      } catch (error) {
-        console.error("Failed to load projects", error);
-        toast.error("Failed to load projects.");
-      } finally {
-        setIsLoaded(true);
-      }
-    }
-    loadProjects();
-  }, []);
 
   // Automatically generate slug from Title
   const formTitle = useWatch({
@@ -173,7 +155,7 @@ export default function AdminProjectsPage() {
         });
         const json = await res.json();
         if (json.success) {
-          setProjects((prev) => prev.filter((p) => p.id !== id));
+          queryClient.invalidateQueries({ queryKey: queryKeys.projects });
           toast.success("Project deleted successfully!");
         } else {
           toast.error("Failed to delete project: " + json.error);
@@ -196,11 +178,7 @@ export default function AdminProjectsPage() {
         });
         const json = await res.json();
         if (json.success) {
-          setProjects((prev) =>
-            prev?.map((p) =>
-              p.id === editingProject.id ? { ...p, ...data } : p,
-            ),
-          );
+          queryClient.invalidateQueries({ queryKey: queryKeys.projects });
           toast.success("Project updated successfully!");
           setIsOpen(false);
         } else {
@@ -214,7 +192,7 @@ export default function AdminProjectsPage() {
         });
         const json = await res.json();
         if (json.success) {
-          setProjects((prev) => [...prev, json.data]);
+          queryClient.invalidateQueries({ queryKey: queryKeys.projects });
           toast.success("Project added successfully!");
           setIsOpen(false);
         } else {
@@ -239,7 +217,7 @@ export default function AdminProjectsPage() {
     return matchCategory && matchSearch;
   });
 
-  if (!isLoaded) {
+  if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-100">
         <Image

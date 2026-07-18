@@ -1,35 +1,14 @@
 "use client";
 
-import { DEFAULT_PROJECTS, type Project } from "@/data/projects";
+import { DEFAULT_PROJECTS } from "@/data/projects";
+import { useQueryProjects } from "@/lib/queries";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 
 export default function SingleProject({ slug }: { slug: string }) {
-  const [project, setProject] = useState<Project | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function loadData() {
-      try {
-        const res = await fetch("/api/projects");
-        const json = await res.json();
-        if (json.success && Array.isArray(json.data) && json.data?.length > 0) {
-          const found = json.data.find((p: Project) => p.slug === slug);
-          if (found) setProject(found);
-        } else {
-          const fallback = DEFAULT_PROJECTS.find((p) => p.slug === slug);
-          if (fallback) setProject(fallback);
-        }
-      } catch (error) {
-        console.error("Failed to load project", error);
-        const fallback = DEFAULT_PROJECTS.find((p) => p.slug === slug);
-        if (fallback) setProject(fallback);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadData();
-  }, [slug]);
+  const { data: projects, isLoading } = useQueryProjects();
+  const allProjects =
+    projects && projects.length > 0 ? projects : DEFAULT_PROJECTS;
+  const project = allProjects.find((p) => p.slug === slug) ?? null;
 
   return (
     <div className="bg-white min-h-screen text-[#011c2b] font-sans antialiased">
@@ -42,7 +21,7 @@ export default function SingleProject({ slug }: { slug: string }) {
                 Project Information
               </div>
               <div className="flex flex-col">
-                {loading
+                {isLoading
                   ? Array.from({ length: 5 })?.map((_, i) => (
                       <div
                         key={i}
@@ -76,7 +55,7 @@ export default function SingleProject({ slug }: { slug: string }) {
 
           {/* ================= RIGHT COLUMN / MAIN CONTENT ================= */}
           <main className="w-full lg:w-[70%] flex flex-col gap-10">
-            {loading ? (
+            {isLoading ? (
               <div className="animate-pulse flex flex-col gap-6">
                 <div className="w-full h-64 sm:h-96 rounded-2xl bg-gray-200" />
                 <div className="space-y-3">
@@ -101,126 +80,6 @@ export default function SingleProject({ slug }: { slug: string }) {
                     }}
                   />
                 </section>
-
-                {/* <section className="flex flex-col gap-6 border-t border-gray-100 pt-8">
-                  <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-                    Project challenges
-                  </h2>
-                  <p className="text-gray-500 text-sm leading-relaxed">
-                    The main challenges included limited roof space, partial
-                    shading during certain hours of the day, and the need to
-                    optimize panel placement for maximum sunlight exposure.
-                    Additionally, the installation had to be completed without
-                    disrupting the household&apos;s daily routine.
-                  </p>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-2">
-                    <div className="flex gap-4">
-                      <div className="w-8 h-8 rounded-full bg-[#4caf50] text-white shrink-0 flex items-center justify-center text-sm font-bold">
-                        ✓
-                      </div>
-                      <div>
-                        <h4 className="font-bold text-sm sm:text-base text-[#011c2b]">
-                          Partial Shading During Peak Hours
-                        </h4>
-                        <p className="text-gray-400 text-xs mt-1 leading-relaxed">
-                          Certain parts of the roof were affected by shade from
-                          nearby structures and trees.
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex gap-4">
-                      <div className="w-8 h-8 rounded-full bg-[#4caf50] text-white shrink-0 flex items-center justify-center text-sm font-bold">
-                        ✓
-                      </div>
-                      <div>
-                        <h4 className="font-bold text-sm sm:text-base text-[#011c2b]">
-                          Limited Roof Space & Layout
-                        </h4>
-                        <p className="text-gray-400 text-xs mt-1 leading-relaxed">
-                          The available rooftop area had an irregular layout,
-                          which made it challenging.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-                    <div
-                      className="h-48 sm:h-56 rounded-2xl bg-cover bg-center border border-gray-100 shadow-sm"
-                      style={{
-                        backgroundImage:
-                          "url('/images/projects/project-challenge-image-1.jpg')",
-                      }}
-                    />
-                    <div
-                      className="h-48 sm:h-56 rounded-2xl bg-cover bg-center border border-gray-100 shadow-sm"
-                      style={{
-                        backgroundImage:
-                          "url('/images/projects/project-challenge-image-2.jpg')",
-                      }}
-                    />
-                  </div>
-                </section>
-
-                <section className="flex flex-col gap-6 border-t border-gray-100 pt-8">
-                  <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-                    Our solution
-                  </h2>
-                  <p className="text-gray-500 text-sm leading-relaxed">
-                    Our team conducted a detailed site assessment and designed a
-                    customized rooftop solar system tailored to the home&apos;s
-                    energy needs. We used high-efficiency panels and a reliable
-                    inverter, carefully positioning the panels to avoid shaded
-                    areas and maximize energy production.
-                  </p>
-
-                  <div className="bg-[#f4f7f9] rounded-2xl p-6 border border-gray-100/70 flex flex-col gap-6">
-                    <div className="flex flex-col gap-2">
-                      <div className="flex justify-between items-center text-xs sm:text-sm font-bold">
-                        <span>Roof Installation</span>
-                        <span>85%</span>
-                      </div>
-                      <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
-                        <div
-                          className="bg-[#4caf50] h-full rounded-full transition-all duration-500"
-                          style={{ width: "85%" }}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="flex flex-col gap-2">
-                      <div className="flex justify-between items-center text-xs sm:text-sm font-bold">
-                        <span>Roof Repair & Maintenance</span>
-                        <span>95%</span>
-                      </div>
-                      <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
-                        <div
-                          className="bg-[#4caf50] h-full rounded-full transition-all duration-500"
-                          style={{ width: "95%" }}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="flex gap-4 mt-2 border-t border-gray-200/50 pt-4">
-                      <div className="w-9 h-9 rounded-full bg-[#4caf50] text-white shrink-0 flex items-center justify-center text-base">
-                        🛡️
-                      </div>
-                      <div>
-                        <h4 className="font-bold text-sm text-[#011c2b]">
-                          Optimized System Design
-                        </h4>
-                        <p className="text-gray-400 text-xs mt-0.5 leading-relaxed">
-                          We designed a customized rooftop solar system that
-                          maximizes energy output by using the available space
-                          efficiently and minimizing the impact of shading,
-                          ensuring reliable.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </section> */}
 
                 <section className="flex flex-col gap-2 border-t border-gray-100 pt-8 mb-4">
                   <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
@@ -306,4 +165,3 @@ export default function SingleProject({ slug }: { slug: string }) {
     </div>
   );
 }
-

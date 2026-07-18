@@ -15,10 +15,12 @@ import {
   X,
 } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import * as yup from "yup";
+import { useQueryHeroSlides, queryKeys } from "@/lib/queries";
+import { useQueryClient } from "@tanstack/react-query";
 
 const slideSchema = yup.object({
   tagline: yup.string().required("Tagline is required"),
@@ -35,8 +37,8 @@ const slideSchema = yup.object({
 type SlideFormData = yup.InferType<typeof slideSchema>;
 
 export default function AdminHeroPage() {
-  const [slides, setSlides] = useState<HeroSlide[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: slides = [], isLoading: loading } = useQueryHeroSlides();
+  const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [editingSlide, setEditingSlide] = useState<HeroSlide | null>(null);
@@ -61,29 +63,6 @@ export default function AdminHeroPage() {
       order: 1,
     },
   });
-
-  useEffect(() => {
-    async function loadSlides() {
-      try {
-        const res = await apiClient("/api/hero-slides");
-        const json = await res.json();
-        if (json.success && Array.isArray(json.data)) {
-          setSlides(json.data);
-        } else {
-          setSlides([]);
-          if (!json.success) {
-            toast.error("Failed to load hero slides: " + json.error);
-          }
-        }
-      } catch (error) {
-        console.error("Failed to load hero slides", error);
-        toast.error("Failed to load hero slides.");
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadSlides();
-  }, []);
 
   const handleAddClick = () => {
     setEditingSlide(null);
@@ -126,7 +105,7 @@ export default function AdminHeroPage() {
       });
       const json = await res.json();
       if (json.success) {
-        setSlides((prev) => prev.filter((s) => s.id !== id));
+        queryClient.invalidateQueries({ queryKey: queryKeys.heroSlides });
         toast.success("Hero slide deleted successfully!");
       } else {
         toast.error("Failed to delete hero slide: " + json.error);
@@ -148,11 +127,7 @@ export default function AdminHeroPage() {
         });
         const json = await res.json();
         if (json.success) {
-          setSlides((prev) =>
-            prev?.map((s) =>
-              s.id === editingSlide.id ? { ...s, ...data } : s,
-            ),
-          );
+          queryClient.invalidateQueries({ queryKey: queryKeys.heroSlides });
           toast.success("Hero slide updated successfully!");
           setIsOpen(false);
         } else {
@@ -166,7 +141,7 @@ export default function AdminHeroPage() {
         });
         const json = await res.json();
         if (json.success) {
-          setSlides((prev) => [...prev, json.data]);
+          queryClient.invalidateQueries({ queryKey: queryKeys.heroSlides });
           toast.success("Hero slide added successfully!");
           setIsOpen(false);
         } else {

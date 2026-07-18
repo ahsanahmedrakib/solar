@@ -1,6 +1,7 @@
 "use client";
 
 import { LoadingScreen } from "@/components/Common/LoadingScreen";
+import { apiClient } from "@/lib/apiClient";
 import { usePathname } from "next/navigation";
 import {
   createContext,
@@ -9,6 +10,7 @@ import {
   useState,
   useCallback,
   useRef,
+  useMemo,
   type ReactNode,
 } from "react";
 
@@ -32,22 +34,22 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [authCheckDone, setAuthCheckDone] = useState(false);
   const [transitioning, setTransitioning] = useState(false);
   const initialisedRef = useRef(false);
   const pathname = usePathname();
+
+  const needsAuth = pathname?.startsWith("/admin") || pathname?.startsWith("/login");
+  const loading = useMemo(() => (needsAuth ? !authCheckDone : false), [needsAuth, authCheckDone]);
 
   const refreshUser = useCallback(async () => {
     try {
       const token = localStorage.getItem("accessToken");
       if (!token) {
         setUser(null);
-        setLoading(false);
         return;
       }
-      const res = await fetch("/api/auth/me", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await apiClient("/api/auth/me");
       if (res.ok) {
         const json = await res.json();
         if (json.success) {
@@ -58,7 +60,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } else {
         const refreshToken = localStorage.getItem("refreshToken");
         if (refreshToken) {
-          const refreshRes = await fetch("/api/auth/refresh", {
+          const refreshRes = await apiClient("/api/auth/refresh", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ refreshToken }),
@@ -66,11 +68,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           if (refreshRes.ok) {
             const refreshJson = await refreshRes.json();
             localStorage.setItem("accessToken", refreshJson.data.accessToken);
-            const retryRes = await fetch("/api/auth/me", {
-              headers: {
-                Authorization: `Bearer ${refreshJson.data.accessToken}`,
-              },
-            });
+            const retryRes = await apiClient("/api/auth/me");
             if (retryRes.ok) {
               const retryJson = await retryRes.json();
               if (retryJson.success) setUser(retryJson.data);
@@ -88,18 +86,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch {
       setUser(null);
     } finally {
-      setLoading(false);
+      setAuthCheckDone(true);
     }
   }, []);
 
   useEffect(() => {
-    if (transitioning) {
-      setTransitioning(false);
-    }
-    if (!pathname.startsWith("/admin") && !pathname.startsWith("/login")) {
-      setLoading(false);
-      return;
-    }
+    if (!needsAuth) return;
     if (initialisedRef.current) return;
     initialisedRef.current = true;
 
@@ -110,10 +102,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => {
       window.clearTimeout(timer);
     };
-  }, [refreshUser, pathname]);
+  }, [refreshUser, needsAuth]);
 
   const login = async (email: string, password: string) => {
-    const res = await fetch("/api/auth/login", {
+    const res = await apiClient("/api/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
@@ -126,18 +118,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.setItem("refreshToken", json.data.refreshToken);
     setUser(json.data.user);
     setTransitioning(true);
+    setTimeout(() => setTransitioning(false), 0);
   };
 
   const logout = async () => {
     setTransitioning(true);
     try {
-      await fetch("/api/auth/logout", { method: "POST" });
+      await apiClient("/api/auth/logout", { method: "POST" });
     } catch {
       // ignore
     }
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
     setUser(null);
+    setTimeout(() => setTransitioning(false), 0);
   };
 
   const isAdmin = pathname?.startsWith("/admin");

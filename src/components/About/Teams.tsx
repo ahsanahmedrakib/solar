@@ -1,31 +1,19 @@
 "use client";
 
-import { DEFAULT_TEAM, type TeamMember } from "@/data/team";
+import { DEFAULT_TEAM } from "@/data/team";
+import { useQueryTeam } from "@/lib/queries";
 import { SOCIAL_ICONS } from "@/lib/const";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 
 export default function Teams() {
-  const [teamMembers, setTeamMembers] = useState<TeamMember[]>(DEFAULT_TEAM);
-  const [loading, setLoading] = useState(true);
+  const { data: rawTeam = [], isFetching: loading } = useQueryTeam();
 
-  useEffect(() => {
-    async function loadTeam() {
-      try {
-        const res = await fetch("/api/team");
-        const json = await res.json();
-        if (json.success && Array.isArray(json.data) && json.data?.length > 0) {
-          setTeamMembers(json.data);
-        }
-      } catch (error) {
-        console.error("Failed to load team members", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadTeam();
-  }, []);
+  const teamMembers = useMemo(() => {
+    if (rawTeam?.length > 0) return rawTeam;
+    return DEFAULT_TEAM;
+  }, [rawTeam]);
   return (
     <section className="relative w-full bg-white px-4 py-12 md:px-8 lg:px-16 lg:py-24">
       <div className="mx-auto max-w-7xl">

@@ -2,44 +2,18 @@
 
 import { DEFAULT_ADMIN_LOGO } from "@/data/settings";
 import { apiClient } from "@/lib/apiClient";
+import { queryKeys, useQueryComments } from "@/lib/queries";
 import { Calendar, MessageCircle, Search, Trash2 } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "react-toastify";
-
-interface CommentItem {
-  id: number;
-  name: string;
-  email: string;
-  website: string;
-  comment: string;
-  date: string;
-  blogTitle: string;
-  blogSlug: string;
-}
+import type { CommentItem } from "@/lib/queries";
 
 export default function AdminCommentsPage() {
-  const [comments, setComments] = useState<CommentItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: comments = [], isLoading } = useQueryComments();
   const [search, setSearch] = useState("");
-
-  useEffect(() => {
-    async function loadComments() {
-      try {
-        const res = await apiClient("/api/comments");
-        const json = await res.json();
-        if (json.success) {
-          setComments(json.data);
-        }
-      } catch (error) {
-        console.error("Failed to load comments", error);
-        toast.error("Failed to load comments.");
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadComments();
-  }, []);
+  const queryClient = useQueryClient();
 
   const handleDeleteClick = async (item: CommentItem) => {
     if (confirm(`Delete comment by "${item.name}" from "${item.blogTitle}"?`)) {
@@ -50,11 +24,7 @@ export default function AdminCommentsPage() {
         );
         const json = await res.json();
         if (json.success) {
-          setComments((prev) =>
-            prev.filter(
-              (c) => c.id !== item.id || c.blogSlug !== item.blogSlug,
-            ),
-          );
+          queryClient.invalidateQueries({ queryKey: queryKeys.comments });
           toast.success("Comment deleted successfully!");
         } else {
           toast.error("Failed to delete comment: " + json.error);
@@ -77,7 +47,7 @@ export default function AdminCommentsPage() {
     );
   });
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-100">
         <Image
@@ -207,4 +177,3 @@ export default function AdminCommentsPage() {
     </div>
   );
 }
-

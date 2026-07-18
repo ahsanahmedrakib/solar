@@ -3,6 +3,8 @@
 import type { ContactQuery } from "@/data/contact";
 import { DEFAULT_ADMIN_LOGO } from "@/data/settings";
 import { apiClient } from "@/lib/apiClient";
+import { queryKeys, useQueryContact } from "@/lib/queries";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   Archive,
   CheckCircle,
@@ -19,41 +21,23 @@ import {
   X,
 } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "react-toastify";
 
 export default function AdminContactQueriesPage() {
-  const [queries, setQueries] = useState<ContactQuery[]>([]);
-  const [loading, setLoading] = useState(true);
+  const {
+    data: queries = [],
+    isLoading,
+    isFetching,
+    refetch,
+  } = useQueryContact();
+  const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<
     "all" | "new" | "replied" | "archived"
   >("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedQuery, setSelectedQuery] = useState<ContactQuery | null>(null);
   const [replyText, setReplyText] = useState("");
-
-  const loadQueries = async () => {
-    try {
-      const res = await apiClient("/api/contact");
-      const json = await res.json();
-      if (json.success) {
-        setQueries(json.data);
-      } else {
-        toast.error("Failed to load contact queries: " + json.error);
-      }
-    } catch (e) {
-      console.error("Failed to load contact queries", e);
-      toast.error("Failed to load contact queries.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    (async () => {
-      await loadQueries();
-    })();
-  }, []);
 
   const handleStatusChange = async (
     id: string,
@@ -67,9 +51,7 @@ export default function AdminContactQueriesPage() {
       });
       const json = await res.json();
       if (json.success) {
-        setQueries((prev) =>
-          prev?.map((q) => (q.id === id ? { ...q, status: newStatus } : q)),
-        );
+        queryClient.invalidateQueries({ queryKey: queryKeys.contact });
         if (selectedQuery && selectedQuery.id === id) {
           setSelectedQuery({ ...selectedQuery, status: newStatus });
         }
@@ -91,7 +73,7 @@ export default function AdminContactQueriesPage() {
         });
         const json = await res.json();
         if (json.success) {
-          setQueries((prev) => prev.filter((q) => q.id !== id));
+          queryClient.invalidateQueries({ queryKey: queryKeys.contact });
           if (selectedQuery && selectedQuery.id === id) {
             setSelectedQuery(null);
           }
@@ -125,13 +107,7 @@ export default function AdminContactQueriesPage() {
       });
       const json = await res.json();
       if (json.success) {
-        setQueries((prev) =>
-          prev?.map((q) =>
-            q.id === selectedQuery.id
-              ? { ...q, status: "replied", notes: newNotes }
-              : q,
-          ),
-        );
+        queryClient.invalidateQueries({ queryKey: queryKeys.contact });
         setSelectedQuery({
           ...selectedQuery,
           status: "replied",
@@ -180,7 +156,7 @@ export default function AdminContactQueriesPage() {
     }
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-100">
         <Image
@@ -215,14 +191,14 @@ export default function AdminContactQueriesPage() {
         </div>
         <div className="admin-page-header-actions flex items-center gap-3">
           <button
-            onClick={async () => {
-              setLoading(true);
-              await loadQueries();
+            onClick={() => {
+              refetch();
               toast.success("Contact queries refreshed");
             }}
             className="admin-btn-secondary flex items-center gap-2 text-xs px-4 py-2"
+            disabled={isFetching}
           >
-            <RefreshCw size={14} />
+            <RefreshCw size={14} className={isFetching ? "animate-spin" : ""} />
             Refresh
           </button>
         </div>

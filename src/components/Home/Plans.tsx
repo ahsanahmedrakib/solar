@@ -1,7 +1,8 @@
 "use client";
 
-import { DEFAULT_PLANS, type Plan } from "@/data/plans";
-import { useEffect, useState } from "react";
+import { DEFAULT_PLANS } from "@/data/plans";
+import { useQueryPlans } from "@/lib/queries";
+import { useMemo, useState } from "react";
 
 const defaultIcons = [
   <svg
@@ -53,27 +54,12 @@ const defaultIcons = [
 
 export default function Plans() {
   const [isAnnual, setIsAnnual] = useState(false);
-  const [plans, setPlans] = useState<Plan[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: rawPlans = [], isFetching: plansLoading } = useQueryPlans();
 
-  useEffect(() => {
-    async function loadPlans() {
-      try {
-        const res = await fetch("/api/plans");
-        const json = await res.json();
-        if (json.success && Array.isArray(json.data) && json.data?.length > 0) {
-          setPlans(json.data);
-        } else {
-          setPlans(DEFAULT_PLANS);
-        }
-      } catch {
-        setPlans(DEFAULT_PLANS);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadPlans();
-  }, []);
+  const plans = useMemo(() => {
+    if (rawPlans?.length > 0) return rawPlans;
+    return DEFAULT_PLANS;
+  }, [rawPlans]);
 
   return (
     <section className="bg-[#FAFBFD] py-16 px-4 sm:px-6 lg:py-24 lg:px-8 font-sans">
@@ -118,7 +104,7 @@ export default function Plans() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pt-6 text-left">
-          {loading
+          {plansLoading
             ? Array.from({ length: 3 })?.map((_, i) => (
                 <div
                   key={i}

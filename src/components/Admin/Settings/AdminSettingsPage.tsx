@@ -21,6 +21,8 @@ import {
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { useQuerySettings, queryKeys } from "@/lib/queries";
+import { useQueryClient } from "@tanstack/react-query";
 
 const ICON_MAP: Record<string, React.ComponentType<{ size?: number }>> = {
   Sliders,
@@ -77,31 +79,20 @@ function createEmptySections(): Section[] {
 }
 
 export default function AdminSettingsPage() {
+  const { data: ctxSettings, isLoading: loading } = useQuerySettings();
+  const queryClient = useQueryClient();
   const [sections, setSections] = useState<Section[]>(createEmptySections);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function loadSettings() {
-      try {
-        const res = await apiClient("/api/settings");
-        const json = await res.json();
-        if (json.success && Array.isArray(json.data) && json.data?.length > 0) {
-          setSections(mergeSectionsWithDefaults(json.data, DEFAULT_SECTIONS));
-        } else if (json.success) {
-          setSections(createEmptySections());
-        } else {
-          toast.error("Failed to load settings: " + json.error);
-        }
-      } catch (err) {
-        console.error("Failed to load settings", err);
-        toast.error("Failed to load settings.");
+    if (!loading && ctxSettings) {
+      if (ctxSettings.length > 0) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setSections(mergeSectionsWithDefaults(ctxSettings, DEFAULT_SECTIONS));
+      } else {
         setSections(createEmptySections());
-      } finally {
-        setLoading(false);
       }
     }
-    loadSettings();
-  }, []);
+  }, [ctxSettings, loading]);
 
   const handleFieldChange = (
     sectionId: string,
@@ -148,6 +139,7 @@ export default function AdminSettingsPage() {
       });
       const json = await res.json();
       if (json.success) {
+        queryClient.invalidateQueries({ queryKey: queryKeys.settings });
         toast.success("Website settings saved successfully!");
       } else {
         toast.error("Failed to save settings: " + json.error);

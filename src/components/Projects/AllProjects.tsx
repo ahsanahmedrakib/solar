@@ -1,44 +1,24 @@
 "use client";
 
-import { DEFAULT_PROJECTS, type Project } from "@/data/projects";
+import { DEFAULT_PROJECTS } from "@/data/projects";
+import { useQueryProjects } from "@/lib/queries";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 
 export default function AllProjects() {
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function loadProjects() {
-      try {
-        const res = await fetch("/api/projects");
-        const json = await res.json();
-        if (json.success && Array.isArray(json.data) && json.data?.length > 0) {
-          setProjects(json.data);
-        } else {
-          setProjects(DEFAULT_PROJECTS);
-        }
-      } catch (error) {
-        console.error("Failed to load projects", error);
-        setProjects(DEFAULT_PROJECTS);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadProjects();
-  }, []);
+  const { data: projects, isLoading } = useQueryProjects();
+  const displayProjects = projects && projects.length > 0 ? projects : DEFAULT_PROJECTS;
 
   return (
     <div className="mx-auto px-4 md:px-8 lg:px-20 py-20 bg-gray-50 select-none">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
-        {loading
+        {isLoading
           ? Array.from({ length: 6 })?.map((_, i) => (
               <div
                 key={i}
                 className="h-115 rounded-2xl overflow-hidden bg-gray-200 animate-pulse"
               />
             ))
-          : projects?.map((project, index) => (
+          : displayProjects?.map((project, index) => (
               <div
                 key={project.id || index}
                 className="relative h-115 rounded-2xl overflow-hidden shadow-sm group flex flex-col justify-end p-4 transition-transform duration-300 hover:-translate-y-1"

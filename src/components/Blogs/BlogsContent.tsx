@@ -1,32 +1,17 @@
 "use client";
 
-import { DEFAULT_BLOGS, type Blog } from "@/data/blogs";
+import { DEFAULT_BLOGS } from "@/data/blogs";
+import { useQueryBlogs } from "@/lib/queries";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 
 export default function BlogsContents() {
-  const [blogs, setBlogs] = useState<Blog[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: rawBlogs = [], isFetching: loading } = useQueryBlogs();
 
-  useEffect(() => {
-    async function loadBlogs() {
-      try {
-        const res = await fetch("/api/blogs");
-        const json = await res.json();
-        if (json.success && Array.isArray(json.data) && json.data?.length > 0) {
-          setBlogs(json.data);
-        } else {
-          setBlogs(DEFAULT_BLOGS);
-        }
-      } catch (error) {
-        console.error("Failed to load blogs", error);
-        setBlogs(DEFAULT_BLOGS);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadBlogs();
-  }, []);
+  const blogs = useMemo(() => {
+    if (rawBlogs?.length > 0) return rawBlogs;
+    return DEFAULT_BLOGS;
+  }, [rawBlogs]);
 
   return (
     <div className="mx-auto px-4 md:px-8 lg:px-20 py-20 bg-gray-50">

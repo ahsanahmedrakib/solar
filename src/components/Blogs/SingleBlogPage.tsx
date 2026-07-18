@@ -1,8 +1,10 @@
 "use client";
 
 import { DEFAULT_BLOGS, type Blog, type Comment } from "@/data/blogs";
+import { apiClient } from "@/lib/apiClient";
+import { useQueryBlogs } from "@/lib/queries";
 import Link from "next/link";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import * as yup from "yup";
 
 const commentSchema = yup.object().shape({
@@ -38,8 +40,10 @@ const replySchema = yup.object().shape({
 });
 
 function SingleBlogPageInner({ slug }: { slug: string }) {
-  const [blog, setBlog] = useState<Blog | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { data: rawBlogs = [], isFetching: blogsLoading } = useQueryBlogs();
+  const allBlogs = rawBlogs?.length > 0 ? rawBlogs : DEFAULT_BLOGS;
+  const blog = allBlogs.find((b: Blog) => b.slug === slug) ?? null;
+  const loading = blogsLoading;
   const [replyingTo, setReplyingTo] = useState<number | null>(null);
   const optimisticIdRef = useRef(0);
 
@@ -62,37 +66,16 @@ function SingleBlogPageInner({ slug }: { slug: string }) {
   });
   const [replyErrors, setReplyErrors] = useState<Record<string, string>>({});
 
-  useEffect(() => {
-    async function loadBlog() {
-      try {
-        const res = await fetch("/api/blogs");
-        const json = await res.json();
-        if (json.success && Array.isArray(json.data) && json.data?.length > 0) {
-          const found = json.data.find((b: Blog) => b.slug === slug);
-          if (found) setBlog(found);
-          else {
-            const fallback = DEFAULT_BLOGS.find((b) => b.slug === slug);
-            if (fallback) setBlog(fallback);
-          }
-        } else {
-          const fallback = DEFAULT_BLOGS.find((b) => b.slug === slug);
-          if (fallback) setBlog(fallback);
-        }
-      } catch {
-        const fallback = DEFAULT_BLOGS.find((b) => b.slug === slug);
-        if (fallback) setBlog(fallback);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadBlog();
-  }, [slug]);
+  const [localComments, setLocalComments] = useState<Comment[]>([]);
+
+  const blogWithComments = useMemo(() => {
+    if (!blog) return null;
+    if (localComments.length === 0) return blog;
+    return { ...blog, comments: [...localComments, ...(blog.comments || [])] };
+  }, [blog, localComments]);
 
   const addCommentLocally = (newComment: Comment) => {
-    setBlog((prev) => {
-      if (!prev) return prev;
-      return { ...prev, comments: [newComment, ...(prev.comments || [])] };
-    });
+    setLocalComments((prev) => [newComment, ...prev]);
   };
 
   const handleCommentSubmit = async (e: React.FormEvent) => {
@@ -122,7 +105,7 @@ function SingleBlogPageInner({ slug }: { slug: string }) {
     };
 
     try {
-      const res = await fetch("/api/comments", {
+      const res = await apiClient("/api/comments", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -188,7 +171,7 @@ function SingleBlogPageInner({ slug }: { slug: string }) {
     };
 
     try {
-      const res = await fetch("/api/comments", {
+      const res = await apiClient("/api/comments", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -219,7 +202,7 @@ function SingleBlogPageInner({ slug }: { slug: string }) {
     setReplyingTo(null);
   };
 
-  const comments = blog?.comments || [];
+  const comments = blogWithComments?.comments || [];
   const topLevelComments = comments.filter((c) => c.parentId === null);
   const getReplies = (parentId: number) =>
     comments.filter((c) => c.parentId === parentId);

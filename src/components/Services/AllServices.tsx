@@ -1,9 +1,10 @@
 "use client";
 
 import { DEFAULT_SERVICES, type Service } from "@/data/services";
+import { useQueryServices } from "@/lib/queries";
 import { iconRenderer } from "@/lib/iconRenderer";
 import type { ServiceCard } from "@/types/services";
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import ServicesCard from "../Home/ServicesCard";
 
 function toServiceCard(service: Service): ServiceCard {
@@ -19,28 +20,12 @@ function toServiceCard(service: Service): ServiceCard {
 }
 
 const AllServices = () => {
-  const [services, setServices] = useState<ServiceCard[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: rawServices = [], isFetching: loading } = useQueryServices();
 
-  useEffect(() => {
-    async function loadServices() {
-      try {
-        const res = await fetch("/api/services");
-        const json = await res.json();
-        if (json.success && Array.isArray(json.data) && json.data?.length > 0) {
-          setServices(json.data?.map(toServiceCard));
-        } else {
-          setServices(DEFAULT_SERVICES?.map(toServiceCard));
-        }
-      } catch (error) {
-        console.error("Failed to load services", error);
-        setServices(DEFAULT_SERVICES?.map(toServiceCard));
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadServices();
-  }, []);
+  const services = useMemo(() => {
+    if (rawServices?.length > 0) return rawServices.map(toServiceCard);
+    return DEFAULT_SERVICES.map(toServiceCard);
+  }, [rawServices]);
 
   return (
     <div>

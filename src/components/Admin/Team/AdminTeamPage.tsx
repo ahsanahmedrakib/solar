@@ -16,10 +16,12 @@ import {
   X,
 } from "lucide-react";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import * as yup from "yup";
+import { useQueryTeam, queryKeys } from "@/lib/queries";
+import { useQueryClient } from "@tanstack/react-query";
 
 const teamSchema = yup.object({
   name: yup
@@ -50,30 +52,12 @@ interface TeamFormData {
 }
 
 export default function AdminTeamPage() {
-  const [team, setTeam] = useState<TeamMember[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: team = [], isLoading: loading } = useQueryTeam();
+  const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
 
   const [isOpen, setIsOpen] = useState(false);
   const [editingMember, setEditingMember] = useState<TeamMember | null>(null);
-
-  useEffect(() => {
-    async function loadTeam() {
-      try {
-        const res = await apiClient("/api/team");
-        const json = await res.json();
-        if (json.success) {
-          setTeam(json.data);
-        }
-      } catch (error) {
-        console.error("Failed to load team members", error);
-        toast.error("Failed to load team members.");
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadTeam();
-  }, []);
 
   const {
     register,
@@ -133,7 +117,7 @@ export default function AdminTeamPage() {
         });
         const json = await res.json();
         if (json.success) {
-          setTeam((prev) => prev.filter((m) => m.id !== id));
+          queryClient.invalidateQueries({ queryKey: queryKeys.team });
           toast.success("Team member removed successfully!");
         } else {
           toast.error("Failed to remove team member: " + json.error);
@@ -162,11 +146,7 @@ export default function AdminTeamPage() {
         });
         const json = await res.json();
         if (json.success) {
-          setTeam((prev) =>
-            prev?.map((m) =>
-              m.id === editingMember.id ? { ...m, ...payload } : m,
-            ),
-          );
+          queryClient.invalidateQueries({ queryKey: queryKeys.team });
           toast.success("Team member updated successfully!");
           setIsOpen(false);
         } else {
@@ -180,7 +160,7 @@ export default function AdminTeamPage() {
         });
         const json = await res.json();
         if (json.success) {
-          setTeam((prev) => [...prev, json.data]);
+          queryClient.invalidateQueries({ queryKey: queryKeys.team });
           toast.success("Team member added successfully!");
           setIsOpen(false);
         } else {

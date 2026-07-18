@@ -1,9 +1,9 @@
 import { db } from "@/lib/db";
 import { isTableNotExistsError } from "@/lib/db-helpers";
-import { heroSlides } from "@/lib/schema";
 import { deleteImage, saveImage } from "@/lib/imageHelper";
+import { heroSlides } from "@/lib/schema";
+import { asc, eq, sql } from "drizzle-orm";
 import { NextResponse } from "next/server";
-import { eq, asc, sql } from "drizzle-orm";
 
 export async function GET() {
   try {
@@ -27,7 +27,17 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { tagline, title, titleAccent, description, image, videoUrl, showVideoButton, isActive, order } = body;
+    const {
+      tagline,
+      title,
+      titleAccent,
+      description,
+      image,
+      videoUrl,
+      showVideoButton,
+      isActive,
+      order,
+    } = body;
 
     if (!title) {
       return NextResponse.json(
@@ -38,15 +48,17 @@ export async function POST(request: Request) {
 
     const savedImagePath = image ? await saveImage(image, "hero", 0) : "";
 
-    const nextOrder = order ?? (() => {
-      // This will be resolved below
-      return 0;
-    })();
+    // const nextOrder = order ?? (() => {
+    //   // This will be resolved below
+    //   return 0;
+    // })();
 
     let finalOrder = order;
     if (finalOrder === undefined) {
       const [result] = await db
-        .select({ maxOrder: sql<number>`coalesce(max(${heroSlides.order}), 0)` })
+        .select({
+          maxOrder: sql<number>`coalesce(max(${heroSlides.order}), 0)`,
+        })
         .from(heroSlides);
       finalOrder = (result?.maxOrder ?? 0) + 1;
     }
@@ -79,7 +91,18 @@ export async function POST(request: Request) {
 export async function PUT(request: Request) {
   try {
     const body = await request.json();
-    const { id, tagline, title, titleAccent, description, image, videoUrl, showVideoButton, isActive, order } = body;
+    const {
+      id,
+      tagline,
+      title,
+      titleAccent,
+      description,
+      image,
+      videoUrl,
+      showVideoButton,
+      isActive,
+      order,
+    } = body;
 
     if (!id) {
       return NextResponse.json(
@@ -107,7 +130,8 @@ export async function PUT(request: Request) {
     if (titleAccent !== undefined) updateData.titleAccent = titleAccent;
     if (description !== undefined) updateData.description = description;
     if (videoUrl !== undefined) updateData.videoUrl = videoUrl;
-    if (showVideoButton !== undefined) updateData.showVideoButton = showVideoButton;
+    if (showVideoButton !== undefined)
+      updateData.showVideoButton = showVideoButton;
     if (isActive !== undefined) updateData.isActive = isActive;
     if (order !== undefined) updateData.order = order;
 
@@ -166,3 +190,4 @@ export async function DELETE(request: Request) {
     );
   }
 }
+

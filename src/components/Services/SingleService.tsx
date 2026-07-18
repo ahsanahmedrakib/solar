@@ -1,39 +1,22 @@
 "use client";
 
 import { DEFAULT_SERVICES, type Service } from "@/data/services";
+import { useQueryServices } from "@/lib/queries";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 
 export default function SingleService({ slug }: { slug: string }) {
-  const [service, setService] = useState<Service | null>(null);
-  const [allServices, setAllServices] = useState<Service[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: rawServices = [], isFetching: loading } = useQueryServices();
 
-  useEffect(() => {
-    async function loadData() {
-      try {
-        const res = await fetch("/api/services");
-        const json = await res.json();
-        if (json.success && Array.isArray(json.data) && json.data?.length > 0) {
-          setAllServices(json.data);
-          const found = json.data.find((s: Service) => s.slug === slug);
-          if (found) setService(found);
-        } else {
-          setAllServices(DEFAULT_SERVICES);
-          const fallback = DEFAULT_SERVICES.find((s) => s.slug === slug);
-          if (fallback) setService(fallback);
-        }
-      } catch (error) {
-        console.error("Failed to load service", error);
-        setAllServices(DEFAULT_SERVICES);
-        const fallback = DEFAULT_SERVICES.find((s) => s.slug === slug);
-        if (fallback) setService(fallback);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadData();
-  }, [slug]);
+  const allServices = useMemo(() => {
+    if (rawServices?.length > 0) return rawServices;
+    return DEFAULT_SERVICES;
+  }, [rawServices]);
+
+  const service = useMemo(
+    () => allServices.find((s: Service) => s.slug === slug) ?? null,
+    [allServices, slug],
+  );
 
   return (
     <div className="bg-white min-h-screen text-[#011c2b] font-sans antialiased selection:bg-green-100">

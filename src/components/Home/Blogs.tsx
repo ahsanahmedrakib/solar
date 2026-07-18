@@ -1,34 +1,24 @@
 "use client";
 
 import type { Blog } from "@/data/blogs";
+import { useQueryBlogs } from "@/lib/queries";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 
 export default function Blogs() {
-  const [blogs, setBlogs] = useState<Blog[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: rawBlogs = [], isFetching: loading } = useQueryBlogs();
 
-  useEffect(() => {
-    async function loadBlogs() {
-      try {
-        const res = await fetch("/api/blogs");
-        const json = await res.json();
-        if (json.success && Array.isArray(json.data) && json.data?.length > 0) {
-          const sorted = json.data.sort(
-            (a: Blog, b: Blog) =>
-              new Date(b.date).getTime() - new Date(a.date).getTime(),
-          );
-          setBlogs(sorted?.slice(0, 3));
-        }
-      } catch (error) {
-        console.error("Failed to load blogs", error);
-      } finally {
-        setLoading(false);
-      }
+  const blogs = useMemo(() => {
+    if (rawBlogs?.length > 0) {
+      const sorted = [...rawBlogs].sort(
+        (a: Blog, b: Blog) =>
+          new Date(b.date).getTime() - new Date(a.date).getTime(),
+      );
+      return sorted.slice(0, 3);
     }
-    loadBlogs();
-  }, []);
+    return [];
+  }, [rawBlogs]);
 
   if (loading) {
     return (
