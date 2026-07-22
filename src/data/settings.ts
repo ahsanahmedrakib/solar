@@ -66,7 +66,7 @@ export const DEFAULT_SECTIONS: Section[] = [
       {
         label: "Primary Phone Number",
         type: "tel",
-        value: "+8801712947551",
+        value: "+88 01712 947 551",
         id: "phone-number",
       },
       {
@@ -159,19 +159,19 @@ export const DEFAULT_SECTIONS: Section[] = [
       {
         label: "Twitter / X Profile URL",
         type: "url",
-        value: "https://x.com/sunexsolar",
+        value: "",
         id: "social-x",
       },
       {
         label: "LinkedIn Company URL",
         type: "url",
-        value: "https://linkedin.com/company/sunexsolar",
+        value: "https://www.linkedin.com/company/ahead-solar-ltd/",
         id: "social-li",
       },
       {
         label: "Instagram Profile URL",
         type: "url",
-        value: "https://instagram.com/sunexsolar",
+        value: "",
         id: "social-ig",
       },
       {

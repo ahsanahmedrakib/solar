@@ -4,7 +4,7 @@ import type { Section } from "@/data/settings";
 import { DEFAULT_SECTIONS } from "@/data/settings";
 import { useQuerySettings } from "@/lib/queries";
 import { usePathname } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 
 interface ChatSettings {
   showWhatsapp: boolean;
@@ -66,8 +66,6 @@ const MessengerIcon = () => (
 export default function FloatingChatWidget() {
   const pathname = usePathname();
   const { data, isFetching: settingsLoading } = useQuerySettings();
-  const [isOpen, setIsOpen] = useState(false);
-
   const settings = useMemo(
     () => (data ? buildSettings(data) : DEFAULTS),
     [data],
@@ -84,16 +82,48 @@ export default function FloatingChatWidget() {
 
   return (
     <>
-      {isOpen && (
-        <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
-      )}
-
       <div
         style={{ position: "fixed", bottom: "24px", right: "24px", zIndex: 50 }}
         className="flex flex-col items-end gap-3"
       >
         <div className="flex flex-col gap-2">
-          {!isOpen && settings.showWhatsapp && (
+          <button
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            style={{
+              width: "30px",
+              height: "30px",
+              borderRadius: "50%",
+              background: "#1e293b",
+              color: "#fff",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              boxShadow: "0 4px 16px rgba(0,0,0,0.25)",
+              border: "none",
+              cursor: "pointer",
+              transition: "transform 0.2s",
+              marginLeft: "8.5px",
+            }}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.transform = "scale(1.12)")
+            }
+            onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            title="Back to top"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2.5}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="w-5 h-5"
+            >
+              <path d="M18 15l-6-6-6 6" />
+            </svg>
+          </button>
+
+          {settings.showWhatsapp && (
             <div style={{ position: "relative" }} className="group">
               <a
                 href={waUrl}
@@ -147,7 +177,7 @@ export default function FloatingChatWidget() {
             </div>
           )}
 
-          {!isOpen && settings.showMessenger && (
+          {settings.showMessenger && (
             <div style={{ position: "relative" }} className="group">
               <a
                 href={meUrl}

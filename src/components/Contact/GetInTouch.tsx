@@ -1,6 +1,6 @@
 "use client";
 
-import type { Section } from "@/data/settings";
+import { DEFAULT_SECTIONS, type Section } from "@/data/settings";
 import { apiClient } from "@/lib/apiClient";
 import { useQuerySettings } from "@/lib/queries";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -17,15 +17,6 @@ interface ContactInfo {
   imageUrl: string;
 }
 
-const DEFAULT_CONTACT_INFO: ContactInfo = {
-  phone: "+1 (800) 555-SOLAR",
-  email: "support@sunexsolar.com",
-  address: "100 Renewable Way, Austin, TX 78701",
-  mapUrl:
-    "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d193595.25280821213!2d-74.11976373059876!3d40.69767006346294!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2sNew%20York%2C%20NY!5e0!3m2!1sen!2sus!4v1710000000000!5m2!1sen!2sus",
-  imageUrl: "/images/contact/contact-us-img.jpg",
-};
-
 function extractContactInfo(sections: Section[]): ContactInfo {
   const general = sections.find((s) => s.id === "general");
   const social = sections.find((s) => s.id === "social");
@@ -36,11 +27,11 @@ function extractContactInfo(sections: Section[]): ContactInfo {
     social?.fields?.find((f) => f.id === id)?.value ?? "";
 
   return {
-    phone: getValue("phone-number") || DEFAULT_CONTACT_INFO.phone,
-    email: getValue("contact-email") || DEFAULT_CONTACT_INFO.email,
-    address: getValue("hq-address") || DEFAULT_CONTACT_INFO.address,
-    mapUrl: getSocialValue("google-map") || DEFAULT_CONTACT_INFO.mapUrl,
-    imageUrl: getValue("site-logo") || DEFAULT_CONTACT_INFO.imageUrl,
+    phone: getValue("phone-number"),
+    email: getValue("contact-email"),
+    address: getValue("hq-address"),
+    mapUrl: getSocialValue("google-map"),
+    imageUrl: "/images/contact/contact-us-img.jpg",
   };
 }
 
@@ -74,10 +65,9 @@ export default function GetInTouch() {
   const { data, isFetching: loading } = useQuerySettings();
 
   const contactInfo = useMemo(() => {
-    if (data && Array.isArray(data) && data?.length > 0) {
-      return extractContactInfo(data);
-    }
-    return DEFAULT_CONTACT_INFO;
+    const sections =
+      data && Array.isArray(data) && data.length > 0 ? data : DEFAULT_SECTIONS;
+    return extractContactInfo(sections);
   }, [data]);
 
   const {

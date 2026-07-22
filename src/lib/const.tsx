@@ -2,8 +2,8 @@ export const SOCIAL_ICONS = {
   facebook: (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="200"
-      height="200"
+      width="20"
+      height="20"
       viewBox="0 0 24 24"
       fill="#1877F2"
     >
@@ -13,8 +13,8 @@ export const SOCIAL_ICONS = {
   instagram: (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="200"
-      height="200"
+      width="20"
+      height="20"
       viewBox="0 0 24 24"
       fill="none"
       stroke="#E4405F"
@@ -30,8 +30,8 @@ export const SOCIAL_ICONS = {
   x: (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="200"
-      height="200"
+      width="20"
+      height="20"
       viewBox="0 0 24 24"
       fill="#000000"
     >
@@ -41,12 +41,12 @@ export const SOCIAL_ICONS = {
   linkedin: (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      width="200"
-      height="200"
+      width="20"
+      height="20"
       viewBox="0 0 24 24"
       fill="#0A66C2"
     >
       <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.854 0-2.137 1.446-2.137 2.94v5.666H9.351V9.358h3.414v1.513h.048c.475-.9 1.633-1.85 3.36-1.85 3.593 0 4.256 2.363 4.256 5.437v5.994zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9.358h3.564v11.094zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.225 0z" />
     </svg>
   ),
-} 
+};
