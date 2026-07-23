@@ -21,40 +21,40 @@ export default function FAQAndStats() {
   const faqs: FAQItem[] = [
     {
       id: 1,
-      question: "1. Is solar energy suitable for my home or business?",
+      question: "1. Is rooftop solar suitable for my factory or commercial building?",
       answer:
-        "Yes, solar energy is suitable for most homes and businesses. Factors such as available roof space, sunlight exposure, and your energy consumption are evaluated to design a system that delivers maximum efficiency, cost savings, and long-term reliability.",
+        "Yes, rooftop solar is ideal for most industrial and commercial buildings with adequate roof space. We assess roof structure, sunlight exposure, and your energy consumption to design a system that maximizes savings and performance.",
     },
     {
       id: 2,
-      question: "2. What happens if I generate more power than I use?",
+      question: "2. What is the difference between CapEx and OpEx solar models?",
       answer:
-        "Excess energy can typically be sent back to the grid through net metering options or stored directly in a dedicated hybrid home battery backup system for overnight usage.",
+        "With the CapEx model, you own the solar system outright and enjoy full savings from day one. With the OpEx model, we install and maintain the system at our cost — you simply pay for the electricity generated at a lower rate than the grid.",
     },
     {
       id: 3,
-      question: "3. Are there government subsidies or incentives available?",
+      question: "3. How much can I save with a rooftop solar system?",
       answer:
-        "Depending on your local region, many municipal and federal programs offer investment tax credits, solar rebates, and clean energy incentives that lower total upfront installation overhead.",
+        "Savings depend on your current electricity consumption, roof size, and system design. Most industrial clients see 30-50% reduction in their electricity costs within the first year of installation.",
     },
     {
       id: 4,
-      question: "4. What maintenance does a solar system require?",
+      question: "4. What maintenance does a rooftop solar system require?",
       answer:
-        "Solar panel setups require very minimal upkeep. Routine washing to clean off dirt, leaves, or bird droppings combined with annual professional structural reviews is usually all that is needed.",
+        "Rooftop solar systems require minimal maintenance. Regular cleaning to remove dust and debris, combined with annual performance inspections, is usually sufficient. We also provide 24/7 remote monitoring to detect issues early.",
     },
     {
       id: 5,
-      question: "5. Does solar work during cloudy days or at night?",
+      question: "5. Can excess energy be sent back to the grid?",
       answer:
-        "Solar arrays still capture daylight power during hazy or overcast conditions, but they do not produce energy at night. Battery cells can pull backup storage power to maintain connectivity.",
+        "Yes, depending on your local regulations, excess energy can be exported to the grid through net metering arrangements. This further reduces your electricity costs and can generate additional revenue.",
     },
   ];
 
   const stats: StatItem[] = [
     {
-      metric: "25MW+",
-      label: "Installed Capacity",
+      metric: "52MWp",
+      label: "Largest Rooftop Solar Project",
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -67,14 +67,14 @@ export default function FAQAndStats() {
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
-            d="M11.48 3.499c.151-.312.56-.312.712 0l2.164 4.494 4.887.69c.346.049.484.484.223.73l-3.57 3.424.871 4.908c.06.342-.294.614-.593.444L12 15.918l-4.194 2.247a.75.75 0 01-1.096-.813l.872-4.908-3.57-3.424a.75.75 0 01.222-.73l4.888-.69 2.163-4.494z"
+            d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"
           />
         </svg>
       ),
     },
     {
-      metric: "15000+",
-      label: "Solar Panels Deployed",
+      metric: "30GWh",
+      label: "Green Energy Per Year",
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -87,14 +87,14 @@ export default function FAQAndStats() {
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
-            d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5A3.375 3.375 0 0 0 10.125 2.25H4.375A1.875 1.875 0 0 0 2.5 4.125v15.75c0 1.035.84 1.875 1.875 1.875h15.25a1.875 1.875 0 0 0 1.875-1.875V14.25Z"
+            d="M12 3v18M6.343 18.364l11.314-11.314M18.364 18.364L6.343 7.029"
           />
         </svg>
       ),
     },
     {
-      metric: "7500+",
-      label: "Happy Satisfied Customers",
+      metric: "100MWp",
+      label: "Pipeline Capacity",
       icon: (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -107,7 +107,7 @@ export default function FAQAndStats() {
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
-            d="M9 17.25v1.007a3 3 0 0 1-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0 1 15 18.257V17.25m6-12V15a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 15V5.25m18 0A2.25 2.25 0 0 0 18.75 3H5.25A2.25 2.25 0 0 0 3 5.25m18 0V12a2.25 2.25 0 0 1-2.25 2.25H5.25A2.25 2.25 0 0 1 3 12V5.25"
+            d="M2.25 18 9 11.25l4.306 4.306a11.95 11.95 0 0 1 5.814-5.518l2.74-1.22m0 0-5.94-2.281m5.94 2.28-2.28 5.941"
           />
         </svg>
       ),
@@ -137,9 +137,9 @@ export default function FAQAndStats() {
 
           {/* Context Explainer Paragraph */}
           <p className="text-gray-500 text-sm sm:text-base font-normal leading-relaxed max-w-md">
-            {
-              " We've answered the most common questions to help you understand solar energy, installation, costs, and maintenance."
-            }
+            We&apos;ve answered the most common questions to help you understand
+            rooftop solar for industrial and commercial facilities, installation
+            process, costs, and ongoing support.
           </p>
         </div>
 

@@ -115,16 +115,16 @@ export default function CoreFeatures() {
             </div>
             {/* Main Title Header */}
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#051720] tracking-tight leading-[1.15]">
-              Innovative solar feature with real environmental impact
+              Engineered for industrial-scale performance
             </h2>
           </div>
 
           {/* Top Description & Action Link */}
           <div className="flex flex-col sm:flex-row items-start lg:items-end gap-5 lg:max-w-md">
             <p className="text-gray-500 text-sm sm:text-base leading-relaxed text-justify">
-              Our core features are designed to maximize renewable energy
-              production while reducing environmental impact and supporting a
-              cleaner future.
+              Our core features are designed to maximize energy production for
+              industrial and commercial facilities while ensuring system
+              reliability, safety, and long-term ROI.
             </p>
           </div>
         </div>
@@ -149,7 +149,7 @@ export default function CoreFeatures() {
             {features?.map((feature) => (
               <div
                 key={feature.id}
-                className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-gray-100/40 hover:shadow-md transition-shadow duration-300 flex flex-col justify-between relative overflow-hidden min-h-55"
+                className="bg-white rounded-xl p-6 sm:p-8 shadow-sm border border-gray-100/40 hover:shadow-md transition-shadow duration-300 flex flex-col justify-between relative overflow-hidden min-h-55"
               >
                 {/* Upper row: Icon Badge & Custom Text Number */}
                 <div className="flex items-center justify-between">

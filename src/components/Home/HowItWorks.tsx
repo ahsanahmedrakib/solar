@@ -15,10 +15,10 @@ export default function HowItWorks() {
   const steps: StepItem[] = [
     {
       numberPosition: "left",
-      title: "Free Consultation & Assessment",
+      title: "Site Assessment & Financial Modeling",
       description:
-        "We begin with a detailed consultation to understand your energy needs.",
-      bulletPoint: "Our experts assess your roof space",
+        "We evaluate your roof structure, energy consumption patterns, and design a system optimized for maximum savings.",
+      bulletPoint: "Free technical and financial assessment",
       imageSrc: "/images/home/how-it-work-image-1.jpg",
       imageAlt: "Solar engineers assessing a site installation",
       icon: (
@@ -40,10 +40,10 @@ export default function HowItWorks() {
     },
     {
       numberPosition: "center",
-      title: "Custom System Design & Installation",
+      title: "Engineering & Installation",
       description:
-        "Based on the assessment, we create a customized solar systems.",
-      bulletPoint: "Certified technicians handle the installation",
+        "Our certified team handles system design, permitting, and professional installation with minimal disruption to your operations.",
+      bulletPoint: "Certified engineers and technicians",
       imageSrc: "/images/home/how-it-work-image-2.jpg",
       imageAlt: "Engineers holding a clipboard near solar arrays",
       icon: (
@@ -65,10 +65,10 @@ export default function HowItWorks() {
     },
     {
       numberPosition: "right",
-      title: "Power Generation & Savings",
+      title: "Commissioning & 24/7 Monitoring",
       description:
-        "Once installed, your system starts generating clean energy immediately.",
-      bulletPoint: "Monitor your performance & electricity",
+        "Once operational, your system starts generating clean energy immediately with real-time performance monitoring.",
+      bulletPoint: "24/7 remote plant monitoring",
       imageSrc: "/images/home/how-it-work-image-3.jpg",
       imageAlt: "Technicians analyzing performance data metrics on a tablet",
       icon: (
@@ -116,16 +116,16 @@ export default function HowItWorks() {
             </div>
             {/* Header Main Text */}
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-[1.15] text-white">
-              Turning sunlight into savings in simple steps
+              From assessment to energy savings in three steps
             </h2>
           </div>
 
           {/* Header Right Paragraph and CTA Button */}
           <div className="lg:col-span-5 space-y-5 lg:pl-4">
             <p className="text-gray-400 text-sm sm:text-base leading-relaxed">
-              From initial consultation and system design to professional
-              installation & ongoing support, our simple step by step process
-              helps you start generating energy.
+              From initial site assessment and system design to professional
+              installation and ongoing monitoring — our streamlined process
+              ensures your rooftop solar project delivers maximum returns.
             </p>
           </div>
         </div>

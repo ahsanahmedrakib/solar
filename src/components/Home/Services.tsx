@@ -44,14 +44,16 @@ export default function Services() {
                 Our Services
               </div>
               <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#051720] tracking-tight leading-[1.15]">
-                Smart solar service designed for homes & businesses
+                Comprehensive solar solutions for every business need
               </h2>
             </div>
 
             <div>
               <p className="text-gray-500 text-sm sm:text-base leading-relaxed">
                 From system design and professional installation to energy
-                storage, our smart solar solutions deliver reliable performance.
+                storage and ongoing maintenance — our integrated solutions
+                deliver reliable performance for industrial and commercial
+                facilities.
               </p>
               <Link href="/services">
                 <button className="mt-4 cursor-pointer inline-flex items-center gap-2 bg-accent-600 hover:bg-[#399d3e] transition-colors text-white font-semibold text-sm px-5 py-3 rounded-lg shadow-sm whitespace-nowrap">
@@ -67,7 +69,7 @@ export default function Services() {
               {Array.from({ length: SKELETON_COUNT })?.map((_, i) => (
                 <div
                   key={i}
-                  className="bg-white rounded-4xl p-6 shadow-sm border border-gray-100/60 animate-pulse"
+                  className="bg-white rounded-xl p-6 shadow-sm border border-gray-100/60 animate-pulse"
                 >
                   <div className="w-full aspect-1.5/1 rounded-2xl bg-gray-200" />
                   <div className="mt-5 space-y-3">

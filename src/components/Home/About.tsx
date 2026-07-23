@@ -58,12 +58,12 @@ export default function About() {
           {/* Aligned natively underneath the left edge of the top image */}
           <div className="absolute bottom-0 left-0 w-[42%] aspect-[1/.85] flex flex-col justify-center items-center bg-[#03141F] text-white p-4 rounded-xl shadow-md text-center z-20">
             <h3 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-1 text-white">
-              25+
+              16+
             </h3>
             <p className="text-xs sm:text-sm text-gray-300 font-semibold leading-snug">
-              Years Of
+              Years In
               <br />
-              Experience
+              Solar Business
             </p>
           </div>
 
@@ -90,13 +90,16 @@ export default function About() {
 
           {/* Main Title Heading */}
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#051720] tracking-tight leading-[1.15]">
-            Building a green tomorrow through clean energy
+            Pioneering large-scale rooftop solar solutions
           </h2>
 
           {/* Paragraph Text */}
           <p className="text-gray-500 text-sm sm:text-base font-normal leading-relaxed max-w-xl">
-            We are committed to delivering reliable, efficient, and sustainable
-            solar solutions that help homes and businesses reduce energy costs.
+            We are a vertically integrated solar energy company specializing in
+            industrial and commercial rooftop projects. Our team combines
+            world-class engineering with deep local expertise to deliver
+            reliable, high-performance solar systems — from design through
+            long-term operation.
           </p>
 
           <hr className="border-gray-100 my-6" />
@@ -108,7 +111,6 @@ export default function About() {
               {/* Feature Item 1 */}
               <div className="flex gap-4 items-start">
                 <div className="shrink-0 w-11 h-11 rounded-full bg-[#31A24C] text-white flex items-center justify-center shadow-sm">
-                  {/* Target Crosshair Icon style matching mockup */}
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -120,17 +122,18 @@ export default function About() {
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      d="M12 3v3m0 12v3M3 12h3m12 0h3m-9-6a6 6 0 110 12 6 6 0 010-12z"
+                      d="M9.75 3.104v5.714a2.25 2.25 0 0 1-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 0 1 4.5 0m0 0v5.714c0 .597.237 1.17.659 1.591L19.8 15.3M14.25 3.104c.251.023.501.05.75.082M19.8 15.3l-1.57.393A9.065 9.065 0 0 1 12 15a9.065 9.065 0 0 0-6.23.693L5 14.5m14.8.8 1.402 1.402c1.232 1.232.65 3.318-1.067 3.611A48.309 48.309 0 0 1 12 21c-2.773 0-5.491-.235-8.135-.687-1.718-.293-2.3-2.379-1.067-3.61L5 14.5"
                     />
                   </svg>
                 </div>
                 <div>
                   <h4 className="text-base font-bold text-[#051720] mb-1">
-                    Expertise You Can Trust
+                    R&D Driven Approach
                   </h4>
                   <p className="text-xs sm:text-sm text-gray-500 leading-normal">
-                    Our team consists certified with professionals hands-on
-                    experience.
+                    We are the only solar company focused on research and
+                    development to continuously improve system performance and
+                    adapt to evolving technology.
                   </p>
                 </div>
               </div>
@@ -138,7 +141,6 @@ export default function About() {
               {/* Feature Item 2 */}
               <div className="flex gap-4 items-start">
                 <div className="shrink-0 w-11 h-11 rounded-full bg-[#31A24C] text-white flex items-center justify-center shadow-sm">
-                  {/* Grid/Box Outline Icon style matching mockup */}
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -150,18 +152,18 @@ export default function About() {
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25M19.5 4.5l-15 0"
+                      d="M13.5 21v-7.5a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 .75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349M3.75 21h.75a.75.75 0 0 0 .75-.75V9.375m0 0A2.25 2.25 0 0 1 9.375 7.125h5.25a2.25 2.25 0 0 1 2.25 2.25v6.375m-10.5 0V5.625a2.25 2.25 0 0 1 2.25-2.25h5.25a2.25 2.25 0 0 1 2.25 2.25v13.125"
                     />
                   </svg>
                 </div>
                 <div>
                   <h4 className="text-base font-bold text-[#051720] mb-1">
-                    Customized Solar Solutions
+                    Vertically Integrated Solutions
                   </h4>
                   <p className="text-xs sm:text-sm text-gray-500 leading-normal">
-                    {
-                      "That's why design tailor solar system that maximize efficiency, perform."
-                    }
+                    From supply chain and project scheduling to manufacturing,
+                    installation, and after-sales service — all functions are
+                    integrated for complete project delivery.
                   </p>
                 </div>
               </div>

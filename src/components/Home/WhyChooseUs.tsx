@@ -4,10 +4,10 @@ import React from "react";
 
 const WhyChooseUs: React.FC = () => {
   const services = [
-    "Renewable Energy",
-    "Residential Solar",
-    "Sustainable Energy",
-    "Solar Battery Storage",
+    "Industrial Rooftop Solar",
+    "Commercial Solar Solutions",
+    "CapEx & OpEx Models",
+    "24/7 Plant Monitoring",
   ];
 
   return (
@@ -24,14 +24,15 @@ const WhyChooseUs: React.FC = () => {
 
             {/* Main Heading */}
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#051720] tracking-tight leading-[1.15]">
-              Expert driven solar solutions built for efficiency & trust
+              One-stop rooftop solar solution provider for industries
             </h2>
 
             {/* Subheading Description */}
             <p className="text-gray-500 text-sm sm:text-base font-normal leading-relaxed max-w-xl">
-              We are committed to delivering reliable, high-quality solar
-              solutions you can trust. With expert guidance, advanced
-              technology, and end-to-end support.
+              We deliver complete solar solutions — from system design and
+              engineering to installation and ongoing maintenance — backed by
+              16+ years of experience serving Bangladesh&apos;s top industrial
+              sectors.
             </p>
 
             {/* Highlighted Partner Feature Card */}
@@ -54,11 +55,12 @@ const WhyChooseUs: React.FC = () => {
               </div>
               <div className="space-y-1">
                 <h4 className="text-base sm:text-lg font-bold text-[#051720]">
-                  Trusted Clean Energy Partner
+                  Flexible CapEx & OpEx Models
                 </h4>
                 <p className="text-xs sm:text-sm text-gray-500 leading-relaxed">
-                  We deliver reliable solar solutions through expert planning,
-                  quality installations, and ongoing support.
+                  Choose to own your system with our CapEx model or start saving
+                  from day one with our OpEx model — we provide the right
+                  financial and technical solution for every business.
                 </p>
               </div>
             </div>
@@ -68,26 +70,26 @@ const WhyChooseUs: React.FC = () => {
               <div className="grid grid-cols-3 gap-4 sm:gap-6 text-left">
                 <div>
                   <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#051720] tracking-tight">
-                    1K+
+                    52MWp
                   </h3>
                   <p className="text-[11px] sm:text-xs text-gray-400 font-medium mt-1">
-                    Solar Installations
+                    Largest Rooftop Project
                   </p>
                 </div>
                 <div className="border-l border-gray-200 pl-4 sm:pl-6">
                   <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#051720] tracking-tight">
-                    15MW+
+                    30GWh
                   </h3>
                   <p className="text-[11px] sm:text-xs text-gray-400 font-medium mt-1">
-                    Energy Generated
+                    Green Energy Per Year
                   </p>
                 </div>
                 <div className="border-l border-gray-200 pl-4 sm:pl-6">
                   <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#051720] tracking-tight">
-                    25+
+                    16+
                   </h3>
                   <p className="text-[11px] sm:text-xs text-gray-400 font-medium mt-1">
-                    Solar System Lifespan
+                    Years In Solar Business
                   </p>
                 </div>
               </div>
@@ -105,7 +107,7 @@ const WhyChooseUs: React.FC = () => {
           {/* RIGHT COLUMN: IMAGES */}
           <div className="lg:col-span-6 w-full space-y-4">
             {/* Large Top Image */}
-            <div className="relative w-full aspect-[2.1/1] rounded-3xl sm:rounded-4xl overflow-hidden shadow-sm bg-gray-100">
+            <div className="relative w-full aspect-[2.1/1] rounded-xl sm:rounded-xl overflow-hidden shadow-sm bg-gray-100">
               <Image
                 src="/images/home/why-choose-us-image-2.jpg"
                 alt="Expert solar engineers team installing panels on rooftop"
@@ -137,7 +139,7 @@ const WhyChooseUs: React.FC = () => {
             {/* Bottom Split Images */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* Engineer Image */}
-              <div className="relative w-full aspect-[1.15/1] sm:aspect-[0.9/1] rounded-3xl sm:rounded-4xl overflow-hidden shadow-sm bg-gray-100">
+              <div className="relative w-full aspect-[1.15/1] sm:aspect-[0.9/1] rounded-xl sm:rounded-xl overflow-hidden shadow-sm bg-gray-100">
                 <Image
                   src="/images/home/why-choose-us-image-2.jpg"
                   alt="Solar engineer inspecting photovoltaic panels"
@@ -148,7 +150,7 @@ const WhyChooseUs: React.FC = () => {
               </div>
 
               {/* Green Support Card */}
-              <div className="w-full aspect-[1.15/1] sm:aspect-[0.9/1] bg-accent-600 text-white p-6 sm:p-8 rounded-3xl sm:rounded-4xl shadow-sm flex flex-col justify-end relative overflow-hidden group">
+              <div className="w-full aspect-[1.15/1] sm:aspect-[0.9/1] bg-accent-600 text-white p-6 sm:p-8 rounded-xl sm:rounded-xl shadow-sm flex flex-col justify-end relative overflow-hidden group">
                 <div className="absolute top-6 left-6 w-20 h-20 sm:w-24 sm:h-24 md:w-30 md:h-30 opacity-95 transition-transform duration-500 group-hover:scale-110">
                   <Image
                     src="/images/home/why-choose-info-image.png"
@@ -161,11 +163,12 @@ const WhyChooseUs: React.FC = () => {
 
                 <div className="space-y-2 sm:space-y-3 z-10">
                   <h3 className="text-xl sm:text-2xl font-bold tracking-tight">
-                    Long Term Support
+                    24/7 Data Monitoring
                   </h3>
                   <div className="w-full h-px bg-white/20 my-1 sm:my-2" />
                   <p className="text-xs sm:text-sm text-white/90 leading-relaxed">
-                    We provide dependable after-sales support.
+                    Real-time monitoring and analysis of every solar plant to
+                    ensure peak performance.
                   </p>
                 </div>
               </div>
@@ -180,7 +183,7 @@ const WhyChooseUs: React.FC = () => {
           {services?.map((service, index) => (
             <div
               key={index}
-              className="group flex items-center gap-2 bg-white hover:bg-gray-50 transition-all duration-200 px-5 py-3 rounded-3xl shadow-sm border border-gray-800 hover:shadow-md cursor-pointer active:scale-95"
+              className="group flex items-center gap-2 bg-white hover:bg-gray-50 transition-all duration-200 px-5 py-3 rounded-xl shadow-sm border border-gray-800 hover:shadow-md cursor-pointer active:scale-95"
             >
               <div className="w-3 h-3 bg-emerald-500 rounded-full shrink-0 group-hover:animate-pulse" />
               <span className="text-sm font-medium text-gray-800 whitespace-nowrap">
@@ -191,7 +194,7 @@ const WhyChooseUs: React.FC = () => {
         </div>
 
         {/* Contact CTA */}
-        <div className="bg-white rounded-3xl shadow-xl p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center gap-5 max-w-2xl mx-auto">
+        <div className="bg-white rounded-xl shadow-xl p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center gap-5 max-w-2xl mx-auto">
           <div className="relative shrink-0">
             <div className="w-14 h-14 rounded-2xl overflow-hidden border-2 border-white shadow-md">
               <Image
@@ -222,13 +225,13 @@ const WhyChooseUs: React.FC = () => {
 
           <div className="flex-1">
             <p className="text-lg md:text-xl font-medium text-gray-800 leading-tight">
-              Let&apos;s make something great work together.
+              Ready to power your factory with solar energy?
             </p>
           </div>
 
           <Link
             href="/contact"
-            className="mt-4 md:mt-0 px-8 py-3.5 bg-emerald-600 hover:bg-emerald-700 transition-colors text-white font-semibold rounded-3xl text-sm whitespace-nowrap flex items-center gap-2 shadow-lg shadow-emerald-500/30 active:scale-95"
+            className="mt-4 md:mt-0 px-8 py-3.5 bg-emerald-600 hover:bg-emerald-700 transition-colors text-white font-semibold rounded-xl text-sm whitespace-nowrap flex items-center gap-2 shadow-lg shadow-emerald-500/30 active:scale-95"
           >
             Contact Us
             <span className="text-xl leading-none">→</span>
