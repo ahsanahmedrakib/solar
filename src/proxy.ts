@@ -2,7 +2,6 @@ import { NextResponse, type NextRequest } from "next/server";
 
 const PUBLIC_GET_PREFIXES = [
   "/api/settings",
-  "/api/plans",
   "/api/services",
   "/api/projects",
   "/api/blogs",

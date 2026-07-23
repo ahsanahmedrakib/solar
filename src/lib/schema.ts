@@ -3,7 +3,6 @@ import {
   integer,
   jsonb,
   pgTable,
-  real,
   serial,
   text,
   timestamp,
@@ -71,18 +70,6 @@ export const comments = pgTable("comments", {
   date: text("date").notNull(),
 });
 
-export const plans = pgTable("plans", {
-  id: serial("id").primaryKey(),
-  name: text("name").notNull(),
-  description: text("description").notNull(),
-  monthlyPrice: real("monthly_price").notNull(),
-  annualPrice: real("annual_price").notNull(),
-  features: text("features").array().notNull().default([]),
-  isPopular: boolean("is_popular").default(false),
-  badge: text("badge"),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-});
-
 export const team = pgTable("team", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
@@ -139,3 +126,4 @@ export const images = pgTable("images", {
   resourceId: text("resource_id").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
+

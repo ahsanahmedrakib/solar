@@ -6,7 +6,6 @@ import FAQAndStats from "./FAQAndStats";
 import FunFacts from "./FunFacts";
 import Hero from "./Hero";
 import HowItWorks from "./HowItWorks";
-import Plans from "./Plans";
 import Services from "./Services";
 import Testimonials from "./Testimonials";
 import WhyChooseUs from "./WhyChooseUs";
@@ -19,7 +18,6 @@ const HomePage = () => {
       <Services />
       <WhyChooseUs />
       <Banner />
-      <Plans />
       <CoreFeatures />
       <FunFacts />
       <HowItWorks />

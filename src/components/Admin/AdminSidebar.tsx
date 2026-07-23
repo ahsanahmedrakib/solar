@@ -7,7 +7,6 @@ import { cn } from "@/lib/utils";
 import {
   Briefcase,
   ChevronRight,
-  CreditCard,
   FileText,
   ImageIcon,
   Layers,
@@ -41,11 +40,6 @@ const navItems = [
     title: "Projects",
     href: "/admin/projects",
     icon: Layers,
-  },
-  {
-    title: "Plans",
-    href: "/admin/plans",
-    icon: CreditCard,
   },
   {
     title: "Team",

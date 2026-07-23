@@ -3,10 +3,9 @@
 import type { Blog } from "@/data/blogs";
 import type { ContactQuery } from "@/data/contact";
 import type { HeroSlide } from "@/data/hero-slides";
-import type { Plan } from "@/data/plans";
 import type { Project } from "@/data/projects";
-import type { Section } from "@/data/settings";
 import type { Service } from "@/data/services";
+import type { Section } from "@/data/settings";
 import type { TeamMember } from "@/data/team";
 import { apiClient } from "@/lib/apiClient";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -45,7 +44,6 @@ export const queryKeys = {
   services: ["services"] as const,
   blogs: ["blogs"] as const,
   heroSlides: ["hero-slides"] as const,
-  plans: ["plans"] as const,
   team: ["team"] as const,
   projects: ["projects"] as const,
   comments: ["comments"] as const,
@@ -84,15 +82,6 @@ export function useQueryHeroSlides() {
   return useQuery({
     queryKey: queryKeys.heroSlides,
     queryFn: () => apiFetchJson<HeroSlide[]>("/api/hero-slides", []),
-    staleTime: FIVE_MINUTES,
-    refetchOnWindowFocus: true,
-  });
-}
-
-export function useQueryPlans() {
-  return useQuery({
-    queryKey: queryKeys.plans,
-    queryFn: () => apiFetchJson<Plan[]>("/api/plans", []),
     staleTime: FIVE_MINUTES,
     refetchOnWindowFocus: true,
   });
@@ -150,7 +139,6 @@ export function useInvalidateAll() {
     qc.invalidateQueries({ queryKey: queryKeys.services });
     qc.invalidateQueries({ queryKey: queryKeys.blogs });
     qc.invalidateQueries({ queryKey: queryKeys.heroSlides });
-    qc.invalidateQueries({ queryKey: queryKeys.plans });
     qc.invalidateQueries({ queryKey: queryKeys.team });
     qc.invalidateQueries({ queryKey: queryKeys.projects });
     qc.invalidateQueries({ queryKey: queryKeys.comments });
@@ -158,3 +146,4 @@ export function useInvalidateAll() {
     qc.invalidateQueries({ queryKey: queryKeys.users });
   };
 }
+
