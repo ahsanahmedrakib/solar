@@ -100,7 +100,7 @@ export default function HowItWorks() {
       }}
     >
       {/* Decorative subtle ambient backdrop glow effects */}
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#44B549]/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-accent-600/10 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-[#399d3e]/10 rounded-full blur-[120px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto space-y-16 lg:space-y-24">
@@ -111,7 +111,7 @@ export default function HowItWorks() {
           <div className="lg:col-span-7 space-y-4">
             {/* Tagline Pill Badge */}
             <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 px-3 py-1.5 rounded-full text-xs font-semibold text-gray-300">
-              <span className="w-1.5 h-1.5 bg-[#44B549] rounded-full"></span>
+              <span className="w-1.5 h-1.5 bg-accent-600 rounded-full"></span>
               How It Works
             </div>
             {/* Header Main Text */}
@@ -127,25 +127,6 @@ export default function HowItWorks() {
               installation & ongoing support, our simple step by step process
               helps you start generating energy.
             </p>
-            <div>
-              <button className="inline-flex items-center gap-2 bg-[#44B549] hover:bg-[#399d3e] transition-colors text-white font-semibold text-sm px-6 py-3.5 rounded-lg shadow-sm">
-                Contact Us
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={2.5}
-                  stroke="currentColor"
-                  className="w-4 h-4"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25"
-                  />
-                </svg>
-              </button>
-            </div>
           </div>
         </div>
 
@@ -175,7 +156,7 @@ export default function HowItWorks() {
                 </div>
 
                 {/* Floating Centered Accent Badge Layer */}
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-[#44B549] text-white flex items-center justify-center shadow-md border-2 border-[#03141F] z-10">
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-accent-600 text-white flex items-center justify-center shadow-md border-2 border-[#03141F] z-10">
                   {step.icon}
                 </div>
               </div>
@@ -193,7 +174,7 @@ export default function HowItWorks() {
               {/* MICRO GREEN ACCENT LIST FOOTER DOT */}
               <div className="pt-2 border-t border-white/5 w-full max-w-60 flex justify-center">
                 <div className="inline-flex items-center gap-2 text-xs sm:text-sm text-gray-300 font-medium tracking-wide">
-                  <span className="w-1.5 h-1.5 bg-[#44B549] rounded-full shrink-0"></span>
+                  <span className="w-1.5 h-1.5 bg-accent-600 rounded-full shrink-0"></span>
                   <span>{step.bulletPoint}</span>
                 </div>
               </div>

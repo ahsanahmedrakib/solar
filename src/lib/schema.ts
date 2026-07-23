@@ -57,19 +57,6 @@ export const blogs = pgTable("blogs", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
-export const comments = pgTable("comments", {
-  id: serial("id").primaryKey(),
-  blogId: integer("blog_id")
-    .notNull()
-    .references(() => blogs.id, { onDelete: "cascade" }),
-  parentId: integer("parent_id"),
-  name: text("name").notNull(),
-  email: varchar("email", { length: 255 }).notNull(),
-  website: text("website").default(""),
-  comment: text("comment").notNull(),
-  date: text("date").notNull(),
-});
-
 export const team = pgTable("team", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),
@@ -116,6 +103,15 @@ export const contactQueries = pgTable("contact_queries", {
   createdAt: text("created_at").notNull(),
   status: varchar("status", { length: 20 }).notNull().default("new"),
   notes: text("notes"),
+});
+
+export const reviews = pgTable("reviews", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  role: text("role").notNull(),
+  rating: integer("rating").notNull().default(5),
+  quote: text("quote").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
 export const images = pgTable("images", {

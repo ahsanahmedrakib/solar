@@ -1,232 +1,14 @@
 "use client";
 
-import { DEFAULT_BLOGS, type Blog, type Comment } from "@/data/blogs";
-import { apiClient } from "@/lib/apiClient";
+import { DEFAULT_BLOGS, type Blog } from "@/data/blogs";
 import { useQueryBlogs } from "@/lib/queries";
 import Link from "next/link";
-import React, { useMemo, useRef, useState } from "react";
-import * as yup from "yup";
-
-const commentSchema = yup.object().shape({
-  comment: yup
-    .string()
-    .required("Comment is required")
-    .min(10, "Comment must be at least 10 characters"),
-  name: yup
-    .string()
-    .required("Name is required")
-    .min(2, "Name must be at least 2 characters"),
-  email: yup
-    .string()
-    .required("Email is required")
-    .email("Email must be a valid email address"),
-  website: yup.string().url("Website must be a valid URL").notRequired(),
-});
-
-const replySchema = yup.object().shape({
-  comment: yup
-    .string()
-    .required("Reply is required")
-    .min(5, "Reply must be at least 5 characters"),
-  name: yup
-    .string()
-    .required("Name is required")
-    .min(2, "Name must be at least 2 characters"),
-  email: yup
-    .string()
-    .required("Email is required")
-    .email("Email must be a valid email address"),
-  website: yup.string().url("Website must be a valid URL").notRequired(),
-});
 
 function SingleBlogPageInner({ slug }: { slug: string }) {
   const { data: rawBlogs = [], isFetching: blogsLoading } = useQueryBlogs();
   const allBlogs = rawBlogs?.length > 0 ? rawBlogs : DEFAULT_BLOGS;
   const blog = allBlogs.find((b: Blog) => b.slug === slug) ?? null;
   const loading = blogsLoading;
-  const [replyingTo, setReplyingTo] = useState<number | null>(null);
-  const optimisticIdRef = useRef(0);
-
-  const [commentData, setCommentData] = useState({
-    comment: "",
-    name: "",
-    email: "",
-    website: "",
-    saveInfo: false,
-  });
-  const [commentErrors, setCommentErrors] = useState<Record<string, string>>(
-    {},
-  );
-
-  const [replyData, setReplyData] = useState({
-    comment: "",
-    name: "",
-    email: "",
-    website: "",
-  });
-  const [replyErrors, setReplyErrors] = useState<Record<string, string>>({});
-
-  const [localComments, setLocalComments] = useState<Comment[]>([]);
-
-  const blogWithComments = useMemo(() => {
-    if (!blog) return null;
-    if (localComments.length === 0) return blog;
-    return { ...blog, comments: [...localComments, ...(blog.comments || [])] };
-  }, [blog, localComments]);
-
-  const addCommentLocally = (newComment: Comment) => {
-    setLocalComments((prev) => [newComment, ...prev]);
-  };
-
-  const handleCommentSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setCommentErrors({});
-
-    try {
-      await commentSchema.validate(commentData, { abortEarly: false });
-    } catch (err) {
-      if (err instanceof yup.ValidationError) {
-        const fieldErrors: Record<string, string> = {};
-        err.inner.forEach((ve) => {
-          if (ve.path) fieldErrors[ve.path] = ve.message;
-        });
-        setCommentErrors(fieldErrors);
-        return;
-      }
-    }
-
-    const payload = {
-      blogSlug: slug,
-      parentId: null,
-      name: commentData.name,
-      email: commentData.email,
-      website: commentData.website,
-      comment: commentData.comment,
-    };
-
-    try {
-      const res = await apiClient("/api/comments", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      const json = await res.json();
-      if (json.success && json.data) {
-        addCommentLocally(json.data);
-      }
-    } catch {
-      const optimistic: Comment = {
-        id: ++optimisticIdRef.current,
-        parentId: null,
-        name: commentData.name,
-        email: commentData.email,
-        website: commentData.website,
-        comment: commentData.comment,
-        date: new Date().toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-        }),
-      };
-      addCommentLocally(optimistic);
-    }
-
-    setCommentData({
-      comment: "",
-      name: "",
-      email: "",
-      website: "",
-      saveInfo: false,
-    });
-    if (commentData.saveInfo) {
-      localStorage.setItem("commentName", commentData.name);
-      localStorage.setItem("commentEmail", commentData.email);
-      localStorage.setItem("commentWebsite", commentData.website);
-    }
-  };
-
-  const handleReplySubmit = async (parentId: number) => {
-    setReplyErrors({});
-
-    try {
-      await replySchema.validate(replyData, { abortEarly: false });
-    } catch (err) {
-      if (err instanceof yup.ValidationError) {
-        const fieldErrors: Record<string, string> = {};
-        err.inner.forEach((ve) => {
-          if (ve.path) fieldErrors[ve.path] = ve.message;
-        });
-        setReplyErrors(fieldErrors);
-        return;
-      }
-    }
-
-    const payload = {
-      blogSlug: slug,
-      parentId,
-      name: replyData.name,
-      email: replyData.email,
-      website: replyData.website,
-      comment: replyData.comment,
-    };
-
-    try {
-      const res = await apiClient("/api/comments", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      const json = await res.json();
-      if (json.success && json.data) {
-        addCommentLocally(json.data);
-      }
-    } catch {
-      const optimistic: Comment = {
-        id: ++optimisticIdRef.current,
-        parentId,
-        name: replyData.name,
-        email: replyData.email,
-        website: replyData.website,
-        comment: replyData.comment,
-        date: new Date().toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-        }),
-      };
-      addCommentLocally(optimistic);
-    }
-
-    setReplyData({ comment: "", name: "", email: "", website: "" });
-    setReplyErrors({});
-    setReplyingTo(null);
-  };
-
-  const comments = blogWithComments?.comments || [];
-  const topLevelComments = comments.filter((c) => c.parentId === null);
-  const getReplies = (parentId: number) =>
-    comments.filter((c) => c.parentId === parentId);
-
-  const renderFieldError = (errors: Record<string, string>, field: string) => {
-    if (!errors[field]) return null;
-    return (
-      <span className="text-[11px] text-red-500 flex items-center gap-1 mt-0.5">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 16 16"
-          fill="currentColor"
-          className="w-3 h-3 shrink-0"
-        >
-          <path
-            fillRule="evenodd"
-            d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14ZM8 4a.75.75 0 0 1 .75.75v3a.75.75 0 0 1-1.5 0v-3A.75.75 0 0 1 8 4Zm0 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"
-            clipRule="evenodd"
-          />
-        </svg>
-        {errors[field]}
-      </span>
-    );
-  };
 
   return (
     <div className="bg-white min-h-screen text-[#011c2b] font-sans antialiased selection:bg-green-100">
@@ -271,297 +53,74 @@ function SingleBlogPageInner({ slug }: { slug: string }) {
               </div>
 
               <div className="flex items-center gap-2">
-                {["f", "t", "in"]?.map((social, idx) => (
-                  <button
-                    key={idx}
-                    className="w-8 h-8 rounded bg-[#4caf50] hover:bg-[#43a047] text-white text-xs font-bold flex items-center justify-center transition-colors uppercase"
-                    aria-label={`Share on ${social}`}
+                <a
+                  href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-8 h-8 rounded bg-[#4caf50] hover:bg-[#43a047] text-white flex items-center justify-center transition-colors"
+                  aria-label="Share on Facebook"
+                >
+                  <svg
+                    className="w-4 h-4"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
                   >
-                    {social}
-                  </button>
-                ))}
+                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                  </svg>
+                </a>
+                <a
+                  href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(blog?.title ?? "")}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-8 h-8 rounded bg-[#4caf50] hover:bg-[#43a047] text-white flex items-center justify-center transition-colors"
+                  aria-label="Share on Twitter"
+                >
+                  <svg
+                    className="w-4 h-4"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                  </svg>
+                </a>
+                <a
+                  href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(window.location.href)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-8 h-8 rounded bg-[#4caf50] hover:bg-[#43a047] text-white flex items-center justify-center transition-colors"
+                  aria-label="Share on LinkedIn"
+                >
+                  <svg
+                    className="w-4 h-4"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                  </svg>
+                </a>
+                <button
+                  onClick={() => {
+                    if (
+                      typeof navigator !== "undefined" &&
+                      navigator.clipboard
+                    ) {
+                      navigator.clipboard.writeText(window.location.href);
+                      alert("Link copied! Paste it on Instagram to share.");
+                    }
+                  }}
+                  className="w-8 h-8 rounded bg-[#4caf50] hover:bg-[#43a047] text-white flex items-center justify-center transition-colors"
+                  aria-label="Share on Instagram"
+                >
+                  <svg
+                    className="w-4 h-4"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
+                  </svg>
+                </button>
               </div>
             </div>
-
-            {/* Comments Section */}
-            <section className="mt-6">
-              <h3 className="text-[#011c2b] text-xl font-bold tracking-tight mb-6">
-                Comments ({topLevelComments?.length})
-              </h3>
-
-              {topLevelComments?.length > 0 ? (
-                <div className="flex flex-col gap-6">
-                  {topLevelComments?.map((comment) => {
-                    const replies = getReplies(comment.id);
-                    return (
-                      <div key={comment.id}>
-                        <div className="flex gap-3.5">
-                          <div className="w-10 h-10 rounded-full bg-[#4caf50] text-white flex items-center justify-center text-sm font-bold shrink-0">
-                            {comment.name.charAt(0).toUpperCase()}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <span className="font-bold text-sm text-[#011c2b]">
-                                {comment.name}
-                              </span>
-                              <span className="text-gray-400 text-xs">
-                                {comment.date}
-                              </span>
-                            </div>
-                            <p className="text-gray-500 text-sm mt-1 leading-relaxed">
-                              {comment.comment}
-                            </p>
-                            <button
-                              onClick={() =>
-                                setReplyingTo(
-                                  replyingTo === comment.id ? null : comment.id,
-                                )
-                              }
-                              className="text-xs font-semibold text-[#4caf50] hover:text-[#43a047] mt-1.5 transition-colors"
-                            >
-                              {replyingTo === comment.id
-                                ? "Cancel Reply"
-                                : "Reply"}
-                            </button>
-
-                            {replyingTo === comment.id && (
-                              <div className="mt-4 bg-[#f4f7f9] rounded-xl p-4 border border-gray-100">
-                                <h4 className="text-xs font-bold text-[#011c2b] mb-3">
-                                  Reply to {comment.name}
-                                </h4>
-                                <div className="flex flex-col gap-3">
-                                  <div>
-                                    <textarea
-                                      rows={3}
-                                      required
-                                      placeholder="Write your reply..."
-                                      className="w-full bg-white rounded-lg px-3 py-2 border border-gray-200 outline-none focus:ring-2 focus:ring-[#4caf50] text-sm text-[#011c2b] transition-all resize-none"
-                                      value={replyData.comment}
-                                      onChange={(e) =>
-                                        setReplyData({
-                                          ...replyData,
-                                          comment: e.target.value,
-                                        })
-                                      }
-                                    />
-                                    {renderFieldError(replyErrors, "comment")}
-                                  </div>
-                                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                                    <div>
-                                      <input
-                                        type="text"
-                                        required
-                                        placeholder="Name *"
-                                        className="w-full bg-white rounded-lg px-3 py-2 border border-gray-200 outline-none focus:ring-2 focus:ring-[#4caf50] text-sm text-[#011c2b] transition-all"
-                                        value={replyData.name}
-                                        onChange={(e) =>
-                                          setReplyData({
-                                            ...replyData,
-                                            name: e.target.value,
-                                          })
-                                        }
-                                      />
-                                      {renderFieldError(replyErrors, "name")}
-                                    </div>
-                                    <div>
-                                      <input
-                                        type="email"
-                                        required
-                                        placeholder="Email *"
-                                        className="w-full bg-white rounded-lg px-3 py-2 border border-gray-200 outline-none focus:ring-2 focus:ring-[#4caf50] text-sm text-[#011c2b] transition-all"
-                                        value={replyData.email}
-                                        onChange={(e) =>
-                                          setReplyData({
-                                            ...replyData,
-                                            email: e.target.value,
-                                          })
-                                        }
-                                      />
-                                      {renderFieldError(replyErrors, "email")}
-                                    </div>
-                                    <div>
-                                      <input
-                                        type="url"
-                                        placeholder="Website"
-                                        className="w-full bg-white rounded-lg px-3 py-2 border border-gray-200 outline-none focus:ring-2 focus:ring-[#4caf50] text-sm text-[#011c2b] transition-all"
-                                        value={replyData.website}
-                                        onChange={(e) =>
-                                          setReplyData({
-                                            ...replyData,
-                                            website: e.target.value,
-                                          })
-                                        }
-                                      />
-                                      {renderFieldError(replyErrors, "website")}
-                                    </div>
-                                  </div>
-                                  <button
-                                    onClick={() =>
-                                      handleReplySubmit(comment.id)
-                                    }
-                                    className="self-start bg-[#4caf50] hover:bg-[#43a047] text-white font-bold text-xs uppercase tracking-wider px-4 py-2.5 rounded-lg shadow-sm transition-colors duration-150"
-                                  >
-                                    Post Reply
-                                  </button>
-                                </div>
-                              </div>
-                            )}
-
-                            {replies?.length > 0 && (
-                              <div className="mt-4 ml-2 border-l-2 border-[#4caf50]/30 pl-4 flex flex-col gap-4">
-                                {replies?.map((reply) => (
-                                  <div key={reply.id} className="flex gap-3.5">
-                                    <div className="w-8 h-8 rounded-full bg-gray-300 text-white flex items-center justify-center text-xs font-bold shrink-0">
-                                      {reply.name.charAt(0).toUpperCase()}
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                      <div className="flex items-center gap-2 flex-wrap">
-                                        <span className="font-bold text-sm text-[#011c2b]">
-                                          {reply.name}
-                                        </span>
-                                        <span className="text-gray-400 text-xs">
-                                          {reply.date}
-                                        </span>
-                                      </div>
-                                      <p className="text-gray-500 text-sm mt-1 leading-relaxed">
-                                        {reply.comment}
-                                      </p>
-                                    </div>
-                                  </div>
-                                ))}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              ) : (
-                <p className="text-gray-400 text-sm">
-                  No comments yet. Be the first to comment!
-                </p>
-              )}
-            </section>
-
-            {/* Leave a Reply Form */}
-            <section className="mt-8 border-t border-gray-100 pt-8">
-              <h3 className="text-[#011c2b] text-xl font-bold tracking-tight mb-1">
-                Leave a Reply
-              </h3>
-              <p className="text-gray-400 text-xs mb-6">
-                Your email address will not be published. Required fields are
-                marked *
-              </p>
-
-              <form
-                onSubmit={handleCommentSubmit}
-                className="flex flex-col gap-4"
-              >
-                <div className="flex flex-col gap-2">
-                  <label className="text-[#011c2b] text-xs font-bold tracking-wide">
-                    Comment *
-                  </label>
-                  <textarea
-                    rows={6}
-                    required
-                    className="w-full bg-[#f4f7f9] rounded-xl px-4 py-3 border-none outline-none focus:ring-2 focus:ring-[#4caf50] text-sm text-[#011c2b] transition-all resize-none"
-                    value={commentData.comment}
-                    onChange={(e) =>
-                      setCommentData({
-                        ...commentData,
-                        comment: e.target.value,
-                      })
-                    }
-                  />
-                  {renderFieldError(commentErrors, "comment")}
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="flex flex-col gap-2">
-                    <label className="text-[#011c2b] text-xs font-bold tracking-wide">
-                      Name *
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      className="w-full bg-[#f4f7f9] rounded-xl px-4 py-3 border-none outline-none focus:ring-2 focus:ring-[#4caf50] text-sm text-[#011c2b] transition-all"
-                      value={commentData.name}
-                      onChange={(e) =>
-                        setCommentData({ ...commentData, name: e.target.value })
-                      }
-                    />
-                    {renderFieldError(commentErrors, "name")}
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <label className="text-[#011c2b] text-xs font-bold tracking-wide">
-                      Email *
-                    </label>
-                    <input
-                      type="email"
-                      required
-                      className="w-full bg-[#f4f7f9] rounded-xl px-4 py-3 border-none outline-none focus:ring-2 focus:ring-[#4caf50] text-sm text-[#011c2b] transition-all"
-                      value={commentData.email}
-                      onChange={(e) =>
-                        setCommentData({
-                          ...commentData,
-                          email: e.target.value,
-                        })
-                      }
-                    />
-                    {renderFieldError(commentErrors, "email")}
-                  </div>
-                  <div className="flex flex-col gap-2">
-                    <label className="text-[#011c2b] text-xs font-bold tracking-wide">
-                      Website
-                    </label>
-                    <input
-                      type="url"
-                      className="w-full bg-[#f4f7f9] rounded-xl px-4 py-3 border-none outline-none focus:ring-2 focus:ring-[#4caf50] text-sm text-[#011c2b] transition-all"
-                      value={commentData.website}
-                      onChange={(e) =>
-                        setCommentData({
-                          ...commentData,
-                          website: e.target.value,
-                        })
-                      }
-                    />
-                    {renderFieldError(commentErrors, "website")}
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-2.5 mt-2">
-                  <input
-                    id="saveInfo"
-                    type="checkbox"
-                    className="w-4 h-4 rounded text-[#4caf50] focus:ring-[#4caf50] border-gray-300 mt-0.5 accent-[#4caf50] cursor-pointer"
-                    checked={commentData.saveInfo}
-                    onChange={(e) =>
-                      setCommentData({
-                        ...commentData,
-                        saveInfo: e.target.checked,
-                      })
-                    }
-                  />
-                  <label
-                    htmlFor="saveInfo"
-                    className="text-gray-500 text-xs select-none cursor-pointer leading-normal"
-                  >
-                    Save my name, email, and website in this browser for the
-                    next time I comment.
-                  </label>
-                </div>
-
-                <div className="mt-4">
-                  <button
-                    type="submit"
-                    className="bg-[#4caf50] hover:bg-[#43a047] text-white font-bold text-xs uppercase tracking-wider px-6 py-3.5 rounded-lg shadow-sm transition-colors duration-150"
-                  >
-                    Post Comment
-                  </button>
-                </div>
-              </form>
-            </section>
           </>
         ) : (
           <div className="flex flex-col items-center justify-center py-20 text-gray-400">

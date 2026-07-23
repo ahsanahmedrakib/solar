@@ -295,6 +295,30 @@ body:has(.admin-layout-root) {
   background: #4caf50;
 }
 
+/* Testimonial Swiper — Pagination Dots */
+.testimonial-swiper .swiper-pagination {
+  position: relative;
+  margin-top: 16px;
+  z-index: 30;
+}
+
+.testimonial-swiper .swiper-pagination-bullet {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin: 0 5px !important;
+  border-radius: 9999px;
+  background: #d1d5db;
+  opacity: 1;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.testimonial-swiper .swiper-pagination-bullet-active {
+  width: 24px;
+  background: #44B549;
+}
+
 /* React Toastify — brand-aligned notifications */
 :root {
   --toastify-color-success: var(--color-success);

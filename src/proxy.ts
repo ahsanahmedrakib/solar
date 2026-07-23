@@ -17,7 +17,6 @@ const PUBLIC_PATHS = [
   "/api/auth/refresh",
   "/api/auth/logout",
   "/api/contact",
-  "/api/comments",
 ];
 
 function getToken(request: NextRequest): string | null {

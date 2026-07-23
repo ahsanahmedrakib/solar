@@ -138,7 +138,6 @@ export default function FloatingChatWidget() {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  boxShadow: "0 4px 20px rgba(37,211,102,0.4)",
                   textDecoration: "none",
                   transition: "transform 0.2s",
                 }}
@@ -169,7 +168,6 @@ export default function FloatingChatWidget() {
                   opacity: 0,
                   transition: "opacity 0.2s",
                   pointerEvents: "none",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
                 }}
               >
                 WhatsApp Us
@@ -192,7 +190,6 @@ export default function FloatingChatWidget() {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  boxShadow: "0 4px 20px rgba(0,132,255,0.4)",
                   textDecoration: "none",
                   transition: "transform 0.2s",
                 }}
@@ -223,7 +220,6 @@ export default function FloatingChatWidget() {
                   opacity: 0,
                   transition: "opacity 0.2s",
                   pointerEvents: "none",
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
                 }}
               >
                 Messenger

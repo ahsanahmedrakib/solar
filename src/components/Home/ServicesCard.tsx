@@ -8,7 +8,8 @@ const ServicesCard = ({ services }: { services: ServiceCard[] }) => {
       {/* SERVICES CARD GRID */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pt-4">
         {services?.map((service) => (
-          <div
+          <Link
+            href={"services/" + service.slug}
             key={service.id}
             className="bg-white rounded-4xl p-6 shadow-sm border border-gray-100/60 flex flex-col justify-between hover:shadow-md transition-shadow group"
           >
@@ -39,16 +40,14 @@ const ServicesCard = ({ services }: { services: ServiceCard[] }) => {
             </div>
 
             <div className="pt-6">
-              <Link href={"services/" + service.slug}>
-                <button className="inline-flex cursor-pointer items-center gap-2 font-bold text-sm text-[#051720] group-hover:text-accent-600 transition-colors">
-                  Learn More
-                  <div className="w-5 h-5 rounded-full bg-accent-600 text-white flex items-center justify-center text-[10px]">
-                    ➔
-                  </div>
-                </button>
-              </Link>
+              <button className="inline-flex cursor-pointer items-center gap-2 font-bold text-sm text-[#051720] group-hover:text-accent-600 transition-colors">
+                Learn More
+                <div className="w-5 h-5 rounded-full bg-accent-600 text-white flex items-center justify-center text-[10px]">
+                  ➔
+                </div>
+              </button>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>

@@ -1,6 +1,13 @@
+"use client";
+
+import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function About() {
+  const pathname = usePathname();
+
   return (
     <section className="bg-white py-12 px-4 sm:px-6 lg:py-20 lg:px-18 mx-auto font-sans relative">
       {/* Main Grid Wrapper */}
@@ -20,32 +27,32 @@ export default function About() {
             />
           </div>
 
-          {/* 2. Rotating "Contact Us" Badge */}
+          {/* 2. Rotating "Contact Us" Badge
           {/* Positioned accurately to the top right of the composition */}
-          <div className="absolute top-4 right-5 z-30 w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 animate-[spin_25s_linear_infinite] origin-center">
+          {/* <div className="absolute top-4 right-5 z-30 w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 animate-[spin_25s_linear_infinite] origin-center">
             <svg viewBox="0 0 100 100" className="w-full h-full">
               <path
                 id="contactBadgePath"
                 d="M 50,50 m -36,0 a 36,36 0 1,1 72,0 a 36,36 0 1,1 -72,0"
                 className="fill-none"
-              />
-              {/* Dark Navy Inner Center Circle */}
-              <circle cx="50" cy="50" r="16" className="fill-[#051720]" />
-              {/* White Lightning Bolt Vector Icon */}
-              <path
+              /> */}
+          {/* Dark Navy Inner Center Circle */}
+          {/* <circle cx="50" cy="50" r="16" className="fill-[#051720]" /> */}
+          {/* White Lightning Bolt Vector Icon */}
+          {/* <path
                 d="M49 38L43 49H49L48 58L57 45H49L52 38H49Z"
                 className="fill-green stroke-white"
                 strokeWidth="1"
                 strokeLinejoin="round"
-              />
-              {/* Bright Green Text Ring */}
-              <text className="text-[9.5px] font-extrabold fill-accent-600 tracking-[2.2px]">
+              /> */}
+          {/* Bright Green Text Ring */}
+          {/* <text className="text-[9.5px] font-extrabold fill-accent-600 tracking-[2.2px]">
                 <textPath href="#contactBadgePath">
                   * Contact Us * Contact Us * Contact Us{" "}
                 </textPath>
               </text>
-            </svg>
-          </div>
+            </svg> */}
+          {/* </div> */}
 
           {/* 3. Bottom Left Experience Card */}
           {/* Aligned natively underneath the left edge of the top image */}
@@ -173,43 +180,17 @@ export default function About() {
           </div>
 
           {/* Bottom Action Footer Container */}
-          <div className="pt-4 flex flex-row flex-wrap items-center gap-6">
-            {/* CTA Button */}
-            <button className="inline-flex items-center gap-2 bg-accent-600 hover:bg-[#399d3e] transition-colors text-white font-semibold text-sm px-6 py-3.5 rounded-lg shadow-sm group">
-              More About Us
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={2.5}
-                stroke="currentColor"
-                className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25"
-                />
-              </svg>
-            </button>
-
-            {/* Video Play Trigger */}
-            <button className="inline-flex items-center gap-3 group">
-              <div className="w-12 h-12 rounded-full bg-[#051720] text-white flex items-center justify-center transition-transform group-hover:scale-105 shadow-md">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                  className="w-5 h-5 ml-0.5 text-white"
-                >
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-              </div>
-              <span className="text-sm font-bold text-[#051720] group-hover:text-accent-600 transition-colors">
-                Watch Our Story
-              </span>
-            </button>
-          </div>
+          {pathname !== "/about" && (
+            <div className="pt-4 flex flex-row flex-wrap items-center gap-6">
+              {/* CTA Button */}
+              <Link href="/about">
+                <button className="inline-flex items-center cursor-pointer gap-2 bg-accent-600 hover:bg-[#399d3e] transition-colors text-white font-semibold text-sm px-6 py-3.5 rounded-lg shadow-sm group">
+                  More About Us
+                  <ArrowUpRight />
+                </button>
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </section>

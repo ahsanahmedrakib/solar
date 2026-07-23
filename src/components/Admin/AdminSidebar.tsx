@@ -14,7 +14,7 @@ import {
   Lock,
   LogOut,
   Mail,
-  MessageCircle,
+  MessageSquareText,
   Settings,
   Users,
   X,
@@ -52,11 +52,6 @@ const navItems = [
     icon: FileText,
   },
   {
-    title: "Comments",
-    href: "/admin/comments",
-    icon: MessageCircle,
-  },
-  {
     title: "Hero Slider",
     href: "/admin/hero-slider",
     icon: ImageIcon,
@@ -65,6 +60,11 @@ const navItems = [
     title: "Contact Queries",
     href: "/admin/contact",
     icon: Mail,
+  },
+  {
+    title: "Reviews",
+    href: "/admin/reviews",
+    icon: MessageSquareText,
   },
   {
     title: "Users",

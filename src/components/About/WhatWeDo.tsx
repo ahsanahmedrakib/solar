@@ -69,35 +69,6 @@ export default function WhatWeDo() {
                 fill
                 className="object-cover transition-transform duration-500 group-hover:scale-102"
               />
-              {/* Spinning/Circular Play Badge Overlay */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <button className="relative flex items-center justify-center h-20 w-20 rounded-full bg-white/20 backdrop-blur-sm border border-white/40 shadow-xl transition-transform duration-300 group-hover:scale-110">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white text-[#0B2545] shadow-md">
-                    <svg
-                      className="h-5 w-5 translate-x-0.5"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M8 5v14l11-7z" />
-                    </svg>
-                  </div>
-                  {/* Rotating 'Watch Video' SVG Text Circle wrapper */}
-                  <div className="absolute inset-0 animate-[spin_12s_linear_infinite] p-1 invert opacity-80 pointer-events-none">
-                    <svg viewBox="0 0 100 100" className="w-full h-full">
-                      <path
-                        id="circlePath"
-                        d="M 50,50 m -37,0 a 37,37 0 1,1 74,0 a 37,37 0 1,1 -74,0"
-                        fill="none"
-                      />
-                      <text className="text-[9px] font-medium tracking-[3px] fill-black">
-                        <textPath href="#circlePath">
-                          WATCH VIDEO • WATCH VIDEO •{" "}
-                        </textPath>
-                      </text>
-                    </svg>
-                  </div>
-                </button>
-              </div>
             </div>
           </div>
 
@@ -166,7 +137,7 @@ export default function WhatWeDo() {
             </div>
 
             {/* CTA Button */}
-            <div>
+            {/* <div>
               <button className="inline-flex items-center gap-2 rounded-lg bg-[#4CAF50] px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#43a047] hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600">
                 Learn More
                 <svg
@@ -183,7 +154,7 @@ export default function WhatWeDo() {
                   />
                 </svg>
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

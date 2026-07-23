@@ -1,9 +1,11 @@
 "use client";
 
 import { DEFAULT_SERVICES, type Service } from "@/data/services";
-import { useQueryServices } from "@/lib/queries";
 import { iconRenderer } from "@/lib/iconRenderer";
+import { useQueryServices } from "@/lib/queries";
 import type { ServiceCard } from "@/types/services";
+import { ArrowUpRight } from "lucide-react";
+import Link from "next/link";
 import { useMemo } from "react";
 import ServicesCard from "./ServicesCard";
 
@@ -51,23 +53,12 @@ export default function Services() {
                 From system design and professional installation to energy
                 storage, our smart solar solutions deliver reliable performance.
               </p>
-              <button className="mt-4 inline-flex items-center gap-2 bg-accent-600 hover:bg-[#399d3e] transition-colors text-white font-semibold text-sm px-5 py-3 rounded-lg shadow-sm whitespace-nowrap">
-                View All Services
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={2.5}
-                  stroke="currentColor"
-                  className="w-4 h-4"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25"
-                  />
-                </svg>
-              </button>
+              <Link href="/services">
+                <button className="mt-4 cursor-pointer inline-flex items-center gap-2 bg-accent-600 hover:bg-[#399d3e] transition-colors text-white font-semibold text-sm px-5 py-3 rounded-lg shadow-sm whitespace-nowrap">
+                  View All Services
+                  <ArrowUpRight />
+                </button>
+              </Link>
             </div>
           </div>
 

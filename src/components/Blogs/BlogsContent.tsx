@@ -2,6 +2,7 @@
 
 import { DEFAULT_BLOGS } from "@/data/blogs";
 import { useQueryBlogs } from "@/lib/queries";
+import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import { useMemo } from "react";
 
@@ -24,7 +25,8 @@ export default function BlogsContents() {
               />
             ))
           : blogs?.map((blog, index) => (
-              <div
+              <Link
+                href={"blogs/" + blog.slug}
                 key={blog.id || index}
                 className="relative h-105 rounded-2xl overflow-hidden shadow-md group flex flex-col justify-between p-6 text-white"
                 style={{
@@ -46,30 +48,14 @@ export default function BlogsContents() {
                     {blog.title}
                   </h3>
 
-                  <Link
-                    href={"blogs/" + blog.slug}
-                    className="flex items-center gap-2 text-sm font-medium w-fit group-hover:text-green-400 transition-colors duration-200"
-                  >
+                  <div className="flex items-center gap-2 text-sm font-medium w-fit group-hover:text-green-400 transition-colors duration-200">
                     <span>Read More</span>
                     <span className="flex items-center justify-center w-6 h-6 rounded-full bg-green-500 text-white group-hover:bg-green-600 transition-colors duration-200">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={2.5}
-                        stroke="currentColor"
-                        className="w-3 h-3"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25"
-                        />
-                      </svg>
+                      <ArrowUpRight size={12} />
                     </span>
-                  </Link>
+                  </div>
                 </div>
-              </div>
+              </Link>
             ))}
       </div>
     </div>

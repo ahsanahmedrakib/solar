@@ -1,8 +1,8 @@
 "use client";
 
 import { DEFAULT_TEAM } from "@/data/team";
-import { useQueryTeam } from "@/lib/queries";
 import { SOCIAL_ICONS } from "@/lib/const";
+import { useQueryTeam } from "@/lib/queries";
 import Image from "next/image";
 import Link from "next/link";
 import { useMemo } from "react";
@@ -38,24 +38,6 @@ export default function Teams() {
               specialists work together to design, install, and maintain solar
               systems.
             </p>
-            <div>
-              <button className="inline-flex items-center gap-2 rounded-lg bg-[#4CAF50] px-5 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#43a047]">
-                View All Members
-                <svg
-                  className="h-4 w-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2.5}
-                    d="M14 5l7 7m0 0l-7 7m7-7H3"
-                  />
-                </svg>
-              </button>
-            </div>
           </div>
         </div>
 

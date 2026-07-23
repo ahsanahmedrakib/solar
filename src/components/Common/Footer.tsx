@@ -1,6 +1,6 @@
 "use client";
 
-import type { Service } from "@/data/services";
+import { DEFAULT_SERVICES } from "@/data/services";
 import { DEFAULT_SECTIONS } from "@/data/settings";
 import { SOCIAL_ICONS } from "@/lib/const";
 import { useQueryServices, useQuerySettings } from "@/lib/queries";
@@ -33,14 +33,6 @@ const FALLBACK = {
   logo: getField(DEFAULT_SECTIONS, "general", "site-logo"),
 };
 
-const FALLBACK_SERVICE_TITLES = [
-  "Solar Battery Storage",
-  "Solar System Maintenance",
-  "Rooftop Solar Solutions",
-  "Solar Panel Maintenance",
-  "Hybrid Solar Systems",
-];
-
 export default function Footer() {
   const { data, isFetching, isLoading } = useQuerySettings();
   const {
@@ -66,10 +58,10 @@ export default function Footer() {
     };
   }, [data]);
 
-  const services = useMemo<Service[]>(
-    () => (rawServices?.length > 0 ? rawServices : []),
-    [rawServices],
-  );
+  const services = useMemo(() => {
+    if (rawServices?.length > 0) return rawServices;
+    return DEFAULT_SERVICES;
+  }, [rawServices]);
 
   const showSkeleton = isFetching && !isLoading;
   const showServicesSkeleton = servicesFetching && !servicesIsLoading;
@@ -163,7 +155,7 @@ export default function Footer() {
                             href={platform.href}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="w-9 h-9 p-1 flex items-center justify-center transition-all"
+                            className="w-10 h-10 flex items-center justify-center transition-all"
                           >
                             {SOCIAL_ICONS[platform.label]}
                           </Link>
@@ -217,17 +209,15 @@ export default function Footer() {
                 </div>
               ) : (
                 <ul className="space-y-2.5">
-                  {(services?.length > 0
-                    ? services?.map((s) => s.title)
-                    : FALLBACK_SERVICE_TITLES
-                  )?.map((title) => (
-                    <li
-                      key={title}
+                  {services?.slice(0, 5)?.map((service) => (
+                    <Link
+                      href={"sevices/" + service?.slug}
+                      key={service?.title}
                       className="flex items-center gap-2 text-xs sm:text-sm text-gray-400 hover:text-white font-medium transition-colors cursor-pointer"
                     >
                       <span className="w-1.5 h-1.5 bg-accent-600 rounded-full shrink-0" />
-                      {title}
-                    </li>
+                      {service?.title}
+                    </Link>
                   ))}
                 </ul>
               )}

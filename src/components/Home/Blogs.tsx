@@ -1,7 +1,8 @@
 "use client";
 
-import type { Blog } from "@/data/blogs";
+import { DEFAULT_BLOGS } from "@/data/blogs";
 import { useQueryBlogs } from "@/lib/queries";
+import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useMemo } from "react";
@@ -9,15 +10,20 @@ import { useMemo } from "react";
 export default function Blogs() {
   const { data: rawBlogs = [], isFetching: loading } = useQueryBlogs();
 
+  // const blogs = useMemo(() => {
+  //   if (rawBlogs?.length > 0) {
+  //     const sorted = [...rawBlogs].sort(
+  //       (a: Blog, b: Blog) =>
+  //         new Date(b.date).getTime() - new Date(a.date).getTime(),
+  //     );
+  //     return sorted.slice(0, 3);
+  //   }
+  //   return [];
+  // }, [rawBlogs]);
+
   const blogs = useMemo(() => {
-    if (rawBlogs?.length > 0) {
-      const sorted = [...rawBlogs].sort(
-        (a: Blog, b: Blog) =>
-          new Date(b.date).getTime() - new Date(a.date).getTime(),
-      );
-      return sorted.slice(0, 3);
-    }
-    return [];
+    if (rawBlogs?.length > 0) return rawBlogs;
+    return DEFAULT_BLOGS;
   }, [rawBlogs]);
 
   if (loading) {
@@ -43,7 +49,7 @@ export default function Blogs() {
     );
   }
 
-  if (blogs?.length === 0) return null;
+  // if (blogs?.length === 0) return null;
 
   return (
     <section className="bg-white py-16 px-4 sm:px-6 lg:py-24 lg:px-20 mx-auto font-sans overflow-x-hidden">
@@ -65,31 +71,19 @@ export default function Blogs() {
               important updates from the solar industry. Our articles cover
               everything from new.
             </p>
-            <div>
-              <button className="inline-flex items-center gap-2 bg-accent-600 hover:bg-[#399d3e] transition-colors text-white font-semibold text-sm px-6 py-3.5 rounded-lg shadow-sm group">
+            <Link href="/blogs">
+              <button className="cursor-pointer inline-flex items-center gap-2 bg-accent-600 hover:bg-[#399d3e] transition-colors text-white font-semibold text-sm px-6 py-3.5 rounded-lg shadow-sm group">
                 View All Blogs
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={2.5}
-                  stroke="currentColor"
-                  className="w-4 h-4 transform transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25"
-                  />
-                </svg>
+                <ArrowUpRight />
               </button>
-            </div>
+            </Link>
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {blogs?.map((blog) => (
-            <div
+          {blogs?.slice(0, 3)?.map((blog) => (
+            <Link
+              href={"blogs/" + blog.slug}
               key={blog.id}
               className="relative w-full aspect-[0.84/1] rounded-4xl overflow-hidden group shadow-md bg-gray-100"
             >
@@ -115,32 +109,30 @@ export default function Blogs() {
                     {blog.title}
                   </h3>
 
-                  <Link href={"blogs/" + blog.slug}>
-                    <div className="flex items-center gap-2 pt-1 border-t border-white/10">
-                      <span className="text-xs sm:text-sm font-bold text-white tracking-wide">
-                        Read More
-                      </span>
-                      <div className="w-6 h-6 rounded-full bg-accent-600 text-white flex items-center justify-center transition-transform duration-300 group-hover:translate-x-1">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          strokeWidth={2.5}
-                          stroke="currentColor"
-                          className="w-3 h-3"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25"
-                          />
-                        </svg>
-                      </div>
+                  <div className="flex items-center gap-2 pt-1 border-t border-white/10">
+                    <span className="text-xs sm:text-sm font-bold text-white tracking-wide">
+                      Read More
+                    </span>
+                    <div className="w-6 h-6 rounded-full bg-accent-600 text-white flex items-center justify-center transition-transform duration-300 group-hover:translate-x-1">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={2.5}
+                        stroke="currentColor"
+                        className="w-3 h-3"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25"
+                        />
+                      </svg>
                     </div>
-                  </Link>
+                  </div>
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>

@@ -2,11 +2,13 @@
 
 import { DEFAULT_PROJECTS } from "@/data/projects";
 import { useQueryProjects } from "@/lib/queries";
+import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 
 export default function AllProjects() {
   const { data: projects, isLoading } = useQueryProjects();
-  const displayProjects = projects && projects.length > 0 ? projects : DEFAULT_PROJECTS;
+  const displayProjects =
+    projects && projects.length > 0 ? projects : DEFAULT_PROJECTS;
 
   return (
     <div className="mx-auto px-4 md:px-8 lg:px-20 py-20 bg-gray-50 select-none">
@@ -19,7 +21,8 @@ export default function AllProjects() {
               />
             ))
           : displayProjects?.map((project, index) => (
-              <div
+              <Link
+                href={"projects/" + project.slug}
                 key={project.id || index}
                 className="relative h-115 rounded-2xl overflow-hidden shadow-sm group flex flex-col justify-end p-4 transition-transform duration-300 hover:-translate-y-1"
               >
@@ -51,30 +54,14 @@ export default function AllProjects() {
                     {project.title}
                   </h3>
 
-                  <Link
-                    href={"projects/" + project.slug}
-                    className="inline-flex items-center gap-2.5 text-xs font-semibold uppercase tracking-wider text-white hover:text-green-400 transition-colors"
-                  >
+                  <div className="inline-flex items-center gap-2.5 text-xs font-semibold uppercase tracking-wider text-white hover:text-green-400 transition-colors">
                     <span>View Details</span>
                     <span className="flex items-center justify-center w-5 h-5 rounded-full bg-[#4caf50] text-white">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={3}
-                        stroke="currentColor"
-                        className="w-2.5 h-2.5"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25"
-                        />
-                      </svg>
+                      <ArrowUpRight size={12} />
                     </span>
-                  </Link>
+                  </div>
                 </div>
-              </div>
+              </Link>
             ))}
       </div>
     </div>

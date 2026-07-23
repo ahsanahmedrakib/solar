@@ -60,13 +60,13 @@ export const DEFAULT_SECTIONS: Section[] = [
       {
         label: "Support Email Address",
         type: "email",
-        value: "manik@aheadsolarbd.com",
+        value: "info@aheadsolarbd.com",
         id: "contact-email",
       },
       {
         label: "Primary Phone Number",
         type: "tel",
-        value: "+88 01712 947 551",
+        value: "+88 01335 123 700",
         id: "phone-number",
       },
       {

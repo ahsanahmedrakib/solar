@@ -4,6 +4,7 @@ import type { Blog } from "@/data/blogs";
 import type { ContactQuery } from "@/data/contact";
 import type { HeroSlide } from "@/data/hero-slides";
 import type { Project } from "@/data/projects";
+import type { Review } from "@/data/reviews";
 import type { Service } from "@/data/services";
 import type { Section } from "@/data/settings";
 import type { TeamMember } from "@/data/team";
@@ -46,8 +47,8 @@ export const queryKeys = {
   heroSlides: ["hero-slides"] as const,
   team: ["team"] as const,
   projects: ["projects"] as const,
-  comments: ["comments"] as const,
   contact: ["contact"] as const,
+  reviews: ["reviews"] as const,
   users: ["users"] as const,
 };
 
@@ -105,19 +106,19 @@ export function useQueryProjects() {
   });
 }
 
-export function useQueryComments() {
+export function useQueryContact() {
   return useQuery({
-    queryKey: queryKeys.comments,
-    queryFn: () => apiFetchJson<CommentItem[]>("/api/comments", []),
+    queryKey: queryKeys.contact,
+    queryFn: () => apiFetchJson<ContactQuery[]>("/api/contact", []),
     staleTime: FIVE_MINUTES,
     refetchOnWindowFocus: true,
   });
 }
 
-export function useQueryContact() {
+export function useQueryReviews() {
   return useQuery({
-    queryKey: queryKeys.contact,
-    queryFn: () => apiFetchJson<ContactQuery[]>("/api/contact", []),
+    queryKey: queryKeys.reviews,
+    queryFn: () => apiFetchJson<Review[]>("/api/reviews", []),
     staleTime: FIVE_MINUTES,
     refetchOnWindowFocus: true,
   });
@@ -141,8 +142,8 @@ export function useInvalidateAll() {
     qc.invalidateQueries({ queryKey: queryKeys.heroSlides });
     qc.invalidateQueries({ queryKey: queryKeys.team });
     qc.invalidateQueries({ queryKey: queryKeys.projects });
-    qc.invalidateQueries({ queryKey: queryKeys.comments });
     qc.invalidateQueries({ queryKey: queryKeys.contact });
+    qc.invalidateQueries({ queryKey: queryKeys.reviews });
     qc.invalidateQueries({ queryKey: queryKeys.users });
   };
 }

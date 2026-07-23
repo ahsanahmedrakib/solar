@@ -110,7 +110,7 @@ export default function CoreFeatures() {
           <div className="space-y-4 max-w-2xl">
             {/* Tagline Pill */}
             <div className="inline-flex items-center gap-2 bg-white px-3 py-1.5 rounded-full text-xs font-semibold text-gray-700 shadow-sm border border-gray-100">
-              <span className="w-1.5 h-1.5 bg-[#44B549] rounded-full"></span>
+              <span className="w-1.5 h-1.5 bg-accent-600 rounded-full"></span>
               Our Core Features
             </div>
             {/* Main Title Header */}
@@ -121,28 +121,11 @@ export default function CoreFeatures() {
 
           {/* Top Description & Action Link */}
           <div className="flex flex-col sm:flex-row items-start lg:items-end gap-5 lg:max-w-md">
-            <p className="text-gray-500 text-sm sm:text-base leading-relaxed">
+            <p className="text-gray-500 text-sm sm:text-base leading-relaxed text-justify">
               Our core features are designed to maximize renewable energy
               production while reducing environmental impact and supporting a
               cleaner future.
             </p>
-            <button className="inline-flex items-center gap-2 bg-[#44B549] hover:bg-[#399d3e] transition-colors text-white font-semibold text-sm px-6 py-3.5 rounded-lg shadow-sm whitespace-nowrap">
-              Contact Us
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={2.5}
-                stroke="currentColor"
-                className="w-4 h-4"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25"
-                />
-              </svg>
-            </button>
           </div>
         </div>
 
@@ -170,7 +153,7 @@ export default function CoreFeatures() {
               >
                 {/* Upper row: Icon Badge & Custom Text Number */}
                 <div className="flex items-center justify-between">
-                  <div className="w-11 h-11 rounded-full bg-[#44B549] text-white flex items-center justify-center shadow-sm">
+                  <div className="w-11 h-11 rounded-full bg-accent-600 text-white flex items-center justify-center shadow-sm">
                     {feature.icon}
                   </div>
                   <span className="text-sm font-extrabold text-[#051720] tracking-wider">

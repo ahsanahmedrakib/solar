@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
 const WhyChooseUs: React.FC = () => {
@@ -93,25 +94,12 @@ const WhyChooseUs: React.FC = () => {
             </div>
 
             {/* CTA Button */}
-            <div className="pt-2">
+            {/* <div className="pt-2">
               <button className="inline-flex items-center gap-2 bg-[#44B549] hover:bg-[#399d3e] transition-colors text-white font-semibold text-sm px-6 py-3.5 rounded-lg shadow-sm">
                 Learn More
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={2.5}
-                  stroke="currentColor"
-                  className="w-4 h-4"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25"
-                  />
-                </svg>
+                <ArrowUpRight />
               </button>
-            </div>
+            </div> */}
           </div>
 
           {/* RIGHT COLUMN: IMAGES */}
@@ -160,8 +148,8 @@ const WhyChooseUs: React.FC = () => {
               </div>
 
               {/* Green Support Card */}
-              <div className="w-full aspect-[1.15/1] sm:aspect-[0.9/1] bg-[#44B549] text-white p-6 sm:p-8 rounded-3xl sm:rounded-4xl shadow-sm flex flex-col justify-end relative overflow-hidden group">
-                <div className="absolute top-6 left-6 w-20 h-20 sm:w-24 sm:h-24 opacity-95 transition-transform duration-500 group-hover:scale-110">
+              <div className="w-full aspect-[1.15/1] sm:aspect-[0.9/1] bg-accent-600 text-white p-6 sm:p-8 rounded-3xl sm:rounded-4xl shadow-sm flex flex-col justify-end relative overflow-hidden group">
+                <div className="absolute top-6 left-6 w-20 h-20 sm:w-24 sm:h-24 md:w-30 md:h-30 opacity-95 transition-transform duration-500 group-hover:scale-110">
                   <Image
                     src="/images/home/why-choose-info-image.png"
                     alt="Solar engineer inspecting photovoltaic panels"
@@ -236,18 +224,15 @@ const WhyChooseUs: React.FC = () => {
             <p className="text-lg md:text-xl font-medium text-gray-800 leading-tight">
               Let&apos;s make something great work together.
             </p>
-            <a
-              href="#"
-              className="inline-block mt-3 text-emerald-600 hover:text-emerald-700 font-semibold underline underline-offset-4 decoration-2 decoration-emerald-300 hover:decoration-emerald-500 transition-colors text-base"
-            >
-              Get Free Quote
-            </a>
           </div>
 
-          <button className="mt-4 md:mt-0 px-8 py-3.5 bg-emerald-600 hover:bg-emerald-700 transition-colors text-white font-semibold rounded-3xl text-sm whitespace-nowrap flex items-center gap-2 shadow-lg shadow-emerald-500/30 active:scale-95">
+          <Link
+            href="/contact"
+            className="mt-4 md:mt-0 px-8 py-3.5 bg-emerald-600 hover:bg-emerald-700 transition-colors text-white font-semibold rounded-3xl text-sm whitespace-nowrap flex items-center gap-2 shadow-lg shadow-emerald-500/30 active:scale-95"
+          >
             Contact Us
             <span className="text-xl leading-none">→</span>
-          </button>
+          </Link>
         </div>
       </div>
     </>

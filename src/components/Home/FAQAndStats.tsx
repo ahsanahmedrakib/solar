@@ -126,7 +126,7 @@ export default function FAQAndStats() {
         <div className="lg:col-span-5 space-y-6 lg:sticky lg:top-8">
           {/* Tagline Badge */}
           <div className="inline-flex items-center gap-2 bg-[#F3F4F6] px-3 py-1.5 rounded-full text-xs font-semibold text-gray-700">
-            <span className="w-1.5 h-1.5 bg-[#44B549] rounded-full"></span>
+            <span className="w-1.5 h-1.5 bg-accent-600 rounded-full"></span>
             Frequently Asked Questions
           </div>
 
@@ -137,30 +137,10 @@ export default function FAQAndStats() {
 
           {/* Context Explainer Paragraph */}
           <p className="text-gray-500 text-sm sm:text-base font-normal leading-relaxed max-w-md">
-            We’ve answered the most common questions to help you understand
-            solar energy, installation, costs, and maintenance.
+            {
+              " We've answered the most common questions to help you understand solar energy, installation, costs, and maintenance."
+            }
           </p>
-
-          {/* Action Callout Button Link */}
-          <div className="pt-2">
-            <button className="inline-flex items-center gap-2 bg-[#44B549] hover:bg-[#399d3e] transition-colors text-white font-semibold text-sm px-6 py-3.5 rounded-lg shadow-sm">
-              View All Questions
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={2.5}
-                stroke="currentColor"
-                className="w-4 h-4"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25"
-                />
-              </svg>
-            </button>
-          </div>
         </div>
 
         {/* RIGHT COLUMN: ACCORDION COMPONENT LIST */}
@@ -174,7 +154,7 @@ export default function FAQAndStats() {
                   onClick={() => handleToggle(faq.id)}
                   className="w-full flex items-center justify-between gap-4 text-left group focus:outline-none"
                 >
-                  <h3 className="text-base sm:text-lg font-bold text-[#051720] tracking-tight transition-colors duration-200 group-hover:text-[#44B549]">
+                  <h3 className="text-base sm:text-lg font-bold text-[#051720] tracking-tight transition-colors duration-200 group-hover:text-accent-600">
                     {faq.question}
                   </h3>
 
@@ -182,8 +162,8 @@ export default function FAQAndStats() {
                   <div
                     className={`shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-all duration-300 ${
                       isOpen
-                        ? "bg-[#44B549] text-white rotate-0"
-                        : "bg-[#44B549]/10 text-[#44B549] rotate-180"
+                        ? "bg-accent-600 text-white rotate-0"
+                        : "bg-accent-600/10 text-accent-600 rotate-180"
                     }`}
                   >
                     <svg
@@ -236,7 +216,7 @@ export default function FAQAndStats() {
               }`}
             >
               {/* Highlight Icon Background circle element */}
-              <div className="shrink-0 w-12 h-12 rounded-full bg-[#44B549] text-white flex items-center justify-center shadow-sm">
+              <div className="shrink-0 w-12 h-12 rounded-full bg-accent-600 text-white flex items-center justify-center shadow-sm">
                 {stat.icon}
               </div>
 
