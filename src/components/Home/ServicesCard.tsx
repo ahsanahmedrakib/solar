@@ -11,7 +11,7 @@ const ServicesCard = ({ services }: { services: ServiceCard[] }) => {
           <Link
             href={"services/" + service.slug}
             key={service.id}
-            className="bg-white rounded-4xl p-6 shadow-sm border border-gray-100/60 flex flex-col justify-between hover:shadow-md transition-shadow group"
+            className="bg-white rounded-xl p-6 shadow-sm border border-gray-100/60 flex flex-col justify-between hover:shadow-md transition-shadow group"
           >
             <div className="space-y-5">
               {/* Image Container with Floating Icon */}

@@ -156,7 +156,7 @@ export default function Approach() {
 
           {/* Right Image Column */}
           <div className="relative w-full h-87.5 sm:h-112.5 lg:h-137.5 lg:col-span-5">
-            <div className="relative h-full w-full overflow-hidden rounded-3xl shadow-lg">
+            <div className="relative h-full w-full overflow-hidden rounded-xl shadow-lg">
               <Image
                 src="/images/about/approach-image.jpg" // Place your image asset path here
                 alt="Engineers reviewing solar planning on a tablet"

@@ -194,7 +194,7 @@ export default function Testimonials() {
                 {[1, 2, 3].map((n) => (
                   <div
                     key={n}
-                    className="shrink-0 w-72.5 sm:w-85 bg-white rounded-3xl p-6 sm:p-8 border border-gray-100 shadow-sm animate-pulse"
+                    className="shrink-0 w-72.5 sm:w-85 bg-white rounded-xl p-6 sm:p-8 border border-gray-100 shadow-sm animate-pulse"
                   >
                     <div className="flex gap-1 mb-4">
                       {[1, 2, 3, 4, 5].map((s) => (

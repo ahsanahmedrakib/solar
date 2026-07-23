@@ -166,7 +166,7 @@ export default function Footer() {
           </div>
 
           {/* INNER CARD OVERLAY MAIN LINKS CONTROLLER */}
-          <div className="lg:col-span-8 bg-[#092232]/80 backdrop-blur-md rounded-3xl p-8 sm:p-10 border border-white/5 grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-6">
+          <div className="lg:col-span-8 bg-[#092232]/80 backdrop-blur-md rounded-xl p-8 sm:p-10 border border-white/5 grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-6">
             {/* QUICK LINKS — always static */}
             <div className="space-y-4">
               <h3 className="text-lg font-bold text-white tracking-tight">

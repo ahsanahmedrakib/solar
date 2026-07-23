@@ -40,7 +40,7 @@ export default function Blogs() {
             {Array.from({ length: 3 })?.map((_, i) => (
               <div
                 key={i}
-                className="relative w-full aspect-[0.84/1] rounded-4xl bg-gray-200 animate-pulse"
+                className="relative w-full aspect-[0.84/1] rounded-xl bg-gray-200 animate-pulse"
               />
             ))}
           </div>
@@ -85,7 +85,7 @@ export default function Blogs() {
             <Link
               href={"blogs/" + blog.slug}
               key={blog.id}
-              className="relative w-full aspect-[0.84/1] rounded-4xl overflow-hidden group shadow-md bg-gray-100"
+              className="relative w-full aspect-[0.84/1] rounded-xl overflow-hidden group shadow-md bg-gray-100"
             >
               <Image
                 src={blog.imageUrl}

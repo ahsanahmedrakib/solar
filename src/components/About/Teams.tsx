@@ -47,7 +47,7 @@ export default function Teams() {
             {Array.from({ length: 3 })?.map((_, index) => (
               <div
                 key={index}
-                className="flex flex-col overflow-hidden rounded-3xl bg-[#f4f7fa] animate-pulse"
+                className="flex flex-col overflow-hidden rounded-xl bg-[#f4f7fa] animate-pulse"
               >
                 <div className="relative aspect-4/3 w-full overflow-hidden p-4 pb-0">
                   <div className="h-full w-full overflow-hidden rounded-2xl bg-gray-200" />
@@ -72,7 +72,7 @@ export default function Teams() {
             {teamMembers?.map((member, index) => (
               <div
                 key={index}
-                className="group flex flex-col overflow-hidden rounded-3xl bg-[#f4f7fa] transition-all duration-300 hover:shadow-md"
+                className="group flex flex-col overflow-hidden rounded-xl bg-[#f4f7fa] transition-all duration-300 hover:shadow-md"
               >
                 {/* Profile Image Container */}
                 <div className="relative aspect-4/3 w-full overflow-hidden p-4 pb-0">

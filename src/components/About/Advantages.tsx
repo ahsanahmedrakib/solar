@@ -30,7 +30,7 @@ export default function Advantages() {
         {/* ================= CARD GRID SECTION ================= */}
         <div className="grid grid-cols-1 gap-6 sm:gap-8 lg:grid-cols-3 items-stretch">
           {/* Left Card: 24*7 Support */}
-          <div className="flex flex-col justify-between rounded-3xl bg-[#f4f7fa] p-8 md:p-10 transition-all duration-300 hover:shadow-sm">
+          <div className="flex flex-col justify-between rounded-xl bg-[#f4f7fa] p-8 md:p-10 transition-all duration-300 hover:shadow-sm">
             <div>
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#34A853] text-white shadow-sm">
                 {/* 24/7 Grid Icon alternative */}
@@ -66,7 +66,7 @@ export default function Advantages() {
           </div>
 
           {/* Middle Card: Team Media Asset */}
-          <div className="relative min-h-80 sm:min-h-100 lg:min-h-full overflow-hidden rounded-3xl shadow-sm">
+          <div className="relative min-h-80 sm:min-h-100 lg:min-h-full overflow-hidden rounded-xl shadow-sm">
             <Image
               src="/images/about/our-advantages-image.jpg"
               alt="Solar energy specialists consulting on top of panels"
@@ -77,7 +77,7 @@ export default function Advantages() {
           </div>
 
           {/* Right Card: Projects Completed */}
-          <div className="flex flex-col justify-between rounded-3xl bg-[#f4f7fa] p-8 md:p-10 transition-all duration-300 hover:shadow-sm">
+          <div className="flex flex-col justify-between rounded-xl bg-[#f4f7fa] p-8 md:p-10 transition-all duration-300 hover:shadow-sm">
             <div>
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#34A853] text-white shadow-sm">
                 {/* Globe/Network Icon */}

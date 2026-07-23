@@ -1,8 +1,8 @@
 "use client";
 
 import { DEFAULT_SERVICES, type Service } from "@/data/services";
-import { useQueryServices } from "@/lib/queries";
 import { iconRenderer } from "@/lib/iconRenderer";
+import { useQueryServices } from "@/lib/queries";
 import type { ServiceCard } from "@/types/services";
 import { useMemo } from "react";
 import ServicesCard from "../Home/ServicesCard";
@@ -37,7 +37,7 @@ const AllServices = () => {
                 {Array.from({ length: 6 })?.map((_, i) => (
                   <div
                     key={i}
-                    className="bg-white rounded-4xl p-6 shadow-sm border border-gray-100/60 animate-pulse"
+                    className="bg-white rounded-xl p-6 shadow-sm border border-gray-100/60 animate-pulse"
                   >
                     <div className="w-full aspect-1.5/1 rounded-2xl bg-gray-200" />
                     <div className="mt-5 space-y-3">
