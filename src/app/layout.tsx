@@ -1,6 +1,7 @@
 import ClientProviders from "@/components/Common/ClientProviders";
 import { LazyLayout } from "@/components/Common/LazyLayout";
-import { getSiteInfo } from "@/lib/site";
+import { DEFAULT_OG_IMAGE, FACEBOOK_PAGE_ID, SITE_URL } from "@/lib/config";
+import { absoluteUrl, getSiteInfo } from "@/lib/site";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -21,12 +22,36 @@ export async function generateMetadata(): Promise<Metadata> {
   const { companyName, tagline, metaTitle, metaDescription, keywords, favicon } =
     await getSiteInfo();
 
+  const defaultDescription = metaDescription || tagline;
+  const defaultTitle = metaTitle || companyName;
+  const ogImage = absoluteUrl(DEFAULT_OG_IMAGE);
+
   const metadata: Metadata = {
+    metadataBase: new URL(SITE_URL),
     title: {
-      default: metaTitle || companyName,
+      default: defaultTitle,
       template: `%s | ${companyName}`,
     },
-    description: metaDescription || tagline,
+    description: defaultDescription,
+    alternates: { canonical: "/" },
+    openGraph: {
+      title: defaultTitle,
+      description: defaultDescription,
+      url: SITE_URL,
+      siteName: companyName,
+      locale: "en_US",
+      type: "website",
+      images: [ogImage],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: defaultTitle,
+      description: defaultDescription,
+      images: [ogImage],
+    },
+    other: {
+      "fb:pages": FACEBOOK_PAGE_ID,
+    },
   };
 
   const keywordList = keywords

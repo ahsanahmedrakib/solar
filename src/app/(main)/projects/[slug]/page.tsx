@@ -1,10 +1,11 @@
-import dynamic from "next/dynamic";
 import { MainSitePageLoading } from "@/components/Common/MainSitePageLoading";
+import { BreadcrumbJsonLd } from "@/components/SEO/JsonLd";
 import { db } from "@/lib/db";
 import { projects } from "@/lib/schema";
-import { slugToTitle, stripHtml, truncateText } from "@/lib/site";
+import { pageMetadata, slugToTitle, stripHtml, truncateText } from "@/lib/site";
 import { eq } from "drizzle-orm";
 import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 
 const SingleProjectPage = dynamic(
   () => import("@/components/Projects/SingleProjectPage"),
@@ -26,12 +27,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       .limit(1);
     if (!project) return { title: fallbackTitle };
     const description = stripHtml(project.projectDetails || "");
-    return {
+    return pageMetadata({
       title: project.title,
       description: truncateText(
-        description || `${project.category} solar project for ${project.client} in ${project.location}.`,
+        description ||
+          `${project.category} solar project for ${project.client} in ${project.location}.`,
       ),
-    };
+      path: `/projects/${project.slug}`,
+      images: [project.imageUrl],
+    });
   } catch {
     return { title: fallbackTitle };
   }
@@ -40,9 +44,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function Page({ params }: Props) {
   const { slug } = await params;
   const title = slugToTitle(slug);
+
   return (
     <div>
+      <BreadcrumbJsonLd
+        items={[
+          { name: "Home", href: "/" },
+          { name: "Projects", href: "/projects" },
+          { name: title, href: `/projects/${slug}` },
+        ]}
+      />
       <SingleProjectPage slug={slug} title={title} />
     </div>
   );
 }
+

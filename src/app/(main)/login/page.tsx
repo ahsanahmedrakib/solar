@@ -1,5 +1,5 @@
 import { MainSitePageLoading } from "@/components/Common/MainSitePageLoading";
-import { getSiteInfo } from "@/lib/site";
+import { getSiteInfo, pageMetadata } from "@/lib/site";
 import dynamic from "next/dynamic";
 import type { Metadata } from "next";
 
@@ -8,11 +8,16 @@ const LoginPage = dynamic(() => import("@/components/Login/LoginPage"), {
 });
 
 export async function generateMetadata(): Promise<Metadata> {
-  const { companyName } = await getSiteInfo();
-  return {
-    title: "Login",
-    description: `Sign in to the ${companyName} admin panel.`,
-  };
+  const info = await getSiteInfo();
+  return pageMetadata(
+    {
+      title: "Login",
+      description: `Sign in to the ${info.companyName} admin panel.`,
+      path: "/login",
+      noindex: true,
+    },
+    info,
+  );
 }
 
 export default function Page() {
@@ -22,4 +27,3 @@ export default function Page() {
     </div>
   );
 }
-

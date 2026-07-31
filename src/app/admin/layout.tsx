@@ -12,6 +12,7 @@ export async function generateMetadata(): Promise<Metadata> {
       template: `%s | ${companyName} Admin`,
     },
     description: `${companyName} Admin Panel`,
+    robots: { index: false, follow: false },
   };
 }
 

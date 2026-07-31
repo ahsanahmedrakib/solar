@@ -1,5 +1,7 @@
+import type { Metadata } from "next";
 import { eq } from "drizzle-orm";
 import { getDefaultField } from "@/data/settings";
+import { FACEBOOK_PAGE_URL, LINKEDIN_URL, SITE_URL } from "@/lib/config";
 import { db } from "@/lib/db";
 import { settings } from "@/lib/schema";
 
@@ -14,6 +16,12 @@ export interface SiteInfo {
   metaDescription: string;
   keywords: string;
   favicon: string;
+  logo: string;
+  email: string;
+  phone: string;
+  address: string;
+  facebookUrl: string;
+  linkedinUrl: string;
 }
 
 const FALLBACK: SiteInfo = {
@@ -23,6 +31,12 @@ const FALLBACK: SiteInfo = {
   metaDescription: getDefaultField("seo", "meta-desc"),
   keywords: getDefaultField("seo", "meta-keywords"),
   favicon: getDefaultField("general", "site-favicon"),
+  logo: getDefaultField("general", "site-logo"),
+  email: getDefaultField("general", "contact-email"),
+  phone: getDefaultField("general", "phone-number"),
+  address: getDefaultField("general", "hq-address"),
+  facebookUrl: getDefaultField("social", "social-fb") || FACEBOOK_PAGE_URL,
+  linkedinUrl: getDefaultField("social", "social-li") || LINKEDIN_URL,
 };
 
 export async function getSiteInfo(): Promise<SiteInfo> {
@@ -46,10 +60,67 @@ export async function getSiteInfo(): Promise<SiteInfo> {
         field("seo", "meta-desc") || FALLBACK.metaDescription,
       keywords: field("seo", "meta-keywords") || FALLBACK.keywords,
       favicon: field("general", "site-favicon") || FALLBACK.favicon,
+      logo: field("general", "site-logo") || FALLBACK.logo,
+      email: field("general", "contact-email") || FALLBACK.email,
+      phone: field("general", "phone-number") || FALLBACK.phone,
+      address: field("general", "hq-address") || FALLBACK.address,
+      facebookUrl: field("social", "social-fb") || FALLBACK.facebookUrl,
+      linkedinUrl: field("social", "social-li") || FALLBACK.linkedinUrl,
     };
   } catch {
     return FALLBACK;
   }
+}
+
+export function absoluteUrl(path: string): string {
+  return new URL(path, SITE_URL).toString();
+}
+
+export interface PageMetadataOptions {
+  title: string;
+  description: string;
+  path: string;
+  images?: string[];
+  type?: "website" | "article";
+  noindex?: boolean;
+}
+
+export async function pageMetadata(
+  opts: PageMetadataOptions,
+  site?: SiteInfo,
+): Promise<Metadata> {
+  const info = site ?? (await getSiteInfo());
+  const canonical = absoluteUrl(opts.path);
+  const images = (opts.images ?? [])
+    .filter((src) => src && /^(?:\/|https?:\/\/)/.test(src))
+    .map((src) => absoluteUrl(src));
+
+  const metadata: Metadata = {
+    title: opts.title,
+    description: opts.description,
+    alternates: { canonical },
+    openGraph: {
+      title: opts.title,
+      description: opts.description,
+      url: canonical,
+      siteName: info.companyName,
+      locale: "en_US",
+      type: opts.type ?? "website",
+      ...(images.length > 0 ? { images } : {}),
+    },
+    twitter: {
+      card: images.length > 0 ? "summary_large_image" : "summary",
+      title: opts.title,
+      description: opts.description,
+      ...(images.length > 0 ? { images } : {}),
+    },
+  };
+
+  if (opts.noindex) {
+    metadata.robots = { index: false, follow: false };
+  }
+
+  return metadata;
 }
 
 export function stripHtml(html: string): string {
