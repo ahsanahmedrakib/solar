@@ -1,12 +1,19 @@
 import { AdminShell } from "@/components/Admin/AdminShell";
 import { AdminGuard } from "@/components/Auth/AdminGuard";
+import { getSiteInfo } from "@/lib/site";
 import type { Metadata } from "next";
 import "./admin.css";
 
-export const metadata: Metadata = {
-  title: "Admin Dashboard - Ahead Solar",
-  description: "Ahead Solar Admin Panel",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { companyName } = await getSiteInfo();
+  return {
+    title: {
+      default: `${companyName} Admin`,
+      template: `%s | ${companyName} Admin`,
+    },
+    description: `${companyName} Admin Panel`,
+  };
+}
 
 export default function AdminLayout({
   children,

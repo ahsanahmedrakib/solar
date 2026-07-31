@@ -21,13 +21,15 @@ export default function FAQAndStats() {
   const faqs: FAQItem[] = [
     {
       id: 1,
-      question: "1. Is rooftop solar suitable for my factory or commercial building?",
+      question:
+        "1. Is rooftop solar suitable for my factory or commercial building?",
       answer:
         "Yes, rooftop solar is ideal for most industrial and commercial buildings with adequate roof space. We assess roof structure, sunlight exposure, and your energy consumption to design a system that maximizes savings and performance.",
     },
     {
       id: 2,
-      question: "2. What is the difference between CapEx and OpEx solar models?",
+      question:
+        "2. What is the difference between CapEx and OpEx solar models?",
       answer:
         "With the CapEx model, you own the solar system outright and enjoy full savings from day one. With the OpEx model, we install and maintain the system at our cost — you simply pay for the electricity generated at a lower rate than the grid.",
     },
@@ -152,7 +154,7 @@ export default function FAQAndStats() {
                 <button
                   type="button"
                   onClick={() => handleToggle(faq.id)}
-                  className="w-full flex items-center justify-between gap-4 text-left group focus:outline-none"
+                  className="w-full flex items-center cursor-pointer justify-between gap-4 text-left group focus:outline-none"
                 >
                   <h3 className="text-base sm:text-lg font-bold text-[#051720] tracking-tight transition-colors duration-200 group-hover:text-accent-600">
                     {faq.question}

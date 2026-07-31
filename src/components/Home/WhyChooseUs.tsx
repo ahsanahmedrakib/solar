@@ -183,7 +183,7 @@ const WhyChooseUs: React.FC = () => {
           {services?.map((service, index) => (
             <div
               key={index}
-              className="group flex items-center gap-2 bg-white hover:bg-gray-50 transition-all duration-200 px-5 py-3 rounded-xl shadow-sm border border-gray-800 hover:shadow-md cursor-pointer active:scale-95"
+              className="group flex items-center gap-2 bg-white hover:bg-gray-50 transition-all duration-200 px-5 py-3 rounded-xl shadow-sm border border-gray-800 hover:shadow-md active:scale-95"
             >
               <div className="w-3 h-3 bg-emerald-500 rounded-full shrink-0 group-hover:animate-pulse" />
               <span className="text-sm font-medium text-gray-800 whitespace-nowrap">
