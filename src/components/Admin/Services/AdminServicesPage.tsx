@@ -6,13 +6,13 @@ import type { Service } from "@/data/services";
 import { DEFAULT_ADMIN_LOGO } from "@/data/settings";
 import { apiClient } from "@/lib/apiClient";
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as Icons from "lucide-react";
 import {
   Activity,
   AlertCircle,
   Battery,
   Edit2,
   Globe,
+  HelpCircle,
   Leaf,
   Plus,
   Search,
@@ -42,6 +42,9 @@ const AVAILABLE_ICONS = [
   { name: "Leaf", label: "Eco (Leaf)", icon: Leaf },
   { name: "Activity", label: "Monitoring (Activity)", icon: Activity },
 ];
+
+const ICON_MAP: Record<string, React.ComponentType<React.SVGProps<SVGSVGElement>>> =
+  Object.fromEntries(AVAILABLE_ICONS.map(({ name, icon }) => [name, icon]));
 
 // Validation Schema
 const serviceSchema = yup.object().shape({
@@ -235,15 +238,11 @@ export default function AdminServicesPage() {
 
   // Dynamic Icon Renderer
   const renderIcon = (iconName: string, className = "w-5 h-5") => {
-    const lucideIcons = Icons as unknown as Record<
-      string,
-      React.ComponentType<React.SVGProps<SVGSVGElement>>
-    >;
-    const IconComponent = lucideIcons[iconName];
+    const IconComponent = ICON_MAP[iconName];
     return IconComponent ? (
       <IconComponent className={className} />
     ) : (
-      <Icons.HelpCircle className={className} />
+      <HelpCircle className={className} />
     );
   };
 

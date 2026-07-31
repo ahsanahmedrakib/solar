@@ -2,6 +2,7 @@ import { db } from "@/lib/db";
 import { isTableNotExistsError } from "@/lib/db-helpers";
 import { settings } from "@/lib/schema";
 import { deleteImage, saveImage } from "@/lib/imageHelper";
+import { getRequestTokenPayload } from "@/lib/token";
 import { NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
 
@@ -74,6 +75,14 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    const payload = getRequestTokenPayload(request);
+    if (!payload) {
+      return NextResponse.json(
+        { success: false, error: "Unauthorized" },
+        { status: 401 },
+      );
+    }
+
     const body = await request.json();
     const { sections } = body;
 

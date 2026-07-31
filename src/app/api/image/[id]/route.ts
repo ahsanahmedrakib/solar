@@ -18,6 +18,8 @@ export async function GET(
     return new Response(new Uint8Array(image.data), {
       headers: {
         "Content-Type": image.contentType,
+        "X-Content-Type-Options": "nosniff",
+        "Content-Security-Policy": "default-src 'none'; sandbox",
         "Cache-Control": "public, max-age=31536000, immutable",
       },
     });

@@ -2,20 +2,39 @@
 
 import { useAuth } from "@/components/Auth/AuthProvider";
 import { DEFAULT_LOGO } from "@/data/settings";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { AlertCircle, Eye, EyeOff, LogIn } from "lucide-react";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import * as yup from "yup";
+
+const loginSchema = yup.object().shape({
+  email: yup
+    .string()
+    .required("Email is required")
+    .email("Enter a valid email address"),
+  password: yup.string().required("Password is required"),
+});
+
+type LoginFormData = yup.InferType<typeof loginSchema>;
 
 function LoginForm() {
   const { user, loading, transitioning, login } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormData>({
+    resolver: yupResolver(loginSchema),
+  });
 
   useEffect(() => {
     if (!loading && user) {
@@ -24,18 +43,12 @@ function LoginForm() {
     }
   }, [user, loading, router, searchParams]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = async (values: LoginFormData) => {
     setError("");
-
-    if (!email || !password) {
-      setError("Email and password are required");
-      return;
-    }
 
     setSubmitting(true);
     try {
-      await login(email, password);
+      await login(values.email, values.password);
       const redirect = searchParams.get("redirect") || "/admin";
       router.replace(redirect);
     } catch (err) {
@@ -86,18 +99,21 @@ function LoginForm() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
             <div className="flex flex-col gap-1.5">
               <label className="text-xs font-semibold text-gray-700 uppercase tracking-wider">
                 Email Address
               </label>
               <input
                 type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
                 placeholder="admin@sunexsolar.com"
+                aria-invalid={errors.email ? true : undefined}
+                {...register("email")}
                 className="w-full bg-gray-50 border border-gray-200 text-sm text-gray-900 rounded-xl p-3 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition"
               />
+              {errors.email && (
+                <p className="text-red-500 text-xs">{errors.email.message}</p>
+              )}
             </div>
 
             <div className="flex flex-col gap-1.5">
@@ -107,9 +123,9 @@ function LoginForm() {
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
+                  aria-invalid={errors.password ? true : undefined}
+                  {...register("password")}
                   className="w-full bg-gray-50 border border-gray-200 text-sm text-gray-900 rounded-xl p-3 pr-10 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition"
                 />
                 <button
@@ -120,6 +136,11 @@ function LoginForm() {
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
+              {errors.password && (
+                <p className="text-red-500 text-xs">
+                  {errors.password.message}
+                </p>
+              )}
             </div>
 
             <button

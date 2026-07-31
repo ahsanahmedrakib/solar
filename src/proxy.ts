@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { verifyAccessToken } from "@/lib/token";
 
 const PUBLIC_GET_PREFIXES = [
   "/api/settings",
@@ -7,16 +8,18 @@ const PUBLIC_GET_PREFIXES = [
   "/api/blogs",
   "/api/hero-slides",
   "/api/team",
+  "/api/reviews",
   "/api/image",
   "/api/db",
   "/api/env",
 ];
 
+const PUBLIC_POST_PATHS = ["/api/contact", "/api/reviews"];
+
 const PUBLIC_PATHS = [
   "/api/auth/login",
   "/api/auth/refresh",
   "/api/auth/logout",
-  "/api/contact",
 ];
 
 function getToken(request: NextRequest): string | null {
@@ -48,10 +51,23 @@ export function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
+  if (method === "POST" && PUBLIC_POST_PATHS.includes(pathname)) {
+    return NextResponse.next();
+  }
+
   const token = getToken(request);
   if (!token) {
     return NextResponse.json(
       { success: false, error: "Authorization header missing or invalid" },
+      { status: 401 },
+    );
+  }
+
+  try {
+    verifyAccessToken(token);
+  } catch {
+    return NextResponse.json(
+      { success: false, error: "Invalid or expired token" },
       { status: 401 },
     );
   }

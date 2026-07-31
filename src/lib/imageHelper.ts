@@ -11,10 +11,26 @@ const ALLOWED_FOLDERS = [
   "settings",
 ];
 
+const EXTENSION_MAP: Record<string, string> = {
+  jpeg: "jpg",
+  jpg: "jpg",
+  png: "png",
+  gif: "gif",
+  webp: "webp",
+};
+
 function validateFolderName(folderName: string): void {
   if (!ALLOWED_FOLDERS.includes(folderName)) {
     throw new Error(`Invalid folder name: "${folderName}"`);
   }
+}
+
+function sanitizeImageId(id: string | number): string {
+  const str = String(id);
+  if (!/^[a-zA-Z0-9_-]+$/.test(str)) {
+    throw new Error("Invalid image resource ID");
+  }
+  return str;
 }
 
 export async function saveImage(
@@ -35,8 +51,12 @@ export async function saveImage(
     throw new Error("Invalid base64 image data");
   }
 
-  const fileType = matches[1];
-  const extension = fileType === "jpeg" ? "jpg" : fileType;
+  const fileType = matches[1].toLowerCase();
+  const extension = EXTENSION_MAP[fileType];
+  if (!extension) {
+    throw new Error(`Unsupported image type: ${fileType}`);
+  }
+
   const buffer = Buffer.from(matches[2], "base64");
 
   if (process.env.NODE_ENV === "production") {
@@ -51,7 +71,7 @@ export async function saveImage(
       fs.mkdirSync(targetDir, { recursive: true });
     }
 
-    const fileName = `${id}_${Date.now()}.${extension}`;
+    const fileName = `${sanitizeImageId(id)}_${Date.now()}.${extension}`;
     const filePath = path.join(targetDir, fileName);
 
     fs.writeFileSync(filePath, buffer);
@@ -72,6 +92,10 @@ export async function deleteImage(imageUrl: string): Promise<void> {
   }
 
   if (!imageUrl.startsWith("/images/api/")) {
+    return;
+  }
+
+  if (imageUrl.includes("..") || imageUrl.includes("\\")) {
     return;
   }
 

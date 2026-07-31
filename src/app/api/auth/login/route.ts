@@ -6,6 +6,7 @@ import {
 } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { isTableNotExistsError } from "@/lib/db-helpers";
+import { getClientIp, isRateLimited } from "@/lib/rateLimit";
 import { users } from "@/lib/schema";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
@@ -18,6 +19,14 @@ export async function POST(request: Request) {
       return NextResponse.json(
         { success: false, error: "Email and password are required" },
         { status: 400 },
+      );
+    }
+
+    const ip = getClientIp(request);
+    if (isRateLimited(`login:${ip}:${String(email).toLowerCase()}`, 10, 15 * 60 * 1000)) {
+      return NextResponse.json(
+        { success: false, error: "Too many login attempts. Please try again later." },
+        { status: 429 },
       );
     }
 

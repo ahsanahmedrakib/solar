@@ -2,6 +2,7 @@ import { db } from "@/lib/db";
 import { isTableNotExistsError } from "@/lib/db-helpers";
 import { blogs } from "@/lib/schema";
 import { deleteImage, saveImage } from "@/lib/imageHelper";
+import { getRequestTokenPayload } from "@/lib/token";
 import { NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
 
@@ -23,6 +24,14 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    const payload = getRequestTokenPayload(request);
+    if (!payload) {
+      return NextResponse.json(
+        { success: false, error: "Unauthorized" },
+        { status: 401 },
+      );
+    }
+
     const body = await request.json();
     const { title, category, imageUrl, slug, content, tags, date, blogDetails } = body;
 
@@ -63,6 +72,14 @@ export async function POST(request: Request) {
 
 export async function PUT(request: Request) {
   try {
+    const payload = getRequestTokenPayload(request);
+    if (!payload) {
+      return NextResponse.json(
+        { success: false, error: "Unauthorized" },
+        { status: 401 },
+      );
+    }
+
     const body = await request.json();
     const { id, title, category, imageUrl, slug, content, tags, date, blogDetails } = body;
 
@@ -117,6 +134,14 @@ export async function PUT(request: Request) {
 
 export async function DELETE(request: Request) {
   try {
+    const payload = getRequestTokenPayload(request);
+    if (!payload) {
+      return NextResponse.json(
+        { success: false, error: "Unauthorized" },
+        { status: 401 },
+      );
+    }
+
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
     if (!id) {

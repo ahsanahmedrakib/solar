@@ -1,11 +1,21 @@
 import { db } from "@/lib/db";
 import { isTableNotExistsError } from "@/lib/db-helpers";
 import { contactQueries } from "@/lib/schema";
+import { getClientIp, isRateLimited } from "@/lib/rateLimit";
+import { getRequestTokenPayload } from "@/lib/token";
 import { NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    const payload = getRequestTokenPayload(request);
+    if (!payload) {
+      return NextResponse.json(
+        { success: false, error: "Unauthorized" },
+        { status: 401 },
+      );
+    }
+
     const queries = await db.select().from(contactQueries);
     return NextResponse.json({ success: true, data: queries });
   } catch (error: unknown) {
@@ -22,6 +32,14 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    const ip = getClientIp(request);
+    if (isRateLimited(`contact:${ip}`, 5, 15 * 60 * 1000)) {
+      return NextResponse.json(
+        { success: false, error: "Too many requests. Please try again later." },
+        { status: 429 },
+      );
+    }
+
     const body = await request.json();
     const { name, email, phone, subject, message } = body;
 
@@ -32,16 +50,47 @@ export async function POST(request: Request) {
       );
     }
 
+    if (typeof name !== "string" || name.trim().length < 2) {
+      return NextResponse.json(
+        { success: false, error: "Name must be at least 2 characters" },
+        { status: 400 },
+      );
+    }
+
+    if (
+      typeof email !== "string" ||
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())
+    ) {
+      return NextResponse.json(
+        { success: false, error: "Invalid email address" },
+        { status: 400 },
+      );
+    }
+
+    if (typeof message !== "string" || message.trim().length < 10) {
+      return NextResponse.json(
+        { success: false, error: "Message must be at least 10 characters" },
+        { status: 400 },
+      );
+    }
+
+    if (typeof subject !== "string" || subject.trim().length < 2) {
+      return NextResponse.json(
+        { success: false, error: "Subject must be at least 2 characters" },
+        { status: 400 },
+      );
+    }
+
     const newQuery = {
-      id: body.id || `cq-${Date.now()}`,
-      name,
-      email,
-      phone: phone ?? "",
-      subject,
-      message,
-      createdAt: body.createdAt || new Date().toISOString(),
-      status: body.status || "new",
-      notes: body.notes ?? null,
+      id: `cq-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      name: name.trim(),
+      email: email.trim(),
+      phone: typeof phone === "string" ? phone.trim() : "",
+      subject: subject.trim(),
+      message: message.trim(),
+      createdAt: new Date().toISOString(),
+      status: "new",
+      notes: null,
     };
 
     await db.insert(contactQueries).values(newQuery);
@@ -57,6 +106,14 @@ export async function POST(request: Request) {
 
 export async function PUT(request: Request) {
   try {
+    const payload = getRequestTokenPayload(request);
+    if (!payload) {
+      return NextResponse.json(
+        { success: false, error: "Unauthorized" },
+        { status: 401 },
+      );
+    }
+
     const body = await request.json();
     const { id, name, email, phone, subject, message, status, notes } = body;
 
@@ -96,6 +153,14 @@ export async function PUT(request: Request) {
 
 export async function DELETE(request: Request) {
   try {
+    const payload = getRequestTokenPayload(request);
+    if (!payload) {
+      return NextResponse.json(
+        { success: false, error: "Unauthorized" },
+        { status: 401 },
+      );
+    }
+
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
     if (!id) {
