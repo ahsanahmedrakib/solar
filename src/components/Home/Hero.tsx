@@ -11,9 +11,34 @@ import "swiper/css/pagination";
 import { Autoplay, EffectFade, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
+function AnimatedWords({
+  text,
+  baseDelay = 0.4,
+  step = 0.07,
+}: {
+  text: string;
+  baseDelay?: number;
+  step?: number;
+}) {
+  const words = text.split(" ");
+  return (
+    <>
+      {words.map((word, i) => (
+        <span
+          key={i}
+          className="anime-word"
+          style={{ transitionDelay: `${baseDelay + i * step}s` }}
+        >
+          {word}
+          {i < words.length - 1 ? "\u00A0" : ""}
+        </span>
+      ))}
+    </>
+  );
+}
+
 export default function Hero() {
-  const { data: rawSlides = [], isFetching: loading } =
-    useQueryHeroSlides();
+  const { data: rawSlides = [], isFetching: loading } = useQueryHeroSlides();
   const [activeVideo, setActiveVideo] = useState<string | null>(null);
 
   const slides = useMemo(() => {
@@ -29,7 +54,7 @@ export default function Hero() {
   if (loading) {
     return (
       <div className="w-full min-h-187.5 bg-slate-900 flex items-center animate-pulse">
-        <div className="max-w-7xl mx-auto w-full px-6 md:px-12 pt-20 pb-16">
+        <div className="solar-container pt-20 pb-16">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             <div className="lg:col-span-7 space-y-6">
               <div className="h-8 w-52 rounded-full bg-slate-700" />
@@ -71,53 +96,69 @@ export default function Hero() {
         >
           {slides?.map((slide) => (
             <SwiperSlide key={slide.id}>
-              <div className="relative min-h-187.5 flex items-center bg-slate-900">
+              <div className="relative min-h-187.5 flex items-center bg-forest-900">
                 <div
-                  className="absolute inset-0 bg-cover bg-center bg-no-repeat scale-105"
+                  className="absolute inset-0 bg-cover bg-center bg-no-repeat hero-bg-zoom"
                   style={{ backgroundImage: `url('${slide.image}')` }}
                 />
-                <div className="absolute inset-0 bg-linear-to-r from-black/80 via-black/60 to-transparent z-10" />
+                <div className="absolute inset-0 bg-linear-to-r from-forest-900/90 via-forest-900/60 to-transparent z-10" />
 
-                <div className="max-w-7xl mx-auto w-full px-6 md:px-12 z-20 pt-20 pb-16 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative">
+                <div className="solar-container z-20 pt-20 pb-16 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative">
                   <div className="lg:col-span-7 flex flex-col items-start space-y-6">
-                    <div className="inline-flex items-center space-x-2 bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/10">
-                      <span className="w-2 h-2 rounded-full bg-[#4CAF50] animate-pulse" />
-                      <span className="text-white text-xs md:text-sm font-medium tracking-wide">
+                    <div className="hero-anime-item inline-flex items-center space-x-2 bg-white text-accent-500 px-4 py-1.5 rounded-full shadow-lg">
+                      <span className="w-2 h-2 rounded-full bg-accent-500 animate-pulse" />
+                      <span className="text-xs md:text-sm font-semibold tracking-wide">
                         {slide.tagline}
                       </span>
                     </div>
 
-                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-[1.15] tracking-tight max-w-2xl">
-                      {slide.title} <br className="hidden md:inline" />
-                      <span className="text-transparent bg-clip-text bg-linear-to-r from-white via-white to-gray-300">
-                        {slide.titleAccent}
+                    <h1 className="font-heading text-4xl md:text-5xl lg:text-[68px] font-bold text-accent-600 leading-[1.1] tracking-tight max-w-3xl uppercase">
+                      <AnimatedWords
+                        text={slide.title}
+                        baseDelay={0.35}
+                        step={0.06}
+                      />
+                      <br className="hidden md:inline" />
+                      <span className="text-stroke-white">
+                        <AnimatedWords
+                          text={slide.titleAccent}
+                          baseDelay={
+                            0.35 + slide.title.split(" ").length * 0.06
+                          }
+                          step={0.06}
+                        />
                       </span>
                     </h1>
 
-                    <p className="text-gray-300 text-base md:text-lg font-normal max-w-xl leading-relaxed">
+                    <p className="hero-anime-item text-white/75 text-base md:text-lg font-normal max-w-xl leading-relaxed">
                       {slide.description}
                     </p>
 
-                    <div className="flex flex-wrap items-center gap-4 pt-4 w-full sm:w-auto">
+                    <div className="hero-anime-item flex flex-wrap items-center gap-4 pt-4 w-full sm:w-auto">
                       <Link
                         href="/contact"
-                        className="bg-[#4CAF50] hover:bg-emerald-600 text-white font-semibold px-6 py-4 rounded-md transition-all duration-300 inline-flex items-center space-x-2 shadow-lg shadow-emerald-900/30 w-full sm:w-auto justify-center"
+                        className="btn-brand w-full sm:w-auto justify-center group"
                       >
                         <span>Get Free Consultation</span>
-                        <Play size={18} fill="white" />
+                        <Play
+                          size={18}
+                          fill="currentColor"
+                          className="transition-transform duration-300 group-hover:translate-x-1"
+                        />
                       </Link>
 
                       {slide.showVideoButton && slide.videoUrl && (
                         <button
                           type="button"
                           onClick={() => setActiveVideo(slide.videoUrl)}
-                          className="group flex cursor-pointer items-center space-x-3 text-white font-medium hover:text-[#4CAF50] transition-colors duration-300 py-3 px-4 rounded-md"
+                          className="group flex cursor-pointer items-center space-x-3 text-white font-medium hover:text-accent-500 transition-colors duration-300 py-3 px-4 rounded-full"
                         >
-                          <span className="w-12 h-12 rounded-full bg-[#4CAF50] group-hover:bg-emerald-600 flex items-center justify-center transition-colors duration-300 shadow-md">
+                          <span className="relative w-12 h-12 rounded-full bg-accent-500 group-hover:bg-forest-700 flex items-center justify-center transition-colors duration-300 shadow-md">
+                            <span className="absolute inset-0 rounded-full bg-accent-500/50 pulse-ring" />
                             <Play
                               size={18}
                               fill="white"
-                              className="text-white ml-0.5"
+                              className="text-white ml-0.5 relative"
                             />
                           </span>
                           <span className="tracking-wide">Watch Our Story</span>

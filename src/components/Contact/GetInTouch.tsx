@@ -1,5 +1,6 @@
 "use client";
 
+import Reveal from "@/components/Common/Reveal";
 import { DEFAULT_SECTIONS, type Section } from "@/data/settings";
 import { apiClient } from "@/lib/apiClient";
 import { useQuerySettings } from "@/lib/queries";
@@ -120,43 +121,46 @@ export default function GetInTouch() {
   const info = contactInfo;
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 sm:p-8">
+    <div className="min-h-screen bg-white flex items-center justify-center p-4 sm:p-8">
       <div className="max-w-6xl w-full flex flex-col md:flex-row gap-6">
         {/* LEFT SIDEBAR: Contact Info + Map */}
-        <div className="w-full md:w-[40%] bg-[#021622] rounded-2xl p-6 flex flex-col justify-between shadow-xl">
+        <Reveal
+          variant="slide-left"
+          className="w-full md:w-[40%] bg-forest-700 rounded-lg p-6 flex flex-col justify-between shadow-xl"
+        >
           {loading ? (
             <div className="animate-pulse space-y-6">
-              <div className="w-full h-56 rounded-xl bg-gray-700" />
-              <div className="h-6 w-48 rounded bg-gray-700" />
-              <hr className="border-gray-700" />
+              <div className="w-full h-56 rounded-2xl bg-forest-900" />
+              <div className="h-6 w-48 rounded bg-forest-900" />
+              <hr className="border-white/10" />
               {Array.from({ length: 3 })?.map((_, i) => (
                 <div key={i} className="flex items-center gap-4">
-                  <div className="w-11 h-11 rounded-full bg-gray-700 shrink-0" />
+                  <div className="w-11 h-11 rounded-full bg-forest-900 shrink-0" />
                   <div className="space-y-1.5 flex-1">
-                    <div className="h-3 w-20 rounded bg-gray-700" />
-                    <div className="h-4 w-40 rounded bg-gray-700" />
+                    <div className="h-3 w-20 rounded bg-forest-900" />
+                    <div className="h-4 w-40 rounded bg-forest-900" />
                   </div>
                 </div>
               ))}
-              <div className="w-full h-40 rounded-xl bg-gray-700" />
+              <div className="w-full h-40 rounded-2xl bg-forest-900" />
             </div>
           ) : (
             <>
               <div>
                 <div
-                  className="w-full h-56 rounded-xl overflow-hidden bg-cover bg-center mb-8 border border-white/10"
+                  className="w-full h-56 rounded-[24px] overflow-hidden bg-cover bg-center mb-8 border border-white/10"
                   style={{ backgroundImage: `url('${info.imageUrl}')` }}
                 />
 
-                <h3 className="text-white text-xl font-bold tracking-wide mb-6">
+                <h3 className="font-heading text-white text-xl font-bold tracking-wide mb-6">
                   Contact Information
                 </h3>
 
-                <hr className="border-gray-800 mb-8" />
+                <hr className="border-white/10 mb-8" />
 
                 <div className="flex flex-col gap-6">
                   <div className="flex items-center gap-4">
-                    <div className="w-11 h-11 shrink-0 rounded-full bg-[#39a838] flex items-center justify-center text-white">
+                    <div className="w-11 h-11 shrink-0 rounded-full bg-accent-500 text-accent-500 flex items-center justify-center">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
@@ -183,7 +187,7 @@ export default function GetInTouch() {
                   </div>
 
                   <div className="flex items-center gap-4">
-                    <div className="w-11 h-11 shrink-0 rounded-full bg-[#39a838] flex items-center justify-center text-white">
+                    <div className="w-11 h-11 shrink-0 rounded-full bg-accent-500 text-accent-500 flex items-center justify-center">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
@@ -210,7 +214,7 @@ export default function GetInTouch() {
                   </div>
 
                   <div className="flex items-center gap-4">
-                    <div className="w-11 h-11 shrink-0 rounded-full bg-[#39a838] flex items-center justify-center text-white">
+                    <div className="w-11 h-11 shrink-0 rounded-full bg-accent-500 text-accent-500 flex items-center justify-center">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
@@ -244,23 +248,27 @@ export default function GetInTouch() {
               </div>
             </>
           )}
-        </div>
+        </Reveal>
 
         {/* RIGHT CARD: Input Form */}
-        <div className="w-full md:w-[60%] bg-[#f4f7f9] rounded-2xl p-8 sm:p-10 flex flex-col shadow-sm">
-          <h2 className="text-[#011c2b] text-3xl sm:text-4xl font-bold tracking-tight mb-4">
+        <Reveal
+          variant="slide-right"
+          delay={150}
+          className="w-full md:w-[60%] bg-secondary rounded-lg p-8 sm:p-10 flex flex-col shadow-sm"
+        >
+          <h2 className="font-heading text-accent-500 text-3xl sm:text-4xl font-bold tracking-tight mb-4">
             Get In Touch
           </h2>
-          <p className="text-gray-500 text-sm leading-relaxed mb-8 max-w-xl">
+          <p className="text-[#888888] text-sm leading-relaxed mb-8 max-w-xl">
             Whether you have questions about our services, want a free
             consultation, or need support for your existing system, our team is
             ready to assist.
           </p>
 
           {isSubmitted && (
-            <div className="bg-[#e8f5e9] text-brand-900 p-4 rounded-xl text-sm font-medium border border-[#c8e6c9] mb-6 flex items-center gap-2 transition-all">
+            <div className="bg-accent-500/15 text-accent-500 p-4 rounded-[14px] text-sm font-medium border border-accent-500/40 mb-6 flex items-center gap-2 transition-all">
               <svg
-                className="w-5 h-5 shrink-0 text-[#4caf50]"
+                className="w-5 h-5 shrink-0 text-accent-600"
                 fill="currentColor"
                 viewBox="0 0 20 20"
               >
@@ -283,18 +291,18 @@ export default function GetInTouch() {
           >
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div className="flex flex-col gap-2">
-                <label className="text-[#011c2b] text-xs font-bold tracking-wide">
+                <label className="text-accent-500 text-xs font-bold tracking-wide">
                   First Name*
                 </label>
                 <input
                   type="text"
                   placeholder="Enter First Name"
-                  className={`w-full bg-white px-4 py-3 rounded-xl border ${
+                  className={`w-full bg-white px-4 py-3 rounded-[14px] border ${
                     errors.firstName ? "border-red-500" : "border-transparent"
                   } outline-none placeholder-gray-400 text-sm focus:ring-2 ${
                     errors.firstName
                       ? "focus:ring-red-500"
-                      : "focus:ring-[#39a838]"
+                      : "focus:ring-accent-500"
                   } transition-all`}
                   {...register("firstName")}
                 />
@@ -305,18 +313,18 @@ export default function GetInTouch() {
                 )}
               </div>
               <div className="flex flex-col gap-2">
-                <label className="text-[#011c2b] text-xs font-bold tracking-wide">
+                <label className="text-accent-500 text-xs font-bold tracking-wide">
                   Last Name*
                 </label>
                 <input
                   type="text"
                   placeholder="Enter Last Name"
-                  className={`w-full bg-white px-4 py-3 rounded-xl border ${
+                  className={`w-full bg-white px-4 py-3 rounded-[14px] border ${
                     errors.lastName ? "border-red-500" : "border-transparent"
                   } outline-none placeholder-gray-400 text-sm focus:ring-2 ${
                     errors.lastName
                       ? "focus:ring-red-500"
-                      : "focus:ring-[#39a838]"
+                      : "focus:ring-accent-500"
                   } transition-all`}
                   {...register("lastName")}
                 />
@@ -330,18 +338,18 @@ export default function GetInTouch() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div className="flex flex-col gap-2">
-                <label className="text-[#011c2b] text-xs font-bold tracking-wide">
+                <label className="text-accent-500 text-xs font-bold tracking-wide">
                   Phone Number*
                 </label>
                 <input
                   type="tel"
                   placeholder="Enter Phone Number"
-                  className={`w-full bg-white px-4 py-3 rounded-xl border ${
+                  className={`w-full bg-white px-4 py-3 rounded-[14px] border ${
                     errors.phoneNumber ? "border-red-500" : "border-transparent"
                   } outline-none placeholder-gray-400 text-sm focus:ring-2 ${
                     errors.phoneNumber
                       ? "focus:ring-red-500"
-                      : "focus:ring-[#39a838]"
+                      : "focus:ring-accent-500"
                   } transition-all`}
                   {...register("phoneNumber")}
                 />
@@ -352,20 +360,20 @@ export default function GetInTouch() {
                 )}
               </div>
               <div className="flex flex-col gap-2">
-                <label className="text-[#011c2b] text-xs font-bold tracking-wide">
+                <label className="text-accent-500 text-xs font-bold tracking-wide">
                   Email Address*
                 </label>
                 <input
                   type="email"
                   placeholder="Enter Email Address"
-                  className={`w-full bg-white px-4 py-3 rounded-xl border ${
+                  className={`w-full bg-white px-4 py-3 rounded-[14px] border ${
                     errors.emailAddress
                       ? "border-red-500"
                       : "border-transparent"
                   } outline-none placeholder-gray-400 text-sm focus:ring-2 ${
                     errors.emailAddress
                       ? "focus:ring-red-500"
-                      : "focus:ring-[#39a838]"
+                      : "focus:ring-accent-500"
                   } transition-all`}
                   {...register("emailAddress")}
                 />
@@ -378,16 +386,18 @@ export default function GetInTouch() {
             </div>
 
             <div className="flex flex-col gap-2">
-              <label className="text-[#011c2b] text-xs font-bold tracking-wide">
+              <label className="text-accent-500 text-xs font-bold tracking-wide">
                 Message*
               </label>
               <textarea
                 rows={5}
                 placeholder="Any Message..."
-                className={`w-full bg-white px-4 py-3 rounded-xl border ${
+                className={`w-full bg-white px-4 py-3 rounded-[14px] border ${
                   errors.message ? "border-red-500" : "border-transparent"
                 } outline-none placeholder-gray-400 text-sm resize-none focus:ring-2 ${
-                  errors.message ? "focus:ring-red-500" : "focus:ring-[#39a838]"
+                  errors.message
+                    ? "focus:ring-red-500"
+                    : "focus:ring-accent-500"
                 } transition-all`}
                 {...register("message")}
               />
@@ -402,13 +412,13 @@ export default function GetInTouch() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="bg-[#4caf50] hover:bg-[#43a047] disabled:bg-gray-400 text-white text-sm font-semibold px-6 py-3 rounded-lg shadow-md transition-colors duration-200 cursor-pointer disabled:cursor-not-allowed"
+                className="btn-brand disabled:bg-gray-400 text-sm font-semibold px-6 py-3 rounded-full shadow-md transition-colors duration-200 cursor-pointer disabled:cursor-not-allowed"
               >
                 {isSubmitting ? "Submitting..." : "Submit Message"}
               </button>
             </div>
           </form>
-        </div>
+        </Reveal>
       </div>
     </div>
   );

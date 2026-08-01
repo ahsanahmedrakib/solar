@@ -1,8 +1,10 @@
+import Reveal from "@/components/Common/Reveal";
+import RevealImage from "@/components/Common/RevealImage";
 import Image from "next/image";
 
 export default function Approach() {
   return (
-    <section className="relative w-full overflow-hidden bg-[#fafbfc] px-4 py-12 md:px-8 lg:px-16 lg:py-24">
+    <section className="relative w-full overflow-hidden bg-secondary px-4 py-12 md:px-8 lg:px-16 lg:py-25">
       {/* Floating utility sidebar mockup on the far right (optional, match image design) */}
       <div className="absolute right-0 top-1/2 hidden -translate-y-1/2 flex-col gap-2 rounded-l-md border border-r-0 border-gray-200 bg-white p-2 shadow-sm md:flex">
         <button className="p-2 text-gray-600 hover:text-green-600">
@@ -37,40 +39,48 @@ export default function Approach() {
         </button>
       </div>
 
-      <div className="mx-auto max-w-7xl">
+      <div className="solar-container">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-8 items-center">
           {/* Left Content Column */}
           <div className="space-y-6 lg:col-span-7">
             <div>
               {/* Badge */}
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-semibold text-gray-700 shadow-sm border border-gray-100">
-                <span className="h-1.5 w-1.5 rounded-full bg-green-500"></span>
-                Our Approach
-              </span>
+              <Reveal variant="fade-up">
+                <span className="section-eyebrow">Our Approach</span>
+              </Reveal>
 
               {/* Main Heading */}
-              <h2 className="mt-4 text-3xl font-bold tracking-tight text-[#0B2545] sm:text-4xl lg:text-5xl lg:leading-[1.15]">
-                Turning your clean energy vision{" "}
-                <br className="hidden sm:inline" /> into reality
-              </h2>
+              <Reveal variant="fade-up" delay={100}>
+                <h2 className="mt-4 font-heading text-3xl font-bold tracking-tight text-accent-500 sm:text-4xl lg:text-[52px] lg:leading-[1.1]">
+                  Turning your clean energy vision{" "}
+                  <br className="hidden sm:inline" /> into reality
+                </h2>
+              </Reveal>
             </div>
 
             {/* Paragraph Description */}
-            <p className="max-w-2xl text-sm leading-relaxed text-gray-500 sm:text-base">
-              We guide you through every step of your solar journey &ndash; from
-              understanding your energy needs and designing the right system to
-              expert installation and ongoing support. Our approach focuses on
-              smart planning, quality components, and reliable execution.
-            </p>
+            <Reveal variant="fade-up" delay={180}>
+              <p className="max-w-2xl text-sm leading-relaxed text-[#888888] sm:text-base">
+                We guide you through every step of your solar journey &ndash;
+                from understanding your energy needs and designing the right
+                system to expert installation and ongoing support. Our approach
+                focuses on smart planning, quality components, and reliable
+                execution.
+              </p>
+            </Reveal>
 
             {/* Cards Grid Container */}
             <div className="grid grid-cols-1 gap-4 pt-4 sm:grid-cols-3">
               {/* Card 1: Our Mission */}
-              <div className="rounded-2xl border border-gray-50/50 bg-white p-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)] transition-shadow duration-300 hover:shadow-md">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#34A853]">
+              <Reveal
+                variant="fade-up"
+                delay={0}
+                className="rounded-lg border border-white/60 bg-white p-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)] transition-shadow duration-300 hover:shadow-md"
+              >
+                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-accent-500 text-white">
                   {/* Server/Solar Matrix Icon */}
                   <svg
-                    className="h-6 w-6 text-white"
+                    className="h-6 w-6"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -83,21 +93,25 @@ export default function Approach() {
                     />
                   </svg>
                 </div>
-                <h3 className="mt-6 text-lg font-bold text-[#0B2545]">
+                <h3 className="font-heading mt-6 text-lg font-bold text-accent-500">
                   Our Mission
                 </h3>
-                <p className="mt-3 text-xs leading-relaxed text-gray-500 sm:text-sm">
+                <p className="mt-3 text-xs leading-relaxed text-[#888888] sm:text-sm">
                   Our mission is to make clean, reliable affordable solar energy
                   accessible to homes.
                 </p>
-              </div>
+              </Reveal>
 
               {/* Card 2: Our Vision */}
-              <div className="rounded-2xl border border-gray-50/50 bg-white p-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)] transition-shadow duration-300 hover:shadow-md">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#34A853]">
+              <Reveal
+                variant="fade-up"
+                delay={120}
+                className="rounded-lg border border-white/60 bg-white p-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)] transition-shadow duration-300 hover:shadow-md"
+              >
+                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-accent-500 text-white">
                   {/* Globe Icon */}
                   <svg
-                    className="h-6 w-6 text-white"
+                    className="h-6 w-6"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -116,21 +130,25 @@ export default function Approach() {
                     />
                   </svg>
                 </div>
-                <h3 className="mt-6 text-lg font-bold text-[#0B2545]">
+                <h3 className="font-heading mt-6 text-lg font-bold text-accent-500">
                   Our Vision
                 </h3>
-                <p className="mt-3 text-xs leading-relaxed text-gray-500 sm:text-sm">
+                <p className="mt-3 text-xs leading-relaxed text-[#888888] sm:text-sm">
                   Our vision is to lead the transition to a cleaner &amp; more
                   sustainable energy future.
                 </p>
-              </div>
+              </Reveal>
 
               {/* Card 3: Our Values */}
-              <div className="rounded-2xl border border-gray-50/50 bg-white p-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)] transition-shadow duration-300 hover:shadow-md">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#34A853]">
+              <Reveal
+                variant="fade-up"
+                delay={240}
+                className="rounded-lg border border-white/60 bg-white p-6 shadow-[0_8px_30px_rgb(0,0,0,0.02)] transition-shadow duration-300 hover:shadow-md"
+              >
+                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-accent-500 text-white">
                   {/* Target Icon */}
                   <svg
-                    className="h-6 w-6 text-white"
+                    className="h-6 w-6"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -143,32 +161,34 @@ export default function Approach() {
                     />
                   </svg>
                 </div>
-                <h3 className="mt-6 text-lg font-bold text-[#0B2545]">
+                <h3 className="font-heading mt-6 text-lg font-bold text-accent-500">
                   Our Values
                 </h3>
-                <p className="mt-3 text-xs leading-relaxed text-gray-500 sm:text-sm">
+                <p className="mt-3 text-xs leading-relaxed text-[#888888] sm:text-sm">
                   We believe putting customer first, delivering reliable and
                   efficient solutions.
                 </p>
-              </div>
+              </Reveal>
             </div>
           </div>
 
           {/* Right Image Column */}
-          <div className="relative w-full h-87.5 sm:h-112.5 lg:h-137.5 lg:col-span-5">
-            <div className="relative h-full w-full overflow-hidden rounded-xl shadow-lg">
-              <Image
-                src="/images/about/approach-image.jpg" // Place your image asset path here
-                alt="Engineers reviewing solar planning on a tablet"
-                fill
-                priority
-                sizes="(max-w-7xl) 100vw, 40vw"
-                className="object-cover object-center"
-              />
-            </div>
-          </div>
+          <RevealImage
+            delay={150}
+            className="relative w-full h-87.5 sm:h-112.5 lg:h-137.5 lg:col-span-5 rounded-lg shadow-lg"
+          >
+            <Image
+              src="/images/about/approach-image.jpg" // Place your image asset path here
+              alt="Engineers reviewing solar planning on a tablet"
+              fill
+              priority
+              sizes="(max-w-7xl) 100vw, 40vw"
+              className="object-cover object-center"
+            />
+          </RevealImage>
         </div>
       </div>
     </section>
   );
 }
+

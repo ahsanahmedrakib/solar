@@ -4,6 +4,7 @@ import { DEFAULT_SERVICES } from "@/data/services";
 import { DEFAULT_SECTIONS } from "@/data/settings";
 import { SOCIAL_ICONS } from "@/lib/const";
 import { useQueryServices, useQuerySettings } from "@/lib/queries";
+import { Mail, MapPin, Phone } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useMemo } from "react";
@@ -32,6 +33,14 @@ const FALLBACK = {
   socialIg: getField(DEFAULT_SECTIONS, "social", "social-ig"),
   logo: getField(DEFAULT_SECTIONS, "general", "site-logo"),
 };
+
+const QUICK_LINKS = [
+  { label: "Home", href: "/" },
+  { label: "About Us", href: "/about" },
+  { label: "Services", href: "/services" },
+  { label: "Projects", href: "/projects" },
+  { label: "Blogs", href: "/blogs" },
+];
 
 export default function Footer() {
   const { data, isFetching, isLoading } = useQuerySettings();
@@ -67,61 +76,112 @@ export default function Footer() {
   const showServicesSkeleton = servicesFetching && !servicesIsLoading;
 
   return (
-    <footer
-      className="bg-[#03141F] text-white pt-16 pb-8 px-4 sm:px-6 lg:px-8 font-sans relative overflow-hidden"
-      style={{
-        backgroundImage:
-          "radial-gradient(circle at 1px 1px, rgba(255,255,255,0.04) 1px, transparent 0)",
-        backgroundSize: "40px 40px",
-      }}
-    >
-      <div className="max-w-7xl mx-auto">
+    <footer className="bg-forest-700 text-white pt-0 pb-2 font-sans">
+      <div className="solar-container">
         {/* ========================================================================= */}
-        {/* UPPER FOOTER GRID SECTION                                                 */}
+        {/* FOOTER CONTACT BOXES                                                     */}
         {/* ========================================================================= */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-start mb-16">
-          {/* BRAND COLUMN */}
-          <div className="lg:col-span-4 space-y-6">
-            {/* Logo */}
-            <div className="flex items-center gap-2.5">
-              <Link href="/">
-                {showSkeleton ? (
-                  <div className="h-12 w-65 rounded-md bg-gray-200 animate-pulse" />
-                ) : (
-                  <Image
-                    src={settings.logo}
-                    width={160}
-                    height={50}
-                    alt="Ahead Solar logo"
-                    className="h-12 w-auto object-contain"
-                  />
-                )}
-              </Link>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-4 py-10 border-b border-white/20">
+          <div className="flex items-center gap-5">
+            <div className="w-16 h-16 rounded-xl bg-accent-500 text-white flex items-center justify-center shrink-0">
+              <Mail size={28} />
             </div>
+            <div>
+              <h3 className="text-xl font-heading font-bold text-white mb-1">
+                Support &amp; Email
+              </h3>
+              {showSkeleton ? (
+                <div className="h-5 w-44 rounded bg-white/10 animate-pulse" />
+              ) : (
+                <a
+                  href={`mailto:${settings.email}`}
+                  className="text-white/80 hover:text-accent-400 transition-colors text-sm"
+                >
+                  {settings.email}
+                </a>
+              )}
+            </div>
+          </div>
 
-            {/* Description Paragraph */}
+          <div className="flex items-center gap-5 md:border-l md:border-white/20 md:pl-6">
+            <div className="w-16 h-16 rounded-xl bg-accent-500 text-white flex items-center justify-center shrink-0">
+              <Phone size={28} />
+            </div>
+            <div>
+              <h3 className="text-xl font-heading font-bold text-white mb-1">
+                Customer Support
+              </h3>
+              {showSkeleton ? (
+                <div className="h-5 w-44 rounded bg-white/10 animate-pulse" />
+              ) : (
+                <a
+                  href={`tel:${settings.phone.replace(/\s/g, "")}`}
+                  className="text-white/80 hover:text-accent-400 transition-colors text-sm"
+                >
+                  {settings.phone}
+                </a>
+              )}
+            </div>
+          </div>
+
+          <div className="flex items-center gap-5 md:border-l md:border-white/20 md:pl-6">
+            <div className="w-16 h-16 rounded-xl bg-accent-500 text-white flex items-center justify-center shrink-0">
+              <MapPin size={28} />
+            </div>
+            <div>
+              <h3 className="text-xl font-heading font-bold text-white mb-1">
+                Our Location
+              </h3>
+              {showSkeleton ? (
+                <div className="h-5 w-52 rounded bg-white/10 animate-pulse" />
+              ) : (
+                <p className="text-white/80 text-sm">{settings.address}</p>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* ========================================================================= */}
+        {/* MEGA FOOTER GRID                                                          */}
+        {/* ========================================================================= */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-8 pt-14 pb-10">
+          {/* BRAND COLUMN */}
+          <div className="lg:col-span-5 space-y-6">
+            <Link href="/">
+              {showSkeleton ? (
+                <div className="h-12 w-44 rounded-md bg-white/10 animate-pulse" />
+              ) : (
+                <Image
+                  src={settings.logo}
+                  width={160}
+                  height={48}
+                  alt="Ahead Solar logo"
+                  className="h-12 w-auto object-contain"
+                />
+              )}
+            </Link>
+
             {showSkeleton ? (
               <div className="space-y-2 animate-pulse">
                 <div className="h-4 w-72 rounded bg-white/10" />
                 <div className="h-4 w-56 rounded bg-white/10" />
               </div>
             ) : (
-              <p className="text-gray-400 text-sm leading-relaxed max-w-sm">
+              <p className="text-white/75 text-sm leading-relaxed max-w-sm">
                 {settings.tagline}
               </p>
             )}
 
-            {/* Social Links Row */}
-            <div className="space-y-3 pt-2">
-              <h4 className="text-sm font-bold tracking-tight text-white">
+            <div className="space-y-3">
+              <h4 className="font-heading text-lg font-bold text-white">
                 Follow Us On Socials:
               </h4>
               <div className="flex items-center gap-3">
                 {showSkeleton
-                  ? [1, 2, 3, 4]?.map((i) => (
+                  ? [1, 2, 3, 4].map((i) => (
                       <div
                         key={i}
-                        className="w-9 h-9 rounded-full bg-white/10 animate-pulse"
+                        className="w-10 h-10 rounded-xl bg-white/10 animate-pulse"
                       />
                     ))
                   : (
@@ -147,7 +207,7 @@ export default function Footer() {
                           href: settings.socialLi,
                         },
                       ] as const
-                    )?.map(
+                    ).map(
                       (platform) =>
                         platform.href && (
                           <Link
@@ -155,7 +215,8 @@ export default function Footer() {
                             href={platform.href}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="w-10 h-10 flex items-center justify-center transition-all"
+                            className="w-10 h-10 rounded-xl flex items-center justify-center transition-all"
+                            aria-label={platform.label}
                           >
                             {SOCIAL_ICONS[platform.label]}
                           </Link>
@@ -165,229 +226,63 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* INNER CARD OVERLAY MAIN LINKS CONTROLLER */}
-          <div className="lg:col-span-8 bg-[#092232]/80 backdrop-blur-md rounded-xl p-8 sm:p-10 border border-white/5 grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-6">
-            {/* QUICK LINKS — always static */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-bold text-white tracking-tight">
-                Quick Links
-              </h3>
-              <ul className="space-y-2.5">
-                {[
-                  { label: "Home", href: "/" },
-                  { label: "About Us", href: "/about" },
-                  { label: "Services", href: "/services" },
-                  { label: "Projects", href: "/pojects" },
-                  { label: "Blogs", href: "/blogs" },
-                ]?.map((link) => (
-                  <li
-                    key={link.label}
-                    className="flex items-center gap-2 text-xs sm:text-sm text-gray-400 hover:text-white font-medium transition-colors"
+          {/* QUICK LINKS */}
+          <div className="lg:col-span-3 space-y-5">
+            <h3 className="font-heading text-xl font-bold text-accent-500">
+              Quick Links
+            </h3>
+            <ul className="space-y-3">
+              {QUICK_LINKS.map((link) => (
+                <li key={link.label}>
+                  <Link
+                    href={link.href}
+                    className="relative pl-4 text-white/75 hover:text-gold-500 transition-colors text-sm before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-1.5 before:h-1.5 before:rounded-full before:bg-gold-500"
                   >
-                    <Link href={link.href} className="cursor-pointer">
-                      <span className="w-1.5 h-1.5 bg-accent-600 rounded-full shrink-0" />
-                      {link.label}
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* OUR SERVICES */}
+          <div className="lg:col-span-4 space-y-5">
+            <h3 className="font-heading text-xl font-bold text-accent-500">
+              Our Services
+            </h3>
+            {showServicesSkeleton ? (
+              <div className="space-y-3 animate-pulse">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <div key={i} className="h-4 w-40 rounded bg-white/10" />
+                ))}
+              </div>
+            ) : (
+              <ul className="space-y-3">
+                {services?.slice(0, 5).map((service) => (
+                  <li key={service.slug}>
+                    <Link
+                      href={"services/" + service.slug}
+                      className="relative pl-4 text-white/75 hover:text-gold-500 transition-colors text-sm before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-1.5 before:h-1.5 before:rounded-full before:bg-gold-500"
+                    >
+                      {service.title}
                     </Link>
                   </li>
                 ))}
               </ul>
-            </div>
-
-            {/* OUR SERVICES */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-bold text-white tracking-tight">
-                Our Services
-              </h3>
-              {showServicesSkeleton ? (
-                <div className="space-y-3 animate-pulse">
-                  {[1, 2, 3, 4, 5]?.map((i) => (
-                    <div key={i} className="flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-white/10 shrink-0" />
-                      <div className="h-4 w-40 rounded bg-white/10" />
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <ul className="space-y-2.5">
-                  {services?.slice(0, 5)?.map((service) => (
-                    <Link
-                      href={"sevices/" + service?.slug}
-                      key={service?.title}
-                      className="flex items-center gap-2 text-xs sm:text-sm text-gray-400 hover:text-white font-medium transition-colors cursor-pointer"
-                    >
-                      <span className="w-1.5 h-1.5 bg-accent-600 rounded-full shrink-0" />
-                      {service?.title}
-                    </Link>
-                  ))}
-                </ul>
-              )}
-            </div>
-
-            {/* NEWSLETTER SUBSCRIBE — always static */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-bold text-white tracking-tight">
-                Subscribe To Newsletter
-              </h3>
-              <p className="text-xs sm:text-sm text-gray-400 leading-relaxed font-medium">
-                Subscribe to receive solar tips, energy saving insights, &
-                latest updates.
-              </p>
-
-              {/* Form Input Container */}
-              <div className="relative pt-2">
-                <input
-                  type="email"
-                  placeholder="Enter Email Address *"
-                  className="w-full bg-transparent text-sm border-b border-white/20 pb-2.5 pr-10 text-white placeholder-gray-500 focus:outline-none focus:border-accent-600 transition-colors"
-                />
-                <button
-                  type="button"
-                  className="absolute right-0 bottom-2 w-6 h-6 rounded-full bg-accent-600 text-white flex items-center justify-center hover:bg-[#399d3e] transition-colors"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={3}
-                    stroke="currentColor"
-                    className="w-3 h-3"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25"
-                    />
-                  </svg>
-                </button>
-              </div>
-            </div>
+            )}
           </div>
         </div>
 
         {/* ========================================================================= */}
-        {/* MIDDLE SECTION: CONTACT INFO ROW                                          */}
+        {/* COPYRIGHT — ACCENT PILL                                                    */}
         {/* ========================================================================= */}
-        <div className="py-8 border-t border-b border-white/5">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-4">
-            {/* Phone Entry */}
-            <div className="flex items-center gap-4 pl-0 sm:pl-4">
-              <div className="w-11 h-11 rounded-full bg-accent-600/10 text-accent-600 flex items-center justify-center shrink-0">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={2}
-                  stroke="currentColor"
-                  className="w-5 h-5"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 0 0 2.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-1.514 2.02a11.967 11.967 0 0 1-5.717-5.717l2.02-1.514c.362-.272.528-.734.417-1.173L6.963 3.102a1.125 1.125 0 0 0-1.091-.852H4.5A2.25 2.25 0 0 0 2.25 4.5v2.25z"
-                  />
-                </svg>
-              </div>
-              <div className="space-y-0.5">
-                <p className="text-xs text-gray-500 font-semibold uppercase tracking-wider">
-                  Phone Number
-                </p>
-                {showSkeleton ? (
-                  <div className="h-5 w-40 rounded bg-white/10 animate-pulse" />
-                ) : (
-                  <p className="text-base sm:text-lg font-bold text-white tracking-tight">
-                    <a href={`tel:${settings.phone.replace(/\s/g, "")}`}>
-                      {settings.phone}
-                    </a>
-                  </p>
-                )}
-              </div>
-            </div>
 
-            {/* Email Entry */}
-            <div className="flex items-center gap-4 pl-0 md:pl-6 md:border-l md:border-white/5">
-              <div className="w-11 h-11 rounded-full bg-accent-600/10 text-accent-600 flex items-center justify-center shrink-0">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={2}
-                  stroke="currentColor"
-                  className="w-5 h-5"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25H4.5A2.25 2.25 0 0 1 2.25 17.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5H4.5a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75"
-                  />
-                </svg>
-              </div>
-              <div className="space-y-0.5">
-                <p className="text-xs text-gray-500 font-semibold uppercase tracking-wider">
-                  Email Address
-                </p>
-                {showSkeleton ? (
-                  <div className="h-5 w-40 rounded bg-white/10 animate-pulse" />
-                ) : (
-                  <p className="text-base sm:text-lg font-bold text-white tracking-tight">
-                    <a href={`mailto:${settings.email}`}> {settings.email}</a>
-                  </p>
-                )}
-              </div>
-            </div>
-
-            {/* Location Entry */}
-            <div className="flex items-center gap-4 pl-0 md:pl-6 md:border-l md:border-white/5">
-              <div className="w-11 h-11 rounded-full bg-accent-600/10 text-accent-600 flex items-center justify-center shrink-0">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={2}
-                  stroke="currentColor"
-                  className="w-5 h-5"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"
-                  />
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0z"
-                  />
-                </svg>
-              </div>
-              <div className="space-y-0.5">
-                <p className="text-xs text-gray-500 font-semibold uppercase tracking-wider">
-                  Our Location
-                </p>
-                {showSkeleton ? (
-                  <div className="h-5 w-40 rounded bg-white/10 animate-pulse" />
-                ) : (
-                  <p className="text-base sm:text-lg font-bold text-white tracking-tight">
-                    {settings.address}
-                  </p>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* ========================================================================= */}
-        {/* LOWER FOOTER SECTION: COPYRIGHT NOTICE                                    */}
-        {/* ========================================================================= */}
-        <div className="pt-8 text-center">
-          {showSkeleton ? (
-            <div className="h-4 w-64 rounded bg-white/10 mx-auto animate-pulse" />
-          ) : (
-            <p className="text-xs sm:text-sm text-gray-500 font-medium tracking-wide">
-              Copyright © {new Date().getFullYear()} {settings.companyName}. All
-              rights reserved.
-            </p>
-          )}
-        </div>
+        <p className="text-center text-gold-500 font-semibold text-base">
+          Copyright © {new Date().getFullYear()} {settings.companyName}. All
+          rights reserved.
+        </p>
       </div>
     </footer>
   );
 }
+

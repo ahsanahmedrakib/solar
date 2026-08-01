@@ -60,7 +60,7 @@ function LoginForm() {
 
   if (loading || transitioning) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-white">
         <Image
           src={DEFAULT_LOGO}
           alt="Loading"
@@ -75,9 +75,9 @@ function LoginForm() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-4">
+    <div className="min-h-screen flex items-center justify-center bg-white px-4 py-4">
       <div className="w-full max-w-md">
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-8 sm:p-10">
+        <div className="bg-white rounded-lg shadow-lg border border-forest-700/10 p-8 sm:p-10">
           <div className="text-center mb-8">
             <Image
               src="/logo.svg"
@@ -86,7 +86,7 @@ function LoginForm() {
               alt="Ahead Solar logo"
               className="h-10 w-auto mx-auto mb-6"
             />
-            <h1 className="text-2xl font-bold text-[#051720]">Admin Login</h1>
+            <h1 className="text-2xl font-bold text-accent-500">Admin Login</h1>
             <p className="text-gray-500 text-sm mt-1">
               Sign in to access the admin panel
             </p>
@@ -109,7 +109,7 @@ function LoginForm() {
                 placeholder="admin@sunexsolar.com"
                 aria-invalid={errors.email ? true : undefined}
                 {...register("email")}
-                className="w-full bg-gray-50 border border-gray-200 text-sm text-gray-900 rounded-xl p-3 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition"
+                className="w-full bg-white border border-forest-700/10 text-sm text-forest-900 rounded-[14px] p-3 outline-none focus:border-accent-500 focus:ring-2 focus:ring-accent-500/20 transition"
               />
               {errors.email && (
                 <p className="text-red-500 text-xs">{errors.email.message}</p>
@@ -126,7 +126,7 @@ function LoginForm() {
                   placeholder="Enter your password"
                   aria-invalid={errors.password ? true : undefined}
                   {...register("password")}
-                  className="w-full bg-gray-50 border border-gray-200 text-sm text-gray-900 rounded-xl p-3 pr-10 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition"
+                  className="w-full bg-white border border-forest-700/10 text-sm text-forest-900 rounded-[14px] p-3 pr-10 outline-none focus:border-accent-500 focus:ring-2 focus:ring-accent-500/20 transition"
                 />
                 <button
                   type="button"
@@ -146,7 +146,7 @@ function LoginForm() {
             <button
               type="submit"
               disabled={submitting}
-              className="w-full bg-emerald-600 hover:bg-emerald-700 disabled:bg-gray-400 text-white font-semibold py-3 rounded-xl transition-colors flex items-center justify-center gap-2 text-sm"
+              className="w-full btn-brand font-semibold py-3 rounded-full transition-colors flex items-center justify-center gap-2 text-sm"
             >
               {submitting ? (
                 "Signing in..."
@@ -168,7 +168,7 @@ export default function LoginPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="min-h-screen flex items-center justify-center bg-white">
           <Image
             src={DEFAULT_LOGO}
             alt="Loading"

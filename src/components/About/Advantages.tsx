@@ -1,38 +1,46 @@
+import Counter from "@/components/Common/Counter";
+import Reveal from "@/components/Common/Reveal";
+import RevealImage from "@/components/Common/RevealImage";
 import Image from "next/image";
 
 export default function Advantages() {
   return (
-    <section className="relative w-full bg-[#fafbfc] px-4 py-12 md:px-8 lg:px-16 lg:py-24">
-      <div className="mx-auto max-w-7xl">
+    <section className="relative w-full bg-white px-4 py-12 md:px-8 lg:px-16 lg:py-25">
+      <div className="solar-container">
         {/* ================= HEADER SECTION ================= */}
         <div className="flex flex-col items-center text-center max-w-3xl mx-auto mb-16">
           {/* Badge */}
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-semibold text-gray-700 shadow-sm border border-gray-100">
-            <span className="h-1.5 w-1.5 rounded-full bg-green-500"></span>
-            Our Advantages
-          </span>
+          <Reveal variant="fade-up">
+            <span className="section-eyebrow">Our Advantages</span>
+          </Reveal>
 
           {/* Heading with inline graphic capsule */}
-          <h2 className="mt-4 text-3xl font-bold tracking-tight text-[#0B2545] sm:text-4xl lg:text-5xl lg:leading-tight">
-            Smart solar benefits designed to deliver performance,{" "}
-            <span className="inline-flex items-center align-middle mx-1 h-7 w-14 sm:h-9 sm:w-20 relative rounded-full overflow-hidden border border-emerald-200 shadow-sm bg-linear-to-r from-cyan-100 to-emerald-100">
-              <Image
-                src="/images/about/advantages-title-image.jpg"
-                alt="Solar graphic illustration"
-                fill
-                className="object-cover"
-              />
-            </span>{" "}
-            saving, &amp; long term reliability
-          </h2>
+          <Reveal variant="fade-up" delay={120}>
+            <h2 className="mt-4 font-heading text-3xl font-bold tracking-tight text-accent-500 sm:text-4xl lg:text-[52px] lg:leading-tight">
+              Smart solar benefits designed to deliver performance,{" "}
+              <span className="inline-flex items-center align-middle mx-1 h-7 w-14 sm:h-9 sm:w-20 relative rounded-full overflow-hidden border border-accent-500 shadow-sm">
+                <Image
+                  src="/images/about/advantages-title-image.jpg"
+                  alt="Solar graphic illustration"
+                  fill
+                  className="object-cover"
+                />
+              </span>{" "}
+              saving, &amp; long term reliability
+            </h2>
+          </Reveal>
         </div>
 
         {/* ================= CARD GRID SECTION ================= */}
         <div className="grid grid-cols-1 gap-6 sm:gap-8 lg:grid-cols-3 items-stretch">
           {/* Left Card: 24*7 Support */}
-          <div className="flex flex-col justify-between rounded-xl bg-[#f4f7fa] p-8 md:p-10 transition-all duration-300 hover:shadow-sm">
+          <Reveal
+            variant="fade-up"
+            delay={0}
+            className="flex flex-col justify-between rounded-lg bg-secondary p-8 md:p-10 transition-all duration-300 hover:shadow-sm"
+          >
             <div>
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#34A853] text-white shadow-sm">
+              <div className="flex h-14 w-14 items-center justify-center rounded-lg bg-accent-500 text-white shadow-sm">
                 {/* 24/7 Grid Icon alternative */}
                 <svg
                   className="h-6 w-6"
@@ -50,23 +58,26 @@ export default function Advantages() {
               </div>
 
               <div className="mt-12">
-                <span className="block text-4xl md:text-5xl font-black text-[#0B2545] tracking-tight">
-                  24*7
+                <span className="font-heading block text-4xl md:text-5xl font-black text-accent-500 tracking-tight">
+                  <Counter end={24} suffix="*7" />
                 </span>
-                <span className="block mt-1 text-sm font-bold text-gray-700 tracking-wide">
+                <span className="block mt-1 text-sm font-bold text-accent-500 tracking-wide">
                   Support Availability
                 </span>
               </div>
             </div>
 
-            <p className="mt-8 text-sm leading-relaxed text-gray-500 border-t border-gray-200/60 pt-6">
+            <p className="mt-8 text-sm leading-relaxed text-[#888888] border-t border-forest-700/10 pt-6">
               Dedicated service team to ensure smooth operation and quick
               assistance whenever needed.
             </p>
-          </div>
+          </Reveal>
 
           {/* Middle Card: Team Media Asset */}
-          <div className="relative min-h-80 sm:min-h-100 lg:min-h-full overflow-hidden rounded-xl shadow-sm">
+          <RevealImage
+            delay={140}
+            className="relative min-h-80 sm:min-h-100 lg:min-h-full overflow-hidden rounded-lg shadow-sm"
+          >
             <Image
               src="/images/about/our-advantages-image.jpg"
               alt="Solar energy specialists consulting on top of panels"
@@ -74,12 +85,16 @@ export default function Advantages() {
               className="object-cover transition-transform duration-500 hover:scale-102"
               sizes="(max-w-7xl) 100vw, 33vw"
             />
-          </div>
+          </RevealImage>
 
           {/* Right Card: Projects Completed */}
-          <div className="flex flex-col justify-between rounded-xl bg-[#f4f7fa] p-8 md:p-10 transition-all duration-300 hover:shadow-sm">
+          <Reveal
+            variant="fade-up"
+            delay={280}
+            className="flex flex-col justify-between rounded-lg bg-secondary p-8 md:p-10 transition-all duration-300 hover:shadow-sm"
+          >
             <div>
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#34A853] text-white shadow-sm">
+              <div className="flex h-14 w-14 items-center justify-center rounded-lg bg-accent-500 text-white shadow-sm">
                 {/* Globe/Network Icon */}
                 <svg
                   className="h-6 w-6"
@@ -103,22 +118,23 @@ export default function Advantages() {
               </div>
 
               <div className="mt-12">
-                <span className="block text-4xl md:text-5xl font-black text-[#0B2545] tracking-tight">
-                  2000+
+                <span className="font-heading block text-4xl md:text-5xl font-black text-accent-500 tracking-tight">
+                  <Counter end={2000} suffix="+" />
                 </span>
-                <span className="block mt-1 text-sm font-bold text-gray-700 tracking-wide">
+                <span className="block mt-1 text-sm font-bold text-accent-500 tracking-wide">
                   Projects Completed
                 </span>
               </div>
             </div>
 
-            <p className="mt-8 text-sm leading-relaxed text-gray-500 border-t border-gray-200/60 pt-6">
+            <p className="mt-8 text-sm leading-relaxed text-[#888888] border-t border-forest-700/10 pt-6">
               Successfully installed solar systems across residential,
               commercial, and industrial areas.
             </p>
-          </div>
+          </Reveal>
         </div>
       </div>
     </section>
   );
 }
+

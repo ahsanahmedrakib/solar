@@ -1,5 +1,7 @@
 "use client";
 
+import Counter from "@/components/Common/Counter";
+import Reveal from "@/components/Common/Reveal";
 import React, { useState } from "react";
 
 interface FAQItem {
@@ -9,7 +11,9 @@ interface FAQItem {
 }
 
 interface StatItem {
-  metric: string;
+  end: number;
+  prefix?: string;
+  suffix?: string;
   label: string;
   icon: React.ReactNode;
 }
@@ -55,7 +59,8 @@ export default function FAQAndStats() {
 
   const stats: StatItem[] = [
     {
-      metric: "52MWp",
+      end: 52,
+      suffix: "MWp",
       label: "Largest Rooftop Solar Project",
       icon: (
         <svg
@@ -75,7 +80,8 @@ export default function FAQAndStats() {
       ),
     },
     {
-      metric: "30GWh",
+      end: 30,
+      suffix: "GWh",
       label: "Green Energy Per Year",
       icon: (
         <svg
@@ -95,7 +101,8 @@ export default function FAQAndStats() {
       ),
     },
     {
-      metric: "100MWp",
+      end: 100,
+      suffix: "MWp",
       label: "Pipeline Capacity",
       icon: (
         <svg
@@ -121,28 +128,31 @@ export default function FAQAndStats() {
   };
 
   return (
-    <section className="bg-white py-16 px-4 sm:px-6 lg:py-24 lg:px-20 mx-auto font-sans">
+    <section className="bg-white py-20 lg:py-25 font-sans">
       {/* FAQ ROW UPPER CONTAINER */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start pb-16 border-b border-gray-100">
+      <div className="solar-container grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start pb-16 border-b border-gray-100">
         {/* LEFT COLUMN: CALLOUT STICKY BLOCK */}
         <div className="lg:col-span-5 space-y-6 lg:sticky lg:top-8">
           {/* Tagline Badge */}
-          <div className="inline-flex items-center gap-2 bg-[#F3F4F6] px-3 py-1.5 rounded-full text-xs font-semibold text-gray-700">
-            <span className="w-1.5 h-1.5 bg-accent-600 rounded-full"></span>
-            Frequently Asked Questions
-          </div>
+          <Reveal variant="fade-up">
+            <span className="section-eyebrow">Frequently Asked Questions</span>
+          </Reveal>
 
           {/* Main Headline Heading */}
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#051720] tracking-tight leading-[1.15]">
-            Clear guidance for your solar journey
-          </h2>
+          <Reveal variant="fade-up" delay={100}>
+            <h2 className="font-heading text-3xl sm:text-4xl lg:text-[52px] font-bold text-accent-500 tracking-tight leading-[1.1]">
+              Clear guidance for your solar journey
+            </h2>
+          </Reveal>
 
           {/* Context Explainer Paragraph */}
-          <p className="text-gray-500 text-sm sm:text-base font-normal leading-relaxed max-w-md">
-            We&apos;ve answered the most common questions to help you understand
-            rooftop solar for industrial and commercial facilities, installation
-            process, costs, and ongoing support.
-          </p>
+          <Reveal variant="fade-up" delay={180}>
+            <p className="text-[#888888] text-sm sm:text-base font-normal leading-relaxed max-w-md">
+              We&apos;ve answered the most common questions to help you
+              understand rooftop solar for industrial and commercial facilities,
+              installation process, costs, and ongoing support.
+            </p>
+          </Reveal>
         </div>
 
         {/* RIGHT COLUMN: ACCORDION COMPONENT LIST */}
@@ -150,56 +160,58 @@ export default function FAQAndStats() {
           {faqs?.map((faq) => {
             const isOpen = openId === faq.id;
             return (
-              <div key={faq.id} className="py-5 first:pt-0 last:pb-0">
-                <button
-                  type="button"
-                  onClick={() => handleToggle(faq.id)}
-                  className="w-full flex items-center cursor-pointer justify-between gap-4 text-left group focus:outline-none"
-                >
-                  <h3 className="text-base sm:text-lg font-bold text-[#051720] tracking-tight transition-colors duration-200 group-hover:text-accent-600">
-                    {faq.question}
-                  </h3>
+              <Reveal key={faq.id} variant="fade-up" delay={(faq.id - 1) * 80}>
+                <div className="py-5 first:pt-0 last:pb-0">
+                  <button
+                    type="button"
+                    onClick={() => handleToggle(faq.id)}
+                    className="w-full flex items-center cursor-pointer justify-between gap-4 text-left group focus:outline-none"
+                  >
+                    <h3 className="font-heading text-base sm:text-lg font-bold text-accent-500 tracking-tight transition-colors duration-200 group-hover:text-accent-700">
+                      {faq.question}
+                    </h3>
 
-                  {/* Circular Up/Down Arrow Wrapper Indicator */}
+                    {/* Circular Up/Down Arrow Wrapper Indicator */}
+                    <div
+                      className={`shrink-0 w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center transition-all duration-300 ${
+                        isOpen
+                          ? "bg-accent-500 text-white rotate-0"
+                          : "bg-secondary text-accent-500 rotate-180"
+                      }`}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={2.5}
+                        stroke="currentColor"
+                        className="w-3.5 h-3.5"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M4.5 15.75l7.5-7.5 7.5 7.5"
+                        />
+                      </svg>
+                    </div>
+                  </button>
+
+                  {/* Animated expandable panel content */}
                   <div
-                    className={`shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-all duration-300 ${
+                    className={`grid transition-all duration-300 ease-in-out overflow-hidden ${
                       isOpen
-                        ? "bg-accent-600 text-white rotate-0"
-                        : "bg-accent-600/10 text-accent-600 rotate-180"
+                        ? "grid-rows-[1fr] opacity-100 mt-3"
+                        : "grid-rows-[0fr] opacity-0"
                     }`}
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={2.5}
-                      stroke="currentColor"
-                      className="w-3.5 h-3.5"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M4.5 15.75l7.5-7.5 7.5 7.5"
-                      />
-                    </svg>
-                  </div>
-                </button>
-
-                {/* Animated expandable panel content */}
-                <div
-                  className={`grid transition-all duration-300 ease-in-out overflow-hidden ${
-                    isOpen
-                      ? "grid-rows-[1fr] opacity-100 mt-3"
-                      : "grid-rows-[0fr] opacity-0"
-                  }`}
-                >
-                  <div className="overflow-hidden">
-                    <p className="text-sm sm:text-base text-gray-400 font-medium leading-relaxed pl-0 pr-4 sm:pr-8">
-                      {faq.answer}
-                    </p>
+                    <div className="overflow-hidden">
+                      <p className="text-sm sm:text-base text-[#888888] font-medium leading-relaxed pl-0 pr-4 sm:pr-8">
+                        {faq.answer}
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </Reveal>
             );
           })}
         </div>
@@ -208,33 +220,39 @@ export default function FAQAndStats() {
       {/* ========================================================================= */}
       {/* BOTTOM FOOTER SECTION: METRICS DASHBOARD                                  */}
       {/* ========================================================================= */}
-      <div className="pt-16">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-4 items-center">
-          {stats?.map((stat, idx) => (
-            <div
-              key={idx}
-              className={`flex items-center gap-4 pl-2 sm:pl-6 ${
-                idx > 0 ? "md:border-l md:border-gray-100" : ""
-              }`}
-            >
-              {/* Highlight Icon Background circle element */}
-              <div className="shrink-0 w-12 h-12 rounded-full bg-accent-600 text-white flex items-center justify-center shadow-sm">
-                {stat.icon}
-              </div>
+      <Reveal variant="fade-up" delay={100}>
+        <div className="solar-container pt-16">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-4 items-center">
+            {stats?.map((stat, idx) => (
+              <div
+                key={idx}
+                className={`flex items-center gap-4 pl-2 sm:pl-6 ${
+                  idx > 0 ? "md:border-l md:border-gray-100" : ""
+                }`}
+              >
+                {/* Highlight Icon Background circle element */}
+                <div className="shrink-0 w-12 h-12 rounded-[18px] bg-accent-500 text-white flex items-center justify-center shadow-sm">
+                  {stat.icon}
+                </div>
 
-              {/* Data labels breakdown content */}
-              <div className="space-y-0.5">
-                <h4 className="text-3xl sm:text-4xl font-extrabold text-[#051720] tracking-tight">
-                  {stat.metric}
-                </h4>
-                <p className="text-xs sm:text-sm font-semibold text-gray-500 tracking-tight">
-                  {stat.label}
-                </p>
+                {/* Data labels breakdown content */}
+                <div className="space-y-0.5">
+                  <h4 className="font-heading text-3xl sm:text-4xl font-extrabold text-accent-500 tracking-tight">
+                    <Counter
+                      end={stat.end}
+                      prefix={stat.prefix}
+                      suffix={stat.suffix}
+                    />
+                  </h4>
+                  <p className="text-xs sm:text-sm font-semibold text-[#888888] tracking-tight">
+                    {stat.label}
+                  </p>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
+      </Reveal>
     </section>
   );
 }

@@ -1,5 +1,7 @@
 "use client";
 
+import Reveal from "@/components/Common/Reveal";
+import RevealImage from "@/components/Common/RevealImage";
 import { DEFAULT_SERVICES, type Service } from "@/data/services";
 import { useQueryServices } from "@/lib/queries";
 import Link from "next/link";
@@ -19,13 +21,16 @@ export default function SingleService({ slug }: { slug: string }) {
   );
 
   return (
-    <div className="bg-white min-h-screen text-[#011c2b] font-sans antialiased selection:bg-green-100">
-      <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
+    <div className="bg-white min-h-screen text-accent-500 font-sans antialiased">
+      <div className="solar-container px-4 py-8 sm:px-6 lg:px-8 lg:py-12">
         <div className="flex flex-col lg:flex-row gap-8 lg:items-start">
           {/* ================= LEFT SIDEBAR ================= */}
           <aside className="w-full lg:w-[30%] lg:sticky lg:top-6 flex flex-col gap-6 shrink-0">
-            <div className="bg-[#f4f7f9] rounded-2xl overflow-hidden border border-gray-100 shadow-sm">
-              <div className="bg-[#4caf50] text-white px-5 py-4 font-bold text-sm tracking-wide uppercase">
+            <Reveal
+              variant="fade-up"
+              className="bg-secondary rounded-lg overflow-hidden border border-white shadow-sm"
+            >
+              <div className="font-heading bg-accent-500 text-accent-500 px-5 py-4 font-bold text-sm tracking-wide uppercase">
                 Explore Our Services
               </div>
               <nav className="flex flex-col">
@@ -33,17 +38,17 @@ export default function SingleService({ slug }: { slug: string }) {
                   ? Array.from({ length: 6 })?.map((_, i) => (
                       <div
                         key={i}
-                        className="h-11 px-5 bg-gray-100 animate-pulse border-b border-gray-200/60"
+                        className="h-11 px-5 bg-gray-100 animate-pulse border-b border-forest-700/10"
                       />
                     ))
                   : allServices?.map((s) => (
                       <Link
                         key={s.id}
                         href={"/services/" + s.slug}
-                        className={`flex items-center justify-between px-5 py-3.5 text-xs font-bold border-b border-gray-200/60 last:border-0 text-left transition-colors ${
+                        className={`flex items-center justify-between px-5 py-3.5 text-xs font-bold border-b border-forest-700/10 last:border-0 text-left transition-colors ${
                           s.slug === slug
-                            ? "bg-white text-[#4caf50]"
-                            : "text-[#011c2b] hover:bg-gray-100/70"
+                            ? "bg-accent-500 text-accent-500"
+                            : "text-accent-500 hover:bg-white"
                         }`}
                       >
                         <span>{s.title}</span>
@@ -51,14 +56,14 @@ export default function SingleService({ slug }: { slug: string }) {
                       </Link>
                     ))}
               </nav>
-            </div>
+            </Reveal>
           </aside>
 
           {/* ================= RIGHT MAIN CONTENT ================= */}
           <main className="w-full lg:w-[70%] flex flex-col gap-12 lg:pl-4">
             {loading ? (
               <div className="animate-pulse flex flex-col gap-6">
-                <div className="w-full h-64 sm:h-96 rounded-2xl bg-gray-200" />
+                <div className="w-full h-64 sm:h-96 rounded-lg bg-gray-200" />
                 <div className="space-y-3">
                   <div className="h-4 w-full rounded bg-gray-200" />
                   <div className="h-4 w-5/6 rounded bg-gray-200" />
@@ -71,20 +76,24 @@ export default function SingleService({ slug }: { slug: string }) {
               </div>
             ) : service ? (
               <>
-                <section className="flex flex-col gap-6">
-                  <div
-                    className="w-full h-64 sm:h-96 rounded-2xl bg-cover bg-center shadow-md border border-gray-100"
-                    style={{
-                      backgroundImage: `url(${service.image})`,
-                    }}
-                  />
-                  <div
-                    className="text-gray-500 text-sm leading-relaxed space-y-4"
-                    dangerouslySetInnerHTML={{
-                      __html: service.serviceDetails,
-                    }}
-                  />
-                </section>
+                <Reveal variant="fade-up">
+                  <section className="flex flex-col gap-6">
+                    <RevealImage className="w-full h-64 sm:h-96 rounded-lg overflow-hidden shadow-md border border-gray-100">
+                      <div
+                        className="h-full w-full bg-cover bg-center"
+                        style={{
+                          backgroundImage: `url(${service.image})`,
+                        }}
+                      />
+                    </RevealImage>
+                    <div
+                      className="text-[#888888] text-sm leading-relaxed space-y-4"
+                      dangerouslySetInnerHTML={{
+                        __html: service.serviceDetails,
+                      }}
+                    />
+                  </section>
+                </Reveal>
 
                 {/* <section className="border-t border-gray-100 pt-10">
                   <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight mb-4">
@@ -152,7 +161,7 @@ export default function SingleService({ slug }: { slug: string }) {
 
                     <div className="flex flex-col gap-4 justify-between">
                       <div className="bg-[#f4f7f9] rounded-2xl p-5 border border-gray-100 flex flex-col gap-3">
-                        <div className="w-9 h-9 rounded-full bg-[#4caf50] text-white flex items-center justify-center text-sm shadow-sm">
+                        <div className="w-9 h-9 rounded-full bg-[#28cbc6] text-white flex items-center justify-center text-sm shadow-sm">
                           🔋
                         </div>
                         <h4 className="font-bold text-base">
@@ -165,7 +174,7 @@ export default function SingleService({ slug }: { slug: string }) {
                       </div>
 
                       <div className="bg-[#f4f7f9] rounded-2xl p-5 border border-gray-100 flex flex-col gap-3">
-                        <div className="w-9 h-9 rounded-full bg-[#4caf50] text-white flex items-center justify-center text-sm shadow-sm">
+                        <div className="w-9 h-9 rounded-full bg-[#28cbc6] text-white flex items-center justify-center text-sm shadow-sm">
                           📉
                         </div>
                         <h4 className="font-bold text-base">
@@ -181,11 +190,13 @@ export default function SingleService({ slug }: { slug: string }) {
                 </section> */}
               </>
             ) : (
-              <div className="flex flex-col items-center justify-center py-20 text-gray-400">
-                <p className="text-lg font-semibold">Service not found</p>
+              <div className="flex flex-col items-center justify-center py-20 text-[#888888]">
+                <p className="font-heading text-lg font-semibold text-accent-500">
+                  Service not found
+                </p>
                 <Link
                   href="/services"
-                  className="mt-4 text-[#4caf50] hover:underline"
+                  className="mt-4 text-accent-600 hover:underline"
                 >
                   ← Back to all services
                 </Link>
@@ -197,3 +208,4 @@ export default function SingleService({ slug }: { slug: string }) {
     </div>
   );
 }
+

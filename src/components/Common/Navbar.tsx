@@ -3,11 +3,11 @@
 import { DEFAULT_SECTIONS } from "@/data/settings";
 import { SOCIAL_ICONS } from "@/lib/const";
 import { useQuerySettings } from "@/lib/queries";
-import { ArrowUpRight, Mail, Menu, Phone, X } from "lucide-react";
+import { Mail, Menu, Phone, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 function getField(
   sections: { id: string; fields?: { id: string; value: string }[] }[],
@@ -41,9 +41,17 @@ const NAV_ITEMS = [
 
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   const { data, isFetching, isLoading } = useQuerySettings();
   const pathname = usePathname();
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 10);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const resolved = useMemo(() => {
     if (!data) return FALLBACK;
@@ -69,46 +77,47 @@ export default function Navbar() {
 
   return (
     <>
-      {/* 1. TOP BAR */}
-      <div className="bg-[#4CAF50] text-white text-sm py-2 px-6 hidden md:block">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <div className="flex items-center space-x-6">
+      {/* 1. TOPBAR */}
+      <div className="bg-forest-700 text-white/90 text-sm">
+        <div className="solar-container flex justify-between items-center py-3">
+          <div className="flex items-center flex-wrap gap-2 sm:gap-4">
             {showSkeleton ? (
               <>
-                <div className="flex items-center space-x-2 animate-pulse">
-                  <div className="w-3.5 h-3.5 rounded bg-white/20" />
-                  <div className="h-4 w-52 rounded bg-white/20" />
+                <div className="flex items-center gap-2 animate-pulse">
+                  <div className="w-4 h-4 rounded bg-white/20" />
+                  <div className="h-4 w-44 rounded bg-white/20" />
                 </div>
-                <div className="flex items-center space-x-2 animate-pulse">
-                  <div className="w-3.5 h-3.5 rounded bg-white/20" />
-                  <div className="h-4 w-48 rounded bg-white/20" />
+                <div className="flex items-center gap-2 animate-pulse">
+                  <div className="w-4 h-4 rounded bg-white/20" />
+                  <div className="h-4 w-40 rounded bg-white/20" />
                 </div>
               </>
             ) : (
               <>
                 <a
-                  href={`tel:${settings.phone.replace(/\s/g, "")}`}
-                  className="hover:underline flex items-center space-x-2"
+                  href={`mailto:${settings.email}`}
+                  className="inline-flex items-center gap-2 hover:text-gold-400 transition-colors"
                 >
-                  <Phone size={14} />
-                  <span>Phone Number: {settings.phone}</span>
+                  <Mail size={14} className="text-gold-500" />
+                  <span>{settings.email}</span>
                 </a>
                 <a
-                  href={`mailto:${settings.email}`}
-                  className="hover:underline flex items-center space-x-2"
+                  href={`tel:${settings.phone.replace(/\s/g, "")}`}
+                  className="inline-flex items-center gap-2 hover:text-gold-400 transition-colors"
                 >
-                  <Mail size={14} />
-                  <span>Email Address: {settings.email}</span>
+                  <Phone size={14} className="text-gold-500" />
+                  <span>{settings.phone}</span>
                 </a>
               </>
             )}
           </div>
-          <div className="flex items-center gap-1">
+
+          <div className="flex items-center gap-2">
             {showSkeleton
-              ? [1, 2, 3, 4]?.map((i) => (
+              ? [1, 2, 3, 4].map((i) => (
                   <div
                     key={i}
-                    className="w-9 h-9 rounded-full bg-white/20 animate-pulse"
+                    className="w-7 h-7 rounded-lg bg-white/20 animate-pulse"
                   />
                 ))
               : (
@@ -134,7 +143,7 @@ export default function Navbar() {
                       href: settings.socialLi,
                     },
                   ] as const
-                )?.map(
+                ).map(
                   (platform) =>
                     platform.href && (
                       <Link
@@ -142,7 +151,8 @@ export default function Navbar() {
                         href={platform.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-9 h-9 p-2 flex items-center justify-center transition-all "
+                        className="w-7 h-7 rounded-lg text-accent-500 flex items-center justify-center transition-all hover:bg-forest-700"
+                        aria-label={platform.label}
                       >
                         {SOCIAL_ICONS[platform.label]}
                       </Link>
@@ -153,95 +163,99 @@ export default function Navbar() {
       </div>
 
       {/* 2. STICKY NAVBAR */}
-      <header className="bg-white shadow-sm sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between">
-          {/* LOGO */}
-          <div className="flex items-center space-x-2">
-            <Link href="/">
+      <header className="sticky top-0 z-50 transition-all duration-300">
+        <div className="solar-container">
+          <div
+            className={`flex bg-white items-center justify-between gap-6 px-2 transition-all duration-300 ${
+              !scrolled
+                ? "py-2 my-3 rounded-full shadow-md shadow-forest-900/5"
+                : "py-2 rounded-full border-b border-forest-700/10 mt-2"
+            }`}
+          >
+            {/* LOGO */}
+            <Link href="/" className="shrink-0 flex items-center">
               {showSkeleton ? (
-                <div className="h-12 w-65 rounded-md bg-gray-200 animate-pulse" />
+                <div className="h-11 w-40 rounded-md bg-gray-200 animate-pulse" />
               ) : (
                 <Image
                   src={logoSrc}
                   width={160}
-                  height={50}
+                  height={46}
                   alt="Ahead Solar logo"
-                  className="h-12 w-auto object-contain"
+                  className="h-11 w-auto object-contain"
                 />
               )}
             </Link>
-          </div>
 
-          {/* DESKTOP NAVIGATION */}
-          <nav className="hidden lg:flex items-center space-x-8 text-gray-700 font-medium">
-            {NAV_ITEMS.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`py-4 transition-colors ${
-                  isActive(item.href)
-                    ? "text-[#4CAF50]"
-                    : "hover:text-[#4CAF50]"
-                }`}
-              >
-                {item.label}
+            {/* DESKTOP NAVIGATION */}
+            <nav className="hidden lg:flex items-center gap-1 font-medium">
+              {NAV_ITEMS.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`nav-link-sweep py-2 px-3 rounded-full transition-colors ${
+                    isActive(item.href)
+                      ? "text-accent-500 nav-link-active"
+                      : "text-accent-500 hover:text-gold-500"
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
+
+            {/* CTA Button */}
+            <div className="hidden lg:block">
+              <Link href="/contact" className="btn-brand">
+                Contact Us
               </Link>
-            ))}
-          </nav>
+            </div>
 
-          {/* CTA Button */}
-          <div className="hidden lg:block">
-            <Link
-              href="/contact"
-              className="bg-[#4CAF50] hover:bg-emerald-600 text-white font-medium px-6 py-3 rounded-md transition-all inline-flex items-center space-x-2"
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="lg:hidden text-accent-500 p-2"
+              aria-label="Toggle menu"
             >
-              <span>Contact Us</span>
-              <ArrowUpRight size={16} />
-            </Link>
+              {isMobileMenuOpen ? <X size={26} /> : <Menu size={26} />}
+            </button>
           </div>
-
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="lg:hidden text-gray-700 p-2"
-          >
-            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
         </div>
       </header>
 
       {/* 3. MOBILE MENU */}
       {isMobileMenuOpen && (
-        <div className="lg:hidden fixed inset-x-0 top-22 bg-white border-t border-gray-100 shadow-xl z-50 max-h-[calc(100vh-80px)] overflow-y-auto">
-          <nav className="flex flex-col px-6 py-6 space-y-4 font-medium text-gray-800">
-            {NAV_ITEMS.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className={`py-2 border-b border-gray-100 ${
-                  isActive(item.href)
-                    ? "text-[#4CAF50]"
-                    : "hover:text-[#4CAF50]"
-                }`}
-              >
-                {item.label}
-              </Link>
-            ))}
-
-            {/* Mobile CTA */}
-            <div className="pt-4">
-              <Link
-                href="/contact"
-                className="bg-[#4CAF50] text-white font-medium px-6 py-3.5 rounded-md w-full flex justify-center items-center space-x-2"
-              >
-                <span>Contact Us</span>
-                <ArrowUpRight size={18} />
-              </Link>
-            </div>
-          </nav>
+        <div className="lg:hidden fixed inset-x-0 top-0 bg-secondary shadow-xl z-40 pt-4">
+          <div className="solar-container">
+            <nav className="flex flex-col py-4 font-medium text-accent-500">
+              {NAV_ITEMS.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`py-3 border-b border-gray-100 ${
+                    isActive(item.href)
+                      ? "text-gold-500"
+                      : "hover:text-gold-500"
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              ))}
+              <div className="pt-5 pb-2">
+                <Link
+                  href="/contact"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="btn-brand w-full justify-center"
+                >
+                  Contact Us
+                </Link>
+              </div>
+            </nav>
+          </div>
         </div>
       )}
     </>
   );
 }
+

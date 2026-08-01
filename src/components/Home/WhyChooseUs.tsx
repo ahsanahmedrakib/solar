@@ -1,3 +1,5 @@
+import Reveal from "@/components/Common/Reveal";
+import RevealImage from "@/components/Common/RevealImage";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -12,102 +14,101 @@ const WhyChooseUs: React.FC = () => {
 
   return (
     <>
-      <section className="bg-white py-16 px-4 sm:px-6 lg:py-24 lg:px-20 mx-auto font-sans overflow-x-hidden">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-start">
+      <section className="bg-white py-20 lg:py-25 font-sans overflow-x-hidden">
+        <div className="solar-container grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-start">
           {/* LEFT COLUMN: TEXT CONTENT & STATS */}
           <div className="lg:col-span-6 space-y-6 lg:pr-6">
             {/* Tagline Badge */}
-            <div className="inline-flex items-center gap-2 bg-[#F3F4F6] px-3 py-1.5 rounded-full text-xs font-semibold text-gray-700">
-              <span className="w-1.5 h-1.5 bg-[#31A24C] rounded-full"></span>
-              Why Choose Us
-            </div>
+            <Reveal variant="fade-up">
+              <span className="section-eyebrow">Why Choose Us</span>
+            </Reveal>
 
             {/* Main Heading */}
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#051720] tracking-tight leading-[1.15]">
-              One-stop rooftop solar solution provider for industries
-            </h2>
+            <Reveal variant="fade-up" delay={100}>
+              <h2 className="font-heading text-3xl sm:text-4xl lg:text-[52px] font-bold text-accent-500 tracking-tight leading-[1.1]">
+                One-stop rooftop solar solution provider for industries
+              </h2>
+            </Reveal>
 
             {/* Subheading Description */}
-            <p className="text-gray-500 text-sm sm:text-base font-normal leading-relaxed max-w-xl">
-              We deliver complete solar solutions — from system design and
-              engineering to installation and ongoing maintenance — backed by
-              16+ years of experience serving Bangladesh&apos;s top industrial
-              sectors.
-            </p>
+            <Reveal variant="fade-up" delay={180}>
+              <p className="text-[#888888] text-sm sm:text-base font-normal leading-relaxed max-w-xl">
+                We deliver complete solar solutions — from system design and
+                engineering to installation and ongoing maintenance — backed by
+                16+ years of experience serving Bangladesh&apos;s top industrial
+                sectors.
+              </p>
+            </Reveal>
 
             {/* Highlighted Partner Feature Card */}
-            <div className="relative bg-[#F4F7F9] rounded-2xl p-5 sm:p-6 border-l-4 border-[#31A24C] flex gap-4 items-start shadow-sm">
-              <div className="shrink-0 w-12 h-12 rounded-full bg-[#051720] text-white flex items-center justify-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={2}
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M7.864 16.5a4.5 4.5 0 005.322-.024m0 0a4.5 4.5 0 005.322-6.104m-5.322 6.128a4.5 4.5 0 01-5.322-6.128m5.322 6.128v4.5m0-9.75a4.5 4.5 0 00-.001 9.001M12 3v3.75m0 9.75V21m0-12a3 3 0 110-6 3 3 0 010 6z"
-                  />
-                </svg>
+            <Reveal variant="fade-up" delay={240}>
+              <div className="relative bg-secondary rounded-lg p-5 sm:p-6 border-l-4 border-accent-500 flex gap-4 items-start shadow-sm transition-all duration-500 hover:shadow-md group">
+                <div className="shrink-0 w-12 h-12 rounded-[18px] bg-accent-500 text-accent-500 flex items-center justify-center transition-transform duration-500 group-hover:scale-110">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={2}
+                    stroke="#fff"
+                    className="w-6 h-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M7.864 16.5a4.5 4.5 0 005.322-.024m0 0a4.5 4.5 0 005.322-6.104m-5.322 6.128a4.5 4.5 0 01-5.322-6.128m5.322 6.128v4.5m0-9.75a4.5 4.5 0 00-.001 9.001M12 3v3.75m0 9.75V21m0-12a3 3 0 110-6 3 3 0 010 6z"
+                    />
+                  </svg>
+                </div>
+                <div className="space-y-1">
+                  <h4 className="font-heading text-base sm:text-lg font-bold text-accent-500">
+                    Flexible CapEx & OpEx Models
+                  </h4>
+                  <p className="text-xs sm:text-sm text-[#888888] leading-relaxed">
+                    Choose to own your system with our CapEx model or start
+                    saving from day one with our OpEx model — we provide the
+                    right financial and technical solution for every business.
+                  </p>
+                </div>
               </div>
-              <div className="space-y-1">
-                <h4 className="text-base sm:text-lg font-bold text-[#051720]">
-                  Flexible CapEx & OpEx Models
-                </h4>
-                <p className="text-xs sm:text-sm text-gray-500 leading-relaxed">
-                  Choose to own your system with our CapEx model or start saving
-                  from day one with our OpEx model — we provide the right
-                  financial and technical solution for every business.
-                </p>
-              </div>
-            </div>
+            </Reveal>
 
             {/* Statistics */}
-            <div className="border-t border-b border-gray-100 py-6 my-8">
-              <div className="grid grid-cols-3 gap-4 sm:gap-6 text-left">
-                <div>
-                  <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#051720] tracking-tight">
-                    52MWp
-                  </h3>
-                  <p className="text-[11px] sm:text-xs text-gray-400 font-medium mt-1">
-                    Largest Rooftop Project
-                  </p>
-                </div>
-                <div className="border-l border-gray-200 pl-4 sm:pl-6">
-                  <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#051720] tracking-tight">
-                    30GWh
-                  </h3>
-                  <p className="text-[11px] sm:text-xs text-gray-400 font-medium mt-1">
-                    Green Energy Per Year
-                  </p>
-                </div>
-                <div className="border-l border-gray-200 pl-4 sm:pl-6">
-                  <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#051720] tracking-tight">
-                    16+
-                  </h3>
-                  <p className="text-[11px] sm:text-xs text-gray-400 font-medium mt-1">
-                    Years In Solar Business
-                  </p>
+            <Reveal variant="fade-up" delay={200}>
+              <div className="border-t border-b border-gray-100 py-6 my-8">
+                <div className="grid grid-cols-3 gap-4 sm:gap-6 text-left">
+                  <div>
+                    <h3 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-bold text-accent-500 tracking-tight">
+                      52MWp
+                    </h3>
+                    <p className="text-[11px] sm:text-xs text-[#888888] font-medium mt-1">
+                      Largest Rooftop Project
+                    </p>
+                  </div>
+                  <div className="border-l border-gray-200 pl-4 sm:pl-6">
+                    <h3 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-bold text-accent-500 tracking-tight">
+                      30GWh
+                    </h3>
+                    <p className="text-[11px] sm:text-xs text-[#888888] font-medium mt-1">
+                      Green Energy Per Year
+                    </p>
+                  </div>
+                  <div className="border-l border-gray-200 pl-4 sm:pl-6">
+                    <h3 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-bold text-accent-500 tracking-tight">
+                      16+
+                    </h3>
+                    <p className="text-[11px] sm:text-xs text-[#888888] font-medium mt-1">
+                      Years In Solar Business
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-
-            {/* CTA Button */}
-            {/* <div className="pt-2">
-              <button className="inline-flex items-center gap-2 bg-[#44B549] hover:bg-[#399d3e] transition-colors text-white font-semibold text-sm px-6 py-3.5 rounded-lg shadow-sm">
-                Learn More
-                <ArrowUpRight />
-              </button>
-            </div> */}
+            </Reveal>
           </div>
 
           {/* RIGHT COLUMN: IMAGES */}
           <div className="lg:col-span-6 w-full space-y-4">
             {/* Large Top Image */}
-            <div className="relative w-full aspect-[2.1/1] rounded-xl sm:rounded-xl overflow-hidden shadow-sm bg-gray-100">
+            <RevealImage className="relative w-full aspect-[2.1/1] rounded-lg overflow-hidden shadow-sm bg-gray-100">
               <Image
                 src="/images/home/why-choose-us-image-2.jpg"
                 alt="Expert solar engineers team installing panels on rooftop"
@@ -134,12 +135,15 @@ const WhyChooseUs: React.FC = () => {
                   </span>
                 ))}
               </div>
-            </div>
+            </RevealImage>
 
             {/* Bottom Split Images */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* Engineer Image */}
-              <div className="relative w-full aspect-[1.15/1] sm:aspect-[0.9/1] rounded-xl sm:rounded-xl overflow-hidden shadow-sm bg-gray-100">
+              <RevealImage
+                delay={120}
+                className="relative w-full aspect-[1.15/1] sm:aspect-[0.9/1] rounded-lg overflow-hidden shadow-sm bg-gray-100"
+              >
                 <Image
                   src="/images/home/why-choose-us-image-2.jpg"
                   alt="Solar engineer inspecting photovoltaic panels"
@@ -147,10 +151,14 @@ const WhyChooseUs: React.FC = () => {
                   sizes="(max-width: 640px) 100vw, 25vw"
                   className="object-cover"
                 />
-              </div>
+              </RevealImage>
 
               {/* Green Support Card */}
-              <div className="w-full aspect-[1.15/1] sm:aspect-[0.9/1] bg-accent-600 text-white p-6 sm:p-8 rounded-xl sm:rounded-xl shadow-sm flex flex-col justify-end relative overflow-hidden group">
+              <Reveal
+                variant="fade-up"
+                delay={220}
+                className="w-full aspect-[1.15/1] sm:aspect-[0.9/1] bg-accent-500 text-white p-6 sm:p-8 rounded-lg shadow-sm flex flex-col justify-end relative overflow-hidden group"
+              >
                 <div className="absolute top-6 left-6 w-20 h-20 sm:w-24 sm:h-24 md:w-30 md:h-30 opacity-95 transition-transform duration-500 group-hover:scale-110">
                   <Image
                     src="/images/home/why-choose-info-image.png"
@@ -162,80 +170,83 @@ const WhyChooseUs: React.FC = () => {
                 </div>
 
                 <div className="space-y-2 sm:space-y-3 z-10">
-                  <h3 className="text-xl sm:text-2xl font-bold tracking-tight">
+                  <h3 className="font-heading text-xl sm:text-2xl font-bold tracking-tight">
                     24/7 Data Monitoring
                   </h3>
-                  <div className="w-full h-px bg-white/20 my-1 sm:my-2" />
-                  <p className="text-xs sm:text-sm text-white/90 leading-relaxed">
+                  <div className="w-full h-px bg-forest-700/20 my-1 sm:my-2" />
+                  <p className="text-xs sm:text-sm leading-relaxed">
                     Real-time monitoring and analysis of every solar plant to
                     ensure peak performance.
                   </p>
                 </div>
-              </div>
+              </Reveal>
             </div>
           </div>
         </div>
       </section>
 
       {/* Bottom Services & CTA */}
-      <div className="w-full mx-auto px-4 py-8 bg-white">
-        <div className="flex flex-wrap justify-center gap-3 mb-8">
-          {services?.map((service, index) => (
-            <div
-              key={index}
-              className="group flex items-center gap-2 bg-white hover:bg-gray-50 transition-all duration-200 px-5 py-3 rounded-xl shadow-sm border border-gray-800 hover:shadow-md active:scale-95"
-            >
-              <div className="w-3 h-3 bg-emerald-500 rounded-full shrink-0 group-hover:animate-pulse" />
-              <span className="text-sm font-medium text-gray-800 whitespace-nowrap">
-                {service}
-              </span>
-            </div>
-          ))}
-        </div>
+      <div className="bg-white">
+        <div className="solar-container py-8">
+        <Reveal variant="fade-up">
+          <div className="flex flex-wrap justify-center gap-3 mb-8">
+            {services?.map((service, index) => (
+              <div
+                key={index}
+                className="group flex items-center gap-2 bg-secondary hover:bg-white transition-all duration-200 px-5 py-3 rounded-2xl shadow-sm border border-white hover:shadow-md active:scale-95"
+              >
+                <div className="w-3 h-3 bg-gold-500 rounded-full shrink-0 group-hover:animate-pulse" />
+                <span className="text-sm font-medium text-accent-500 whitespace-nowrap">
+                  {service}
+                </span>
+              </div>
+            ))}
+          </div>
+        </Reveal>
 
         {/* Contact CTA */}
-        <div className="bg-white rounded-xl shadow-xl p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center gap-5 max-w-2xl mx-auto">
-          <div className="relative shrink-0">
-            <div className="w-14 h-14 rounded-2xl overflow-hidden border-2 border-white shadow-md">
-              <Image
-                src="/images/home/author-1.jpg"
-                alt="Solar energy consultant"
-                fill
-                className="object-cover"
-                sizes="56px"
-              />
-            </div>
-            <div className="absolute -bottom-1 -right-1 w-7 h-7 bg-emerald-500 rounded-2xl flex items-center justify-center shadow-md border-2 border-white">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-4 h-4 text-white"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2.5}
-                  d="M3 5a2 2 0 012-2 2 2 0 01-2-2 2 2 0 01-2-2 2 2 0 012-2 2 2 0 01-2-2 2 2 0 012-2zM21 15l-3-3m0 0l-3 3m3-3v12"
+        <Reveal variant="fade-up" delay={120}>
+          <div className="bg-secondary rounded-lg shadow-xl p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center gap-5 max-w-2xl mx-auto">
+            <div className="relative shrink-0">
+              <div className="w-14 h-14 rounded-2xl overflow-hidden border-2 border-white shadow-md">
+                <Image
+                  src="/images/home/author-1.jpg"
+                  alt="Solar energy consultant"
+                  fill
+                  className="object-cover"
+                  sizes="56px"
                 />
-              </svg>
+              </div>
+              <div className="absolute -bottom-1 -right-1 w-7 h-7 bg-gold-500 rounded-2xl flex items-center justify-center shadow-md border-2 border-white">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-4 h-4 text-gold-500"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2.5}
+                    d="M3 5a2 2 0 012-2 2 2 0 01-2-2 2 2 0 01-2-2 2 2 0 012-2 2 2 0 01-2-2 2 2 0 012-2zM21 15l-3-3m0 0l-3 3m3-3v12"
+                  />
+                </svg>
+              </div>
             </div>
-          </div>
 
-          <div className="flex-1">
-            <p className="text-lg md:text-xl font-medium text-gray-800 leading-tight">
-              Ready to power your factory with solar energy?
-            </p>
-          </div>
+            <div className="flex-1">
+              <p className="font-heading text-lg md:text-2xl font-bold text-accent-500 leading-tight">
+                Ready to power your factory with solar energy?
+              </p>
+            </div>
 
-          <Link
-            href="/contact"
-            className="mt-4 md:mt-0 px-8 py-3.5 bg-emerald-600 hover:bg-emerald-700 transition-colors text-white font-semibold rounded-xl text-sm whitespace-nowrap flex items-center gap-2 shadow-lg shadow-emerald-500/30 active:scale-95"
-          >
-            Contact Us
-            <span className="text-xl leading-none">→</span>
-          </Link>
+            <Link href="/contact" className="btn-brand mt-4 md:mt-0">
+              Contact Us
+              <span className="text-xl leading-none">→</span>
+            </Link>
+          </div>
+        </Reveal>
         </div>
       </div>
     </>
@@ -243,3 +254,4 @@ const WhyChooseUs: React.FC = () => {
 };
 
 export default WhyChooseUs;
+

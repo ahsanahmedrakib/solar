@@ -35,10 +35,10 @@
   --admin-text-primary: #f0f4ff;
   --admin-text-secondary: #8b95b0;
   --admin-text-muted: #5a6380;
-  --admin-accent: #4caf50;
-  --admin-accent-hover: #43a047;
-  --admin-accent-muted: rgba(76, 175, 80, 0.12);
-  --admin-accent-glow: rgba(76, 175, 80, 0.25);
+  --admin-accent: #28cbc6;
+  --admin-accent-hover: #20a29e;
+  --admin-accent-muted: rgba(40, 203, 198, 0.12);
+  --admin-accent-glow: rgba(40, 203, 198, 0.25);
   --admin-danger: #ef4444;
   --admin-success: #10b981;
   --admin-info: #3b82f6;
@@ -108,7 +108,7 @@
 .sidebar-logo-icon {
   width: 38px;
   height: 38px;
-  background: linear-gradient(135deg, var(--admin-accent), #d97706);
+  background: linear-gradient(135deg, var(--admin-accent), #f7b308);
   border-radius: 10px;
   display: flex;
   align-items: center;

@@ -1,7 +1,6 @@
 "use client";
 
 import { DEFAULT_SERVICES, type Service } from "@/data/services";
-import { iconRenderer } from "@/lib/iconRenderer";
 import { useQueryServices } from "@/lib/queries";
 import type { ServiceCard } from "@/types/services";
 import { useMemo } from "react";
@@ -14,7 +13,6 @@ function toServiceCard(service: Service): ServiceCard {
     description: service.description,
     image: service.image,
     alt: service.alt,
-    iconSvg: iconRenderer(service.iconName),
     slug: service.slug,
   };
 }
@@ -30,16 +28,16 @@ const AllServices = () => {
   return (
     <div>
       <div className="bg-white font-sans overflow-x-hidden">
-        <section className="bg-[#F7F9FA] py-16 px-4 sm:px-6 lg:py-24 lg:px-8">
-          <div className="max-w-7xl mx-auto space-y-12">
+        <section className="bg-white py-20 lg:py-25 px-4 sm:px-6 lg:px-8">
+          <div className="solar-container space-y-12">
             {loading ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pt-4">
                 {Array.from({ length: 6 })?.map((_, i) => (
                   <div
                     key={i}
-                    className="bg-white rounded-xl p-6 shadow-sm border border-gray-100/60 animate-pulse"
+                    className="bg-white rounded-lg p-6 shadow-sm border border-gray-100/60 animate-pulse"
                   >
-                    <div className="w-full aspect-1.5/1 rounded-2xl bg-gray-200" />
+                    <div className="w-full aspect-1.5/1 rounded-xl bg-gray-200" />
                     <div className="mt-5 space-y-3">
                       <div className="h-5 w-3/4 rounded bg-gray-200" />
                       <div className="h-4 w-full rounded bg-gray-200" />

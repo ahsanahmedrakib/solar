@@ -1,3 +1,5 @@
+import Reveal from "@/components/Common/Reveal";
+import RevealImage from "@/components/Common/RevealImage";
 import Image from "next/image";
 import React from "react";
 
@@ -101,32 +103,35 @@ export default function CoreFeatures() {
   ];
 
   return (
-    <section className="bg-[#FAFBFD] py-16 px-4 sm:px-6 lg:py-24 lg:px-8 font-sans overflow-x-hidden">
-      <div className="max-w-7xl mx-auto space-y-16">
+    <section className="bg-white py-20 lg:py-25 px-4 sm:px-6 lg:px-8 font-sans overflow-x-hidden">
+      <div className="solar-container space-y-16">
         {/* ========================================================================= */}
         {/* TOP ROW: HEADERS AND CALL TO ACTION                                      */}
         {/* ========================================================================= */}
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
           <div className="space-y-4 max-w-2xl">
             {/* Tagline Pill */}
-            <div className="inline-flex items-center gap-2 bg-white px-3 py-1.5 rounded-full text-xs font-semibold text-gray-700 shadow-sm border border-gray-100">
-              <span className="w-1.5 h-1.5 bg-accent-600 rounded-full"></span>
-              Our Core Features
-            </div>
+            <Reveal variant="fade-up">
+              <span className="section-eyebrow">Our Core Features</span>
+            </Reveal>
             {/* Main Title Header */}
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#051720] tracking-tight leading-[1.15]">
-              Engineered for industrial-scale performance
-            </h2>
+            <Reveal variant="fade-up" delay={100}>
+              <h2 className="font-heading text-3xl sm:text-4xl lg:text-[52px] font-bold text-accent-500 tracking-tight leading-[1.1]">
+                Engineered for industrial-scale performance
+              </h2>
+            </Reveal>
           </div>
 
           {/* Top Description & Action Link */}
-          <div className="flex flex-col sm:flex-row items-start lg:items-end gap-5 lg:max-w-md">
-            <p className="text-gray-500 text-sm sm:text-base leading-relaxed text-justify">
-              Our core features are designed to maximize energy production for
-              industrial and commercial facilities while ensuring system
-              reliability, safety, and long-term ROI.
-            </p>
-          </div>
+          <Reveal variant="fade-up" delay={180}>
+            <div className="flex flex-col sm:flex-row items-start lg:items-end gap-5 lg:max-w-md">
+              <p className="text-[#888888] text-sm sm:text-base leading-relaxed text-justify">
+                Our core features are designed to maximize energy production for
+                industrial and commercial facilities while ensuring system
+                reliability, safety, and long-term ROI.
+              </p>
+            </div>
+          </Reveal>
         </div>
 
         {/* ========================================================================= */}
@@ -135,42 +140,47 @@ export default function CoreFeatures() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
           {/* LEFT AREA: MASKED ENGINEER WITH PANEL PHOTO */}
           <div className="lg:col-span-5">
-            <Image
-              src="/images/home/our-core-feature-image.png"
-              alt="Solar engineer holding panel"
-              width={800}
-              height={900}
-              className="w-full h-auto"
-              priority
-            />
+            <RevealImage className="relative w-full aspect-8/9 rounded-lg">
+              <Image
+                src="/images/home/our-core-feature-image.png"
+                alt="Solar engineer holding panel"
+                width={800}
+                height={900}
+                className="w-full h-auto"
+                priority
+              />
+            </RevealImage>
           </div>
           {/* RIGHT AREA: 2X2 CONTENT CARDS GRID */}
           <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {features?.map((feature) => (
-              <div
+            {features?.map((feature, index) => (
+              <Reveal
                 key={feature.id}
-                className="bg-white rounded-xl p-6 sm:p-8 shadow-sm border border-gray-100/40 hover:shadow-md transition-shadow duration-300 flex flex-col justify-between relative overflow-hidden min-h-55"
+                variant="fade-up"
+                delay={(index % 2) * 120 + Math.floor(index / 2) * 80}
               >
-                {/* Upper row: Icon Badge & Custom Text Number */}
-                <div className="flex items-center justify-between">
-                  <div className="w-11 h-11 rounded-full bg-accent-600 text-white flex items-center justify-center shadow-sm">
-                    {feature.icon}
+                <div className="group bg-secondary rounded-lg p-6 sm:p-8 shadow-sm border border-white/60 hover:shadow-xl hover:-translate-y-1.5 transition-all duration-500 flex flex-col justify-between relative overflow-hidden min-h-55 card-shine">
+                  {/* Upper row: Icon Badge & Custom Text Number */}
+                  <div className="flex items-center justify-between">
+                    <div className="w-12 h-12 rounded-[18px] text-white bg-accent-500 flex items-center justify-center shadow-sm transition-all duration-500 group-hover:scale-110 group-hover:rotate-6">
+                      {feature.icon}
+                    </div>
+                    <span className="font-heading text-sm font-extrabold text-accent-500 tracking-wider">
+                      {feature.id}
+                    </span>
                   </div>
-                  <span className="text-sm font-extrabold text-[#051720] tracking-wider">
-                    {feature.id}
-                  </span>
-                </div>
 
-                {/* Content text section */}
-                <div className="mt-6 space-y-2">
-                  <h3 className="text-lg sm:text-xl font-bold text-[#051720] tracking-tight">
-                    {feature.title}
-                  </h3>
-                  <p className="text-xs sm:text-sm text-gray-400 font-medium leading-relaxed">
-                    {feature.description}
-                  </p>
+                  {/* Content text section */}
+                  <div className="mt-6 space-y-2">
+                    <h3 className="font-heading text-lg sm:text-xl font-bold text-accent-500 tracking-tight group-hover:text-accent-700 transition-colors duration-300">
+                      {feature.title}
+                    </h3>
+                    <p className="text-xs sm:text-sm text-[#888888] font-medium leading-relaxed">
+                      {feature.description}
+                    </p>
+                  </div>
                 </div>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -178,3 +188,4 @@ export default function CoreFeatures() {
     </section>
   );
 }
+
