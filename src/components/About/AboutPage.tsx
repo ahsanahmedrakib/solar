@@ -1,5 +1,4 @@
 import About from "../Home/About";
-import CoreFeatures from "../Home/CoreFeatures";
 import FAQAndStats from "../Home/FAQAndStats";
 import Testimonials from "../Home/Testimonials";
 import WhyChooseUs from "../Home/WhyChooseUs";
@@ -18,7 +17,7 @@ const AboutPage = () => {
       <WhyChooseUs />
       <WhatWeDo />
       <Advantages />
-      <CoreFeatures />
+      {/* <CoreFeatures /> */}
       <Teams />
       <Testimonials />
       <FAQAndStats />

@@ -5,7 +5,6 @@ import type { ReactNode } from "react";
 
 const Navbar = dynamic(() => import("@/components/Common/Navbar"));
 const Footer = dynamic(() => import("@/components/Common/Footer"));
-const Preloader = dynamic(() => import("@/components/Common/Preloader"));
 const Marquee = dynamic(() => import("@/components/Common/Marquee"));
 const FloatingChatWidget = dynamic(
   () => import("@/components/Common/FloatingChatWidget"),
@@ -23,7 +22,6 @@ const TICKER_ITEMS = [
 export function LazyLayout({ children }: { children: ReactNode }) {
   return (
     <>
-      <Preloader />
       <Navbar />
       {children}
       <Marquee
@@ -36,3 +34,4 @@ export function LazyLayout({ children }: { children: ReactNode }) {
     </>
   );
 }
+

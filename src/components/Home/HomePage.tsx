@@ -1,14 +1,11 @@
 import About from "./About";
-import Banner from "./Banner";
 import Blogs from "./Blogs";
-import CoreFeatures from "./CoreFeatures";
 import FAQAndStats from "./FAQAndStats";
-import FunFacts from "./FunFacts";
 import Hero from "./Hero";
-import HowItWorks from "./HowItWorks";
 import Services from "./Services";
 import Testimonials from "./Testimonials";
 import WhyChooseUs from "./WhyChooseUs";
+import WorkProcess from "./WorkProcess";
 
 const HomePage = () => {
   return (
@@ -17,10 +14,10 @@ const HomePage = () => {
       <About />
       <Services />
       <WhyChooseUs />
-      <Banner />
-      <CoreFeatures />
-      <FunFacts />
-      <HowItWorks />
+      <WorkProcess />
+      {/* <CoreFeatures /> */}
+      {/* <FunFacts /> */}
+      {/* <HowItWorks /> */}
       <FAQAndStats />
       <Testimonials />
       <Blogs />

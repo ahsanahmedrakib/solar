@@ -1,22 +1,13 @@
 import Reveal from "@/components/Common/Reveal";
 import RevealImage from "@/components/Common/RevealImage";
 import Image from "next/image";
-import Link from "next/link";
 import React from "react";
 
 const WhyChooseUs: React.FC = () => {
-  const services = [
-    "Industrial Rooftop Solar",
-    "Commercial Solar Solutions",
-    "CapEx & OpEx Models",
-    "24/7 Plant Monitoring",
-  ];
-
   return (
     <>
       <section className="bg-white py-20 lg:py-25 font-sans overflow-x-hidden">
         <div className="solar-container grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-start">
-          {/* LEFT COLUMN: TEXT CONTENT & STATS */}
           <div className="lg:col-span-6 space-y-6 lg:pr-6">
             {/* Tagline Badge */}
             <Reveal variant="fade-up">
@@ -184,71 +175,6 @@ const WhyChooseUs: React.FC = () => {
           </div>
         </div>
       </section>
-
-      {/* Bottom Services & CTA */}
-      <div className="bg-white">
-        <div className="solar-container py-8">
-        <Reveal variant="fade-up">
-          <div className="flex flex-wrap justify-center gap-3 mb-8">
-            {services?.map((service, index) => (
-              <div
-                key={index}
-                className="group flex items-center gap-2 bg-secondary hover:bg-white transition-all duration-200 px-5 py-3 rounded-2xl shadow-sm border border-white hover:shadow-md active:scale-95"
-              >
-                <div className="w-3 h-3 bg-gold-500 rounded-full shrink-0 group-hover:animate-pulse" />
-                <span className="text-sm font-medium text-accent-500 whitespace-nowrap">
-                  {service}
-                </span>
-              </div>
-            ))}
-          </div>
-        </Reveal>
-
-        {/* Contact CTA */}
-        <Reveal variant="fade-up" delay={120}>
-          <div className="bg-secondary rounded-lg shadow-xl p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center gap-5 max-w-2xl mx-auto">
-            <div className="relative shrink-0">
-              <div className="w-14 h-14 rounded-2xl overflow-hidden border-2 border-white shadow-md">
-                <Image
-                  src="/images/home/author-1.jpg"
-                  alt="Solar energy consultant"
-                  fill
-                  className="object-cover"
-                  sizes="56px"
-                />
-              </div>
-              <div className="absolute -bottom-1 -right-1 w-7 h-7 bg-gold-500 rounded-2xl flex items-center justify-center shadow-md border-2 border-white">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-4 h-4 text-gold-500"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2.5}
-                    d="M3 5a2 2 0 012-2 2 2 0 01-2-2 2 2 0 01-2-2 2 2 0 012-2 2 2 0 01-2-2 2 2 0 012-2zM21 15l-3-3m0 0l-3 3m3-3v12"
-                  />
-                </svg>
-              </div>
-            </div>
-
-            <div className="flex-1">
-              <p className="font-heading text-lg md:text-2xl font-bold text-accent-500 leading-tight">
-                Ready to power your factory with solar energy?
-              </p>
-            </div>
-
-            <Link href="/contact" className="btn-brand mt-4 md:mt-0">
-              Contact Us
-              <span className="text-xl leading-none">→</span>
-            </Link>
-          </div>
-        </Reveal>
-        </div>
-      </div>
     </>
   );
 };

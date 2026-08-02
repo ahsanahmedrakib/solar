@@ -37,6 +37,7 @@ const NAV_ITEMS = [
   { label: "Services", href: "/services" },
   { label: "Projects", href: "/projects" },
   { label: "Blogs", href: "/blogs" },
+  { label: "Contact", href: "/contact" },
 ] as const;
 
 export default function Navbar() {
@@ -169,13 +170,13 @@ export default function Navbar() {
             className={`flex bg-white items-center justify-between gap-6 px-2 transition-all duration-300 ${
               !scrolled
                 ? "py-2 my-3 rounded-full shadow-md shadow-forest-900/5"
-                : "py-2 rounded-full border-b border-forest-700/10 mt-2"
+                : "py-2 rounded-full border-b border-forest-700/10 mt-2 shadow-lg shadow-forest-900/10"
             }`}
           >
             {/* LOGO */}
             <Link href="/" className="shrink-0 flex items-center">
               {showSkeleton ? (
-                <div className="h-11 w-40 rounded-md bg-gray-200 animate-pulse" />
+                <div className="h-11 w-40 rounded-full bg-gray-200 animate-pulse" />
               ) : (
                 <Image
                   src={logoSrc}
@@ -205,11 +206,7 @@ export default function Navbar() {
             </nav>
 
             {/* CTA Button */}
-            <div className="hidden lg:block">
-              <Link href="/contact" className="btn-brand">
-                Contact Us
-              </Link>
-            </div>
+            <div className="hidden lg:block">Contact Us</div>
 
             {/* Mobile Menu Button */}
             <button
@@ -242,15 +239,7 @@ export default function Navbar() {
                   {item.label}
                 </Link>
               ))}
-              <div className="pt-5 pb-2">
-                <Link
-                  href="/contact"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="btn-brand w-full justify-center"
-                >
-                  Contact Us
-                </Link>
-              </div>
+              <div className="pt-5 pb-2">Contact Us</div>
             </nav>
           </div>
         </div>
