@@ -687,6 +687,16 @@ body:has(.admin-layout-root) {
   }
 }
 
+@keyframes preloader-fade {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
 .preloader {
   position: fixed;
   inset: 0;
@@ -694,7 +704,12 @@ body:has(.admin-layout-root) {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #0c3d3b;
+  background: radial-gradient(
+    120% 120% at 50% 20%,
+    #10514f 0%,
+    #0c3d3b 45%,
+    #072625 100%
+  );
   transition:
     opacity 0.6s ease,
     visibility 0.6s ease;
@@ -710,16 +725,23 @@ body:has(.admin-layout-root) {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.25rem;
+  gap: 1.5rem;
+}
+
+.preloader-logo-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .preloader-ring {
-  position: relative;
-  width: 72px;
-  height: 72px;
+  position: absolute;
+  width: 96px;
+  height: 96px;
   border-radius: 9999px;
-  border: 3px solid rgba(255, 255, 255, 0.12);
-  border-top-color: #f7b308;
+  border: 3px solid rgba(40, 203, 198, 0.15);
+  border-top-color: #28cbc6;
   border-right-color: #f7b308;
   animation: preloader-spin 1s linear infinite;
 }
@@ -728,16 +750,30 @@ body:has(.admin-layout-root) {
   position: absolute;
   inset: 14px;
   border-radius: 9999px;
-  background: radial-gradient(circle, #f7b308 0%, rgba(247, 179, 8, 0.15) 70%);
+  background: radial-gradient(
+    circle,
+    rgba(247, 179, 8, 0.35) 0%,
+    rgba(40, 203, 198, 0.08) 70%
+  );
   animation: preloader-pulse 1.6s ease-in-out infinite;
 }
 
+.preloader-logo {
+  position: relative;
+  width: auto;
+  height: 46px;
+  object-fit: contain;
+  animation: preloader-fade 1.6s ease-in-out infinite;
+}
+
 .preloader-label {
-  color: rgba(255, 255, 255, 0.6);
-  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.85);
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
   font-weight: 700;
-  letter-spacing: 0.5em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
+  text-shadow: 0 0 20px rgba(40, 203, 198, 0.35);
 }
 
 /* ----------------------------------------------------------------

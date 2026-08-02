@@ -1,6 +1,8 @@
 "use client";
 
+import { DEFAULT_LOGO } from "@/data/settings";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 
 /**
@@ -39,13 +41,27 @@ export default function Preloader() {
   if (hidden) return null;
 
   return (
-    <div className={cn("preloader", !visible && "preloader-hidden")} aria-hidden="true">
+    <div
+      className={cn("preloader", !visible && "preloader-hidden")}
+      aria-hidden="true"
+    >
       <div className="preloader-inner">
-        <div className="preloader-ring">
-          <div className="preloader-ring-core" />
+        <div className="preloader-logo-wrap">
+          <div className="preloader-ring">
+            <div className="preloader-ring-core" />
+          </div>
+          <Image
+            src={DEFAULT_LOGO}
+            alt="Ahead Solar"
+            width={0}
+            height={0}
+            sizes="100vw"
+            priority
+            className="preloader-logo mt-35"
+          />
         </div>
-        <div className="preloader-label">Solar</div>
       </div>
     </div>
   );
 }
+

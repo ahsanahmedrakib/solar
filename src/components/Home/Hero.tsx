@@ -107,7 +107,7 @@ export default function Hero() {
                   <div className="lg:col-span-7 flex flex-col items-start space-y-6">
                     <div className="hero-anime-item inline-flex items-center space-x-2 bg-white text-accent-500 px-4 py-1.5 rounded-full shadow-lg">
                       <span className="w-2 h-2 rounded-full bg-accent-500 animate-pulse" />
-                      <span className="text-xs md:text-sm font-semibold tracking-wide">
+                      <span className="text-xs md:text-sm font-semibold tracking-wide text-gold-500">
                         {slide.tagline}
                       </span>
                     </div>
