@@ -160,8 +160,13 @@ export default function FAQAndStats() {
           {faqs?.map((faq) => {
             const isOpen = openId === faq.id;
             return (
-              <Reveal key={faq.id} variant="fade-up" delay={(faq.id - 1) * 80}>
-                <div className="py-5 first:pt-0 last:pb-0">
+              <Reveal
+                key={faq.id}
+                className="py-5 first:pt-0 last:pb-0"
+                variant="fade-up"
+                delay={(faq.id - 1) * 80}
+              >
+                <div className="">
                   <button
                     type="button"
                     onClick={() => handleToggle(faq.id)}
