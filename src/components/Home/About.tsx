@@ -6,22 +6,33 @@ import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useId } from "react";
 
 function RotatingBadge() {
+  const pathId = useId();
+
   return (
     <div className="absolute top-6 right-4 sm:right-8 z-30 w-28 h-28 sm:w-32 sm:h-32 hidden sm:block select-none">
       <div className="w-full h-full relative animate-[spin_18s_linear_infinite]">
         <svg viewBox="0 0 100 100" className="w-full h-full">
           <defs>
             <path
-              id="aboutBadgeCircle"
+              id={pathId}
               d="M 50,50 m -38,0 a 38,38 0 1,1 76,0 a 38,38 0 1,1 -76,0"
               fill="none"
             />
           </defs>
           <circle cx="50" cy="50" r="48" className="fill-forest-700/90" />
           <text className="text-[8.5px] font-bold fill-white tracking-[2.4px] uppercase">
-            <textPath href="#aboutBadgeCircle">Ahead Solar Ltd</textPath>
+            <textPath
+              href={`#${pathId}`}
+              startOffset="0"
+              textAnchor="start"
+              textLength={239}
+              lengthAdjust="spacingAndGlyphs"
+            >
+              Ahead Solar Ltd&nbsp;&bull;&nbsp;Sunshine To Electricity&nbsp;&bull;&nbsp;
+            </textPath>
           </text>
         </svg>
       </div>
