@@ -66,7 +66,7 @@ export const DEFAULT_SECTIONS: Section[] = [
       {
         label: "Primary Phone Number",
         type: "tel",
-        value: "+88 01335 123 700",
+        value: "+88 01335 127 300",
         id: "phone-number",
       },
       {
@@ -198,4 +198,3 @@ export function getDefaultField(sectionId: string, fieldId: string): string {
     )?.value ?? ""
   );
 }
-
