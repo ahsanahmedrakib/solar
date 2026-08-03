@@ -6,7 +6,7 @@ import { useQueryBlogs } from "@/lib/queries";
 import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import { useMemo } from "react";
-import BlogsCard from "../Blogs/BlogsCard";
+import BlogsCardSwiper from "./BlogsCardSwiper";
 
 export default function Blogs() {
   const { data: rawBlogs = [], isFetching: loading } = useQueryBlogs();
@@ -71,7 +71,7 @@ export default function Blogs() {
           </Reveal>
         </div>
 
-        <BlogsCard blogs={blogs?.slice(0, 3)} />
+        <BlogsCardSwiper blogs={blogs} />
       </div>
     </section>
   );

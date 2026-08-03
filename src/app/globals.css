@@ -363,7 +363,7 @@ body:has(.admin-layout-root) {
   height: 10px;
   margin: 0 6px !important;
   border-radius: 9999px;
-  background: rgba(255, 255, 255, 0.35);
+  background: #28cbc6;
   opacity: 1;
   transition: all 0.3s ease;
   cursor: pointer;
@@ -374,14 +374,18 @@ body:has(.admin-layout-root) {
   background: #f7b308;
 }
 
-/* Testimonial Swiper — Pagination Dots */
-.testimonial-swiper .swiper-pagination {
+/* Shared Swiper (non-hero) — Pagination Dots */
+.swiper-dots .swiper-pagination {
   position: relative;
-  margin-top: 16px;
+  bottom: auto;
+  left: auto;
+  width: auto;
+  margin-top: 28px;
+  text-align: center;
   z-index: 30;
 }
 
-.testimonial-swiper .swiper-pagination-bullet {
+.swiper-dots .swiper-pagination-bullet {
   display: inline-block;
   width: 10px;
   height: 10px;
@@ -393,31 +397,7 @@ body:has(.admin-layout-root) {
   cursor: pointer;
 }
 
-.testimonial-swiper .swiper-pagination-bullet-active {
-  width: 24px;
-  background: #f7b308;
-}
-
-/* Palash Gallery Swiper — Pagination Dots */
-.palash-gallery-swiper .swiper-pagination {
-  position: relative;
-  margin-top: 16px;
-  z-index: 30;
-}
-
-.palash-gallery-swiper .swiper-pagination-bullet {
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  margin: 0 5px !important;
-  border-radius: 9999px;
-  background: #d1d5db;
-  opacity: 1;
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
-
-.palash-gallery-swiper .swiper-pagination-bullet-active {
+.swiper-dots .swiper-pagination-bullet-active {
   width: 24px;
   background: #f7b308;
 }

@@ -196,7 +196,7 @@ export default function Navbar() {
             {/* LOGO */}
             <Link href="/" className="shrink-0 flex items-center">
               {showSkeleton ? (
-                <div className="h-11 w-40 rounded-full bg-gray-200 animate-pulse" />
+                <div className="h-11 w-60 rounded-full bg-gray-200 animate-pulse" />
               ) : (
                 <Image
                   src={logoSrc}

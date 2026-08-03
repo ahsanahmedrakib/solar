@@ -232,60 +232,60 @@ export default function Testimonials() {
                 // navigation
                 loop={true}
                 pagination={{ clickable: true }}
-                autoplay={{ delay: 3000, disableOnInteraction: false }}
-                spaceBetween={24}
-                slidesPerView={1}
-                breakpoints={{
-                  640: { slidesPerView: 1.3 },
-                  768: { slidesPerView: 2 },
-                  1024: { slidesPerView: 2.3 },
-                }}
-                className="testimonial-swiper pb-12"
-              >
-                {reviews?.map((item) => (
-                  <SwiperSlide key={item.id}>
-                    <div className="bg-white rounded-lg mt-2 py-6 px-6 border border-accent-500 shadow-sm flex flex-col justify-between space-y-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1.5 h-80">
-                      <div className="space-y-4">
-                        {/* Card Micro-Star Ratings Row */}
-                        <div className="flex text-accent-500">
-                          {[...Array(item.rating)]?.map((_, idx) => (
-                            <svg
-                              key={idx}
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="currentColor"
-                              viewBox="0 0 24 24"
-                              className="w-7 h-7 mr-0.5"
-                            >
-                              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                            </svg>
-                          ))}
+                  autoplay={{ delay: 3000, disableOnInteraction: false }}
+                  spaceBetween={24}
+                  slidesPerView={1}
+                  breakpoints={{
+                    640: { slidesPerView: 1.3 },
+                    768: { slidesPerView: 2 },
+                    1024: { slidesPerView: 2.3 },
+                  }}
+                  className="swiper-dots pb-12"
+                >
+                  {reviews?.map((item) => (
+                    <SwiperSlide key={item.id}>
+                      <div className="bg-white rounded-lg mt-2 py-6 px-6 border border-accent-500 shadow-sm flex flex-col justify-between space-y-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1.5 h-80">
+                        <div className="space-y-4">
+                          {/* Card Micro-Star Ratings Row */}
+                          <div className="flex text-accent-500">
+                            {[...Array(item.rating)]?.map((_, idx) => (
+                              <svg
+                                key={idx}
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="currentColor"
+                                viewBox="0 0 24 24"
+                                className="w-7 h-7 mr-0.5"
+                              >
+                                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                              </svg>
+                            ))}
+                          </div>
+                          {/* Clean Quoted Text Representation */}
+                          <p
+                            className="text-sm sm:text-base font-medium text-[#888888] leading-snug tracking-tight"
+                            title={item.quote}
+                          >
+                            &ldquo;
+                            {item?.quote?.length > 181
+                              ? item?.quote?.slice(0, 180) + "..."
+                              : item?.quote}
+                            &rdquo;
+                          </p>
                         </div>
-                        {/* Clean Quoted Text Representation */}
-                        <p
-                          className="text-sm sm:text-base font-medium text-[#888888] leading-snug tracking-tight"
-                          title={item.quote}
-                        >
-                          &ldquo;
-                          {item?.quote?.length > 181
-                            ? item?.quote?.slice(0, 180) + "..."
-                            : item?.quote}
-                          &rdquo;
-                        </p>
-                      </div>
 
-                      {/* Card Author Signature Block Area */}
-                      <div className="pt-4 border-t border-gray-100/80">
-                        <h4 className="font-heading text-base font-bold text-accent-500 tracking-tight">
-                          {item.name}
-                        </h4>
-                        <p className="text-xs sm:text-sm font-semibold text-[#888888] mt-0.5">
-                          {item.role}
-                        </p>
+                        {/* Card Author Signature Block Area */}
+                        <div className="pt-4 border-t border-gray-100/80">
+                          <h4 className="font-heading text-base font-bold text-accent-500 tracking-tight">
+                            {item.name}
+                          </h4>
+                          <p className="text-xs sm:text-sm font-semibold text-[#888888] mt-0.5">
+                            {item.role}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                  </SwiperSlide>
-                ))}
-              </Swiper>
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
             )}
           </Reveal>
         </div>

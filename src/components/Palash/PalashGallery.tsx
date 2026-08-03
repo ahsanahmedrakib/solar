@@ -9,13 +9,34 @@ import { Autoplay, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 
 const galleryImages = [
-  { src: "/images/palash/palash-1.webp", alt: "Palash Charging Station gallery image 1" },
-  { src: "/images/palash/palash-2.webp", alt: "Palash Charging Station gallery image 2" },
-  { src: "/images/palash/palash-3.webp", alt: "Palash Charging Station gallery image 3" },
-  { src: "/images/palash/palash-4.webp", alt: "Palash Charging Station gallery image 4" },
-  { src: "/images/palash/palash-5.webp", alt: "Palash Charging Station gallery image 5" },
-  { src: "/images/palash/palash-6.webp", alt: "Palash Charging Station gallery image 6" },
-  { src: "/images/palash/palash-7.webp", alt: "Palash Charging Station gallery image 7" },
+  {
+    src: "/images/palash/palash-1.webp",
+    alt: "Palash Charging Station gallery image 1",
+  },
+  {
+    src: "/images/palash/palash-2.webp",
+    alt: "Palash Charging Station gallery image 2",
+  },
+  {
+    src: "/images/palash/palash-3.webp",
+    alt: "Palash Charging Station gallery image 3",
+  },
+  {
+    src: "/images/palash/palash-4.webp",
+    alt: "Palash Charging Station gallery image 4",
+  },
+  {
+    src: "/images/palash/palash-5.webp",
+    alt: "Palash Charging Station gallery image 5",
+  },
+  {
+    src: "/images/palash/palash-6.webp",
+    alt: "Palash Charging Station gallery image 6",
+  },
+  {
+    src: "/images/palash/palash-7.webp",
+    alt: "Palash Charging Station gallery image 7",
+  },
 ];
 
 export default function PalashGallery() {
@@ -44,7 +65,7 @@ export default function PalashGallery() {
                 640: { slidesPerView: 2 },
                 1024: { slidesPerView: 3 },
               }}
-              className="palash-gallery-swiper pb-12"
+              className="swiper-dots pb-12"
             >
               {galleryImages.map((image, index) => (
                 <SwiperSlide key={image.src}>
@@ -67,3 +88,4 @@ export default function PalashGallery() {
     </section>
   );
 }
+
