@@ -288,82 +288,84 @@ export default function Navbar() {
               </button>
             </div>
           </div>
+
+          {/* 3. MOBILE MENU */}
+          {isMobileMenuOpen && (
+            <div className="lg:hidden absolute left-0 right-0 top-full bg-secondary shadow-xl z-40 border-t border-forest-700/10 max-h-[calc(100dvh-64px)] overflow-y-auto overscroll-contain">
+              <div className="solar-container">
+                <nav className="flex flex-col py-4 font-medium text-accent-500">
+                  {NAV_ITEMS.map((item) => (
+                    <div key={item.label}>
+                      {item.children ? (
+                        <>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setOpenSubmenu(
+                                openSubmenu === item.label ? null : item.label,
+                              )
+                            }
+                            className={`w-full flex items-center justify-between py-3 border-b border-gray-100 cursor-pointer ${
+                              isActive(item)
+                                ? "text-gold-500"
+                                : "hover:text-gold-500"
+                            }`}
+                          >
+                            {item.label}
+                            <ChevronDown
+                              size={16}
+                              className={`transition-transform duration-300 ${
+                                openSubmenu === item.label ? "rotate-180" : ""
+                              }`}
+                            />
+                          </button>
+
+                          <div
+                            className={`grid transition-all duration-300 ease-in-out ${
+                              openSubmenu === item.label
+                                ? "grid-rows-[1fr] opacity-100"
+                                : "grid-rows-[0fr] opacity-0"
+                            }`}
+                          >
+                            <div className="overflow-hidden">
+                              {item.children.map((child) => (
+                                <Link
+                                  key={child.href}
+                                  href={child.href}
+                                  onClick={() => setIsMobileMenuOpen(false)}
+                                  className={`block pl-6 py-3 border-b border-gray-100 text-sm ${
+                                    isPathActive(child.href)
+                                      ? "text-gold-500"
+                                      : "hover:text-gold-500"
+                                  }`}
+                                >
+                                  {child.label}
+                                </Link>
+                              ))}
+                            </div>
+                          </div>
+                        </>
+                      ) : (
+                        <Link
+                          href={item.href!}
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className={`py-3 border-b border-gray-100 block ${
+                            isActive(item)
+                              ? "text-gold-500"
+                              : "hover:text-gold-500"
+                          }`}
+                        >
+                          {item.label}
+                        </Link>
+                      )}
+                    </div>
+                  ))}
+                </nav>
+              </div>
+            </div>
+          )}
         </div>
       </header>
-
-      {/* 3. MOBILE MENU */}
-      {isMobileMenuOpen && (
-        <div className="lg:hidden fixed inset-x-0 top-0 bg-secondary shadow-xl z-40 pt-4">
-          <div className="solar-container">
-            <nav className="flex flex-col py-4 font-medium text-accent-500">
-              {NAV_ITEMS.map((item) => (
-                <div key={item.label}>
-                  {item.children ? (
-                    <>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setOpenSubmenu(
-                            openSubmenu === item.label ? null : item.label,
-                          )
-                        }
-                        className={`w-full flex items-center justify-between py-3 border-b border-gray-100 cursor-pointer ${
-                          isActive(item)
-                            ? "text-gold-500"
-                            : "hover:text-gold-500"
-                        }`}
-                      >
-                        {item.label}
-                        <ChevronDown
-                          size={16}
-                          className={`transition-transform duration-300 ${
-                            openSubmenu === item.label ? "rotate-180" : ""
-                          }`}
-                        />
-                      </button>
-
-                      <div
-                        className={`grid transition-all duration-300 ease-in-out ${
-                          openSubmenu === item.label
-                            ? "grid-rows-[1fr] opacity-100"
-                            : "grid-rows-[0fr] opacity-0"
-                        }`}
-                      >
-                        <div className="overflow-hidden">
-                          {item.children.map((child) => (
-                            <Link
-                              key={child.href}
-                              href={child.href}
-                              onClick={() => setIsMobileMenuOpen(false)}
-                              className={`block pl-6 py-3 border-b border-gray-100 text-sm ${
-                                isPathActive(child.href)
-                                  ? "text-gold-500"
-                                  : "hover:text-gold-500"
-                              }`}
-                            >
-                              {child.label}
-                            </Link>
-                          ))}
-                        </div>
-                      </div>
-                    </>
-                  ) : (
-                    <Link
-                      href={item.href!}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className={`py-3 border-b border-gray-100 block ${
-                        isActive(item) ? "text-gold-500" : "hover:text-gold-500"
-                      }`}
-                    >
-                      {item.label}
-                    </Link>
-                  )}
-                </div>
-              ))}
-            </nav>
-          </div>
-        </div>
-      )}
     </>
   );
 }
