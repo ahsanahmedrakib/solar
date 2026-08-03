@@ -277,14 +277,14 @@ export default function Footer() {
         {/* COPYRIGHT — ACCENT PILL                                                    */}
         {/* ========================================================================= */}
 
-        <p className="flex justify-between flex-wrap text-gold-500 font-semibold text-xl">
+        <p className="flex justify-between flex-wrap gap-3 text-sm text-white/70">
           <span>
             Copyright © {new Date().getFullYear()} {settings.companyName}. All
             rights reserved.
           </span>{" "}
           <span>
             Design &amp; Development by{" "}
-            <Link href="https://bct.com.bd/">
+            <Link href="https://bct.com.bd/" target="_blank">
               Bismillah Computer &amp; Technology
             </Link>
           </span>
