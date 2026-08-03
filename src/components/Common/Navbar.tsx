@@ -274,7 +274,7 @@ export default function Navbar() {
                   src="/images/palash/logo-palash.png"
                   alt="palash"
                   height={40}
-                  width={80}
+                  width={70}
                   className="p-2"
                 />
               </Link>

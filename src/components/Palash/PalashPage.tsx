@@ -3,6 +3,8 @@ import DealershipForm from "./DealershipForm";
 import PalashAbout from "./PalashAbout";
 import PalashBanner from "./PalashBanner";
 import PalashContact from "./PalashContact";
+import PalashGallery from "./PalashGallery";
+import PalashVideo from "./PalashVideo";
 
 const PalashPage = () => {
   return (
@@ -10,6 +12,8 @@ const PalashPage = () => {
       <PalashBanner />
       <PalashAbout />
       <BatteryPackages />
+      <PalashVideo />
+      <PalashGallery />
       <DealershipForm />
       <PalashContact />
     </div>

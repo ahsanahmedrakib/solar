@@ -12,75 +12,63 @@ export interface Service {
 export const DEFAULT_SERVICES: Service[] = [
   {
     id: 1,
-    title: "Solar Battery Storage",
+    title: "Commercial & Industrial Energy Storage",
     description:
-      "Reliable energy storage solutions that store excess solar power for use during peak hours or blackouts.",
+      "Advanced energy storage for businesses — including the 200 kWh modular S1 Storage Cabinet and the 114 kWh all-in-one L1 Storage Cabinet.",
     serviceDetails:
-      "<p>Reliable energy storage solutions that store excess solar power for use during peak hours or blackouts. Our battery systems are designed to maximize your energy independence and ensure you always have power when you need it most.</p><p>With advanced lithium-ion technology, our storage solutions offer high efficiency, long lifespan, and seamless integration with existing solar installations.</p><ul><li>Store excess energy generated during the day for nighttime use</li><li>Protect against grid outages with automatic backup power</li><li>Reduce peak demand charges and lower your electricity bills</li><li>Monitor energy usage in real time via smart controls</li></ul>",
+      "<p>We provide advanced commercial and industrial energy storage solutions designed for high-demand environments. Our flagship systems — the 200 kWh modular S1 Storage Cabinet and the 114 kWh all-in-one L1 Storage Cabinet — deliver reliable, scalable power when you need it most.</p><p>From factories to commercial facilities, our storage solutions reduce grid dependence, protect against outages, and optimize energy usage around the clock.</p><ul><li>200 kWh modular S1 Storage Cabinet for large-scale operations</li><li>114 kWh all-in-one L1 Storage Cabinet for compact, complete installations</li><li>Seamless integration with rooftop solar and existing infrastructure</li><li>Reduced peak demand charges and lower electricity costs</li></ul>",
     image: "/images/services/service-item-image-1.jpg",
-    alt: "Solar Battery Storage field",
+    alt: "Commercial and industrial energy storage cabinets",
     iconName: "Battery",
-    slug: "solar-battery-storage",
+    slug: "commercial-industrial-energy-storage",
   },
   {
     id: 2,
-    title: "Residential Solar Solutions",
+    title: "Rooftop Solar with BESS Fusion",
     description:
-      "Custom designed solar systems for homes that help reduce electricity bills and support clean energy goals.",
+      "Integrated rooftop solar panels paired with Battery Energy Storage Systems (BESS) for industries across Bangladesh.",
     serviceDetails:
-      "<p>Custom designed solar systems for homes that help reduce electricity bills and support clean energy goals. Our residential solutions are tailored to your specific energy needs, roof layout, and budget.</p><p>From initial consultation to final commissioning, we manage the entire process so you can start saving from day one.</p><ul><li>Personalized system design based on your energy consumption</li><li>High-efficiency panels that maximize power generation</li><li>Expert installation by certified professionals</li><li>Ongoing support and performance monitoring</li></ul>",
-    image: "/images/services/service-item-image-2.jpg",
-    alt: "Engineers working on home solar design",
-    iconName: "Sun",
-    slug: "residential-solar-solutions",
+      "<p>We implement integrated rooftop solar panels paired with Battery Energy Storage Systems (BESS) to deliver reliable, round-the-clock clean power for various industries.</p><p>Our fusion approach combines solar generation with intelligent storage, ensuring consistent energy supply even when the sun isn't shining.</p><ul><li>Optimized rooftop solar design for maximum generation</li><li>Fully integrated BESS for energy reliability and independence</li><li>Smart energy management and real-time monitoring</li><li>Lower operating costs and reduced diesel dependence</li></ul>",
+    image: "/images/services/service-item-image-4.jpg",
+    alt: "Rooftop solar panels paired with battery storage",
+    iconName: "Zap",
+    slug: "rooftop-solar-bess-fusion",
   },
   {
     id: 3,
-    title: "Solar System Maintenance",
+    title: "BIPV (Building-Integrated Photovoltaics)",
     description:
-      "Regular inspection, cleaning, and performance checks to ensure your solar panels are producing at maximum efficiency.",
+      "Solar power systems seamlessly integrated into building structures — combining form and function in one solution.",
     serviceDetails:
-      "<p>Regular inspection, cleaning, and performance checks to ensure your solar panels are producing at maximum efficiency. Our maintenance programs are designed to protect your investment and extend system lifespan.</p><p>We provide comprehensive maintenance packages that include everything from visual inspections to detailed performance analysis.</p><ul><li>Thorough panel cleaning to remove dust and debris</li><li>Inverter and electrical system checks</li><li>Performance data analysis and reporting</li><li>Early detection of potential issues before they become costly repairs</li></ul>",
-    image: "/images/services/service-item-image-3.jpg",
-    alt: "Engineer maintaining panels",
-    iconName: "Wrench",
-    slug: "solar-system-maintenance",
+      "<p>Our BIPV (Building-Integrated Photovoltaics) projects design and install solar power systems that are seamlessly integrated into building structures — turning facades, roofs, and surfaces into clean energy generators.</p><p>Rather than adding panels on top of a building, BIPV makes the building itself part of the energy solution, blending aesthetics with performance.</p><ul><li>Solar elements integrated directly into building envelopes</li><li>Architecturally elegant designs that preserve building aesthetics</li><li>Dual purpose: structural function and energy generation</li><li>Long-term savings on construction and energy costs</li></ul>",
+    image: "/images/services/service-item-image-2.jpg",
+    alt: "Building-integrated photovoltaic design",
+    iconName: "Sun",
+    slug: "bipv-projects",
   },
   {
     id: 4,
-    title: "Rooftop Solar Solutions",
+    title: "Integrated Solar + Storage Projects",
     description:
-      "Space efficient rooftop systems designed to maximize energy generation on residential and commercial roofs.",
+      "Advanced power systems with seamless switching between solar generation and battery storage.",
     serviceDetails:
-      "<p>Space efficient rooftop systems designed to maximize energy generation on residential and commercial roofs. Our rooftop solutions make use of every available square foot to deliver the highest possible energy output.</p><p>Whether you have a sloped roof, flat roof, or unique architectural features, we design a system that works harmoniously with your property.</p><ul><li>Custom mounting solutions for all roof types</li><li>Aesthetic low-profile panel designs</li><li>Optimized tilt and orientation for maximum sunlight exposure</li><li>Seamless integration with existing roofing materials</li></ul>",
-    image: "/images/services/service-item-image-4.jpg",
-    alt: "A smiling couple standing in front of their house with rooftop solar panels",
-    iconName: "Zap",
-    slug: "rooftop-solar-solutions",
+      "<p>We deliver advanced power systems that feature seamless switching between solar generation and battery storage — giving facilities uninterrupted, optimized power delivery.</p><p>Our integrated projects are engineered for maximum efficiency, automatically balancing solar, storage, and load in real time.</p><ul><li>Seamless switching between solar and battery power</li><li>Continuous power even during grid outages</li><li>Optimized energy dispatch for maximum savings</li><li>Complete design, installation, and long-term support</li></ul>",
+    image: "/images/services/service-item-image-6.jpg",
+    alt: "Integrated solar and battery storage system",
+    iconName: "Shield",
+    slug: "integrated-solar-storage-projects",
   },
   {
     id: 5,
-    title: "Solar Panel Installation",
+    title: "OPEX Model Solar Projects",
     description:
-      "Professional design, permitting, and high-quality installation services for reliable green energy production.",
+      "Operational Expenditure (OPEX) model for large-scale rooftop solar installations — such as our 650KWp project.",
     serviceDetails:
-      "<p>Professional design, permitting, and high-quality installation services for reliable green energy production. Our experienced team handles every aspect of the installation process with precision and care.</p><p>We manage all paperwork, permits, and utility coordination so you can focus on enjoying the benefits of solar energy.</p><ul><li>Comprehensive site assessment and energy audit</li><li>Full permitting and utility approval management</li><li>Professional installation by NABCEP-certified technicians</li><li>Post-installation testing and system commissioning</li></ul>",
+      "<p>We offer an Operational Expenditure (OPEX) model for large-scale rooftop solar installations — such as our 650KWp project — letting businesses adopt solar with no upfront capital investment.</p><p>Under the OPEX model, we own, install, and maintain the system while you pay only for the clean energy you use, unlocking immediate savings.</p><ul><li>Zero upfront capital — pay only for energy consumed</li><li>Ideal for large-scale installations like our 650KWp project</li><li>Professional operation and maintenance included</li><li>Predictable, lower energy costs from day one</li></ul>",
     image: "/images/services/service-item-image-5.jpg",
-    alt: "Two technicians installing and checking solar panels on a sunny day",
-    iconName: "Shield",
-    slug: "solar-panel-installation",
-  },
-  {
-    id: 6,
-    title: "Hybrid Solar Systems",
-    description:
-      "A smart combination of grid-tied solar panels and battery storage to ensure continuous power supply.",
-    serviceDetails:
-      "<p>A smart combination of grid-tied solar panels and battery storage to ensure continuous power supply. Our hybrid systems give you the best of both worlds &mdash; grid connectivity when you need it and battery backup when you don&rsquo;t.</p><p>Hybrid systems are ideal for areas with unreliable grid power or for homeowners who want maximum energy independence.</p><ul><li>Automatic switchover during grid outages</li><li>Smart energy management that optimizes solar, battery, and grid usage</li><li>Scalable design that can grow with your energy needs</li><li>Reduced reliance on fossil fuels and lower carbon footprint</li></ul>",
-    image: "/images/services/service-item-image-6.jpg",
-    alt: "Engineers inspecting a massive commercial hybrid solar system farm",
+    alt: "Large-scale rooftop solar installation under OPEX model",
     iconName: "Globe",
-    slug: "hybrid-solar-systems",
+    slug: "opex-model-solar-projects",
   },
 ];
 

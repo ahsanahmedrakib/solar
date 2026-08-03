@@ -5,40 +5,6 @@ import Image from "next/image";
 export default function Approach() {
   return (
     <section className="relative w-full overflow-hidden bg-secondary px-4 py-12 md:px-8 lg:px-16 lg:py-25">
-      {/* Floating utility sidebar mockup on the far right (optional, match image design) */}
-      <div className="absolute right-0 top-1/2 hidden -translate-y-1/2 flex-col gap-2 rounded-l-md border border-r-0 border-gray-200 bg-white p-2 shadow-sm md:flex">
-        <button className="p-2 text-gray-600 hover:text-green-600">
-          <svg
-            className="h-5 w-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-            />
-          </svg>
-        </button>
-        <button className="p-2 text-gray-600 hover:text-green-600">
-          <svg
-            className="h-5 w-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-            />
-          </svg>
-        </button>
-      </div>
-
       <div className="solar-container">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-8 items-center">
           {/* Left Content Column */}
@@ -97,8 +63,8 @@ export default function Approach() {
                   Our Mission
                 </h3>
                 <p className="mt-3 text-xs leading-relaxed text-[#888888] sm:text-sm">
-                  Our mission is to make clean, reliable affordable solar energy
-                  accessible to homes.
+                  Replace All The Diesel Generators with Rooftop Solar and BESS
+                  Fusion System.
                 </p>
               </Reveal>
 
@@ -134,8 +100,7 @@ export default function Approach() {
                   Our Vision
                 </h3>
                 <p className="mt-3 text-xs leading-relaxed text-[#888888] sm:text-sm">
-                  Our vision is to lead the transition to a cleaner &amp; more
-                  sustainable energy future.
+                  Let Sunshine Become The New Electricity in Bangladesh.
                 </p>
               </Reveal>
 
@@ -165,8 +130,8 @@ export default function Approach() {
                   Our Values
                 </h3>
                 <p className="mt-3 text-xs leading-relaxed text-[#888888] sm:text-sm">
-                  We believe putting customer first, delivering reliable and
-                  efficient solutions.
+                  We are dedicated to creating profits and giving back to
+                  society with sunshine.
                 </p>
               </Reveal>
             </div>

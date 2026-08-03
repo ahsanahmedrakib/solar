@@ -3,7 +3,6 @@ import FAQAndStats from "../Home/FAQAndStats";
 import Testimonials from "../Home/Testimonials";
 import WhyChooseUs from "../Home/WhyChooseUs";
 import AboutBanner from "./AboutBanner";
-import Advantages from "./Advantages";
 import Approach from "./Approach";
 import Teams from "./Teams";
 import WhatWeDo from "./WhatWeDo";
@@ -16,7 +15,7 @@ const AboutPage = () => {
       <Approach />
       <WhyChooseUs />
       <WhatWeDo />
-      <Advantages />
+      {/* <Advantages /> */}
       {/* <CoreFeatures /> */}
       <Teams />
       <Testimonials />

@@ -20,7 +20,7 @@ export const DEFAULT_HERO_SLIDES: HeroSlide[] = [
     description:
       "We are a vertically integrated solar energy company offering end-to-end solutions — from system design and engineering to installation and long-term maintenance — customized to factory and business needs.",
     image: "/images/home/hero-bg-image.jpg",
-    videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+    videoUrl: "https://drive.google.com/file/d/1UYs68lUgLpYexZnNO5OWiyWrkSM2sgOw/preview",
     showVideoButton: true,
     isActive: true,
     order: 1,

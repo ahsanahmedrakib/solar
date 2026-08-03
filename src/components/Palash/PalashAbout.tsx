@@ -3,24 +3,24 @@ import Image from "next/image";
 
 const highlights = [
   {
-    title: "100% Solar-Charged",
+    title: "Premium Easy-Bike Power",
     description:
-      "Every battery is charged using clean solar energy through our dedicated charging network.",
+      "Advanced easy-bike power solutions dedicated to maximizing your daily income and performance.",
   },
   {
-    title: "Daily Rental Model",
+    title: "Top-Tier Battery Rentals",
     description:
-      "Affordable daily rental plans keep easy-bike and Mishuk drivers on the road with zero upfront cost.",
+      "Specialized lithium-ion battery rentals engineered for reliable, long-lasting performance.",
   },
   {
-    title: "BESS Expertise",
+    title: "Reliable Charging Network",
     description:
-      "We specialize in advanced Battery Energy Storage Systems (BESS) for sustainable, efficient energy.",
+      "A dependable charging station network that keeps you on the road — not waiting in line.",
   },
   {
-    title: "Driver's Home",
+    title: "Maximum Mileage, Zero Hassle",
     description:
-      "PALASH is built as a three-wheeler driver's home - a trusted network of charging and service stations.",
+      "Long-lasting power so you spend less time waiting and more time earning.",
   },
 ];
 
@@ -43,21 +43,20 @@ export default function PalashAbout() {
 
           <Reveal variant="fade-up" delay={100}>
             <h2 className="font-heading text-3xl sm:text-4xl lg:text-[52px] font-bold text-accent-500 tracking-tight leading-[1.1]">
-              Our{" "}
-              <span className="text-accent-500">
-                Sustainable Battery Rental
-              </span>{" "}
-              Network
+              Maximum Mileage,{" "}
+              <span className="text-accent-500">Zero Hassle</span>
             </h2>
           </Reveal>
 
           <Reveal variant="fade-up" delay={180}>
             <p className="text-[#888888] text-sm sm:text-base font-normal leading-relaxed text-justify">
-              Through our groundbreaking initiative Palash Charging Station, we
-              provide 100% solar-charged lithium-ion batteries to Easybike and
-              Mishuk drivers on a daily rental basis. Furthermore, we specialize
-              in advanced Battery Energy Storage Systems (BESS) to drive
-              sustainable and efficient energy solutions.
+              Welcome to Palash Charging Station! ⚡ As your premium destination
+              for advanced easy-bike power solutions, we are dedicated to
+              maximizing your daily income and performance. We specialize in
+              top-tier lithium-ion battery rentals and offer a reliable,
+              charging station network. Our goal is to equip you with
+              long-lasting power so you spend less time waiting and more time
+              on the road.
             </p>
           </Reveal>
 

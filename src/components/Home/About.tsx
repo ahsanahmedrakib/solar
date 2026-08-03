@@ -111,24 +111,26 @@ export default function About() {
         <div className="lg:col-span-6 lg:pl-10 space-y-6 order-1 lg:order-2">
           {/* Section Subtitle Badge */}
           <Reveal variant="fade-up" delay={0}>
-            <span className="section-eyebrow">About Our Company</span>
+            <span className="section-eyebrow">About Ahead Solar Ltd.</span>
           </Reveal>
 
           {/* Main Title Heading */}
           <Reveal variant="fade-up" delay={100}>
             <h2 className="font-heading text-3xl sm:text-4xl lg:text-[52px] font-bold text-accent-500 tracking-tight leading-[1.1]">
-              Pioneering large-scale rooftop solar solutions
+              Pioneering Bangladesh&apos;s energy revolution
             </h2>
           </Reveal>
 
           {/* Paragraph Text */}
           <Reveal variant="fade-up" delay={180}>
             <p className="text-[#888888] text-sm sm:text-base font-normal leading-relaxed max-w-xl">
-              We are a vertically integrated solar energy company specializing
-              in industrial and commercial rooftop projects. Our team combines
-              world-class engineering with deep local expertise to deliver
-              reliable, high-performance solar systems — from design through
-              long-term operation.
+              At Ahead Solar Ltd., we are pioneering Bangladesh&apos;s energy
+              revolution. We specialize in advanced commercial and industrial
+              energy storage solutions, primarily focusing on Rooftop Solar and
+              BESS (Battery Energy Storage System) fusion systems. Driven by our
+              mission to replace all diesel generators with our solar and
+              storage fusion systems, we are dedicated to creating profits and
+              giving back to society with sunshine.
             </p>
           </Reveal>
 
@@ -191,12 +193,45 @@ export default function About() {
                   </div>
                   <div>
                     <h4 className="font-heading text-lg font-bold text-accent-500 mb-1">
-                      Vertically Integrated Solutions
+                      Five Milestone Firsts
                     </h4>
                     <p className="text-xs sm:text-sm text-[#888888] leading-normal text-justify">
-                      From supply chain and project scheduling to manufacturing,
-                      installation, and after-sales service — all functions are
-                      integrated for complete project delivery.
+                      As an industry leader, we have achieved five milestone
+                      &quot;firsts,&quot; including Bangladesh&apos;s first
+                      MW-Scale Energy Storage Project and the country&apos;s
+                      first BESS Assembly plant.
+                    </p>
+                  </div>
+                </div>
+              </Reveal>
+
+              {/* Feature Item 3 */}
+              <Reveal variant="fade-up" delay={300}>
+                <div className="flex gap-4 items-start group">
+                  <div className="shrink-0 w-12 h-12 rounded-[18px] bg-accent-500 text-accent-500 flex items-center justify-center shadow-sm transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={2}
+                      stroke="#fff"
+                      className="w-5 h-5"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 0 0-3.213-9.193 2.056 2.056 0 0 0-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 0 0-10.026 0 1.106 1.106 0 0 0-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12"
+                      />
+                    </svg>
+                  </div>
+                  <div>
+                    <h4 className="font-heading text-lg font-bold text-accent-500 mb-1">
+                      First Solar 3-Wheeler Approval
+                    </h4>
+                    <p className="text-xs sm:text-sm text-[#888888] leading-normal text-justify">
+                      In the realm of sustainable mobility, we secured
+                      Bangladesh&apos;s first Solar 3-wheeler approval from the
+                      DNCC.
                     </p>
                   </div>
                 </div>
