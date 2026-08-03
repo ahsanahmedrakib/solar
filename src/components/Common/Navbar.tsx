@@ -3,7 +3,7 @@
 import { DEFAULT_SECTIONS } from "@/data/settings";
 import { SOCIAL_ICONS } from "@/lib/const";
 import { useQuerySettings } from "@/lib/queries";
-import { Mail, Menu, Phone, X } from "lucide-react";
+import { ChevronDown, Mail, Menu, Phone, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -31,17 +31,32 @@ const FALLBACK = {
   logo: getField(DEFAULT_SECTIONS, "general", "site-logo") || "/logo.svg",
 };
 
-const NAV_ITEMS = [
+interface NavItem {
+  label: string;
+  href?: string;
+  children?: { label: string; href: string }[];
+}
+
+const NAV_ITEMS: NavItem[] = [
   { label: "Home", href: "/" },
   { label: "About Us", href: "/about" },
+  {
+    label: "Solution",
+    children: [
+      { label: "CAPEX", href: "/solutions/capex" },
+      { label: "OPEX", href: "/solutions/opex" },
+      { label: "Comparison", href: "/solutions/comparison" },
+    ],
+  },
   { label: "Services", href: "/services" },
   { label: "Projects", href: "/projects" },
   { label: "Blogs", href: "/blogs" },
   { label: "Contact", href: "/contact" },
-] as const;
+];
 
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(false);
 
   const { data, isFetching, isLoading } = useQuerySettings();
@@ -71,9 +86,14 @@ export default function Navbar() {
   const settings = resolved;
   const showSkeleton = isLoading || isFetching;
 
-  const isActive = (href: string) => {
+  const isPathActive = (href: string) => {
     if (!pathname) return false;
     return pathname === href || pathname.startsWith(href + "/");
+  };
+
+  const isActive = (item: NavItem) => {
+    if (item.href && isPathActive(item.href)) return true;
+    return item.children?.some((child) => isPathActive(child.href)) ?? false;
   };
 
   return (
@@ -167,10 +187,10 @@ export default function Navbar() {
       <header className="sticky top-0 z-50 transition-all duration-300">
         <div className="solar-container">
           <div
-            className={`flex bg-white items-center justify-between gap-6 px-2 transition-all duration-300 ${
+            className={`flex bg-white items-center justify-between gap-2 sm:gap-6 px-2 transition-all duration-300 ${
               !scrolled
-                ? "py-2 my-3 rounded-full shadow-md shadow-forest-900/5"
-                : "py-2 rounded-full border-b border-forest-700/10 mt-2 shadow-lg shadow-forest-900/10"
+                ? "py-2 my-3 rounded-lg shadow-md shadow-forest-900/5"
+                : "py-2 rounded-lg border-b border-forest-700/10 mt-2 shadow-lg shadow-forest-900/10"
             }`}
           >
             {/* LOGO */}
@@ -183,7 +203,7 @@ export default function Navbar() {
                   width={160}
                   height={46}
                   alt="Ahead Solar logo"
-                  className="h-11 w-auto object-contain"
+                  className="h-7.5 sm:h-11 w-auto object-contain"
                 />
               )}
             </Link>
@@ -191,31 +211,82 @@ export default function Navbar() {
             {/* DESKTOP NAVIGATION */}
             <nav className="hidden lg:flex items-center gap-1 font-medium">
               {NAV_ITEMS.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`nav-link-sweep py-2 px-3 rounded-full transition-colors ${
-                    isActive(item.href)
-                      ? "text-accent-500 nav-link-active"
-                      : "text-accent-500 hover:text-gold-500"
-                  }`}
-                >
-                  {item.label}
-                </Link>
+                <div key={item.label} className="relative group">
+                  {item.children ? (
+                    <>
+                      <button
+                        type="button"
+                        className={`nav-link-sweep py-2 px-3 rounded-full transition-colors inline-flex items-center gap-1 cursor-pointer ${
+                          isActive(item)
+                            ? "text-accent-500 nav-link-active"
+                            : "text-accent-500 hover:text-gold-500"
+                        }`}
+                      >
+                        {item.label}
+                        <ChevronDown
+                          size={14}
+                          className="transition-transform duration-300 group-hover:rotate-180"
+                        />
+                      </button>
+
+                      {/* Dropdown Panel */}
+                      <div className="absolute left-0 top-full pt-2 opacity-0 invisible translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-300">
+                        <div className="bg-white rounded-xl shadow-xl shadow-forest-900/10 border border-gray-100 py-2 min-w-48 overflow-hidden">
+                          {item.children.map((child) => (
+                            <Link
+                              key={child.href}
+                              href={child.href}
+                              className={`block px-4 py-2.5 text-sm transition-colors ${
+                                isPathActive(child.href)
+                                  ? "text-gold-500 bg-secondary"
+                                  : "text-accent-500 hover:text-gold-500 hover:bg-secondary"
+                              }`}
+                            >
+                              {child.label}
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <Link
+                      href={item.href!}
+                      className={`nav-link-sweep py-2 px-3 rounded-full transition-colors ${
+                        isActive(item)
+                          ? "text-accent-500 nav-link-active"
+                          : "text-accent-500 hover:text-gold-500"
+                      }`}
+                    >
+                      {item.label}
+                    </Link>
+                  )}
+                </div>
               ))}
             </nav>
 
-            {/* CTA Button */}
-            <div className="hidden lg:block">Contact Us</div>
+            <div className="flex gap-2">
+              <Link
+                href="/palash-charging-station"
+                className="border-2 rounded-lg border-accent-500 mr-0 lg:mr-2.25"
+              >
+                <Image
+                  src="/images/palash/logo-palash.png"
+                  alt="palash"
+                  height={40}
+                  width={80}
+                  className="p-2"
+                />
+              </Link>
 
-            {/* Mobile Menu Button */}
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden text-accent-500 p-2"
-              aria-label="Toggle menu"
-            >
-              {isMobileMenuOpen ? <X size={26} /> : <Menu size={26} />}
-            </button>
+              {/* Mobile Menu Button */}
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="lg:hidden text-accent-500 p-2"
+                aria-label="Toggle menu"
+              >
+                {isMobileMenuOpen ? <X size={26} /> : <Menu size={26} />}
+              </button>
+            </div>
           </div>
         </div>
       </header>
@@ -226,20 +297,69 @@ export default function Navbar() {
           <div className="solar-container">
             <nav className="flex flex-col py-4 font-medium text-accent-500">
               {NAV_ITEMS.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className={`py-3 border-b border-gray-100 ${
-                    isActive(item.href)
-                      ? "text-gold-500"
-                      : "hover:text-gold-500"
-                  }`}
-                >
-                  {item.label}
-                </Link>
+                <div key={item.label}>
+                  {item.children ? (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setOpenSubmenu(
+                            openSubmenu === item.label ? null : item.label,
+                          )
+                        }
+                        className={`w-full flex items-center justify-between py-3 border-b border-gray-100 cursor-pointer ${
+                          isActive(item)
+                            ? "text-gold-500"
+                            : "hover:text-gold-500"
+                        }`}
+                      >
+                        {item.label}
+                        <ChevronDown
+                          size={16}
+                          className={`transition-transform duration-300 ${
+                            openSubmenu === item.label ? "rotate-180" : ""
+                          }`}
+                        />
+                      </button>
+
+                      <div
+                        className={`grid transition-all duration-300 ease-in-out ${
+                          openSubmenu === item.label
+                            ? "grid-rows-[1fr] opacity-100"
+                            : "grid-rows-[0fr] opacity-0"
+                        }`}
+                      >
+                        <div className="overflow-hidden">
+                          {item.children.map((child) => (
+                            <Link
+                              key={child.href}
+                              href={child.href}
+                              onClick={() => setIsMobileMenuOpen(false)}
+                              className={`block pl-6 py-3 border-b border-gray-100 text-sm ${
+                                isPathActive(child.href)
+                                  ? "text-gold-500"
+                                  : "hover:text-gold-500"
+                              }`}
+                            >
+                              {child.label}
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <Link
+                      href={item.href!}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className={`py-3 border-b border-gray-100 block ${
+                        isActive(item) ? "text-gold-500" : "hover:text-gold-500"
+                      }`}
+                    >
+                      {item.label}
+                    </Link>
+                  )}
+                </div>
               ))}
-              <div className="pt-5 pb-2">Contact Us</div>
             </nav>
           </div>
         </div>
