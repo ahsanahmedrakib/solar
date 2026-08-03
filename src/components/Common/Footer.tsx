@@ -286,23 +286,7 @@ export default function Footer() {
         <div className="flex flex-col items-center gap-4 pb-6 pt-2">
           <div className="h-px w-28 bg-linear-to-r from-transparent via-gold-500/60 to-transparent" />
           <p className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center text-sm text-white/70">
-            <span>Design, Development &amp; Maintenance by</span>
-            <Link
-              className="group inline-flex items-center gap-2 rounded-full border border-gold-500/30 bg-gold-500/10 py-1.5 pl-4 pr-5 font-heading font-bold text-gold-500 transition-all duration-300 hover:border-gold-500/70 hover:bg-gold-500/20 hover:shadow-[0_0_24px_rgba(247,179,8,0.25)]"
-              target="_blank"
-              href="https://bct.com.bd/"
-            >
-              <Image
-                src="/bct-logo.svg"
-                alt="BCT Logo"
-                height={18}
-                width={60}
-                className="transition-transform duration-300 group-hover:scale-110"
-              />
-              <span className="transition-colors duration-300 group-hover:text-gold-300">
-                Bismillah Computer &amp; Technology
-              </span>
-            </Link>
+            <span>Design, Development &amp; Maintenance by <Link href="https://bct.com.bd/">  Bismillah Computer &amp; Technology</Link></span>
           </p>
         </div>
       </div>
