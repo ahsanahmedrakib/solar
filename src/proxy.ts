@@ -1,5 +1,5 @@
-import { NextResponse, type NextRequest } from "next/server";
 import { verifyAccessToken } from "@/lib/token";
+import { NextResponse, type NextRequest } from "next/server";
 
 const PUBLIC_GET_PREFIXES = [
   "/api/settings",
@@ -14,7 +14,11 @@ const PUBLIC_GET_PREFIXES = [
   "/api/env",
 ];
 
-const PUBLIC_POST_PATHS = ["/api/contact", "/api/reviews"];
+const PUBLIC_POST_PATHS = [
+  "/api/contact",
+  "/api/reviews",
+  "/api/palash-applications",
+];
 
 const PUBLIC_PATHS = [
   "/api/auth/login",

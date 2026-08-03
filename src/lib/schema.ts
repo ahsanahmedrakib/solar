@@ -105,6 +105,26 @@ export const contactQueries = pgTable("contact_queries", {
   notes: text("notes"),
 });
 
+export const palashApplications = pgTable("palash_applications", {
+  id: varchar("id", { length: 100 }).primaryKey(),
+  fullName: text("full_name").notNull(),
+  businessName: text("business_name"),
+  mobile: text("mobile").notNull(),
+  whatsapp: text("whatsapp"),
+  email: varchar("email", { length: 255 }),
+  district: text("district").notNull(),
+  thana: text("thana").notNull(),
+  address: text("address").notNull(),
+  services: text("services").array().notNull().default([]),
+  hasBusiness: varchar("has_business", { length: 10 }).notNull(),
+  experienceYears: text("experience_years"),
+  space: varchar("space", { length: 20 }).notNull(),
+  comments: text("comments"),
+  createdAt: text("created_at").notNull(),
+  status: varchar("status", { length: 20 }).notNull().default("new"),
+  notes: text("notes"),
+});
+
 export const reviews = pgTable("reviews", {
   id: serial("id").primaryKey(),
   name: text("name").notNull(),

@@ -5,6 +5,7 @@ import { DEFAULT_SECTIONS } from "@/data/settings";
 import { useQuerySettings } from "@/lib/queries";
 import { cn } from "@/lib/utils";
 import {
+  BatteryCharging,
   Briefcase,
   ChevronRight,
   FileText,
@@ -60,6 +61,11 @@ const navItems = [
     title: "Contact Queries",
     href: "/admin/contact",
     icon: Mail,
+  },
+  {
+    title: "Palash Applications",
+    href: "/admin/palash-applications",
+    icon: BatteryCharging,
   },
   {
     title: "Reviews",

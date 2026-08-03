@@ -267,6 +267,7 @@ export default function Navbar() {
             <div className="flex gap-2">
               <Link
                 href="/palash-charging-station"
+                target="_blank"
                 className="border-2 rounded-lg border-accent-500 mr-0 lg:mr-2.25"
               >
                 <Image
