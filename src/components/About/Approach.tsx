@@ -143,7 +143,7 @@ export default function Approach() {
             className="relative w-full h-87.5 sm:h-112.5 lg:h-137.5 lg:col-span-5 rounded-lg shadow-lg"
           >
             <Image
-              src="/images/about/approach-image.jpg" // Place your image asset path here
+              src="/images/aheadsolar/approach.jpg"
               alt="Engineers reviewing solar planning on a tablet"
               fill
               priority

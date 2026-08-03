@@ -12,7 +12,7 @@ const CapExPage = () => {
         title="Capital Expenditure"
         titleAccent="Model"
         description="With the CapEx model, the entire investment comes from the roof owner either from his own source of from capital market. Roof owner owns the equipment once it has been paid off and get free electricity after 10 years."
-        image="/images/services/service-item-image-5.jpg"
+        image="/images/aheadsolar/about-1.jpg"
         imageAlt="Technicians installing and checking solar panels on a rooftop"
         features={[
           {
@@ -90,3 +90,4 @@ const CapExPage = () => {
 };
 
 export default CapExPage;
+

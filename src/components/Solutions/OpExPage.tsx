@@ -12,7 +12,7 @@ const OpExPage = () => {
         title="Operational Expenditure"
         titleAccent="Model"
         description="In this model as there is zero investment upfront, the roof owner ends up paying a little higher than the CapEx model. No financial risk to deploy green energy due to market change or technology innovation. It is paid in annual installments. Service provider ensures smooth maintenance and good performance for 20 years."
-        image="/images/services/service-item-image-6.jpg"
+        image="/images/aheadsolar/about-2.jpg"
         imageAlt="Engineers inspecting a massive commercial hybrid solar system farm"
         features={[
           {
@@ -90,3 +90,4 @@ const OpExPage = () => {
 };
 
 export default OpExPage;
+

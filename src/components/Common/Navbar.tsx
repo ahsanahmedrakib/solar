@@ -216,7 +216,7 @@ export default function Navbar() {
                     <>
                       <button
                         type="button"
-                        className={`nav-link-sweep py-2 px-3 rounded-full transition-colors inline-flex items-center gap-1 cursor-pointer ${
+                        className={`nav-link-sweep py-1.25 px-3 rounded-full transition-colors inline-flex items-center gap-1 cursor-pointer ${
                           isActive(item)
                             ? "text-accent-500 nav-link-active"
                             : "text-accent-500 hover:text-gold-500"
@@ -230,7 +230,7 @@ export default function Navbar() {
                       </button>
 
                       {/* Dropdown Panel */}
-                      <div className="absolute left-0 top-full pt-2 opacity-0 invisible translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-300">
+                      <div className="absolute left-0 top-full pt-3 opacity-0 invisible translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-300">
                         <div className="bg-white rounded-xl shadow-xl shadow-forest-900/10 border border-gray-100 py-2 min-w-48 overflow-hidden">
                           {item.children.map((child) => (
                             <Link

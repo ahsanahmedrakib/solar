@@ -752,6 +752,12 @@ body:has(.admin-layout-root) {
   transform-origin: left;
 }
 
+/* Dropdown nav item (Solution): chevron adds 18px (14px icon + 4px gap),
+   so narrow the underline to match the width of a plain link underline */
+button.nav-link-sweep::after {
+  width: calc(100% - 18px);
+}
+
 /* Card shine sweep on hover */
 .card-shine {
   position: relative;

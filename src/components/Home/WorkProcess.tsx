@@ -136,7 +136,7 @@ const WorkProcess = () => {
       <div
         className="w-full bg-cover bg-center relative overflow-hidden"
         style={{
-          backgroundImage: "url('/images/home/intro-video-image.jpg')",
+          backgroundImage: "url('/images/aheadsolar/story.jpg')",
           backgroundAttachment: "fixed",
           minHeight: "680px",
         }}

@@ -8,7 +8,7 @@ export default function HaveQuestions() {
       {/* Background image with forest tint */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat kenburns-active"
-        style={{ backgroundImage: "url('/images/common/page-header-bg.jpg')" }}
+        style={{ backgroundImage: "url('/images/aheadsolar/banner-2.jpg')" }}
       />
       <div className="absolute inset-0 bg-forest-900/85" />
 
@@ -35,3 +35,4 @@ export default function HaveQuestions() {
     </section>
   );
 }
+

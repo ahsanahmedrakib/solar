@@ -25,11 +25,11 @@ export default function PageBanner({
   titleAccent,
   crumb,
   crumbParent,
-  image = "/images/common/page-header-bg.jpg",
+  image = "/images/aheadsolar/banner.jpg",
   eyebrow,
 }: PageBannerProps) {
   return (
-    <section className="relative w-full h-65 sm:h-80 lg:h-100 flex items-center justify-center overflow-hidden bg-forest-900">
+    <section className="relative w-full h-65 sm:h-80 lg:h-100 flex items-center justify-center overflow-hidden">
       {/* 1. Background Image Layer with Ken Burns zoom */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat kenburns-active"
@@ -37,11 +37,11 @@ export default function PageBanner({
       />
 
       {/* 2. Forest tint overlays for text legibility */}
-      <div className="absolute inset-0 bg-linear-to-r from-forest-900/95 via-forest-900/70 to-forest-900/40" />
-      <div className="absolute inset-0 bg-forest-900/30" />
+      <div className="absolute inset-0 bg-linear-to-r from-forest-900/45 via-forest-900/30 to-forest-900/20" />
+      <div className="absolute inset-0 bg-forest-900/20" />
 
       {/* 3. Central Typography Content Block */}
-      <div className="relative z-10 text-center px-4 max-w-4xl mx-auto flex flex-col items-center justify-center h-full pt-6">
+      <div className="relative z-10 text-center px-4 max-w-4xl mx-auto flex flex-col items-center justify-center h-full pt-6 text-gold-500">
         {eyebrow && (
           <Reveal variant="fade-down" duration={800}>
             <span className="section-eyebrow mb-3">{eyebrow}</span>
@@ -100,3 +100,4 @@ export default function PageBanner({
     </section>
   );
 }
+

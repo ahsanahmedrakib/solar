@@ -38,7 +38,7 @@ export default function WhatWeDo() {
               className="relative w-full h-60 sm:h-85 overflow-hidden rounded-lg shadow-md"
             >
               <Image
-                src="/images/about/what-we-do-video-image.jpg"
+                src="/images/aheadsolar/what.jpg"
                 alt="Engineers looking at a laptop in front of wind turbines"
                 fill
                 className="object-cover transition-transform duration-500 group-hover:scale-102"
@@ -54,7 +54,7 @@ export default function WhatWeDo() {
               className="relative w-full h-60 sm:h-85 overflow-hidden rounded-lg shadow-md"
             >
               <Image
-                src="/images/about/what-we-do-body-image.jpg"
+                src="/images/aheadsolar/about-2.jpg"
                 alt="Workers installing solar panels on a rooftop"
                 fill
                 priority

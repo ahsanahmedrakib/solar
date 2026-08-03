@@ -21,9 +21,7 @@ function RotatingBadge() {
           </defs>
           <circle cx="50" cy="50" r="48" className="fill-forest-700/90" />
           <text className="text-[8.5px] font-bold fill-white tracking-[2.4px] uppercase">
-            <textPath href="#aboutBadgeCircle">
-              Experience • Reliability • Solar •
-            </textPath>
+            <textPath href="#aboutBadgeCircle">Ahead Solar Ltd</textPath>
           </text>
         </svg>
       </div>
@@ -65,7 +63,7 @@ export default function About() {
           {/* 1. Top Left Image (Office / Turbine Team) */}
           <RevealImage className="absolute top-0 left-0 w-[70%] h-[64%] rounded-xl overflow-hidden shadow-sm">
             <Image
-              src="/images/home/about-us-image-1.jpg"
+              src="/images/aheadsolar/about-1.jpg"
               alt="Team discussing clean energy"
               fill
               sizes="(max-width: 1024px) 50vw, 30vw"
@@ -98,7 +96,7 @@ export default function About() {
             className="absolute bottom-0 right-0 w-[56%] h-[74%] rounded-xl overflow-hidden shadow-2xl border-4 sm:border-8 border-white z-10"
           >
             <Image
-              src="/images/home/about-us-image-2.jpg"
+              src="/images/aheadsolar/about-2.jpg"
               alt="Engineers walking on site"
               fill
               sizes="(max-width: 1024px) 50vw, 30vw"
@@ -244,7 +242,7 @@ export default function About() {
               className="sm:col-span-5 relative w-full aspect-4/3 sm:aspect-square rounded-lg overflow-hidden shadow-sm bg-gray-100"
             >
               <Image
-                src="/images/home/about-us-body-image.jpg"
+                src="/images/aheadsolar/about-3.jpg"
                 alt="Solar fields installation"
                 fill
                 sizes="(max-width: 640px) 100vw, 20vw"

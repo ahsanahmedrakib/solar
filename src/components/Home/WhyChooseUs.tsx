@@ -101,7 +101,7 @@ const WhyChooseUs: React.FC = () => {
             {/* Large Top Image */}
             <RevealImage className="relative w-full aspect-[2.1/1] rounded-lg overflow-hidden shadow-sm bg-gray-100">
               <Image
-                src="/images/home/why-choose-us-image-2.jpg"
+                src="/images/aheadsolar/why-1.jpg"
                 alt="Expert solar engineers team installing panels on rooftop"
                 fill
                 sizes="(max-width: 1024px) 100vw, 50vw"
@@ -136,7 +136,7 @@ const WhyChooseUs: React.FC = () => {
                 className="relative w-full aspect-[1.15/1] sm:aspect-[0.9/1] rounded-lg overflow-hidden shadow-sm bg-gray-100"
               >
                 <Image
-                  src="/images/home/why-choose-us-image-2.jpg"
+                  src="/images/aheadsolar/why-2.jpg"
                   alt="Solar engineer inspecting photovoltaic panels"
                   fill
                   sizes="(max-width: 640px) 100vw, 25vw"

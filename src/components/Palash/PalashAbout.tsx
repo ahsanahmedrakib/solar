@@ -55,8 +55,8 @@ export default function PalashAbout() {
               maximizing your daily income and performance. We specialize in
               top-tier lithium-ion battery rentals and offer a reliable,
               charging station network. Our goal is to equip you with
-              long-lasting power so you spend less time waiting and more time
-              on the road.
+              long-lasting power so you spend less time waiting and more time on
+              the road.
             </p>
           </Reveal>
 
@@ -100,15 +100,15 @@ export default function PalashAbout() {
 
         <div className="lg:col-span-6">
           <Reveal variant="slide-right" delay={150}>
-            <div className="relative bg-forest-900 rounded-2xl overflow-hidden shadow-xl p-8 sm:p-12">
+            <div className="relative bg-forest-900 rounded-lg overflow-hidden shadow-xl p-6">
               <div className="absolute inset-0 bg-linear-to-br from-accent-500/10 via-transparent to-transparent pointer-events-none" />
 
               <div className="relative flex flex-col items-center text-center gap-8">
-                <div className="bg-white rounded-2xl p-6 shadow-lg">
+                <div className="bg-white rounded-lg p-2 shadow-lg">
                   <Image
                     src="/images/palash/palash.jpg"
                     alt="Palash Charging Station - Ahead Solar Ltd."
-                    width={480}
+                    width={600}
                     height={376}
                     className="w-48 sm:w-60 h-auto object-contain"
                   />
