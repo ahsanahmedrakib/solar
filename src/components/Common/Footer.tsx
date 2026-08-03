@@ -277,20 +277,19 @@ export default function Footer() {
         {/* COPYRIGHT — ACCENT PILL                                                    */}
         {/* ========================================================================= */}
 
-        <p className="text-center text-gold-500 font-semibold text-xl">
-          Copyright © {new Date().getFullYear()} {settings.companyName}. All
-          rights reserved.
+        <p className="flex justify-between flex-wrap text-gold-500 font-semibold text-xl">
+          <span>
+            Copyright © {new Date().getFullYear()} {settings.companyName}. All
+            rights reserved.
+          </span>{" "}
+          <span>
+            Design &amp; Development by{" "}
+            <Link href="https://bct.com.bd/">
+              Bismillah Computer &amp; Technology
+            </Link>
+          </span>
         </p>
-
-        {/* Developer Info  */}
-        <div className="flex flex-col items-center gap-4 pb-6 pt-2">
-          <div className="h-px w-28 bg-linear-to-r from-transparent via-gold-500/60 to-transparent" />
-          <p className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-center text-sm text-white/70">
-            <span>Design, Development &amp; Maintenance by <Link href="https://bct.com.bd/">  Bismillah Computer &amp; Technology</Link></span>
-          </p>
-        </div>
       </div>
     </footer>
   );
 }
-
