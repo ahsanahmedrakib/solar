@@ -11,8 +11,11 @@ const pageTitles: Record<string, string> = {
   "/admin/projects": "Projects",
   "/admin/team": "Team",
   "/admin/blogs": "Blogs",
+  "/admin/hero-slider": "Hero Slider",
   "/admin/contact": "Contact",
+  "/admin/palash-applications": "Palash Applications",
   "/admin/settings": "Settings",
+  "/admin/reviews": "Reviews",
   "/admin/users": "Users",
   "/admin/analytics": "Analytics",
 };
@@ -64,4 +67,3 @@ export function AdminHeader() {
     </header>
   );
 }
-
