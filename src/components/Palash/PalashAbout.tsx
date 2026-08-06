@@ -1,5 +1,7 @@
 import Reveal from "@/components/Common/Reveal";
-import Image from "next/image";
+
+const VIDEO_URL =
+  "https://drive.google.com/file/d/1EnB_uXUxc5e8yUywAwnNLp9Pt1II7kAq/preview";
 
 const highlights = [
   {
@@ -104,15 +106,17 @@ export default function PalashAbout() {
               <div className="absolute inset-0 bg-linear-to-br from-accent-500/10 via-transparent to-transparent pointer-events-none" />
 
               <div className="relative flex flex-col items-center text-center gap-8">
-                <div className="bg-white rounded-lg p-2 shadow-lg">
-                  <Image
-                    src="/images/palash/palash.jpg"
-                    alt="Palash Charging Station - Ahead Solar Ltd."
-                    width={600}
-                    height={376}
-                    className="w-48 sm:w-60 h-auto object-contain"
-                  />
-                </div>
+                <Reveal variant="fade-up" delay={180} className="w-full">
+                  <div className="relative w-full aspect-video rounded-lg overflow-hidden shadow-xl">
+                    <iframe
+                      src={VIDEO_URL}
+                      title="Palash Charging Station video"
+                      className="absolute inset-0 w-full h-full"
+                      allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
+                      allowFullScreen
+                    />
+                  </div>
+                </Reveal>
 
                 <div className="grid grid-cols-3 gap-4 w-full">
                   {stats.map((stat) => (
@@ -137,4 +141,3 @@ export default function PalashAbout() {
     </section>
   );
 }
-

@@ -24,8 +24,8 @@
   overflow-y: auto;
 }
 
-/* --- CSS Variables (Admin Theme) --- */
-:root {
+/* --- CSS Variables (Admin Theme) — scoped so they don't leak to the main site --- */
+.admin-layout-root {
   --admin-bg: #0f1117;
   --admin-surface: #161b27;
   --admin-surface-2: #1e2535;

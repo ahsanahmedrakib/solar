@@ -109,7 +109,7 @@ function LoginForm() {
                 placeholder="admin@sunexsolar.com"
                 aria-invalid={errors.email ? true : undefined}
                 {...register("email")}
-                className="w-full bg-white border border-forest-700/10 text-sm text-forest-900 rounded-[14px] p-3 outline-none focus:border-accent-500 focus:ring-2 focus:ring-accent-500/20 transition"
+                className="w-full bg-white border border-forest-700/10 text-sm text-forest-900 rounded-lg p-3 outline-none focus:border-accent-500 focus:ring-2 focus:ring-accent-500/20 transition"
               />
               {errors.email && (
                 <p className="text-red-500 text-xs">{errors.email.message}</p>
@@ -126,7 +126,7 @@ function LoginForm() {
                   placeholder="Enter your password"
                   aria-invalid={errors.password ? true : undefined}
                   {...register("password")}
-                  className="w-full bg-white border border-forest-700/10 text-sm text-forest-900 rounded-[14px] p-3 pr-10 outline-none focus:border-accent-500 focus:ring-2 focus:ring-accent-500/20 transition"
+                  className="w-full bg-white border border-forest-700/10 text-sm text-forest-900 rounded-lg p-3 pr-10 outline-none focus:border-accent-500 focus:ring-2 focus:ring-accent-500/20 transition"
                 />
                 <button
                   type="button"
@@ -185,4 +185,3 @@ export default function LoginPage() {
     </Suspense>
   );
 }
-

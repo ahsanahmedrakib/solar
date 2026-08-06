@@ -21,7 +21,7 @@ export default function RevealImage({
   delay = 0,
   duration = 1000,
 }: RevealImageProps) {
-  const { ref, inView } = useInView<HTMLDivElement>();
+  const { ref, inView } = useInView<HTMLDivElement>({ once: false });
 
   return (
     <div

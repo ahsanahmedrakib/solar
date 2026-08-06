@@ -30,7 +30,8 @@ interface RevealProps {
 
 /**
  * Wraps content in a scroll-triggered reveal animation.
- * Content stays hidden until it scrolls into view, then animates in once.
+ * Content stays hidden until it scrolls into view, then animates in.
+ * Re-triggers each time it enters the viewport (scrolling up or down).
  */
 export default function Reveal({
   children,
@@ -42,7 +43,7 @@ export default function Reveal({
   id,
   style,
 }: RevealProps) {
-  const { ref, inView } = useInView<HTMLDivElement>();
+  const { ref, inView } = useInView<HTMLDivElement>({ once: false });
 
   return (
     <Tag

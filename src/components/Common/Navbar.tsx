@@ -185,7 +185,7 @@ export default function Navbar() {
       </div>
 
       {/* 2. STICKY NAVBAR */}
-      <header className="sticky top-0 z-50 transition-all duration-300">
+      <header className="sticky top-0 z-50 transition-all duration-300 nav-animate">
         <div className="solar-container">
           <div
             className={`flex bg-white items-center justify-between gap-2 sm:gap-6 px-2 transition-all duration-300 ${
@@ -371,4 +371,3 @@ export default function Navbar() {
     </>
   );
 }
-
