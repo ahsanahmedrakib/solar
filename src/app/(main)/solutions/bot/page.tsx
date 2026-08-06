@@ -4,20 +4,17 @@ import { getSiteInfo, pageMetadata } from "@/lib/site";
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 
-const ComparisonPage = dynamic(
-  () => import("@/components/Solutions/ComparisonPage"),
-  {
-    loading: () => <MainSitePageLoading />,
-  },
-);
+const BOTPage = dynamic(() => import("@/components/Solutions/BOTPage"), {
+  loading: () => <MainSitePageLoading />,
+});
 
 export async function generateMetadata(): Promise<Metadata> {
   const info = await getSiteInfo();
   return pageMetadata(
     {
-      title: "CapEx vs OpEx vs BOT Comparison",
-      description: `Compare ${info.companyName}'s CapEx, OpEx, and BOT solar models side by side to choose the right financial structure for your rooftop solar project.`,
-      path: "/solutions/comparison",
+      title: "BOT Model",
+      description: `Explore ${info.companyName}'s Build-Operate-Transfer (BOT) solar model - complete financing, installation, and operation by the service provider, with ownership transferred to the roof owner at zero additional cost.`,
+      path: "/solutions/bot",
     },
     info,
   );
@@ -29,10 +26,10 @@ export default function Page() {
       <BreadcrumbJsonLd
         items={[
           { name: "Home", href: "/" },
-          { name: "Model Comparison", href: "/solutions/comparison" },
+          { name: "BOT Model", href: "/solutions/bot" },
         ]}
       />
-      <ComparisonPage />
+      <BOTPage />
     </div>
   );
 }

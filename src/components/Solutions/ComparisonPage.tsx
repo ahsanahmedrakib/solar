@@ -63,6 +63,32 @@ const COLUMNS: ComparisonColumn[] = [
       </svg>
     ),
   },
+  {
+    label: "BOT",
+    title: "BOT Model",
+    items: [
+      "Service provider handles complete financing, installation, and operation",
+      "Roof owner pays only for generated electricity at a pre-agreed tariff",
+      "Zero upfront investment from the roof owner",
+      "Ownership of the fully operational plant transfers at zero additional cost",
+    ],
+    icon: (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        strokeWidth={2}
+        stroke="currentColor"
+        className="w-6 h-6"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"
+        />
+      </svg>
+    ),
+  },
 ];
 
 const ComparisonPage = () => {
@@ -91,14 +117,15 @@ const ComparisonPage = () => {
 
             <Reveal variant="fade-up" delay={180}>
               <p className="mt-4 text-[#888888] text-sm sm:text-base font-normal leading-relaxed">
-                Compare the CapEx and OpEx solar models side by side to choose
-                the financial structure that best fits your business goals.
+                Compare the CapEx, OpEx, and BOT solar models side by side to
+                choose the financial structure that best fits your business
+                goals.
               </p>
             </Reveal>
           </div>
 
           {/* Comparison cards */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {COLUMNS?.map((col, index) => (
               <Reveal
                 key={col.label}

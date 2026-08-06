@@ -45,6 +45,7 @@ const NAV_ITEMS: NavItem[] = [
     children: [
       { label: "CAPEX", href: "/solutions/capex" },
       { label: "OPEX", href: "/solutions/opex" },
+      { label: "BOT", href: "/solutions/bot" },
       { label: "Comparison", href: "/solutions/comparison" },
     ],
   },
