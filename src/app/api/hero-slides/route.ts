@@ -2,16 +2,26 @@ import { db } from "@/lib/db";
 import { isTableNotExistsError } from "@/lib/db-helpers";
 import { deleteImage, saveImage } from "@/lib/imageHelper";
 import { getRequestTokenPayload } from "@/lib/token";
+import { deleteVideo, saveVideo } from "@/lib/videoHelper";
 import { heroSlides } from "@/lib/schema";
 import { asc, eq, sql } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const slides = await db
-      .select()
-      .from(heroSlides)
-      .orderBy(asc(heroSlides.order));
+    const { searchParams } = new URL(request.url);
+    const site = searchParams.get("site");
+    const slides =
+      site === "ahead" || site === "palash"
+        ? await db
+            .select()
+            .from(heroSlides)
+            .where(eq(heroSlides.site, site))
+            .orderBy(asc(heroSlides.order))
+        : await db
+            .select()
+            .from(heroSlides)
+            .orderBy(asc(heroSlides.order));
     return NextResponse.json({ success: true, data: slides });
   } catch (error: unknown) {
     if (isTableNotExistsError(error)) {
@@ -42,6 +52,9 @@ export async function POST(request: Request) {
       titleAccent,
       description,
       image,
+      backgroundVideo,
+      useVideoBackground,
+      site,
       videoUrl,
       showVideoButton,
       isActive,
@@ -80,6 +93,9 @@ export async function POST(request: Request) {
         titleAccent: titleAccent ?? "",
         description: description ?? "",
         image: savedImagePath,
+        backgroundVideo: await saveVideo(backgroundVideo, "hero", 0),
+        useVideoBackground: useVideoBackground ?? false,
+        site: site === "palash" ? "palash" : "ahead",
         videoUrl: videoUrl ?? "",
         showVideoButton: showVideoButton ?? true,
         isActive: isActive ?? true,
@@ -115,6 +131,9 @@ export async function PUT(request: Request) {
       titleAccent,
       description,
       image,
+      backgroundVideo,
+      useVideoBackground,
+      site,
       videoUrl,
       showVideoButton,
       isActive,
@@ -146,6 +165,16 @@ export async function PUT(request: Request) {
     if (title !== undefined) updateData.title = title;
     if (titleAccent !== undefined) updateData.titleAccent = titleAccent;
     if (description !== undefined) updateData.description = description;
+    if (backgroundVideo !== undefined) {
+      const savedVideo = await saveVideo(backgroundVideo, "hero", id);
+      if (savedVideo !== existing.backgroundVideo) {
+        updateData.backgroundVideo = savedVideo;
+        await deleteVideo(existing.backgroundVideo);
+      }
+    }
+    if (useVideoBackground !== undefined)
+      updateData.useVideoBackground = useVideoBackground;
+    if (site === "ahead" || site === "palash") updateData.site = site;
     if (videoUrl !== undefined) updateData.videoUrl = videoUrl;
     if (showVideoButton !== undefined)
       updateData.showVideoButton = showVideoButton;
@@ -203,6 +232,7 @@ export async function DELETE(request: Request) {
 
     if (existing) {
       await deleteImage(existing.image);
+      await deleteVideo(existing.backgroundVideo);
     }
 
     await db.delete(heroSlides).where(eq(heroSlides.id, Number(id)));

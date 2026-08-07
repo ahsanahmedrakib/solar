@@ -1,7 +1,7 @@
+import Hero from "@/components/Common/Hero";
 import BatteryPackages from "./BatteryPackages";
 import DealershipForm from "./DealershipForm";
 import PalashAbout from "./PalashAbout";
-import PalashBanner from "./PalashBanner";
 import PalashContact from "./PalashContact";
 import PalashGallery from "./PalashGallery";
 import PalashVideo from "./PalashVideo";
@@ -9,7 +9,7 @@ import PalashVideo from "./PalashVideo";
 const PalashPage = () => {
   return (
     <div>
-      <PalashBanner />
+      <Hero site="palash" />
       <PalashAbout />
       <BatteryPackages />
       <PalashVideo />

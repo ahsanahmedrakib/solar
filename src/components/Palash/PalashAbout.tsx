@@ -1,7 +1,5 @@
 import Reveal from "@/components/Common/Reveal";
-
-const VIDEO_URL =
-  "https://drive.google.com/file/d/1EnB_uXUxc5e8yUywAwnNLp9Pt1II7kAq/preview";
+import Image from "next/image";
 
 const highlights = [
   {
@@ -26,16 +24,10 @@ const highlights = [
   },
 ];
 
-const stats = [
-  { value: "100%", label: "Solar Charged" },
-  { value: "120৳", label: "Daily Rent From" },
-  { value: "140km", label: "Max Range" },
-];
-
 export default function PalashAbout() {
   return (
     <section className="bg-white py-20 lg:py-25 px-4 sm:px-6 lg:px-8 font-sans overflow-x-hidden">
-      <div className="solar-container grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+      <div className="solar-container grid grid-cols-1 lg:grid-cols-12 gap-24 items-center">
         <div className="lg:col-span-6 space-y-6">
           <Reveal variant="fade-up">
             <span className="section-eyebrow">
@@ -105,35 +97,27 @@ export default function PalashAbout() {
             <div className="relative bg-forest-900 rounded-lg overflow-hidden shadow-xl p-6">
               <div className="absolute inset-0 bg-linear-to-br from-accent-500/10 via-transparent to-transparent pointer-events-none" />
 
-              <div className="relative flex flex-col items-center text-center gap-8">
-                <Reveal variant="fade-up" delay={180} className="w-full">
-                  <div className="relative w-full aspect-video rounded-lg overflow-hidden shadow-xl">
-                    <iframe
-                      src={VIDEO_URL}
-                      title="Palash Charging Station video"
-                      className="absolute inset-0 w-full h-full"
-                      allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
-                      allowFullScreen
+              <Reveal variant="fade-up" delay={180} className="w-full">
+                <div className="relative flex flex-col items-center text-center gap-8">
+                  <div className="bg-white rounded-lg p-2 shadow-lg">
+                    <Image
+                      src="/images/palash/palash.jpg"
+                      alt="Palash Charging Station - Ahead Solar Ltd."
+                      width={600}
+                      height={376}
+                      className="w-48 sm:w-60 h-auto object-contain"
                     />
                   </div>
-                </Reveal>
 
-                <div className="grid grid-cols-3 gap-4 w-full">
-                  {stats.map((stat) => (
-                    <div
-                      key={stat.label}
-                      className="bg-white/5 border border-white/10 rounded-xl px-3 py-5"
-                    >
-                      <p className="font-heading text-xl sm:text-2xl font-bold text-accent-500">
-                        {stat.value}
-                      </p>
-                      <p className="text-white/60 text-[10px] sm:text-xs font-semibold uppercase tracking-wider mt-1">
-                        {stat.label}
+                  <div className="w-full">
+                    <div className="bg-white/5 border border-white/10 rounded-xl px-3 py-5">
+                      <p className="text-white/90 text-[10px] sm:text-lg font-semibold uppercase tracking-wider mt-1">
+                        থ্রি হুইলার চালকের আপন ঠিকানা স্বাস্থ সুরক্ষা
                       </p>
                     </div>
-                  ))}
+                  </div>
                 </div>
-              </div>
+              </Reveal>
             </div>
           </Reveal>
         </div>

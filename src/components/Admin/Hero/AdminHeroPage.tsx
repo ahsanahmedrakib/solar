@@ -1,7 +1,8 @@
 "use client";
 
 import { ImageUploadInput } from "@/components/Admin/ImageUploadInput";
-import type { HeroSlide } from "@/data/hero-slides";
+import { VideoUploadInput } from "@/components/Admin/VideoUploadInput";
+import type { HeroSlide, HeroSite } from "@/data/hero-slides";
 import { DEFAULT_ADMIN_LOGO } from "@/data/settings";
 import { apiClient } from "@/lib/apiClient";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -16,7 +17,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { toast } from "react-toastify";
 import * as yup from "yup";
 import { useQueryHeroSlides, queryKeys } from "@/lib/queries";
@@ -27,7 +28,10 @@ const slideSchema = yup.object({
   title: yup.string().required("Title is required"),
   titleAccent: yup.string().required("Accent title is required"),
   description: yup.string().required("Description is required"),
-  image: yup.string().required("Background image is required"),
+  image: yup.string().default(""),
+  backgroundVideo: yup.string().default(""),
+  useVideoBackground: yup.boolean().default(false),
+  site: yup.mixed<HeroSite>().oneOf(["ahead", "palash"]).default("ahead"),
   videoUrl: yup.string().required("Video URL is required"),
   showVideoButton: yup.boolean().default(true),
   isActive: yup.boolean().default(true),
@@ -41,6 +45,7 @@ export default function AdminHeroPage() {
   const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const [siteFilter, setSiteFilter] = useState<HeroSite>("ahead");
   const [editingSlide, setEditingSlide] = useState<HeroSlide | null>(null);
 
   const {
@@ -57,12 +62,20 @@ export default function AdminHeroPage() {
       titleAccent: "",
       description: "",
       image: "",
+      backgroundVideo: "",
+      useVideoBackground: false,
+      site: "ahead",
       videoUrl: "",
       showVideoButton: false,
       isActive: true,
       order: 1,
     },
   });
+
+  const useVideoBackground = useWatch({
+    control,
+    name: "useVideoBackground",
+  }) as boolean;
 
   const handleAddClick = () => {
     setEditingSlide(null);
@@ -72,6 +85,9 @@ export default function AdminHeroPage() {
       titleAccent: "",
       description: "",
       image: "",
+      backgroundVideo: "",
+      useVideoBackground: false,
+      site: siteFilter,
       videoUrl: "",
       showVideoButton: false,
       isActive: true,
@@ -88,6 +104,9 @@ export default function AdminHeroPage() {
       titleAccent: slide.titleAccent,
       description: slide.description,
       image: slide.image,
+      backgroundVideo: slide.backgroundVideo ?? "",
+      useVideoBackground: slide.useVideoBackground ?? false,
+      site: slide.site,
       videoUrl: slide.videoUrl,
       showVideoButton: slide.showVideoButton,
       isActive: slide.isActive,
@@ -119,6 +138,14 @@ export default function AdminHeroPage() {
 
   const onSubmit = async (data: SlideFormData) => {
     try {
+      if (data.useVideoBackground && !data.backgroundVideo) {
+        toast.error("Please upload or enter a background video.");
+        return;
+      }
+      if (!data.useVideoBackground && !data.image) {
+        toast.error("Please upload or enter a background image.");
+        return;
+      }
       if (editingSlide) {
         const res = await apiClient("/api/hero-slides", {
           method: "PUT",
@@ -176,9 +203,10 @@ export default function AdminHeroPage() {
 
   const filteredSlides = slides.filter(
     (slide) =>
-      slide.title.toLowerCase().includes(search.toLowerCase()) ||
-      slide.titleAccent.toLowerCase().includes(search.toLowerCase()) ||
-      slide.tagline.toLowerCase().includes(search.toLowerCase()),
+      slide.site === siteFilter &&
+      (slide.title.toLowerCase().includes(search.toLowerCase()) ||
+        slide.titleAccent.toLowerCase().includes(search.toLowerCase()) ||
+        slide.tagline.toLowerCase().includes(search.toLowerCase())),
   );
 
   return (
@@ -187,8 +215,7 @@ export default function AdminHeroPage() {
         <div>
           <h2 className="admin-page-header-title">Hero Slider</h2>
           <p className="admin-page-header-sub">
-            Manage homepage hero background slides and content ({slides?.length}{" "}
-            slides)
+            Manage hero background slides and content ({slides?.length} slides)
           </p>
         </div>
         <div className="admin-page-header-actions">
@@ -199,23 +226,42 @@ export default function AdminHeroPage() {
         </div>
       </div>
 
-      <div className="admin-table-search relative w-full sm:w-80">
-        <Search size={14} className="admin-table-search-icon" />
-        <input
-          placeholder="Search slides by title or tagline..."
-          className="admin-table-search-input w-full"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          style={{
-            background: "var(--admin-surface-2)",
-            border: "1px solid var(--admin-border)",
-            color: "var(--admin-text-primary)",
-            borderRadius: 8,
-            padding: "8px 12px 8px 34px",
-            fontSize: 13,
-            outline: "none",
-          }}
-        />
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="admin-table-search relative w-full sm:w-80">
+          <Search size={14} className="admin-table-search-icon" />
+          <input
+            placeholder="Search slides by title or tagline..."
+            className="admin-table-search-input w-full"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            style={{
+              background: "var(--admin-surface-2)",
+              border: "1px solid var(--admin-border)",
+              color: "var(--admin-text-primary)",
+              borderRadius: 8,
+              padding: "8px 12px 8px 34px",
+              fontSize: 13,
+              outline: "none",
+            }}
+          />
+        </div>
+
+        <div className="flex rounded-lg overflow-hidden border border-(--admin-border)">
+          {(["ahead", "palash"] as const).map((site) => (
+            <button
+              key={site}
+              type="button"
+              onClick={() => setSiteFilter(site)}
+              className={`px-4 py-2 text-xs font-semibold transition cursor-pointer ${
+                siteFilter === site
+                  ? "bg-(--admin-accent) text-white"
+                  : "bg-(--admin-surface-2) text-(--admin-text-secondary) hover:text-(--admin-text-primary)"
+              }`}
+            >
+              {site === "ahead" ? "Ahead Solar" : "Palash"}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="admin-table-card">
@@ -267,15 +313,25 @@ export default function AdminHeroPage() {
                       </div>
                     </td>
                     <td>
-                      {slide.videoUrl ? (
-                        <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                          Video Attached
+                      <div className="flex flex-wrap gap-1.5">
+                        <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20">
+                          {slide.site === "palash" ? "Palash" : "Ahead Solar"}
                         </span>
-                      ) : (
-                        <span className="text-xs text-(--admin-text-muted)">
-                          -
-                        </span>
-                      )}
+                        {slide.useVideoBackground && slide.backgroundVideo && (
+                          <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/20">
+                            Video BG
+                          </span>
+                        )}
+                        {slide.videoUrl ? (
+                          <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                            Video Attached
+                          </span>
+                        ) : (
+                          <span className="text-xs text-(--admin-text-muted)">
+                            -
+                          </span>
+                        )}
+                      </div>
                     </td>
                     <td className="text-center">
                       <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-(--admin-surface-2) text-(--admin-text-secondary) border border-(--admin-border)">
@@ -339,19 +395,79 @@ export default function AdminHeroPage() {
               onSubmit={handleSubmit(onSubmit)}
               className="p-6 overflow-y-auto space-y-4 flex-1"
             >
-              <Controller
-                name="image"
-                control={control}
-                render={({ field }) => (
-                  <ImageUploadInput
-                    label="Background Image"
-                    value={field.value}
-                    onChange={field.onChange}
-                    error={errors.image?.message}
-                    placeholder="/images/home/hero-bg-image.jpg"
-                  />
-                )}
-              />
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs font-semibold text-(--admin-text-secondary) uppercase tracking-wider">
+                  Site
+                </label>
+                <div className="flex flex-wrap gap-4">
+                  <label className="flex items-center gap-2 cursor-pointer select-none">
+                    <input
+                      type="radio"
+                      value="ahead"
+                      {...register("site")}
+                      className="w-4 h-4 accent-(--admin-accent)"
+                    />
+                    <span className="text-sm text-(--admin-text-primary)">
+                      Ahead Solar
+                    </span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer select-none">
+                    <input
+                      type="radio"
+                      value="palash"
+                      {...register("site")}
+                      className="w-4 h-4 accent-(--admin-accent)"
+                    />
+                    <span className="text-sm text-(--admin-text-primary)">
+                      Palash Charging Station
+                    </span>
+                  </label>
+                </div>
+              </div>
+
+              <label className="flex items-center gap-2.5 cursor-pointer select-none p-3 rounded-xl border border-(--admin-border) bg-(--admin-surface-2) hover:border-(--admin-accent) transition">
+                <input
+                  type="checkbox"
+                  {...register("useVideoBackground")}
+                  className="w-4 h-4 accent-(--admin-accent)"
+                />
+                <span className="text-sm font-medium text-(--admin-text-primary)">
+                  Use video as background
+                </span>
+                <span className="text-[11px] text-(--admin-text-muted)">
+                  (instead of the photo)
+                </span>
+              </label>
+
+              {useVideoBackground ? (
+                <Controller
+                  name="backgroundVideo"
+                  control={control}
+                  render={({ field }) => (
+                    <VideoUploadInput
+                      label="Background Video"
+                      value={field.value}
+                      onChange={field.onChange}
+                      error={errors.backgroundVideo?.message}
+                      placeholder="/videos/hero.mp4"
+                    />
+                  )}
+                />
+              ) : (
+                <Controller
+                  name="image"
+                  control={control}
+                  render={({ field }) => (
+                    <ImageUploadInput
+                      label="Background Image"
+                      value={field.value}
+                      onChange={field.onChange}
+                      error={errors.image?.message}
+                      placeholder="/images/home/hero-bg-image.jpg"
+                    />
+                  )}
+                />
+              )}
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="flex flex-col gap-1.5">

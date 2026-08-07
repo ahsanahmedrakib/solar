@@ -2,7 +2,7 @@
 
 import type { Blog } from "@/data/blogs";
 import type { ContactQuery } from "@/data/contact";
-import type { HeroSlide } from "@/data/hero-slides";
+import type { HeroSlide, HeroSite } from "@/data/hero-slides";
 import type { Project } from "@/data/projects";
 import type { Review } from "@/data/reviews";
 import type { Service } from "@/data/services";
@@ -79,10 +79,14 @@ export function useQueryBlogs() {
   });
 }
 
-export function useQueryHeroSlides() {
+export function useQueryHeroSlides(site?: HeroSite) {
   return useQuery({
-    queryKey: queryKeys.heroSlides,
-    queryFn: () => apiFetchJson<HeroSlide[]>("/api/hero-slides", []),
+    queryKey: site ? [...queryKeys.heroSlides, site] : queryKeys.heroSlides,
+    queryFn: () =>
+      apiFetchJson<HeroSlide[]>(
+        site ? `/api/hero-slides?site=${site}` : "/api/hero-slides",
+        [],
+      ),
     staleTime: FIVE_MINUTES,
     refetchOnWindowFocus: true,
   });
