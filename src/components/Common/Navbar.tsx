@@ -1,7 +1,6 @@
 "use client";
 
 import { DEFAULT_SECTIONS } from "@/data/settings";
-import { SOCIAL_ICONS } from "@/lib/const";
 import { useQuerySettings } from "@/lib/queries";
 import { ChevronDown, Mail, Menu, Phone, X } from "lucide-react";
 import Image from "next/image";
@@ -134,7 +133,7 @@ export default function Navbar() {
             )}
           </div>
 
-          <div className="flex items-center gap-2">
+          {/* <div className="flex items-center gap-2">
             {showSkeleton
               ? [1, 2, 3, 4].map((i) => (
                   <div
@@ -180,7 +179,7 @@ export default function Navbar() {
                       </Link>
                     ),
                 )}
-          </div>
+          </div> */}
         </div>
       </div>
 
@@ -268,7 +267,6 @@ export default function Navbar() {
             <div className="flex gap-2">
               <Link
                 href="/palash-charging-station"
-                target="_blank"
                 className="border-2 rounded-lg border-accent-500 mr-0 lg:mr-2.25"
               >
                 <Image

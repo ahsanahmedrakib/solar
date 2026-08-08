@@ -30,7 +30,7 @@ export default function SingleService({ slug }: { slug: string }) {
               variant="fade-up"
               className="bg-secondary rounded-lg overflow-hidden border border-white shadow-sm"
             >
-              <div className="font-heading bg-accent-500 text-accent-500 px-5 py-4 font-bold text-sm tracking-wide uppercase">
+              <div className="font-heading bg-accent-500 text-white px-5 py-4 font-bold text-sm tracking-wide uppercase">
                 Explore Our Services
               </div>
               <nav className="flex flex-col">
@@ -47,7 +47,7 @@ export default function SingleService({ slug }: { slug: string }) {
                         href={"/services/" + s.slug}
                         className={`flex items-center justify-between px-5 py-3.5 text-xs font-bold border-b border-forest-700/10 last:border-0 text-left transition-colors ${
                           s.slug === slug
-                            ? "bg-accent-500 text-accent-500"
+                            ? "bg-accent-500 text-white"
                             : "text-accent-500 hover:bg-white"
                         }`}
                       >
@@ -208,4 +208,3 @@ export default function SingleService({ slug }: { slug: string }) {
     </div>
   );
 }
-

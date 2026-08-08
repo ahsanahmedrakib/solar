@@ -21,12 +21,12 @@ const packages: Package[] = [
     batteryType: "Lithium-Ion Battery",
     range: "100 km",
     capacity: "On a single charge",
-    rent: "120৳",
+    rent: "Affordable",
     rentLabel: "Daily Rent",
     features: [
       "51.2 Volt lithium-ion battery",
       "100 km range on a single charge",
-      "Daily rent only 120 Tk",
+      "Affordable daily rent",
       "100% solar-charged",
     ],
     accent: "from-forest-700 to-forest-900",
@@ -80,7 +80,7 @@ export default function BatteryPackages() {
                 <div
                   className={`relative px-8 py-8 bg-linear-to-br ${pkg.accent} text-white`}
                 >
-                  <span className="section-eyebrow !text-white/80">
+                  <span className="section-eyebrow text-white/80!">
                     {pkg.vehicleLabel}
                   </span>
                   <div className="flex items-end justify-between mt-4 gap-4">

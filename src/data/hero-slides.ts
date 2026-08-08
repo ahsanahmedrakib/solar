@@ -69,7 +69,7 @@ export const PALASH_HERO_SLIDES: HeroSlide[] = [
     title: "100% Solar-Charged",
     titleAccent: "Battery Rentals for Easy-Bikes & Mishuks",
     description:
-      "Rent fully charged lithium-ion batteries for just 120 Tk per day from our solar-powered Palash charging stations — fast, safe, and eco-friendly.",
+      "Rent fully charged lithium-ion batteries at an affordable price from our solar-powered Palash charging stations — fast, safe, and eco-friendly.",
     image: "",
     backgroundVideo: "/videos/palash-hero.mp4",
     useVideoBackground: true,
