@@ -102,7 +102,7 @@ export default function Hero({ site = "ahead" }: { site?: HeroSite }) {
           speed={900}
           loop={slides?.length > 1}
           autoplay={{
-            delay: 2000,
+            delay: 7000,
             disableOnInteraction: false,
             waitForTransition: false, // keep this
             // optional extras that often help with fade:
