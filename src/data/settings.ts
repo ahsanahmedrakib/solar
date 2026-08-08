@@ -102,6 +102,24 @@ export const DEFAULT_SECTIONS: Section[] = [
         value: "61591154285690",
         id: "messenger-username",
       },
+      {
+        label: "Facebook Page URL",
+        type: "url",
+        value: "https://www.facebook.com/profile.php?id=61591154285690",
+        id: "facebook-url",
+      },
+      {
+        label: "LinkedIn Profile / Company URL",
+        type: "url",
+        value: "https://www.linkedin.com/company/ahead-solar-ltd/",
+        id: "linkedin-url",
+      },
+      {
+        label: "YouTube Channel URL",
+        type: "url",
+        value: "",
+        id: "youtube-url",
+      },
     ],
     toggles: [
       {
@@ -113,6 +131,21 @@ export const DEFAULT_SECTIONS: Section[] = [
         label: "Enable Facebook Messenger Button",
         checked: true,
         id: "show-messenger",
+      },
+      {
+        label: "Enable Facebook Button",
+        checked: true,
+        id: "show-facebook",
+      },
+      {
+        label: "Enable LinkedIn Button",
+        checked: true,
+        id: "show-linkedin",
+      },
+      {
+        label: "Enable YouTube Button",
+        checked: true,
+        id: "show-youtube",
       },
     ],
   },
@@ -173,6 +206,12 @@ export const DEFAULT_SECTIONS: Section[] = [
         type: "url",
         value: "",
         id: "social-ig",
+      },
+      {
+        label: "YouTube Channel URL",
+        type: "url",
+        value: "",
+        id: "social-youtube",
       },
       {
         label: "Google Map Embed URL",

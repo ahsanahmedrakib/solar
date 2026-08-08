@@ -3,6 +3,7 @@ export interface SocialLinks {
   instagram?: string;
   x?: string;
   linkedin?: string;
+  youtube?: string;
 }
 
 export interface TeamMember {

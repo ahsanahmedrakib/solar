@@ -32,6 +32,7 @@ const FALLBACK = {
   socialX: getField(DEFAULT_SECTIONS, "social", "social-x"),
   socialLi: getField(DEFAULT_SECTIONS, "social", "social-li"),
   socialIg: getField(DEFAULT_SECTIONS, "social", "social-ig"),
+  socialYt: getField(DEFAULT_SECTIONS, "social", "social-youtube"),
   logo: getField(DEFAULT_SECTIONS, "general", "site-logo"),
 };
 
@@ -64,6 +65,7 @@ export default function Footer() {
       socialX: getField(data, "social", "social-x"),
       socialLi: getField(data, "social", "social-li"),
       socialIg: getField(data, "social", "social-ig"),
+      socialYt: getField(data, "social", "social-youtube"),
       logo: getField(data, "general", "site-logo") || FALLBACK.logo,
     };
   }, [data]);
@@ -182,7 +184,7 @@ export default function Footer() {
                 </h4>
                 <div className="flex items-center gap-1">
                   {showSkeleton
-                    ? [1, 2, 3, 4].map((i) => (
+                    ? [1, 2, 3, 4, 5].map((i) => (
                         <div
                           key={i}
                           className="w-10 h-10 rounded-xl bg-white/10 animate-pulse"
@@ -210,6 +212,11 @@ export default function Footer() {
                             label: "linkedin" as const,
                             href: settings.socialLi,
                           },
+                          {
+                            key: "socialYt",
+                            label: "youtube" as const,
+                            href: settings.socialYt,
+                          },
                         ] as const
                       ).map(
                         (platform) =>
@@ -219,7 +226,7 @@ export default function Footer() {
                               href={platform.href}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="w-10 h-10 rounded-xl flex items-center justify-center transition-all"
+                              className="w-10 h-10 rounded-xl flex items-center justify-center transition-all border border-white/80"
                               aria-label={platform.label}
                             >
                               {SOCIAL_ICONS[platform.label]}

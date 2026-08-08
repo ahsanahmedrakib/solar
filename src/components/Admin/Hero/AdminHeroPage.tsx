@@ -1,6 +1,5 @@
 "use client";
 
-import { ImageUploadInput } from "@/components/Admin/ImageUploadInput";
 import { VideoUploadInput } from "@/components/Admin/VideoUploadInput";
 import type { HeroSlide, HeroSite } from "@/data/hero-slides";
 import { DEFAULT_ADMIN_LOGO } from "@/data/settings";
@@ -9,7 +8,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import {
   AlertCircle,
   Edit2,
-  ImageIcon,
+  Film,
+  Info,
   Plus,
   Search,
   Trash2,
@@ -22,18 +22,31 @@ import { toast } from "react-toastify";
 import * as yup from "yup";
 import { useQueryHeroSlides, queryKeys } from "@/lib/queries";
 import { useQueryClient } from "@tanstack/react-query";
+import { isSupportedVideoUrl } from "@/lib/videoUrl";
 
 const slideSchema = yup.object({
   tagline: yup.string().required("Tagline is required"),
   title: yup.string().required("Title is required"),
   titleAccent: yup.string().required("Accent title is required"),
   description: yup.string().required("Description is required"),
-  image: yup.string().default(""),
   backgroundVideo: yup.string().default(""),
-  useVideoBackground: yup.boolean().default(false),
   site: yup.mixed<HeroSite>().oneOf(["ahead", "palash"]).default("ahead"),
-  videoUrl: yup.string().required("Video URL is required"),
-  showVideoButton: yup.boolean().default(true),
+  showVideoButton: yup.boolean().default(false),
+  videoUrl: yup
+    .string()
+    .default("")
+    .when("showVideoButton", {
+      is: true,
+      then: (schema) =>
+        schema
+          .required("Video URL is required when the video button is enabled")
+          .test(
+            "supported-video-url",
+            "Video URL must be a YouTube watch link or a Google Drive view link",
+            (value) => isSupportedVideoUrl(value ?? ""),
+          ),
+      otherwise: (schema) => schema.default(""),
+    }),
   isActive: yup.boolean().default(true),
   order: yup.number().min(1).default(1),
 });
@@ -61,9 +74,7 @@ export default function AdminHeroPage() {
       title: "",
       titleAccent: "",
       description: "",
-      image: "",
       backgroundVideo: "",
-      useVideoBackground: false,
       site: "ahead",
       videoUrl: "",
       showVideoButton: false,
@@ -72,10 +83,16 @@ export default function AdminHeroPage() {
     },
   });
 
-  const useVideoBackground = useWatch({
+  const showVideoButton = useWatch({
     control,
-    name: "useVideoBackground",
+    name: "showVideoButton",
   }) as boolean;
+
+  const watchOrder = useWatch({
+    control,
+    name: "order",
+  }) as number;
+  const isFirstSlide = Number(watchOrder) === 1;
 
   const handleAddClick = () => {
     setEditingSlide(null);
@@ -84,9 +101,7 @@ export default function AdminHeroPage() {
       title: "",
       titleAccent: "",
       description: "",
-      image: "",
       backgroundVideo: "",
-      useVideoBackground: false,
       site: siteFilter,
       videoUrl: "",
       showVideoButton: false,
@@ -103,9 +118,7 @@ export default function AdminHeroPage() {
       title: slide.title,
       titleAccent: slide.titleAccent,
       description: slide.description,
-      image: slide.image,
       backgroundVideo: slide.backgroundVideo ?? "",
-      useVideoBackground: slide.useVideoBackground ?? false,
       site: slide.site,
       videoUrl: slide.videoUrl,
       showVideoButton: slide.showVideoButton,
@@ -138,19 +151,19 @@ export default function AdminHeroPage() {
 
   const onSubmit = async (data: SlideFormData) => {
     try {
-      if (data.useVideoBackground && !data.backgroundVideo) {
-        toast.error("Please upload or enter a background video.");
+      if (isFirstSlide && !data.backgroundVideo) {
+        toast.error(
+          "Please upload or enter a background video for the first slide.",
+        );
         return;
       }
-      if (!data.useVideoBackground && !data.image) {
-        toast.error("Please upload or enter a background image.");
-        return;
-      }
+      const payload: Record<string, unknown> = { ...data };
+      if (!isFirstSlide) delete payload.backgroundVideo;
       if (editingSlide) {
         const res = await apiClient("/api/hero-slides", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ id: editingSlide.id, ...data }),
+          body: JSON.stringify({ id: editingSlide.id, ...payload }),
         });
         const json = await res.json();
         if (json.success) {
@@ -164,7 +177,7 @@ export default function AdminHeroPage() {
         const res = await apiClient("/api/hero-slides", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data),
+          body: JSON.stringify(payload),
         });
         const json = await res.json();
         if (json.success) {
@@ -268,7 +281,7 @@ export default function AdminHeroPage() {
         {filteredSlides?.length === 0 ? (
           <div className="admin-empty-state">
             <div className="admin-empty-icon">
-              <ImageIcon size={26} />
+              <Film size={26} />
             </div>
             <p className="admin-empty-title">No hero slides found</p>
             <p className="admin-empty-desc">
@@ -292,10 +305,9 @@ export default function AdminHeroPage() {
                   <tr key={slide.id}>
                     <td>
                       <div className="flex items-center gap-3">
-                        <div
-                          className="w-20 h-12 rounded-md bg-cover bg-center border border-(--admin-border) shrink-0"
-                          style={{ backgroundImage: `url(${slide.image})` }}
-                        />
+                        <div className="w-20 h-12 rounded-md bg-(--admin-surface-2) border border-(--admin-border) shrink-0 flex items-center justify-center text-(--admin-text-muted)">
+                          <Film size={20} />
+                        </div>
                         <div className="min-w-0">
                           <p className="text-[11px] text-(--admin-accent) font-semibold uppercase tracking-wide">
                             {slide.tagline}
@@ -317,7 +329,7 @@ export default function AdminHeroPage() {
                         <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20">
                           {slide.site === "palash" ? "Palash" : "Ahead Solar"}
                         </span>
-                        {slide.useVideoBackground && slide.backgroundVideo && (
+                        {slide.backgroundVideo && (
                           <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/20">
                             Video BG
                           </span>
@@ -380,7 +392,7 @@ export default function AdminHeroPage() {
           <div className="w-full max-w-[70%] bg-(--admin-surface) border border-(--admin-border-strong) rounded-xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
             <div className="flex items-center justify-between p-5 border-b border-(--admin-border) bg-(--admin-surface-2)">
               <h3 className="text-base font-bold text-(--admin-text-primary) flex items-center gap-2">
-                <ImageIcon size={18} className="text-(--admin-accent)" />
+                <Film size={18} className="text-(--admin-accent)" />
                 {editingSlide ? "Edit Hero Slide" : "Add Hero Slide"}
               </h3>
               <button
@@ -425,21 +437,7 @@ export default function AdminHeroPage() {
                 </div>
               </div>
 
-              <label className="flex items-center gap-2.5 cursor-pointer select-none p-3 rounded-xl border border-(--admin-border) bg-(--admin-surface-2) hover:border-(--admin-accent) transition">
-                <input
-                  type="checkbox"
-                  {...register("useVideoBackground")}
-                  className="w-4 h-4 accent-(--admin-accent)"
-                />
-                <span className="text-sm font-medium text-(--admin-text-primary)">
-                  Use video as background
-                </span>
-                <span className="text-[11px] text-(--admin-text-muted)">
-                  (instead of the photo)
-                </span>
-              </label>
-
-              {useVideoBackground ? (
+              {isFirstSlide ? (
                 <Controller
                   name="backgroundVideo"
                   control={control}
@@ -454,19 +452,14 @@ export default function AdminHeroPage() {
                   )}
                 />
               ) : (
-                <Controller
-                  name="image"
-                  control={control}
-                  render={({ field }) => (
-                    <ImageUploadInput
-                      label="Background Image"
-                      value={field.value}
-                      onChange={field.onChange}
-                      error={errors.image?.message}
-                      placeholder="/images/home/hero-bg-image.jpg"
-                    />
-                  )}
-                />
+                <div className="flex items-start gap-2.5 p-3 rounded-xl border border-(--admin-border) bg-(--admin-surface-2)">
+                  <Info size={16} className="text-(--admin-accent) shrink-0 mt-0.5" />
+                  <p className="text-[12.5px] text-(--admin-text-secondary) leading-relaxed">
+                    Background video is managed on the first slide (Order #1)
+                    and is reused for all slides. Only the first slide accepts a
+                    video.
+                  </p>
+                </div>
               )}
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -531,22 +524,6 @@ export default function AdminHeroPage() {
                 />
               </div>
 
-              <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold text-(--admin-text-secondary) uppercase tracking-wider">
-                  Video URL (YouTube / MP4) *
-                </label>
-                <input
-                  {...register("videoUrl")}
-                  placeholder="https://www.youtube.com/embed/..."
-                  className={`w-full bg-(--admin-surface-2) border ${errors.videoUrl ? "border-(--admin-danger)" : "border-(--admin-border)"} text-sm text-(--admin-text-primary) rounded-lg p-2.5 outline-none focus:border-(--admin-accent) transition`}
-                />
-                {errors.videoUrl && (
-                  <span className="text-[11px] text-(--admin-danger) flex items-center gap-1">
-                    <AlertCircle size={10} /> {errors.videoUrl.message}
-                  </span>
-                )}
-              </div>
-
               <div className="flex flex-wrap gap-6 pt-2">
                 <label className="flex items-center gap-2 text-sm text-(--admin-text-secondary) cursor-pointer">
                   <input type="checkbox" {...register("showVideoButton")} />
@@ -557,6 +534,24 @@ export default function AdminHeroPage() {
                   Active on homepage
                 </label>
               </div>
+
+              {showVideoButton && (
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-semibold text-(--admin-text-secondary) uppercase tracking-wider">
+                    Video URL (YouTube watch link or Google Drive view link) *
+                  </label>
+                  <input
+                    {...register("videoUrl")}
+                    placeholder="https://www.youtube.com/watch?v=... or https://drive.google.com/file/d/.../view"
+                    className={`w-full bg-(--admin-surface-2) border ${errors.videoUrl ? "border-(--admin-danger)" : "border-(--admin-border)"} text-sm text-(--admin-text-primary) rounded-lg p-2.5 outline-none focus:border-(--admin-accent) transition`}
+                  />
+                  {errors.videoUrl && (
+                    <span className="text-[11px] text-(--admin-danger) flex items-center gap-1">
+                      <AlertCircle size={10} /> {errors.videoUrl.message}
+                    </span>
+                  )}
+                </div>
+              )}
 
               <div className="flex justify-end gap-3 pt-4 border-t border-(--admin-border)">
                 <button

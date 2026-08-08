@@ -1,8 +1,12 @@
 import { db } from "@/lib/db";
 import { isTableNotExistsError } from "@/lib/db-helpers";
-import { deleteImage, saveImage } from "@/lib/imageHelper";
+import { deleteImage } from "@/lib/imageHelper";
 import { getRequestTokenPayload } from "@/lib/token";
 import { deleteVideo, saveVideo } from "@/lib/videoHelper";
+import {
+  isSupportedVideoUrl,
+  normalizeVideoUrl,
+} from "@/lib/videoUrl";
 import { heroSlides } from "@/lib/schema";
 import { asc, eq, sql } from "drizzle-orm";
 import { NextResponse } from "next/server";
@@ -51,9 +55,7 @@ export async function POST(request: Request) {
       title,
       titleAccent,
       description,
-      image,
       backgroundVideo,
-      useVideoBackground,
       site,
       videoUrl,
       showVideoButton,
@@ -68,12 +70,62 @@ export async function POST(request: Request) {
       );
     }
 
-    const savedImagePath = image ? await saveImage(image, "hero", 0) : "";
+    const siteName = site === "palash" ? "palash" : "ahead";
+    const [siteCount] = await db
+      .select({
+        count: sql<number>`count(*)::int`,
+      })
+      .from(heroSlides)
+      .where(eq(heroSlides.site, siteName));
+    const existingCount = siteCount?.count ?? 0;
+    const isFirstSlide = order === 1 || (order === undefined && existingCount === 0);
 
-    // const nextOrder = order ?? (() => {
-    //   // This will be resolved below
-    //   return 0;
-    // })();
+    let savedVideoPath = "";
+    if (isFirstSlide) {
+      if (!backgroundVideo) {
+        return NextResponse.json(
+          { success: false, error: "Background video is required for the first slide" },
+          { status: 400 },
+        );
+      }
+      savedVideoPath = await saveVideo(backgroundVideo, "hero", 0);
+    } else if (backgroundVideo) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Only the first hero slide can have a background video",
+        },
+        { status: 400 },
+      );
+    }
+
+    const wantsVideoButton = showVideoButton ?? false;
+    let finalVideoUrl = "";
+    if (wantsVideoButton) {
+      const rawVideoUrl = String(videoUrl ?? "").trim();
+      if (!rawVideoUrl) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: "Video URL is required when Show video button is enabled",
+          },
+          { status: 400 },
+        );
+      }
+      if (!isSupportedVideoUrl(rawVideoUrl)) {
+        return NextResponse.json(
+          {
+            success: false,
+            error:
+              "Video URL must be a YouTube watch link or a Google Drive view link",
+          },
+          { status: 400 },
+        );
+      }
+      finalVideoUrl = normalizeVideoUrl(rawVideoUrl);
+    }
+
+    const savedImagePath = "";
 
     let finalOrder = order;
     if (finalOrder === undefined) {
@@ -93,11 +145,11 @@ export async function POST(request: Request) {
         titleAccent: titleAccent ?? "",
         description: description ?? "",
         image: savedImagePath,
-        backgroundVideo: await saveVideo(backgroundVideo, "hero", 0),
-        useVideoBackground: useVideoBackground ?? false,
+        backgroundVideo: savedVideoPath,
+        useVideoBackground: true,
         site: site === "palash" ? "palash" : "ahead",
-        videoUrl: videoUrl ?? "",
-        showVideoButton: showVideoButton ?? true,
+        videoUrl: finalVideoUrl,
+        showVideoButton: wantsVideoButton,
         isActive: isActive ?? true,
         order: finalOrder,
       })
@@ -130,9 +182,7 @@ export async function PUT(request: Request) {
       title,
       titleAccent,
       description,
-      image,
       backgroundVideo,
-      useVideoBackground,
       site,
       videoUrl,
       showVideoButton,
@@ -165,26 +215,74 @@ export async function PUT(request: Request) {
     if (title !== undefined) updateData.title = title;
     if (titleAccent !== undefined) updateData.titleAccent = titleAccent;
     if (description !== undefined) updateData.description = description;
+    updateData.useVideoBackground = true;
     if (backgroundVideo !== undefined) {
+      if (existing.order !== 1) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: "Only the first hero slide can have a background video",
+          },
+          { status: 400 },
+        );
+      }
+      if (!backgroundVideo) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: "Background video is required for the first slide",
+          },
+          { status: 400 },
+        );
+      }
       const savedVideo = await saveVideo(backgroundVideo, "hero", id);
       if (savedVideo !== existing.backgroundVideo) {
         updateData.backgroundVideo = savedVideo;
         await deleteVideo(existing.backgroundVideo);
       }
     }
-    if (useVideoBackground !== undefined)
-      updateData.useVideoBackground = useVideoBackground;
     if (site === "ahead" || site === "palash") updateData.site = site;
-    if (videoUrl !== undefined) updateData.videoUrl = videoUrl;
+
+    const nextShowVideoButton =
+      showVideoButton !== undefined ? showVideoButton : existing.showVideoButton;
     if (showVideoButton !== undefined)
       updateData.showVideoButton = showVideoButton;
+
+    if (
+      videoUrl !== undefined ||
+      (showVideoButton !== undefined && nextShowVideoButton)
+    ) {
+      if (nextShowVideoButton) {
+        const rawVideoUrl =
+          videoUrl !== undefined ? String(videoUrl).trim() : existing.videoUrl;
+        if (!rawVideoUrl) {
+          return NextResponse.json(
+            {
+              success: false,
+              error:
+                "Video URL is required when Show video button is enabled",
+            },
+            { status: 400 },
+          );
+        }
+        if (!isSupportedVideoUrl(rawVideoUrl)) {
+          return NextResponse.json(
+            {
+              success: false,
+              error:
+                "Video URL must be a YouTube watch link or a Google Drive view link",
+            },
+            { status: 400 },
+          );
+        }
+        updateData.videoUrl = normalizeVideoUrl(rawVideoUrl);
+      } else {
+        updateData.videoUrl = "";
+      }
+    }
+
     if (isActive !== undefined) updateData.isActive = isActive;
     if (order !== undefined) updateData.order = order;
-
-    if (image && image !== existing.image) {
-      updateData.image = await saveImage(image, "hero", id);
-      await deleteImage(existing.image);
-    }
 
     if (Object.keys(updateData).length === 0) {
       return NextResponse.json({ success: true, data: existing });

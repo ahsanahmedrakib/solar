@@ -8,7 +8,7 @@ import PalashVideo from "./PalashVideo";
 
 const PalashPage = () => {
   return (
-    <div>
+    <div className="palash-page">
       <Hero site="palash" />
       <PalashAbout />
       <BatteryPackages />
