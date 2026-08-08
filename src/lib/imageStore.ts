@@ -7,6 +7,7 @@ const ALLOWED_CONTENT_TYPES = new Set([
   "image/png",
   "image/gif",
   "image/webp",
+  "image/svg+xml",
 ]);
 
 const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024;

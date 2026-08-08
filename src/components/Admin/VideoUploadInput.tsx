@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 interface VideoUploadInputProps {
   value: string;
   onChange: (val: string) => void;
+  onFileNameChange?: (name: string) => void;
   label?: string;
   error?: string;
   placeholder?: string;
@@ -15,6 +16,7 @@ interface VideoUploadInputProps {
 export function VideoUploadInput({
   value,
   onChange,
+  onFileNameChange,
   label = "Background Video",
   error,
   placeholder = "/videos/hero.mp4",
@@ -33,6 +35,7 @@ export function VideoUploadInput({
     const reader = new FileReader();
     reader.onload = (e) => {
       if (e.target?.result) {
+        onFileNameChange?.(file.name);
         onChange(e.target.result as string);
       }
     };
@@ -102,7 +105,10 @@ export function VideoUploadInput({
               </div>
               <button
                 type="button"
-                onClick={() => onChange("")}
+                onClick={() => {
+                  onFileNameChange?.("");
+                  onChange("");
+                }}
                 className="p-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 transition cursor-pointer"
                 title="Remove Video"
               >

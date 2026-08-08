@@ -17,6 +17,8 @@ const EXTENSION_MAP: Record<string, string> = {
   png: "png",
   gif: "gif",
   webp: "webp",
+  "svg+xml": "svg",
+  svg: "svg",
 };
 
 function validateFolderName(folderName: string): void {

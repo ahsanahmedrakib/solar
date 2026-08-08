@@ -1,8 +1,6 @@
 import fs from "fs";
 import path from "path";
 
-const ALLOWED_FOLDERS = ["hero"];
-
 const EXTENSION_MAP: Record<string, string> = {
   mp4: "mp4",
   webm: "webm",
@@ -12,12 +10,6 @@ const EXTENSION_MAP: Record<string, string> = {
   m4v: "m4v",
 };
 
-function validateFolderName(folderName: string): void {
-  if (!ALLOWED_FOLDERS.includes(folderName)) {
-    throw new Error(`Invalid folder name: "${folderName}"`);
-  }
-}
-
 function sanitizeVideoId(id: string | number): string {
   const str = String(id);
   if (!/^[a-zA-Z0-9_-]+$/.test(str)) {
@@ -26,16 +18,21 @@ function sanitizeVideoId(id: string | number): string {
   return str;
 }
 
+function sanitizeOriginalName(name: string): string {
+  const base = path.basename(String(name ?? ""));
+  const cleaned = base.replace(/[^a-zA-Z0-9._-]/g, "_").trim();
+  if (!cleaned || cleaned === "." || cleaned === "..") return "";
+  return cleaned;
+}
+
 export async function saveVideo(
   base64Data: string,
-  folderName: string,
   id: string | number,
+  originalName?: string,
 ): Promise<string> {
   if (!base64Data || !base64Data.startsWith("data:video/")) {
     return base64Data;
   }
-
-  validateFolderName(folderName);
 
   const matches = base64Data.match(/^data:video\/([A-Za-z-+]+);base64,(.+)$/);
   if (!matches || matches?.length !== 3) {
@@ -50,14 +47,17 @@ export async function saveVideo(
 
   const buffer = Buffer.from(matches[2], "base64");
 
-  const relativeDir = `/videos/api/${folderName}`;
+  const fileName =
+    sanitizeOriginalName(originalName ?? "") ||
+    `${sanitizeVideoId(id)}_${Date.now()}.${extension}`;
+
+  const relativeDir = "/video";
   const targetDir = path.join(process.cwd(), "public", relativeDir);
 
   if (!fs.existsSync(targetDir)) {
     fs.mkdirSync(targetDir, { recursive: true });
   }
 
-  const fileName = `${sanitizeVideoId(id)}_${Date.now()}.${extension}`;
   const filePath = path.join(targetDir, fileName);
 
   fs.writeFileSync(filePath, buffer);
@@ -66,7 +66,7 @@ export async function saveVideo(
 }
 
 export async function deleteVideo(videoUrl: string): Promise<void> {
-  if (!videoUrl || !videoUrl.startsWith("/videos/api/")) return;
+  if (!videoUrl || !videoUrl.startsWith("/video/")) return;
 
   if (videoUrl.includes("..") || videoUrl.includes("\\")) {
     return;

@@ -1,8 +1,6 @@
 import { db } from "@/lib/db";
 import { isTableNotExistsError } from "@/lib/db-helpers";
-import { deleteImage } from "@/lib/imageHelper";
 import { getRequestTokenPayload } from "@/lib/token";
-import { deleteVideo, saveVideo } from "@/lib/videoHelper";
 import {
   isSupportedVideoUrl,
   normalizeVideoUrl,
@@ -55,7 +53,6 @@ export async function POST(request: Request) {
       title,
       titleAccent,
       description,
-      backgroundVideo,
       site,
       videoUrl,
       showVideoButton,
@@ -66,35 +63,6 @@ export async function POST(request: Request) {
     if (!title) {
       return NextResponse.json(
         { success: false, error: "title is required" },
-        { status: 400 },
-      );
-    }
-
-    const siteName = site === "palash" ? "palash" : "ahead";
-    const [siteCount] = await db
-      .select({
-        count: sql<number>`count(*)::int`,
-      })
-      .from(heroSlides)
-      .where(eq(heroSlides.site, siteName));
-    const existingCount = siteCount?.count ?? 0;
-    const isFirstSlide = order === 1 || (order === undefined && existingCount === 0);
-
-    let savedVideoPath = "";
-    if (isFirstSlide) {
-      if (!backgroundVideo) {
-        return NextResponse.json(
-          { success: false, error: "Background video is required for the first slide" },
-          { status: 400 },
-        );
-      }
-      savedVideoPath = await saveVideo(backgroundVideo, "hero", 0);
-    } else if (backgroundVideo) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Only the first hero slide can have a background video",
-        },
         { status: 400 },
       );
     }
@@ -125,8 +93,6 @@ export async function POST(request: Request) {
       finalVideoUrl = normalizeVideoUrl(rawVideoUrl);
     }
 
-    const savedImagePath = "";
-
     let finalOrder = order;
     if (finalOrder === undefined) {
       const [result] = await db
@@ -144,9 +110,6 @@ export async function POST(request: Request) {
         title,
         titleAccent: titleAccent ?? "",
         description: description ?? "",
-        image: savedImagePath,
-        backgroundVideo: savedVideoPath,
-        useVideoBackground: true,
         site: site === "palash" ? "palash" : "ahead",
         videoUrl: finalVideoUrl,
         showVideoButton: wantsVideoButton,
@@ -182,7 +145,6 @@ export async function PUT(request: Request) {
       title,
       titleAccent,
       description,
-      backgroundVideo,
       site,
       videoUrl,
       showVideoButton,
@@ -215,32 +177,6 @@ export async function PUT(request: Request) {
     if (title !== undefined) updateData.title = title;
     if (titleAccent !== undefined) updateData.titleAccent = titleAccent;
     if (description !== undefined) updateData.description = description;
-    updateData.useVideoBackground = true;
-    if (backgroundVideo !== undefined) {
-      if (existing.order !== 1) {
-        return NextResponse.json(
-          {
-            success: false,
-            error: "Only the first hero slide can have a background video",
-          },
-          { status: 400 },
-        );
-      }
-      if (!backgroundVideo) {
-        return NextResponse.json(
-          {
-            success: false,
-            error: "Background video is required for the first slide",
-          },
-          { status: 400 },
-        );
-      }
-      const savedVideo = await saveVideo(backgroundVideo, "hero", id);
-      if (savedVideo !== existing.backgroundVideo) {
-        updateData.backgroundVideo = savedVideo;
-        await deleteVideo(existing.backgroundVideo);
-      }
-    }
     if (site === "ahead" || site === "palash") updateData.site = site;
 
     const nextShowVideoButton =
@@ -320,17 +256,6 @@ export async function DELETE(request: Request) {
         { success: false, error: "Missing ID parameter" },
         { status: 400 },
       );
-    }
-
-    const [existing] = await db
-      .select()
-      .from(heroSlides)
-      .where(eq(heroSlides.id, Number(id)))
-      .limit(1);
-
-    if (existing) {
-      await deleteImage(existing.image);
-      await deleteVideo(existing.backgroundVideo);
     }
 
     await db.delete(heroSlides).where(eq(heroSlides.id, Number(id)));

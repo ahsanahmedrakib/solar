@@ -1,6 +1,5 @@
 "use client";
 
-import { VideoUploadInput } from "@/components/Admin/VideoUploadInput";
 import type { HeroSlide, HeroSite } from "@/data/hero-slides";
 import { DEFAULT_ADMIN_LOGO } from "@/data/settings";
 import { apiClient } from "@/lib/apiClient";
@@ -9,7 +8,6 @@ import {
   AlertCircle,
   Edit2,
   Film,
-  Info,
   Plus,
   Search,
   Trash2,
@@ -17,7 +15,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
-import { Controller, useForm, useWatch } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { toast } from "react-toastify";
 import * as yup from "yup";
 import { useQueryHeroSlides, queryKeys } from "@/lib/queries";
@@ -29,7 +27,6 @@ const slideSchema = yup.object({
   title: yup.string().required("Title is required"),
   titleAccent: yup.string().required("Accent title is required"),
   description: yup.string().required("Description is required"),
-  backgroundVideo: yup.string().default(""),
   site: yup.mixed<HeroSite>().oneOf(["ahead", "palash"]).default("ahead"),
   showVideoButton: yup.boolean().default(false),
   videoUrl: yup
@@ -58,7 +55,6 @@ export default function AdminHeroPage() {
   const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-  const [siteFilter, setSiteFilter] = useState<HeroSite>("ahead");
   const [editingSlide, setEditingSlide] = useState<HeroSlide | null>(null);
 
   const {
@@ -74,7 +70,6 @@ export default function AdminHeroPage() {
       title: "",
       titleAccent: "",
       description: "",
-      backgroundVideo: "",
       site: "ahead",
       videoUrl: "",
       showVideoButton: false,
@@ -88,12 +83,6 @@ export default function AdminHeroPage() {
     name: "showVideoButton",
   }) as boolean;
 
-  const watchOrder = useWatch({
-    control,
-    name: "order",
-  }) as number;
-  const isFirstSlide = Number(watchOrder) === 1;
-
   const handleAddClick = () => {
     setEditingSlide(null);
     reset({
@@ -101,8 +90,7 @@ export default function AdminHeroPage() {
       title: "",
       titleAccent: "",
       description: "",
-      backgroundVideo: "",
-      site: siteFilter,
+      site: "ahead",
       videoUrl: "",
       showVideoButton: false,
       isActive: true,
@@ -118,7 +106,6 @@ export default function AdminHeroPage() {
       title: slide.title,
       titleAccent: slide.titleAccent,
       description: slide.description,
-      backgroundVideo: slide.backgroundVideo ?? "",
       site: slide.site,
       videoUrl: slide.videoUrl,
       showVideoButton: slide.showVideoButton,
@@ -151,14 +138,7 @@ export default function AdminHeroPage() {
 
   const onSubmit = async (data: SlideFormData) => {
     try {
-      if (isFirstSlide && !data.backgroundVideo) {
-        toast.error(
-          "Please upload or enter a background video for the first slide.",
-        );
-        return;
-      }
       const payload: Record<string, unknown> = { ...data };
-      if (!isFirstSlide) delete payload.backgroundVideo;
       if (editingSlide) {
         const res = await apiClient("/api/hero-slides", {
           method: "PUT",
@@ -216,10 +196,9 @@ export default function AdminHeroPage() {
 
   const filteredSlides = slides.filter(
     (slide) =>
-      slide.site === siteFilter &&
-      (slide.title.toLowerCase().includes(search.toLowerCase()) ||
-        slide.titleAccent.toLowerCase().includes(search.toLowerCase()) ||
-        slide.tagline.toLowerCase().includes(search.toLowerCase())),
+      slide.title.toLowerCase().includes(search.toLowerCase()) ||
+      slide.titleAccent.toLowerCase().includes(search.toLowerCase()) ||
+      slide.tagline.toLowerCase().includes(search.toLowerCase()),
   );
 
   return (
@@ -258,23 +237,6 @@ export default function AdminHeroPage() {
             }}
           />
         </div>
-
-        <div className="flex rounded-lg overflow-hidden border border-(--admin-border)">
-          {(["ahead", "palash"] as const).map((site) => (
-            <button
-              key={site}
-              type="button"
-              onClick={() => setSiteFilter(site)}
-              className={`px-4 py-2 text-xs font-semibold transition cursor-pointer ${
-                siteFilter === site
-                  ? "bg-(--admin-accent) text-white"
-                  : "bg-(--admin-surface-2) text-(--admin-text-secondary) hover:text-(--admin-text-primary)"
-              }`}
-            >
-              {site === "ahead" ? "Ahead Solar" : "Palash"}
-            </button>
-          ))}
-        </div>
       </div>
 
       <div className="admin-table-card">
@@ -294,6 +256,7 @@ export default function AdminHeroPage() {
               <thead>
                 <tr>
                   <th>Slide</th>
+                  <th>Site</th>
                   <th>Video</th>
                   <th className="text-center">Order</th>
                   <th className="text-center">Status</th>
@@ -325,15 +288,18 @@ export default function AdminHeroPage() {
                       </div>
                     </td>
                     <td>
+                      <span
+                        className={`inline-flex text-xs font-semibold px-2.5 py-1 rounded-full ${
+                          slide.site === "palash"
+                            ? "bg-purple-500/10 text-purple-400 border border-purple-500/20"
+                            : "bg-cyan-500/10 text-cyan-400 border border-cyan-500/20"
+                        }`}
+                      >
+                        {slide.site === "palash" ? "Palash" : "Ahead Solar"}
+                      </span>
+                    </td>
+                    <td>
                       <div className="flex flex-wrap gap-1.5">
-                        <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20">
-                          {slide.site === "palash" ? "Palash" : "Ahead Solar"}
-                        </span>
-                        {slide.backgroundVideo && (
-                          <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/20">
-                            Video BG
-                          </span>
-                        )}
                         {slide.videoUrl ? (
                           <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
                             Video Attached
@@ -436,31 +402,6 @@ export default function AdminHeroPage() {
                   </label>
                 </div>
               </div>
-
-              {isFirstSlide ? (
-                <Controller
-                  name="backgroundVideo"
-                  control={control}
-                  render={({ field }) => (
-                    <VideoUploadInput
-                      label="Background Video"
-                      value={field.value}
-                      onChange={field.onChange}
-                      error={errors.backgroundVideo?.message}
-                      placeholder="/videos/hero.mp4"
-                    />
-                  )}
-                />
-              ) : (
-                <div className="flex items-start gap-2.5 p-3 rounded-xl border border-(--admin-border) bg-(--admin-surface-2)">
-                  <Info size={16} className="text-(--admin-accent) shrink-0 mt-0.5" />
-                  <p className="text-[12.5px] text-(--admin-text-secondary) leading-relaxed">
-                    Background video is managed on the first slide (Order #1)
-                    and is reused for all slides. Only the first slide accepts a
-                    video.
-                  </p>
-                </div>
-              )}
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="flex flex-col gap-1.5">

@@ -65,7 +65,7 @@ export default function Hero({ site = "ahead" }: { site?: HeroSite }) {
     return fallbackSlides;
   }, [rawSlides, fallbackSlides]);
 
-  const heroVideo = slides[0]?.backgroundVideo || defaultVideo;
+  const heroVideo = defaultVideo;
 
   if (loading) {
     return (
@@ -118,7 +118,7 @@ export default function Hero({ site = "ahead" }: { site?: HeroSite }) {
           {slides?.map((slide) => (
             <SwiperSlide key={slide.id}>
               <div className="swiper-slide-transform">
-                <div className="relative min-h-187.5 flex items-center bg-forest-900">
+                <div className="relative min-h-187.5 flex items-start bg-forest-900">
                   <video
                     className="absolute inset-0 w-full h-full object-cover"
                     src={heroVideo}
