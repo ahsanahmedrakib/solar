@@ -1,6 +1,7 @@
 "use client";
 
 import { DEFAULT_SECTIONS } from "@/data/settings";
+import { SOCIAL_ICONS } from "@/lib/const";
 import { useQuerySettings } from "@/lib/queries";
 import { ChevronDown, Mail, Menu, Phone, X } from "lucide-react";
 import Image from "next/image";
@@ -27,6 +28,7 @@ const FALLBACK = {
   socialX: getField(DEFAULT_SECTIONS, "social", "social-x"),
   socialLi: getField(DEFAULT_SECTIONS, "social", "social-li"),
   socialIg: getField(DEFAULT_SECTIONS, "social", "social-ig"),
+  socialYt: getField(DEFAULT_SECTIONS, "social", "social-youtube"),
   logo: getField(DEFAULT_SECTIONS, "general", "site-logo") || "/logo.svg",
 };
 
@@ -74,11 +76,12 @@ export default function Navbar() {
     return {
       phone: getField(data, "general", "phone-number") || FALLBACK.phone,
       email: getField(data, "general", "contact-email") || FALLBACK.email,
-      socialFb: getField(data, "social", "social-fb"),
-      socialX: getField(data, "social", "social-x"),
-      socialLi: getField(data, "social", "social-li"),
-      socialIg: getField(data, "social", "social-ig"),
       logo: getField(data, "general", "site-logo") || FALLBACK.logo,
+      socialFb: getField(data, "social", "social-fb") || FALLBACK.socialFb,
+      socialX: getField(data, "social", "social-x") || FALLBACK.socialX,
+      socialLi: getField(data, "social", "social-li") || FALLBACK.socialLi,
+      socialIg: getField(data, "social", "social-ig") || FALLBACK.socialIg,
+      socialYt: getField(data, "social", "social-youtube") || FALLBACK.socialYt,
     };
   }, [data]);
 
@@ -133,12 +136,12 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1">
             {showSkeleton
               ? [1, 2, 3, 4].map((i) => (
                   <div
                     key={i}
-                    className="w-7 h-7 rounded-lg bg-white/20 animate-pulse"
+                    className="w-7 h-7 rounded-full bg-white/20 animate-pulse"
                   />
                 ))
               : (
@@ -163,6 +166,11 @@ export default function Navbar() {
                       label: "linkedin" as const,
                       href: settings.socialLi,
                     },
+                    {
+                      key: "socialYt",
+                      label: "youtube" as const,
+                      href: settings.socialYt,
+                    },
                   ] as const
                 ).map(
                   (platform) =>
@@ -172,14 +180,14 @@ export default function Navbar() {
                         href={platform.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-7 h-7 rounded-lg text-accent-500 flex items-center justify-center transition-all hover:bg-forest-700"
+                        className="rounded-xl flex items-center justify-center transition-all"
                         aria-label={platform.label}
                       >
                         {SOCIAL_ICONS[platform.label]}
                       </Link>
                     ),
                 )}
-          </div> */}
+          </div>
         </div>
       </div>
 

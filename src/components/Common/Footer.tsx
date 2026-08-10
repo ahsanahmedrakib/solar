@@ -87,7 +87,10 @@ export default function Footer() {
         <Reveal variant="fade-up">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-4 py-10 border-b border-white/20">
             <div className="flex items-center gap-5">
-              <div className="w-16 h-16 rounded-xl bg-accent-500 text-white flex items-center justify-center shrink-0">
+              <div
+                className="w-16 h-16 rounded-xl bg-accent-500 text-white flex items-center justify-center shrink-0 chat-idle"
+                style={{ animationDelay: "0s" }}
+              >
                 <Mail size={28} />
               </div>
               <div>
@@ -108,7 +111,10 @@ export default function Footer() {
             </div>
 
             <div className="flex items-center gap-5 md:border-l md:border-white/20 md:pl-6">
-              <div className="w-16 h-16 rounded-xl bg-accent-500 text-white flex items-center justify-center shrink-0">
+              <div
+                className="w-16 h-16 rounded-xl bg-accent-500 text-white flex items-center justify-center shrink-0 chat-idle"
+                style={{ animationDelay: "0.5s" }}
+              >
                 <Phone size={28} />
               </div>
               <div>
@@ -129,7 +135,10 @@ export default function Footer() {
             </div>
 
             <div className="flex items-center gap-5 md:border-l md:border-white/20 md:pl-6">
-              <div className="w-16 h-16 rounded-xl bg-accent-500 text-white flex items-center justify-center shrink-0">
+              <div
+                className="w-16 h-16 rounded-xl bg-accent-500 text-white flex items-center justify-center shrink-0 chat-idle"
+                style={{ animationDelay: "1s" }}
+              >
                 <MapPin size={28} />
               </div>
               <div>
@@ -182,7 +191,7 @@ export default function Footer() {
                 <h4 className="font-heading text-lg font-bold text-white">
                   Follow Us On Socials:
                 </h4>
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-2">
                   {showSkeleton
                     ? [1, 2, 3, 4, 5].map((i) => (
                         <div
@@ -226,7 +235,7 @@ export default function Footer() {
                               href={platform.href}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="w-10 h-10 rounded-xl flex items-center justify-center transition-all"
+                              className="rounded-xl flex items-center justify-center transition-all"
                               aria-label={platform.label}
                             >
                               {SOCIAL_ICONS[platform.label]}

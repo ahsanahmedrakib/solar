@@ -185,14 +185,14 @@ export const DEFAULT_SECTIONS: Section[] = [
     fields: [
       {
         label: "Facebook Page URL",
-        type: "url",
+        type: "",
         value: "https://www.facebook.com/profile.php?id=61591154285690",
         id: "social-fb",
       },
       {
         label: "Twitter / X Profile URL",
         type: "url",
-        value: "vfdb",
+        value: "",
         id: "social-x",
       },
       {
@@ -204,13 +204,13 @@ export const DEFAULT_SECTIONS: Section[] = [
       {
         label: "Instagram Profile URL",
         type: "url",
-        value: "dbb",
+        value: "",
         id: "social-ig",
       },
       {
         label: "YouTube Channel URL",
         type: "url",
-        value: "db",
+        value: "",
         id: "social-youtube",
       },
       {
