@@ -1,6 +1,7 @@
 "use client";
 
 import { ImageUploadInput } from "@/components/Admin/ImageUploadInput";
+import { MultiImageUploadInput } from "@/components/Admin/MultiImageUploadInput";
 import { RichTextEditor } from "@/components/Admin/RichTextEditor";
 import type { Project } from "@/data/projects";
 import { DEFAULT_ADMIN_LOGO } from "@/data/settings";
@@ -50,6 +51,7 @@ const projectSchema = yup.object().shape({
     .required("Category is required")
     .oneOf(CATEGORIES, "Invalid category selection"),
   imageUrl: yup.string().required("Image is required"),
+  images: yup.array().of(yup.string()).defined().default([]),
   isFeatured: yup.boolean().default(false),
   client: yup
     .string()
@@ -92,6 +94,7 @@ export default function AdminProjectsPage() {
       slug: "",
       category: "",
       imageUrl: "",
+      images: [],
       isFeatured: false,
       client: "",
       location: "",
@@ -124,6 +127,7 @@ export default function AdminProjectsPage() {
       slug: "",
       category: "",
       imageUrl: "",
+      images: [],
       isFeatured: false,
       client: "",
       location: "",
@@ -139,6 +143,7 @@ export default function AdminProjectsPage() {
       slug: project.slug,
       category: project.category,
       imageUrl: project.imageUrl,
+      images: project.images ?? [],
       isFeatured: project.isFeatured,
       client: project.client,
       location: project.location,
@@ -540,6 +545,21 @@ export default function AdminProjectsPage() {
                     onChange={field.onChange}
                     error={errors.imageUrl?.message}
                     placeholder="/images/projects/project-1.jpg"
+                  />
+                )}
+              />
+
+              {/* Project Gallery Images */}
+              <Controller
+                name="images"
+                control={control}
+                render={({ field }) => (
+                  <MultiImageUploadInput
+                    label="Project Gallery Images"
+                    value={(field.value ?? []) as string[]}
+                    onChange={field.onChange}
+                    error={errors.images?.message}
+                    placeholder="/images/projects/gallery-1.jpg"
                   />
                 )}
               />

@@ -8,6 +8,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { useMemo } from "react";
 
+import "swiper/css";
+import "swiper/css/autoplay";
+import "swiper/css/pagination";
+import { Autoplay, Pagination } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
+
 export default function Teams() {
   const { data: rawTeam = [], isFetching: loading } = useQueryTeam();
 
@@ -15,6 +21,12 @@ export default function Teams() {
     if (rawTeam?.length > 0) return rawTeam;
     return DEFAULT_TEAM;
   }, [rawTeam]);
+
+  const carouselSlides = useMemo(() => {
+    if (teamMembers.length >= 4) return teamMembers;
+    return [...teamMembers, ...teamMembers];
+  }, [teamMembers]);
+
   return (
     <section className="relative w-full bg-white px-4 py-12 md:px-8 lg:px-16 lg:py-25">
       <div className="solar-container">
@@ -70,66 +82,74 @@ export default function Teams() {
           </div>
         )}
 
-        {/* ================= TEAM CARDS GRID ================= */}
+        {/* ================= TEAM CARDS SWIPER ================= */}
         {!loading && (
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {teamMembers?.map((member, index) => (
-              <Reveal
-                key={index}
-                variant="fade-up"
-                delay={(index % 3) * 120}
-                className="group flex flex-col overflow-hidden rounded-lg bg-secondary border border-accent-500 transition-all duration-300 hover:shadow-md"
-              >
-                {/* Profile Image Container */}
-                <div className="relative aspect-4/3 w-full overflow-hidden p-4 pb-0">
-                  <div className="relative h-full w-full overflow-hidden rounded-lg">
-                    <Image
-                      src={member.image}
-                      alt={member.name}
-                      fill
-                      unoptimized
-                      sizes="(max-w-7xl) 100vw, (max-w-md) 50vw, 33vw"
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                  </div>
-                </div>
+          <Reveal variant="fade-up">
+            <Swiper
+              modules={[Autoplay, Pagination]}
+              loop={true}
+              autoplay={{ delay: 3000, disableOnInteraction: false }}
+              pagination={{ clickable: true }}
+              spaceBetween={24}
+              slidesPerView={1}
+              breakpoints={{
+                640: { slidesPerView: 2 },
+                1024: { slidesPerView: 3 },
+              }}
+              className="team-swiper swiper-dots pb-12"
+            >
+              {carouselSlides?.map((member, index) => {
+                const socialLinks = (
+                  Object.keys(SOCIAL_ICONS) as Array<keyof typeof SOCIAL_ICONS>
+                ).filter((platform) => member.socialLinks?.[platform]);
+                return (
+                <SwiperSlide key={`${member.id}-${index}`}>
+                  <div className="group flex h-full flex-col overflow-hidden rounded-lg bg-secondary border border-accent-500 transition-all duration-300 hover:shadow-md">
+                    {/* Profile Image Container */}
+                    <div className="relative aspect-4/3 w-full overflow-hidden p-4 pb-0">
+                      <div className="relative h-full w-full overflow-hidden rounded-lg">
+                        <Image
+                          src={member.image}
+                          alt={member.name}
+                          fill
+                          unoptimized
+                          sizes="(max-w-7xl) 100vw, (max-w-md) 50vw, 33vw"
+                          className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
+                      </div>
+                    </div>
 
-                {/* Text Meta Content Area */}
-                <div className="flex flex-col items-center text-center px-6 py-8">
-                  <h3 className="font-heading text-xl font-bold text-accent-500">
-                    {member.name}
-                  </h3>
-                  <p className="mt-1 text-sm text-[#888888] font-medium">
-                    {member.role}
-                  </p>
+                    {/* Text Meta Content Area */}
+                    <div className="flex flex-col items-center text-center px-6 py-8">
+                      <h3 className="font-heading text-xl font-bold text-accent-500">
+                        {member.name}
+                      </h3>
+                      <p className="mt-1 text-sm text-[#888888] font-medium">
+                        {member.role}
+                      </p>
 
-                  {member.socialLinks && (
-                    <div className="mt-6 flex items-center gap-3 border-t border-forest-700/10 pt-6 w-full justify-center">
-                      {(
-                        Object.keys(SOCIAL_ICONS) as Array<
-                          keyof typeof SOCIAL_ICONS
-                        >
-                      )?.map((platform) => {
-                        const url = member.socialLinks?.[platform];
-                        if (!url) return null;
-                        return (
+                      <div
+                        className={`mt-6 flex min-h-16 w-full items-center justify-center gap-3 pt-6 ${socialLinks.length > 0 ? "border-t border-forest-700/10" : ""}`}
+                      >
+                        {socialLinks?.map((platform) => (
                           <Link
                             key={platform}
-                            href={url}
+                            href={member.socialLinks?.[platform] as string}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex h-10 w-10 items-center justify-center transition-colors"
                           >
                             {SOCIAL_ICONS[platform]}
                           </Link>
-                        );
-                      })}
+                        ))}
+                      </div>
                     </div>
-                  )}
-                </div>
-              </Reveal>
-            ))}
-          </div>
+                  </div>
+                </SwiperSlide>
+                );
+              })}
+            </Swiper>
+          </Reveal>
         )}
       </div>
     </section>

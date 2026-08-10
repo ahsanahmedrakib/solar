@@ -9,6 +9,7 @@ export interface Project {
   location: string;
   description?: string;
   projectDetails: string;
+  images?: string[];
 }
 
 export const DEFAULT_PROJECTS: Project[] = [
@@ -16,6 +17,11 @@ export const DEFAULT_PROJECTS: Project[] = [
     id: 1,
     title: "Rooftop Solar Installation for Residential Homes",
     imageUrl: "/images/aheadsolar/project-1.jpg",
+    images: [
+      "/images/aheadsolar/project-1.jpg",
+      "/images/aheadsolar/project-2.jpg",
+      "/images/aheadsolar/project-3.jpg",
+    ],
     slug: "rooftop-solar-installation-for-residential-homes",
     category: "Residential Solar",
     isFeatured: false,

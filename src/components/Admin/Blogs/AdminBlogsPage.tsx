@@ -1,6 +1,7 @@
 "use client";
 
 import { ImageUploadInput } from "@/components/Admin/ImageUploadInput";
+import { MultiImageUploadInput } from "@/components/Admin/MultiImageUploadInput";
 import { RichTextEditor } from "@/components/Admin/RichTextEditor";
 import type { Blog } from "@/data/blogs";
 import { DEFAULT_ADMIN_LOGO } from "@/data/settings";
@@ -52,6 +53,7 @@ const blogSchema = yup.object().shape({
     .required("Category is required")
     .oneOf(CATEGORIES, "Invalid category selection"),
   imageUrl: yup.string().required("Image is required"),
+  images: yup.array().of(yup.string()).defined().default([]),
   content: yup
     .string()
     .required("Blog content text is required")
@@ -96,6 +98,7 @@ export default function AdminBlogsPage() {
       slug: "",
       category: "",
       imageUrl: "",
+      images: [],
       content: "",
       tagsString: "",
       blogDetails: "",
@@ -127,6 +130,7 @@ export default function AdminBlogsPage() {
       slug: "",
       category: "",
       imageUrl: "",
+      images: [],
       content: "",
       tagsString: "",
       blogDetails: "",
@@ -141,6 +145,7 @@ export default function AdminBlogsPage() {
       slug: blog.slug,
       category: blog.category,
       imageUrl: blog.imageUrl,
+      images: blog.images ?? [],
       content: blog.content,
       tagsString: blog.tags.join(", "),
       blogDetails: blog.blogDetails,
@@ -186,6 +191,7 @@ export default function AdminBlogsPage() {
       slug: data.slug,
       category: data.category,
       imageUrl: data.imageUrl,
+      images: data.images,
       content: data.content,
       tags: parsedTags,
       date: currentDateString,
@@ -520,6 +526,21 @@ export default function AdminBlogsPage() {
                     onChange={field.onChange}
                     error={errors.imageUrl?.message}
                     placeholder="/images/blogs/post-1.jpg"
+                  />
+                )}
+              />
+
+              {/* Blog Gallery Images */}
+              <Controller
+                name="images"
+                control={control}
+                render={({ field }) => (
+                  <MultiImageUploadInput
+                    label="Blog Gallery Images"
+                    value={(field.value ?? []) as string[]}
+                    onChange={field.onChange}
+                    error={errors.images?.message}
+                    placeholder="/images/blogs/gallery-1.jpg"
                   />
                 )}
               />

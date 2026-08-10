@@ -73,10 +73,9 @@ export default function Services() {
             </Reveal>
           </div>
 
-          <ServicesCardSwiper services={services?.slice(0, 6)} />
+          <ServicesCardSwiper services={services} />
         </div>
       </section>
     </div>
   );
 }
-

@@ -7,6 +7,7 @@ export interface Service {
   alt: string;
   iconName: string;
   slug: string;
+  images?: string[];
 }
 
 export const DEFAULT_SERVICES: Service[] = [

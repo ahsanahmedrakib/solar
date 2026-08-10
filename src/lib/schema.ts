@@ -28,6 +28,7 @@ export const services = pgTable("services", {
   alt: text("alt").notNull(),
   iconName: text("icon_name").notNull(),
   slug: text("slug").notNull().unique(),
+  images: text("images").array().notNull().default([]),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
@@ -41,6 +42,7 @@ export const projects = pgTable("projects", {
   client: text("client").notNull(),
   location: text("location").notNull(),
   projectDetails: text("project_details").notNull(),
+  images: text("images").array().notNull().default([]),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
@@ -54,6 +56,7 @@ export const blogs = pgTable("blogs", {
   tags: text("tags").array().notNull().default([]),
   date: text("date").notNull(),
   blogDetails: text("blog_details").notNull(),
+  images: text("images").array().notNull().default([]),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 

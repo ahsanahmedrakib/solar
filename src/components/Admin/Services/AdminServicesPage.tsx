@@ -1,6 +1,7 @@
 "use client";
 
 import { ImageUploadInput } from "@/components/Admin/ImageUploadInput";
+import { MultiImageUploadInput } from "@/components/Admin/MultiImageUploadInput";
 import { RichTextEditor } from "@/components/Admin/RichTextEditor";
 import type { Service } from "@/data/services";
 import { DEFAULT_ADMIN_LOGO } from "@/data/settings";
@@ -69,6 +70,7 @@ const serviceSchema = yup.object().shape({
     .required("serviceDetails is required")
     .min(10, "serviceDetails must be at least 10 characters"),
   image: yup.string().required("Image is required"),
+  images: yup.array().of(yup.string()).defined().default([]),
   alt: yup
     .string()
     .required("Alt text is required")
@@ -103,6 +105,7 @@ export default function AdminServicesPage() {
       description: "",
       serviceDetails: "",
       image: "",
+      images: [],
       alt: "",
       iconName: "",
     },
@@ -132,6 +135,7 @@ export default function AdminServicesPage() {
       description: "",
       serviceDetails: "",
       image: "",
+      images: [],
       alt: "",
       iconName: "",
     });
@@ -146,6 +150,7 @@ export default function AdminServicesPage() {
       description: service.description,
       serviceDetails: service.serviceDetails,
       image: service.image,
+      images: service.images ?? [],
       alt: service.alt,
       iconName: service.iconName,
     });
@@ -492,6 +497,21 @@ export default function AdminServicesPage() {
                   )}
                 </div>
               </div>
+
+              {/* Service Gallery Images */}
+              <Controller
+                name="images"
+                control={control}
+                render={({ field }) => (
+                  <MultiImageUploadInput
+                    label="Service Gallery Images"
+                    value={(field.value ?? []) as string[]}
+                    onChange={field.onChange}
+                    error={errors.images?.message}
+                    placeholder="/images/services/gallery-1.jpg"
+                  />
+                )}
+              />
 
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-semibold text-(--admin-text-secondary) uppercase tracking-wider">

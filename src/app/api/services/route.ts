@@ -33,7 +33,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { title, description, serviceDetails, image, alt, iconName, slug } =
+    const { title, description, serviceDetails, image, alt, iconName, slug, images } =
       body;
 
     if (!title || !description || !slug) {
@@ -47,6 +47,10 @@ export async function POST(request: Request) {
       ? await saveImage(image, "services", 0)
       : "";
 
+    const savedImages = Array.isArray(images)
+      ? await Promise.all(images.map((img: string) => saveImage(img, "services", 0)))
+      : [];
+
     const [newService] = await db
       .insert(services)
       .values({
@@ -57,6 +61,7 @@ export async function POST(request: Request) {
         alt: alt ?? "",
         iconName: iconName ?? "",
         slug,
+        images: savedImages,
       })
       .returning();
 
@@ -81,7 +86,7 @@ export async function PUT(request: Request) {
     }
 
     const body = await request.json();
-    const { id, title, description, serviceDetails, image, alt, iconName, slug } = body;
+    const { id, title, description, serviceDetails, image, alt, iconName, slug, images } = body;
 
     if (!id) {
       return NextResponse.json(
@@ -114,6 +119,17 @@ export async function PUT(request: Request) {
     if (image && image !== existing.image) {
       updateData.image = await saveImage(image, "services", id);
       await deleteImage(existing.image);
+    }
+
+    if (Array.isArray(images)) {
+      const existingImages = existing.images ?? [];
+      const removed = existingImages.filter((img) => !images.includes(img));
+      updateData.images = await Promise.all(
+        images.map((img: string) => saveImage(img, "services", id)),
+      );
+      for (const img of removed) {
+        await deleteImage(img);
+      }
     }
 
     if (Object.keys(updateData).length === 0) {
@@ -161,6 +177,9 @@ export async function DELETE(request: Request) {
       .limit(1);
     if (existing) {
       await deleteImage(existing.image);
+      for (const img of existing.images ?? []) {
+        await deleteImage(img);
+      }
     }
 
     await db.delete(services).where(eq(services.id, Number(id)));

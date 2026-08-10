@@ -33,7 +33,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { title, category, imageUrl, slug, content, tags, date, blogDetails } = body;
+    const { title, category, imageUrl, slug, content, tags, date, blogDetails, images } = body;
 
     if (!title || !slug) {
       return NextResponse.json(
@@ -46,6 +46,10 @@ export async function POST(request: Request) {
       ? await saveImage(imageUrl, "blogs", 0)
       : "";
 
+    const savedImages = Array.isArray(images)
+      ? await Promise.all(images.map((img: string) => saveImage(img, "blogs", 0)))
+      : [];
+
     const [newBlog] = await db
       .insert(blogs)
       .values({
@@ -57,6 +61,7 @@ export async function POST(request: Request) {
         tags: tags ?? [],
         date: date ?? new Date().toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }),
         blogDetails: blogDetails ?? "",
+        images: savedImages,
       })
       .returning();
 
@@ -81,7 +86,7 @@ export async function PUT(request: Request) {
     }
 
     const body = await request.json();
-    const { id, title, category, imageUrl, slug, content, tags, date, blogDetails } = body;
+    const { id, title, category, imageUrl, slug, content, tags, date, blogDetails, images } = body;
 
     if (!id) {
       return NextResponse.json(
@@ -115,6 +120,17 @@ export async function PUT(request: Request) {
     if (imageUrl && imageUrl !== existing.imageUrl) {
       updateData.imageUrl = await saveImage(imageUrl, "blogs", id);
       await deleteImage(existing.imageUrl);
+    }
+
+    if (Array.isArray(images)) {
+      const existingImages = existing.images ?? [];
+      const removed = existingImages.filter((img) => !images.includes(img));
+      updateData.images = await Promise.all(
+        images.map((img: string) => saveImage(img, "blogs", id)),
+      );
+      for (const img of removed) {
+        await deleteImage(img);
+      }
     }
 
     if (Object.keys(updateData).length === 0) {
@@ -158,6 +174,9 @@ export async function DELETE(request: Request) {
       .limit(1);
     if (existing) {
       await deleteImage(existing.imageUrl);
+      for (const img of existing.images ?? []) {
+        await deleteImage(img);
+      }
     }
 
     await db.delete(blogs).where(eq(blogs.id, Number(id)));

@@ -18,6 +18,7 @@ export interface Blog {
   tags: string[];
   date: string;
   blogDetails: string;
+  images?: string[];
 }
 
 export const DEFAULT_BLOGS: Blog[] = [

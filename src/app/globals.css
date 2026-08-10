@@ -433,6 +433,15 @@ body:has(.admin-layout-root) {
   background: var(--color-gold-500);
 }
 
+/* Team swiper — equal-height cards */
+.team-swiper .swiper-slide {
+  height: auto;
+}
+
+.team-swiper .swiper-slide > * {
+  height: 100%;
+}
+
 /* Shared Swiper (non-hero) — Pagination Dots */
 .swiper-dots .swiper-pagination {
   position: relative;
@@ -459,6 +468,96 @@ body:has(.admin-layout-root) {
 .swiper-dots .swiper-pagination-bullet-active {
   width: 24px;
   background: var(--color-gold-500);
+}
+
+/* Single image gallery slider (projects / services / blogs) */
+.single-image-slider .swiper-button-prev,
+.single-image-slider .swiper-button-next {
+  width: 46px;
+  height: 46px;
+  border-radius: 9999px;
+  background: transparent;
+  color: var(--color-accent-600);
+  /* backdrop-filter: blur(10px); */
+  /* -webkit-backdrop-filter: blur(10px); */
+  /* border: 1.5px solid rgba(255, 255, 255, 0.9); */
+  /* box-shadow:
+    0 8px 22px rgba(2, 32, 71, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8); */
+  /* opacity: 0.95; */
+  transition: all 0.3s ease;
+  will-change: transform;
+}
+
+.single-image-slider .swiper-button-prev::after,
+.single-image-slider .swiper-button-next::after {
+  font-size: 13px;
+  font-weight: 300;
+}
+
+/* .single-image-slider .swiper-button-prev:hover,
+.single-image-slider .swiper-button-next:hover {
+  background: linear-gradient(
+    135deg,
+    var(--color-accent-500),
+    var(--color-accent-700)
+  );
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 14px 32px rgba(2, 32, 71, 0.4);
+  transform: scale(1.12);
+} */
+
+.single-image-slider .swiper-button-prev:active,
+.single-image-slider .swiper-button-next:active {
+  transform: scale(0.94);
+}
+
+.single-image-slider .swiper-button-prev {
+  left: 14px;
+}
+
+.single-image-slider .swiper-button-next {
+  right: 14px;
+}
+
+.single-image-slider .swiper-button-disabled {
+  opacity: 0.35 !important;
+  cursor: not-allowed;
+  pointer-events: auto;
+}
+
+/* Pagination dots rendered below the image card */
+.single-image-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 24px;
+  padding-top: 14px;
+}
+
+.single-image-pagination:empty {
+  display: none;
+}
+
+.single-image-pagination .swiper-pagination-bullet {
+  width: 9px;
+  height: 9px;
+  border-radius: 9999px;
+  background: #cbd5e1;
+  opacity: 1;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.single-image-pagination .swiper-pagination-bullet:hover {
+  background: var(--color-accent-300);
+}
+
+.single-image-pagination .swiper-pagination-bullet-active {
+  width: 26px;
+  background: var(--color-accent-500);
 }
 
 /* React Toastify — brand-aligned notifications */
@@ -925,4 +1024,3 @@ button.nav-link-sweep::after {
     opacity: 1 !important;
   }
 }
-

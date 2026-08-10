@@ -33,7 +33,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { title, imageUrl, slug, category, client, location, projectDetails, isFeatured } = body;
+    const { title, imageUrl, slug, category, client, location, projectDetails, isFeatured, images } = body;
 
     if (!title || !slug) {
       return NextResponse.json(
@@ -46,6 +46,10 @@ export async function POST(request: Request) {
       ? await saveImage(imageUrl, "projects", 0)
       : "";
 
+    const savedImages = Array.isArray(images)
+      ? await Promise.all(images.map((img: string) => saveImage(img, "projects", 0)))
+      : [];
+
     const [newProject] = await db
       .insert(projects)
       .values({
@@ -57,6 +61,7 @@ export async function POST(request: Request) {
         client: client ?? "",
         location: location ?? "",
         projectDetails: projectDetails ?? "",
+        images: savedImages,
       })
       .returning();
 
@@ -81,7 +86,7 @@ export async function PUT(request: Request) {
     }
 
     const body = await request.json();
-    const { id, title, imageUrl, slug, category, client, location, projectDetails, isFeatured } = body;
+    const { id, title, imageUrl, slug, category, client, location, projectDetails, isFeatured, images } = body;
 
     if (!id) {
       return NextResponse.json(
@@ -115,6 +120,17 @@ export async function PUT(request: Request) {
     if (imageUrl && imageUrl !== existing.imageUrl) {
       updateData.imageUrl = await saveImage(imageUrl, "projects", id);
       await deleteImage(existing.imageUrl);
+    }
+
+    if (Array.isArray(images)) {
+      const existingImages = existing.images ?? [];
+      const removed = existingImages.filter((img) => !images.includes(img));
+      updateData.images = await Promise.all(
+        images.map((img: string) => saveImage(img, "projects", id)),
+      );
+      for (const img of removed) {
+        await deleteImage(img);
+      }
     }
 
     if (Object.keys(updateData).length === 0) {
@@ -162,6 +178,9 @@ export async function DELETE(request: Request) {
       .limit(1);
     if (existing) {
       await deleteImage(existing.imageUrl);
+      for (const img of existing.images ?? []) {
+        await deleteImage(img);
+      }
     }
 
     await db.delete(projects).where(eq(projects.id, Number(id)));

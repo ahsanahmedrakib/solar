@@ -1,5 +1,6 @@
 "use client";
 
+import ImageSlider from "@/components/Common/ImageSlider";
 import Reveal from "@/components/Common/Reveal";
 import RevealImage from "@/components/Common/RevealImage";
 import { DEFAULT_SERVICES, type Service } from "@/data/services";
@@ -78,14 +79,16 @@ export default function SingleService({ slug }: { slug: string }) {
               <>
                 <Reveal variant="fade-up">
                   <section className="flex flex-col gap-6">
-                    <RevealImage className="w-full h-64 sm:h-96 rounded-lg overflow-hidden shadow-md border border-gray-100">
-                      <div
-                        className="h-full w-full bg-cover bg-center"
-                        style={{
-                          backgroundImage: `url(${service.image})`,
-                        }}
-                      />
-                    </RevealImage>
+                    <div className="flex flex-col">
+                      <RevealImage className="w-full h-64 sm:h-96 rounded-lg overflow-hidden shadow-md border border-gray-100">
+                        <ImageSlider
+                          cover={service.image}
+                          images={service.images}
+                          alt={service.title}
+                        />
+                      </RevealImage>
+                      <div className="single-image-pagination" />
+                    </div>
                     <div
                       className="text-[#888888] text-sm leading-relaxed space-y-4"
                       dangerouslySetInnerHTML={{
