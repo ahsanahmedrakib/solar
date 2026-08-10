@@ -4,7 +4,7 @@ import type { Section } from "@/data/settings";
 import { DEFAULT_SECTIONS } from "@/data/settings";
 import { useQuerySettings } from "@/lib/queries";
 import { usePathname } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 
 interface ChatSettings {
   showWhatsapp: boolean;
@@ -109,205 +109,341 @@ export default function FloatingChatWidget() {
     [data],
   );
 
-  const [progress, setProgress] = useState(0);
-
-  useEffect(() => {
-    const update = () => {
-      const max =
-        document.documentElement.scrollHeight - window.innerHeight;
-      setProgress(max > 0 ? Math.min(1, window.scrollY / max) : 1);
-    };
-    update();
-    window.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", update);
-    return () => {
-      window.removeEventListener("scroll", update);
-      window.removeEventListener("resize", update);
-    };
-  }, []);
-
   const mounted = !settingsLoading;
 
   if (!mounted) return null;
   if (pathname?.startsWith("/admin")) return null;
-
+  if (
+    !settings.showWhatsapp &&
+    !settings.showMessenger &&
+    !settings.showFacebook &&
+    !settings.showLinkedin &&
+    !settings.showYoutube
+  )
+    return null;
   const waUrl = `https://wa.me/${settings.whatsappNumber}?text=${encodeURIComponent(settings.whatsappMessage)}`;
   const meUrl = `https://m.me/${settings.messengerUsername}`;
 
-  const socialIcons = [
-    {
-      key: "whatsapp",
-      show: settings.showWhatsapp,
-      href: waUrl,
-      title: "Chat on WhatsApp",
-      label: "WhatsApp Us",
-      background: "#25D366",
-      Icon: WhatsAppIcon,
-    },
-    {
-      key: "messenger",
-      show: settings.showMessenger,
-      href: meUrl,
-      title: "Chat on Messenger",
-      label: "Messenger",
-      background: "#0084FF",
-      Icon: MessengerIcon,
-    },
-    {
-      key: "facebook",
-      show: settings.showFacebook,
-      href: settings.facebookUrl,
-      title: "Visit our Facebook page",
-      label: "Facebook",
-      background: "#1877F2",
-      Icon: FacebookIcon,
-    },
-    {
-      key: "linkedin",
-      show: settings.showLinkedin,
-      href: settings.linkedinUrl,
-      title: "Visit our LinkedIn page",
-      label: "LinkedIn",
-      background: "#0A66C2",
-      Icon: LinkedInIcon,
-    },
-    {
-      key: "youtube",
-      show: settings.showYoutube,
-      href: settings.youtubeUrl,
-      title: "Subscribe to our YouTube channel",
-      label: "YouTube",
-      background: "#FF0000",
-      Icon: YouTubeIcon,
-    },
-  ].filter((icon) => icon.show && icon.href.trim());
-
-  if (socialIcons.length === 0) return null;
-
-  const count = socialIcons.length;
-
   return (
-    <div
-      className="chat-widget-in"
-      style={{
-        position: "fixed",
-        right: "15px",
-        top: "50%",
-        zIndex: 50,
-      }}
-    >
-      <div style={{ transform: "translateY(-50%)" }}>
-        <div className="flex flex-col items-end gap-3">
-          <div className="flex flex-col gap-2">
-            {socialIcons.map((icon, index) => {
-              const revealed = progress >= (index + 1) / (count + 1);
-              return (
-                <div
-                  key={icon.key}
-                  style={{
-                    position: "relative",
-                    opacity: revealed ? 1 : 0,
-                    transform: revealed
-                      ? "translateY(0) scale(1)"
-                      : "translateY(16px) scale(0.6)",
-                    transition:
-                      "opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1), transform 0.45s cubic-bezier(0.22, 1, 0.36, 1)",
-                    pointerEvents: revealed ? "auto" : "none",
-                  }}
-                  className="group"
-                >
-                  <a
-                    href={icon.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{
-                      width: "40px",
-                      height: "40px",
-                      borderRadius: "50%",
-                      background: icon.background,
-                      color: "#fff",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      textDecoration: "none",
-                      transition: "transform 0.2s",
-                    }}
-                    onMouseEnter={(e) =>
-                      (e.currentTarget.style.transform = "scale(1.12)")
-                    }
-                    onMouseLeave={(e) =>
-                      (e.currentTarget.style.transform = "scale(1)")
-                    }
-                    title={icon.title}
-                  >
-                    <icon.Icon />
-                  </a>
-                  <span
-                    className="group-hover:opacity-100"
-                    style={{
-                      position: "absolute",
-                      right: "calc(100% + 10px)",
-                      top: "50%",
-                      transform: "translateY(-50%)",
-                      background: "#1e293b",
-                      color: "#fff",
-                      fontSize: "11px",
-                      fontWeight: 600,
-                      padding: "4px 10px",
-                      borderRadius: "6px",
-                      whiteSpace: "nowrap",
-                      opacity: 0,
-                      transition: "opacity 0.2s",
-                      pointerEvents: "none",
-                    }}
-                  >
-                    {icon.label}
-                  </span>
-                </div>
-              );
-            })}
-
-            <button
-              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-              style={{
-                width: "30px",
-                height: "30px",
-                borderRadius: "50%",
-                background: "#1e293b",
-                color: "#fff",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                boxShadow: "0 4px 16px rgba(0,0,0,0.25)",
-                border: "none",
-                cursor: "pointer",
-                transition: "transform 0.2s",
-                marginLeft: "4px",
-              }}
-              className="chat-btn-pop"
-              onMouseEnter={(e) =>
-                (e.currentTarget.style.transform = "scale(1.12)")
-              }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.transform = "scale(1)")
-              }
-              title="Back to top"
+    <>
+      <div
+        style={{ position: "fixed", bottom: "15px", right: "15px", zIndex: 50 }}
+        className="chat-widget-in flex flex-col items-end gap-3"
+      >
+        <div className="chat-idle flex flex-col gap-2">
+          <button
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            style={{
+              width: "30px",
+              height: "30px",
+              borderRadius: "50%",
+              background: "#1e293b",
+              color: "#fff",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              boxShadow: "0 4px 16px rgba(0,0,0,0.25)",
+              border: "none",
+              cursor: "pointer",
+              transition: "transform 0.2s",
+              marginLeft: "4px",
+              animationDelay: "0.05s",
+            }}
+            className="chat-btn-pop"
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.transform = "scale(1.12)")
+            }
+            onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            title="Back to top"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2.5}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="w-5 h-5"
             >
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={2.5}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="w-5 h-5"
+              <path d="M18 15l-6-6-6 6" />
+            </svg>
+          </button>
+
+          {settings.showWhatsapp && (
+            <div
+              style={{ position: "relative", animationDelay: "0.15s" }}
+              className="chat-btn-pop group"
+            >
+              <a
+                href={waUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  width: "40px",
+                  height: "40px",
+                  borderRadius: "50%",
+                  background: "#25D366",
+                  color: "#fff",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  textDecoration: "none",
+                  transition: "transform 0.2s",
+                }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.transform = "scale(1.12)")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.transform = "scale(1)")
+                }
+                title="Chat on WhatsApp"
               >
-                <path d="M18 15l-6-6-6 6" />
-              </svg>
-            </button>
-          </div>
+                <WhatsAppIcon />
+              </a>
+              <span
+                className="group-hover:opacity-100"
+                style={{
+                  position: "absolute",
+                  right: "calc(100% + 10px)",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  background: "#1e293b",
+                  color: "#fff",
+                  fontSize: "11px",
+                  fontWeight: 600,
+                  padding: "4px 10px",
+                  borderRadius: "6px",
+                  whiteSpace: "nowrap",
+                  opacity: 0,
+                  transition: "opacity 0.2s",
+                  pointerEvents: "none",
+                }}
+              >
+                WhatsApp Us
+              </span>
+            </div>
+          )}
+
+          {settings.showMessenger && (
+            <div
+              style={{ position: "relative", animationDelay: "0.25s" }}
+              className="chat-btn-pop group"
+            >
+              <a
+                href={meUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  width: "40px",
+                  height: "40px",
+                  borderRadius: "50%",
+                  background: "#0084FF",
+                  color: "#fff",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  textDecoration: "none",
+                  transition: "transform 0.2s",
+                }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.transform = "scale(1.12)")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.transform = "scale(1)")
+                }
+                title="Chat on Messenger"
+              >
+                <MessengerIcon />
+              </a>
+              <span
+                className="group-hover:opacity-100"
+                style={{
+                  position: "absolute",
+                  right: "calc(100% + 10px)",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  background: "#1e293b",
+                  color: "#fff",
+                  fontSize: "11px",
+                  fontWeight: 600,
+                  padding: "4px 10px",
+                  borderRadius: "6px",
+                  whiteSpace: "nowrap",
+                  opacity: 0,
+                  transition: "opacity 0.2s",
+                  pointerEvents: "none",
+                }}
+              >
+                Messenger
+              </span>
+            </div>
+          )}
+          {settings.showFacebook && settings.facebookUrl.trim() && (
+            <div
+              style={{ position: "relative", animationDelay: "0.35s" }}
+              className="chat-btn-pop group"
+            >
+              <a
+                href={settings.facebookUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  width: "40px",
+                  height: "40px",
+                  borderRadius: "50%",
+                  background: "#1877F2",
+                  color: "#fff",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  textDecoration: "none",
+                  transition: "transform 0.2s",
+                }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.transform = "scale(1.12)")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.transform = "scale(1)")
+                }
+                title="Visit our Facebook page"
+              >
+                <FacebookIcon />
+              </a>
+              <span
+                className="group-hover:opacity-100"
+                style={{
+                  position: "absolute",
+                  right: "calc(100% + 10px)",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  background: "#1e293b",
+                  color: "#fff",
+                  fontSize: "11px",
+                  fontWeight: 600,
+                  padding: "4px 10px",
+                  borderRadius: "6px",
+                  whiteSpace: "nowrap",
+                  opacity: 0,
+                  transition: "opacity 0.2s",
+                  pointerEvents: "none",
+                }}
+              >
+                Facebook
+              </span>
+            </div>
+          )}
+
+          {settings.showLinkedin && settings.linkedinUrl.trim() && (
+            <div
+              style={{ position: "relative", animationDelay: "0.45s" }}
+              className="chat-btn-pop group"
+            >
+              <a
+                href={settings.linkedinUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  width: "40px",
+                  height: "40px",
+                  borderRadius: "50%",
+                  background: "#0A66C2",
+                  color: "#fff",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  textDecoration: "none",
+                  transition: "transform 0.2s",
+                }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.transform = "scale(1.12)")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.transform = "scale(1)")
+                }
+                title="Visit our LinkedIn page"
+              >
+                <LinkedInIcon />
+              </a>
+              <span
+                className="group-hover:opacity-100"
+                style={{
+                  position: "absolute",
+                  right: "calc(100% + 10px)",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  background: "#1e293b",
+                  color: "#fff",
+                  fontSize: "11px",
+                  fontWeight: 600,
+                  padding: "4px 10px",
+                  borderRadius: "6px",
+                  whiteSpace: "nowrap",
+                  opacity: 0,
+                  transition: "opacity 0.2s",
+                  pointerEvents: "none",
+                }}
+              >
+                LinkedIn
+              </span>
+            </div>
+          )}
+
+          {settings.showYoutube && settings.youtubeUrl.trim() && (
+            <div
+              style={{ position: "relative", animationDelay: "0.55s" }}
+              className="chat-btn-pop group"
+            >
+              <a
+                href={settings.youtubeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  width: "40px",
+                  height: "40px",
+                  borderRadius: "50%",
+                  background: "#FF0000",
+                  color: "#fff",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  textDecoration: "none",
+                  transition: "transform 0.2s",
+                }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.transform = "scale(1.12)")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.transform = "scale(1)")
+                }
+                title="Subscribe to our YouTube channel"
+              >
+                <YouTubeIcon />
+              </a>
+              <span
+                className="group-hover:opacity-100"
+                style={{
+                  position: "absolute",
+                  right: "calc(100% + 10px)",
+                  top: "50%",
+                  transform: "translateY(-50%)",
+                  background: "#1e293b",
+                  color: "#fff",
+                  fontSize: "11px",
+                  fontWeight: 600,
+                  padding: "4px 10px",
+                  borderRadius: "6px",
+                  whiteSpace: "nowrap",
+                  opacity: 0,
+                  transition: "opacity 0.2s",
+                  pointerEvents: "none",
+                }}
+              >
+                YouTube
+              </span>
+            </div>
+          )}
         </div>
       </div>
-    </div>
+    </>
   );
 }
