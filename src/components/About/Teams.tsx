@@ -78,7 +78,7 @@ export default function Teams() {
                 key={index}
                 variant="fade-up"
                 delay={(index % 3) * 120}
-                className="group flex flex-col overflow-hidden rounded-lg bg-white transition-all duration-300 hover:shadow-md"
+                className="group flex flex-col overflow-hidden rounded-lg bg-secondary border border-accent-500 transition-all duration-300 hover:shadow-md"
               >
                 {/* Profile Image Container */}
                 <div className="relative aspect-4/3 w-full overflow-hidden p-4 pb-0">
@@ -118,7 +118,7 @@ export default function Teams() {
                             href={url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex h-10 w-10 items-center justify-center rounded-full border border-accent-500 transition-colors"
+                            className="flex h-10 w-10 items-center justify-center transition-colors"
                           >
                             {SOCIAL_ICONS[platform]}
                           </Link>
@@ -135,4 +135,3 @@ export default function Teams() {
     </section>
   );
 }
-

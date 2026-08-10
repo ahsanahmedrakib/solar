@@ -15,7 +15,7 @@ export const DEFAULT_PROJECTS: Project[] = [
   {
     id: 1,
     title: "Rooftop Solar Installation for Residential Homes",
-    imageUrl: "/images/projects/project-1.jpg",
+    imageUrl: "/images/aheadsolar/project-1.jpg",
     slug: "rooftop-solar-installation-for-residential-homes",
     category: "Residential Solar",
     isFeatured: false,
@@ -29,7 +29,7 @@ export const DEFAULT_PROJECTS: Project[] = [
   {
     id: 2,
     title: "Industrial Solar Power Installation Manufacturing Unit",
-    imageUrl: "/images/projects/project-2.jpg",
+    imageUrl: "/images/aheadsolar/project-2.jpg",
     slug: "industrial-solar-power-installation-manufacturing-unit",
     category: "Industrial Solar",
     isFeatured: false,
@@ -43,7 +43,7 @@ export const DEFAULT_PROJECTS: Project[] = [
   {
     id: 3,
     title: "Sustainable Solar Energy Project for Communities",
-    imageUrl: "/images/projects/project-3.jpg",
+    imageUrl: "/images/aheadsolar/project-3.jpg",
     slug: "sustainable-solar-energy-project-for-communities",
     category: "Community Solar",
     isFeatured: false,
@@ -57,7 +57,7 @@ export const DEFAULT_PROJECTS: Project[] = [
   {
     id: 4,
     title: "Commercial Solar Plant for Office Building",
-    imageUrl: "/images/projects/project-4.jpg",
+    imageUrl: "/images/aheadsolar/project-4.jpg",
     slug: "commercial-solar-plant-for-office-building",
     category: "Commercial Solar",
     isFeatured: false,
@@ -71,7 +71,7 @@ export const DEFAULT_PROJECTS: Project[] = [
   {
     id: 5,
     title: "Solar Installation for Educational Institute",
-    imageUrl: "/images/projects/project-5.jpg",
+    imageUrl: "/images/aheadsolar/project-5.jpg",
     slug: "solar-installation-for-educational-institute",
     category: "Community Solar",
     isFeatured: false,
@@ -85,7 +85,7 @@ export const DEFAULT_PROJECTS: Project[] = [
   {
     id: 6,
     title: "Hybrid Solar System for Hospital Facility",
-    imageUrl: "/images/projects/project-6.jpg",
+    imageUrl: "/images/aheadsolar/project-6.jpg",
     slug: "hybrid-solar-system-for-hospital-facility",
     category: "Commercial Solar",
     isFeatured: false,
@@ -97,4 +97,3 @@ export const DEFAULT_PROJECTS: Project[] = [
       "<p>A hybrid solar system installed at a hospital facility, ensuring uninterrupted power supply for critical medical operations. The system combines solar panels with battery storage for reliable backup power.</p><p>This installation guarantees that essential equipment remains operational during grid outages, providing peace of mind for patients and staff.</p>",
   },
 ];
-

@@ -4,7 +4,7 @@ import Reveal from "@/components/Common/Reveal";
 import { apiClient } from "@/lib/apiClient";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useState } from "react";
-import { useForm, useController, type Resolver } from "react-hook-form";
+import { useController, useForm, type Resolver } from "react-hook-form";
 import { toast } from "react-toastify";
 import * as yup from "yup";
 
@@ -110,11 +110,11 @@ function SectionHeading({
 }) {
   return (
     <div className="flex items-center gap-3">
-      <span className="w-9 h-9 shrink-0 rounded-full bg-accent-500 text-white font-heading font-bold text-base flex items-center justify-center">
+      <span className="w-9 h-9 shrink-0 rounded-full bg-forest-500 text-white font-heading font-bold text-base flex items-center justify-center">
         {step}
       </span>
       <div>
-        <h3 className="font-heading text-xl font-bold text-accent-500 tracking-tight">
+        <h3 className="font-heading text-xl font-bold text-forest-500 tracking-tight">
           {title}
         </h3>
         <p className="text-sm text-[#888888] font-medium">{bangla}</p>
@@ -195,9 +195,9 @@ export default function DealershipForm() {
             <span className="section-eyebrow">Become a Partner</span>
           </Reveal>
           <Reveal variant="fade-up" delay={100}>
-            <h2 className="font-heading text-3xl sm:text-4xl lg:text-[52px] font-bold text-accent-500 tracking-tight leading-[1.1]">
+            <h2 className="font-heading text-3xl sm:text-4xl lg:text-[52px] font-bold text-forest-500 tracking-tight leading-[1.1]">
               Dealership & Partner{" "}
-              <span className="text-accent-500">Application Form</span>
+              <span className="text-forest-500">Application Form</span>
             </h2>
           </Reveal>
           <Reveal variant="fade-up" delay={180}>
@@ -227,7 +227,7 @@ export default function DealershipForm() {
             className="max-w-5xl mx-auto bg-secondary rounded-2xl p-6 sm:p-10 shadow-sm"
           >
             {isSubmitted && (
-              <div className="bg-accent-500/15 text-accent-500 p-4 rounded-lg text-base font-medium border border-accent-500/40 mb-8 flex items-center gap-2 transition-all">
+              <div className="bg-accent-500/15 text-forest-500 p-4 rounded-lg text-base font-medium border border-accent-500/40 mb-8 flex items-center gap-2 transition-all">
                 <svg
                   className="w-5 h-5 shrink-0 text-accent-600"
                   fill="currentColor"
@@ -255,7 +255,7 @@ export default function DealershipForm() {
               />
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-6">
                 <div className="flex flex-col gap-2">
-                  <label className="text-accent-500 text-sm font-bold tracking-wide">
+                  <label className="text-forest-500 text-sm font-bold tracking-wide">
                     Full Name / আপনার সম্পূর্ণ নাম*
                   </label>
                   <input
@@ -268,7 +268,7 @@ export default function DealershipForm() {
                 </div>
 
                 <div className="flex flex-col gap-2">
-                  <label className="text-accent-500 text-sm font-bold tracking-wide">
+                  <label className="text-forest-500 text-sm font-bold tracking-wide">
                     Business / Shop Name / ব্যবসা বা দোকানের নাম
                   </label>
                   <input
@@ -281,7 +281,7 @@ export default function DealershipForm() {
                 </div>
 
                 <div className="flex flex-col gap-2">
-                  <label className="text-accent-500 text-sm font-bold tracking-wide">
+                  <label className="text-forest-500 text-sm font-bold tracking-wide">
                     Mobile Number / মোবাইল নম্বর*
                   </label>
                   <input
@@ -294,7 +294,7 @@ export default function DealershipForm() {
                 </div>
 
                 <div className="flex flex-col gap-2">
-                  <label className="text-accent-500 text-sm font-bold tracking-wide">
+                  <label className="text-forest-500 text-sm font-bold tracking-wide">
                     WhatsApp Number / হোয়াটসঅ্যাপ নম্বর
                   </label>
                   <input
@@ -307,7 +307,7 @@ export default function DealershipForm() {
                 </div>
 
                 <div className="flex flex-col gap-2 sm:col-span-2">
-                  <label className="text-accent-500 text-sm font-bold tracking-wide">
+                  <label className="text-forest-500 text-sm font-bold tracking-wide">
                     Email Address (Optional) / ইমেইল ঠিকানা (ঐচ্ছিক)
                   </label>
                   <input
@@ -330,7 +330,7 @@ export default function DealershipForm() {
               />
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-6">
                 <div className="flex flex-col gap-2">
-                  <label className="text-accent-500 text-sm font-bold tracking-wide">
+                  <label className="text-forest-500 text-sm font-bold tracking-wide">
                     District / জেলা*
                   </label>
                   <input
@@ -343,7 +343,7 @@ export default function DealershipForm() {
                 </div>
 
                 <div className="flex flex-col gap-2">
-                  <label className="text-accent-500 text-sm font-bold tracking-wide">
+                  <label className="text-forest-500 text-sm font-bold tracking-wide">
                     Thana / Upazila / থানা / উপজেলা*
                   </label>
                   <input
@@ -356,7 +356,7 @@ export default function DealershipForm() {
                 </div>
 
                 <div className="flex flex-col gap-2 sm:col-span-2">
-                  <label className="text-accent-500 text-sm font-bold tracking-wide">
+                  <label className="text-forest-500 text-sm font-bold tracking-wide">
                     Full Shop / Garage Address / শপ / গ্যারেজের সম্পূর্ণ ঠিকানা*
                   </label>
                   <textarea
@@ -379,7 +379,7 @@ export default function DealershipForm() {
               />
               <div className="mt-6 space-y-6">
                 <div className="flex flex-col gap-3">
-                  <p className="text-accent-500 text-sm font-bold tracking-wide">
+                  <p className="text-forest-500 text-sm font-bold tracking-wide">
                     Which service are you interested in? / আপনি কোন ধরনের
                     ডিলারশিপ নিতে আগ্রহী?*
                   </p>
@@ -393,9 +393,7 @@ export default function DealershipForm() {
                       <label
                         key={option.value}
                         className={`flex items-center gap-3 cursor-pointer group ${
-                          isDisabled
-                            ? "opacity-50 cursor-not-allowed"
-                            : ""
+                          isDisabled ? "opacity-50 cursor-not-allowed" : ""
                         }`}
                       >
                         <input
@@ -422,13 +420,11 @@ export default function DealershipForm() {
                             }
                             servicesField.onChange(next);
                           }}
-                          className="w-4 h-4 rounded border-gray-300 text-accent-500 focus:ring-accent-500 cursor-pointer"
+                          className="w-4 h-4 rounded border-gray-300 text-forest-500 focus:ring-accent-500 cursor-pointer"
                         />
-                        <span className="text-base text-[#888888] font-medium group-hover:text-accent-500 transition-colors">
+                        <span className="text-base text-[#888888] font-medium group-hover:text-forest-500 transition-colors">
                           {option.label} -{" "}
-                          <span className="font-semibold">
-                            {option.bangla}
-                          </span>
+                          <span className="font-semibold">{option.bangla}</span>
                         </span>
                       </label>
                     );
@@ -437,7 +433,7 @@ export default function DealershipForm() {
                 </div>
 
                 <div className="flex flex-col gap-3">
-                  <p className="text-accent-500 text-sm font-bold tracking-wide">
+                  <p className="text-forest-500 text-sm font-bold tracking-wide">
                     Do you currently have a business related to easy-bikes or
                     batteries? / ইজি-বাইক বা ব্যাটারি সংক্রান্ত বর্তমানে আপনার
                     কোনো ব্যবসা আছে কি?*
@@ -447,12 +443,12 @@ export default function DealershipForm() {
                       <input
                         type="radio"
                         value="yes"
-                        className="w-4 h-4 border-gray-300 text-accent-500 focus:ring-accent-500 cursor-pointer"
+                        className="w-4 h-4 border-gray-300 text-forest-500 focus:ring-accent-500 cursor-pointer"
                         {...register("hasBusiness", {
                           onChange: (e) => setHasBusiness(e.target.value),
                         })}
                       />
-                      <span className="text-base text-[#888888] font-medium group-hover:text-accent-500 transition-colors">
+                      <span className="text-base text-[#888888] font-medium group-hover:text-forest-500 transition-colors">
                         Yes / হ্যাঁ
                       </span>
                     </label>
@@ -460,12 +456,12 @@ export default function DealershipForm() {
                       <input
                         type="radio"
                         value="no"
-                        className="w-4 h-4 border-gray-300 text-accent-500 focus:ring-accent-500 cursor-pointer"
+                        className="w-4 h-4 border-gray-300 text-forest-500 focus:ring-accent-500 cursor-pointer"
                         {...register("hasBusiness", {
                           onChange: (e) => setHasBusiness(e.target.value),
                         })}
                       />
-                      <span className="text-base text-[#888888] font-medium group-hover:text-accent-500 transition-colors">
+                      <span className="text-base text-[#888888] font-medium group-hover:text-forest-500 transition-colors">
                         No, I am a new investor / না, আমি নতুন ব্যবসা শুরু করতে
                         চাই
                       </span>
@@ -476,7 +472,7 @@ export default function DealershipForm() {
 
                 {hasBusiness === "yes" && (
                   <div className="flex flex-col gap-2">
-                    <label className="text-accent-500 text-sm font-bold tracking-wide">
+                    <label className="text-forest-500 text-sm font-bold tracking-wide">
                       Years of Experience / এই ব্যবসায় কত বছরের অভিজ্ঞতা আছে?
                     </label>
                     <input
@@ -500,7 +496,7 @@ export default function DealershipForm() {
               />
               <div className="mt-6 space-y-6">
                 <div className="flex flex-col gap-3">
-                  <p className="text-accent-500 text-sm font-bold tracking-wide">
+                  <p className="text-forest-500 text-sm font-bold tracking-wide">
                     Do you have an existing space / garage for the charging
                     station or battery stock? / চার্জিং স্টেশন বা ব্যাটারি
                     মজুতের জন্য আপনার কি জায়গা / গ্যারেজ আছে?*
@@ -510,10 +506,10 @@ export default function DealershipForm() {
                       <input
                         type="radio"
                         value="own"
-                        className="w-4 h-4 border-gray-300 text-accent-500 focus:ring-accent-500 cursor-pointer"
+                        className="w-4 h-4 border-gray-300 text-forest-500 focus:ring-accent-500 cursor-pointer"
                         {...register("space")}
                       />
-                      <span className="text-base text-[#888888] font-medium group-hover:text-accent-500 transition-colors">
+                      <span className="text-base text-[#888888] font-medium group-hover:text-forest-500 transition-colors">
                         Yes, I have my own space / হ্যাঁ, আমার নিজস্ব জায়গা আছে
                       </span>
                     </label>
@@ -521,10 +517,10 @@ export default function DealershipForm() {
                       <input
                         type="radio"
                         value="rented"
-                        className="w-4 h-4 border-gray-300 text-accent-500 focus:ring-accent-500 cursor-pointer"
+                        className="w-4 h-4 border-gray-300 text-forest-500 focus:ring-accent-500 cursor-pointer"
                         {...register("space")}
                       />
-                      <span className="text-base text-[#888888] font-medium group-hover:text-accent-500 transition-colors">
+                      <span className="text-base text-[#888888] font-medium group-hover:text-forest-500 transition-colors">
                         Yes, I have a rented space / হ্যাঁ, ভাড়া করা জায়গা আছে
                       </span>
                     </label>
@@ -532,10 +528,10 @@ export default function DealershipForm() {
                       <input
                         type="radio"
                         value="looking"
-                        className="w-4 h-4 border-gray-300 text-accent-500 focus:ring-accent-500 cursor-pointer"
+                        className="w-4 h-4 border-gray-300 text-forest-500 focus:ring-accent-500 cursor-pointer"
                         {...register("space")}
                       />
-                      <span className="text-base text-[#888888] font-medium group-hover:text-accent-500 transition-colors">
+                      <span className="text-base text-[#888888] font-medium group-hover:text-forest-500 transition-colors">
                         No, I am looking for a space / না, আমি জায়গা খুঁজছি
                       </span>
                     </label>
@@ -544,7 +540,7 @@ export default function DealershipForm() {
                 </div>
 
                 <div className="flex flex-col gap-2">
-                  <label className="text-accent-500 text-sm font-bold tracking-wide">
+                  <label className="text-forest-500 text-sm font-bold tracking-wide">
                     Additional Questions or Comments / আরও কোনো প্রশ্ন বা
                     মন্তব্য
                   </label>
@@ -566,7 +562,7 @@ export default function DealershipForm() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="btn-brand disabled:bg-gray-400 text-base font-semibold px-8 py-3.5 rounded-full shadow-md transition-colors duration-200 cursor-pointer disabled:cursor-not-allowed"
+                className="bg-forest-500 text-white disabled:bg-gray-400 text-base font-semibold px-8 py-3.5 rounded-full shadow-md transition-colors duration-200 cursor-pointer disabled:cursor-not-allowed"
               >
                 {isSubmitting
                   ? "Submitting... / জমা হচ্ছে..."
@@ -579,4 +575,3 @@ export default function DealershipForm() {
     </section>
   );
 }
-

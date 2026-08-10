@@ -26,7 +26,7 @@ const WhyChooseUs: React.FC = () => {
               <p className="text-[#888888] text-sm sm:text-base font-normal leading-relaxed max-w-xl">
                 We deliver complete solar solutions — from system design and
                 engineering to installation and ongoing maintenance — backed by
-                16+ years of experience serving Bangladesh&apos;s top industrial
+                06+ years of experience serving Bangladesh&apos;s top industrial
                 sectors.
               </p>
             </Reveal>
@@ -85,7 +85,7 @@ const WhyChooseUs: React.FC = () => {
                   </div>
                   <div className="border-l border-gray-200 pl-4 sm:pl-6">
                     <h3 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-bold text-accent-500 tracking-tight">
-                      16+
+                      06+
                     </h3>
                     <p className="text-[11px] sm:text-xs text-[#888888] font-medium mt-1">
                       Years In Solar Business
@@ -180,4 +180,3 @@ const WhyChooseUs: React.FC = () => {
 };
 
 export default WhyChooseUs;
-

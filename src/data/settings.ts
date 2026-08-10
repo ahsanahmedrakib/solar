@@ -192,7 +192,7 @@ export const DEFAULT_SECTIONS: Section[] = [
       {
         label: "Twitter / X Profile URL",
         type: "url",
-        value: "",
+        value: "vfdb",
         id: "social-x",
       },
       {
@@ -204,13 +204,13 @@ export const DEFAULT_SECTIONS: Section[] = [
       {
         label: "Instagram Profile URL",
         type: "url",
-        value: "",
+        value: "dbb",
         id: "social-ig",
       },
       {
         label: "YouTube Channel URL",
         type: "url",
-        value: "",
+        value: "db",
         id: "social-youtube",
       },
       {

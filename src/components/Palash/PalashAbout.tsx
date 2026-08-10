@@ -94,9 +94,7 @@ export default function PalashAbout() {
 
         <div className="lg:col-span-6">
           <Reveal variant="slide-right" delay={150}>
-            <div className="relative bg-forest-900 rounded-lg overflow-hidden shadow-xl p-6">
-              <div className="absolute inset-0 bg-linear-to-br from-accent-500/10 via-transparent to-transparent pointer-events-none" />
-
+            <div className="relative bg-forest-700 rounded-lg overflow-hidden shadow-xl p-6">
               <Reveal variant="fade-up" delay={180} className="w-full">
                 <div className="relative flex flex-col items-center text-center gap-8">
                   <div className="bg-white rounded-lg p-2 shadow-lg">

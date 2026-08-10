@@ -32,7 +32,7 @@ function extractContactInfo(sections: Section[]): ContactInfo {
     email: getValue("contact-email"),
     address: getValue("hq-address"),
     mapUrl: getSocialValue("google-map"),
-    imageUrl: "/images/contact/contact-us-img.jpg",
+    imageUrl: "/images/aheadsolar/about-2.jpg",
   };
 }
 
@@ -148,7 +148,7 @@ export default function GetInTouch() {
             <>
               <div>
                 <div
-                  className="w-full h-56 rounded-[24px] overflow-hidden bg-cover bg-center mb-8 border border-white/10"
+                  className="w-full h-56 rounded-3xl overflow-hidden bg-cover bg-center mb-8 border border-white/10"
                   style={{ backgroundImage: `url('${info.imageUrl}')` }}
                 />
 
@@ -160,7 +160,7 @@ export default function GetInTouch() {
 
                 <div className="flex flex-col gap-6">
                   <div className="flex items-center gap-4">
-                    <div className="w-11 h-11 shrink-0 rounded-full bg-accent-500 text-accent-500 flex items-center justify-center">
+                    <div className="w-11 h-11 shrink-0 rounded-full bg-accent-500 text-white flex items-center justify-center">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
@@ -187,7 +187,7 @@ export default function GetInTouch() {
                   </div>
 
                   <div className="flex items-center gap-4">
-                    <div className="w-11 h-11 shrink-0 rounded-full bg-accent-500 text-accent-500 flex items-center justify-center">
+                    <div className="w-11 h-11 shrink-0 rounded-full bg-accent-500 text-white flex items-center justify-center">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
@@ -214,7 +214,7 @@ export default function GetInTouch() {
                   </div>
 
                   <div className="flex items-center gap-4">
-                    <div className="w-11 h-11 shrink-0 rounded-full bg-accent-500 text-accent-500 flex items-center justify-center">
+                    <div className="w-11 h-11 shrink-0 rounded-full bg-accent-500 text-white flex items-center justify-center">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
@@ -266,7 +266,7 @@ export default function GetInTouch() {
           </p>
 
           {isSubmitted && (
-            <div className="bg-accent-500/15 text-accent-500 p-4 rounded-[14px] text-sm font-medium border border-accent-500/40 mb-6 flex items-center gap-2 transition-all">
+            <div className="bg-accent-500/15 text-accent-500 p-4 rounded-lg text-sm font-medium border border-accent-500/40 mb-6 flex items-center gap-2 transition-all">
               <svg
                 className="w-5 h-5 shrink-0 text-accent-600"
                 fill="currentColor"
@@ -297,7 +297,7 @@ export default function GetInTouch() {
                 <input
                   type="text"
                   placeholder="Enter First Name"
-                  className={`w-full bg-white px-4 py-3 rounded-[14px] border ${
+                  className={`w-full bg-white px-4 py-3 rounded-lg border ${
                     errors.firstName ? "border-red-500" : "border-transparent"
                   } outline-none placeholder-gray-400 text-sm focus:ring-2 ${
                     errors.firstName
@@ -319,7 +319,7 @@ export default function GetInTouch() {
                 <input
                   type="text"
                   placeholder="Enter Last Name"
-                  className={`w-full bg-white px-4 py-3 rounded-[14px] border ${
+                  className={`w-full bg-white px-4 py-3 rounded-lg border ${
                     errors.lastName ? "border-red-500" : "border-transparent"
                   } outline-none placeholder-gray-400 text-sm focus:ring-2 ${
                     errors.lastName
@@ -344,7 +344,7 @@ export default function GetInTouch() {
                 <input
                   type="tel"
                   placeholder="Enter Phone Number"
-                  className={`w-full bg-white px-4 py-3 rounded-[14px] border ${
+                  className={`w-full bg-white px-4 py-3 rounded-lg border ${
                     errors.phoneNumber ? "border-red-500" : "border-transparent"
                   } outline-none placeholder-gray-400 text-sm focus:ring-2 ${
                     errors.phoneNumber
@@ -366,7 +366,7 @@ export default function GetInTouch() {
                 <input
                   type="email"
                   placeholder="Enter Email Address"
-                  className={`w-full bg-white px-4 py-3 rounded-[14px] border ${
+                  className={`w-full bg-white px-4 py-3 rounded-lg border ${
                     errors.emailAddress
                       ? "border-red-500"
                       : "border-transparent"
@@ -392,7 +392,7 @@ export default function GetInTouch() {
               <textarea
                 rows={5}
                 placeholder="Any Message..."
-                className={`w-full bg-white px-4 py-3 rounded-[14px] border ${
+                className={`w-full bg-white px-4 py-3 rounded-lg border ${
                   errors.message ? "border-red-500" : "border-transparent"
                 } outline-none placeholder-gray-400 text-sm resize-none focus:ring-2 ${
                   errors.message
@@ -423,4 +423,3 @@ export default function GetInTouch() {
     </div>
   );
 }
-

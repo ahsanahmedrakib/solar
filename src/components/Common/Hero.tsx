@@ -43,7 +43,13 @@ function AnimatedWords({
   );
 }
 
-export default function Hero({ site = "ahead" }: { site?: HeroSite }) {
+export default function Hero({
+  site = "ahead",
+  video,
+}: {
+  site?: HeroSite;
+  video?: string;
+}) {
   const { data: rawSlides = [], isFetching: loading } =
     useQueryHeroSlides(site);
   const [activeVideo, setActiveVideo] = useState<string | null>(null);
@@ -65,7 +71,7 @@ export default function Hero({ site = "ahead" }: { site?: HeroSite }) {
     return fallbackSlides;
   }, [rawSlides, fallbackSlides]);
 
-  const heroVideo = defaultVideo;
+  const heroVideo = video ?? defaultVideo;
 
   if (loading) {
     return (
@@ -87,6 +93,23 @@ export default function Hero({ site = "ahead" }: { site?: HeroSite }) {
             </div>
           </div>
         </div>
+      </div>
+    );
+  }
+
+  if (video) {
+    return (
+      <div className="w-full relative min-h-187.5 overflow-hidden select-none">
+        <div className="absolute inset-0 bg-linear-to-r from-forest-900/30 via-forest-900/30 to-forest-900/30 z-10" />
+        <video
+          className="absolute inset-0 w-full h-full object-cover"
+          src={heroVideo}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+        />
       </div>
     );
   }

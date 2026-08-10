@@ -226,7 +226,7 @@ export default function Footer() {
                               href={platform.href}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="w-10 h-10 rounded-xl flex items-center justify-center transition-all border border-white/80"
+                              className="w-10 h-10 rounded-xl flex items-center justify-center transition-all"
                               aria-label={platform.label}
                             >
                               {SOCIAL_ICONS[platform.label]}

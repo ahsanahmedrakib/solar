@@ -31,7 +31,8 @@ function RotatingBadge() {
               textLength={239}
               lengthAdjust="spacingAndGlyphs"
             >
-              Ahead Solar Ltd&nbsp;&bull;&nbsp;Sunshine To Electricity&nbsp;&bull;&nbsp;
+              Ahead Solar Ltd&nbsp;&bull;&nbsp;Sunshine To
+              Electricity&nbsp;&bull;&nbsp;
             </textPath>
           </text>
         </svg>
@@ -91,7 +92,7 @@ export default function About() {
           >
             <div className="animate-float flex flex-col items-center">
               <h3 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-1 text-white">
-                16+
+                06+
               </h3>
               <p className="text-xs sm:text-sm text-white/70 font-semibold leading-snug">
                 Years In
@@ -279,4 +280,3 @@ export default function About() {
     </section>
   );
 }
-

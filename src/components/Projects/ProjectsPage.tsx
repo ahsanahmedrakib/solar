@@ -1,10 +1,10 @@
+import Hero from "../Common/Hero";
 import AllProjects from "./AllProjects";
-import ProjectsBanner from "./ProjectsBanner";
 
 const ProjectsPage = () => {
   return (
     <div>
-      <ProjectsBanner />
+      <Hero video="/videos/project.mp4" />
       <AllProjects />
     </div>
   );

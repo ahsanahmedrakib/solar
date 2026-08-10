@@ -33,9 +33,9 @@ export const DEFAULT_HERO_SLIDES: HeroSlide[] = [
     id: 2,
     tagline: "Proven Track Record",
     title: "Delivering Large-Scale",
-    titleAccent: "Rooftop Solar Projects Since 2005",
+    titleAccent: "Rooftop Solar Projects Since 2021",
     description:
-      "With over 16 years of experience, we have designed and installed projects across RMG, Textile, FMCG, Agro, and Paper Mill sectors — earning the trust of Bangladesh's top-ranking companies.",
+      "With over 06 years of experience, we have designed and installed projects across RMG, Textile, FMCG, Agro, and Paper Mill sectors — earning the trust of Bangladesh's top-ranking companies.",
     site: "ahead",
     videoUrl: "",
     showVideoButton: false,
