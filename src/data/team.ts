@@ -22,9 +22,9 @@ export const DEFAULT_TEAM: TeamMember[] = [
     role: "Lead Solar Engineer",
     image: "/images/aheadsolar/team-1.jpg",
     socialLinks: {
-      facebook: "",
-      instagram: "",
-      x: "",
+      facebook: "https://www.facebook.com/",
+      instagram: "https://www.instagram.com/",
+      x: "https://www.x.com/",
       linkedin: "https://linkedin.com/company/ahead-solar-ltd/",
     },
   },
@@ -34,10 +34,10 @@ export const DEFAULT_TEAM: TeamMember[] = [
     role: "Lead Solar Engineer",
     image: "/images/aheadsolar/team-2.jpg",
     socialLinks: {
-      facebook: "",
-      instagram: "",
-      x: "",
-      linkedin: "",
+      facebook: "https://www.facebook.com/",
+      instagram: "https://www.instagram.com/",
+      x: "https://www.x.com/",
+      linkedin: "https://linkedin.com/company/ahead-solar-ltd/",
     },
   },
   {
@@ -46,10 +46,10 @@ export const DEFAULT_TEAM: TeamMember[] = [
     role: "Lead Solar Engineer",
     image: "/images/aheadsolar/team-3.jpg",
     socialLinks: {
-      facebook: "",
-      instagram: "",
-      x: "",
-      linkedin: "",
+      facebook: "https://www.facebook.com/",
+      instagram: "https://www.instagram.com/",
+      x: "https://www.x.com/",
+      linkedin: "https://linkedin.com/company/ahead-solar-ltd/",
     },
   },
 ];
