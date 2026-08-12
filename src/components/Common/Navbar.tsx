@@ -1,6 +1,7 @@
 "use client";
 
 import { DEFAULT_SECTIONS } from "@/data/settings";
+import { SITE_LOGO } from "@/lib/config";
 import { SOCIAL_ICONS } from "@/lib/const";
 import { useQuerySettings } from "@/lib/queries";
 import { ChevronDown, Mail, Menu, Phone, X } from "lucide-react";
@@ -29,7 +30,7 @@ const FALLBACK = {
   socialLi: getField(DEFAULT_SECTIONS, "social", "social-li"),
   socialIg: getField(DEFAULT_SECTIONS, "social", "social-ig"),
   socialYt: getField(DEFAULT_SECTIONS, "social", "social-youtube"),
-  logo: getField(DEFAULT_SECTIONS, "general", "site-logo") || "/logo.svg",
+  logo: SITE_LOGO,
 };
 
 interface NavItem {
@@ -76,7 +77,7 @@ export default function Navbar() {
     return {
       phone: getField(data, "general", "phone-number") || FALLBACK.phone,
       email: getField(data, "general", "contact-email") || FALLBACK.email,
-      logo: getField(data, "general", "site-logo") || FALLBACK.logo,
+      logo: SITE_LOGO,
       socialFb: getField(data, "social", "social-fb") || FALLBACK.socialFb,
       socialX: getField(data, "social", "social-x") || FALLBACK.socialX,
       socialLi: getField(data, "social", "social-li") || FALLBACK.socialLi,

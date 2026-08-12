@@ -6,15 +6,34 @@ import { getRequestTokenPayload } from "@/lib/token";
 import { NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
 
+const HARDCODED_FIELD_IDS = [
+  "company-name",
+  "site-logo",
+  "admin-logo",
+  "site-favicon",
+];
+
+type SectionShape = {
+  id: string;
+  fields?: Array<{ id: string; type: string; value: string }>;
+};
+
+function stripHardcodedFields(sections: SectionShape[]): SectionShape[] {
+  return sections
+    .map((section) => ({
+      ...section,
+      fields: section.fields?.filter(
+        (f) => !HARDCODED_FIELD_IDS.includes(f.id),
+      ),
+    }))
+    .map((section) =>
+      section.fields?.length ? section : { ...section, fields: undefined },
+    );
+}
+
 async function processImageFields(
-  sections: Array<{
-    id: string;
-    fields?: Array<{ id: string; type: string; value: string }>;
-  }>,
-  existingSections?: Array<{
-    id: string;
-    fields?: Array<{ id: string; type: string; value: string }>;
-  }>,
+  sections: SectionShape[],
+  existingSections?: SectionShape[],
 ) {
   const result = [];
   for (const section of sections) {
@@ -60,7 +79,10 @@ export async function GET() {
     if (rows.length === 0) {
       return NextResponse.json({ success: true, data: null });
     }
-    return NextResponse.json({ success: true, data: rows[0].sections });
+    return NextResponse.json({
+      success: true,
+      data: stripHardcodedFields(rows[0].sections as SectionShape[]),
+    });
   } catch (error: unknown) {
     if (isTableNotExistsError(error)) {
       return NextResponse.json({ success: true, data: null });
@@ -99,12 +121,12 @@ export async function POST(request: Request) {
       .where(eq(settings.settingsId, "global"))
       .limit(1);
 
-    const existingSections = (existingRows[0]?.sections ?? []) as Array<{
-      id: string;
-      fields?: Array<{ id: string; type: string; value: string }>;
-    }>;
+    const existingSections = (existingRows[0]?.sections ?? []) as SectionShape[];
 
-    const processedSections = await processImageFields(sections, existingSections);
+    const processedSections = await processImageFields(
+      stripHardcodedFields(sections),
+      existingSections,
+    );
 
     if (existingRows.length > 0) {
       await db

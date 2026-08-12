@@ -1,3 +1,5 @@
+import { ADMIN_LOGO, SITE_LOGO } from "@/lib/config";
+
 export interface Field {
   id: string;
   label: string;
@@ -27,30 +29,6 @@ export const DEFAULT_SECTIONS: Section[] = [
     iconName: "Sliders",
     color: "#f59e0b",
     fields: [
-      {
-        label: "Company Name",
-        type: "text",
-        value: "Ahead Solar",
-        id: "company-name",
-      },
-      {
-        label: "Site Logo",
-        type: "image",
-        value: "/logo.svg",
-        id: "site-logo",
-      },
-      {
-        label: "Admin Logo",
-        type: "image",
-        value: "/logo.svg",
-        id: "admin-logo",
-      },
-      {
-        label: "Favicon",
-        type: "image",
-        value: "/favicon.ico",
-        id: "site-favicon",
-      },
       {
         label: "Brand Tagline",
         type: "text",
@@ -224,11 +202,9 @@ export const DEFAULT_SECTIONS: Section[] = [
   },
 ];
 
-export const DEFAULT_LOGO =
-  getDefaultField("general", "site-logo") || "/logo.svg";
+export const DEFAULT_LOGO = SITE_LOGO;
 
-export const DEFAULT_ADMIN_LOGO =
-  getDefaultField("general", "admin-logo") || "/logo.svg";
+export const DEFAULT_ADMIN_LOGO = ADMIN_LOGO;
 
 export function getDefaultField(sectionId: string, fieldId: string): string {
   return (

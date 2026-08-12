@@ -2,6 +2,7 @@
 
 import { DEFAULT_SERVICES } from "@/data/services";
 import { DEFAULT_SECTIONS } from "@/data/settings";
+import { COMPANY_NAME, SITE_LOGO } from "@/lib/config";
 import { SOCIAL_ICONS } from "@/lib/const";
 import { useQueryServices, useQuerySettings } from "@/lib/queries";
 import { Mail, MapPin, Phone } from "lucide-react";
@@ -23,7 +24,7 @@ function getField(
 }
 
 const FALLBACK = {
-  companyName: getField(DEFAULT_SECTIONS, "general", "company-name"),
+  companyName: COMPANY_NAME,
   tagline: getField(DEFAULT_SECTIONS, "general", "brand-tagline"),
   phone: getField(DEFAULT_SECTIONS, "general", "phone-number"),
   email: getField(DEFAULT_SECTIONS, "general", "contact-email"),
@@ -33,7 +34,7 @@ const FALLBACK = {
   socialLi: getField(DEFAULT_SECTIONS, "social", "social-li"),
   socialIg: getField(DEFAULT_SECTIONS, "social", "social-ig"),
   socialYt: getField(DEFAULT_SECTIONS, "social", "social-youtube"),
-  logo: getField(DEFAULT_SECTIONS, "general", "site-logo"),
+  logo: SITE_LOGO,
 };
 
 const QUICK_LINKS = [
@@ -55,8 +56,7 @@ export default function Footer() {
   const settings = useMemo(() => {
     if (!data) return FALLBACK;
     return {
-      companyName:
-        getField(data, "general", "company-name") || FALLBACK.companyName,
+      companyName: COMPANY_NAME,
       tagline: getField(data, "general", "brand-tagline") || FALLBACK.tagline,
       phone: getField(data, "general", "phone-number") || FALLBACK.phone,
       email: getField(data, "general", "contact-email") || FALLBACK.email,
@@ -66,7 +66,7 @@ export default function Footer() {
       socialLi: getField(data, "social", "social-li"),
       socialIg: getField(data, "social", "social-ig"),
       socialYt: getField(data, "social", "social-youtube"),
-      logo: getField(data, "general", "site-logo") || FALLBACK.logo,
+      logo: SITE_LOGO,
     };
   }, [data]);
 

@@ -1,8 +1,7 @@
 "use client";
 
 import { useAuth } from "@/components/Auth/AuthProvider";
-import { DEFAULT_SECTIONS } from "@/data/settings";
-import { useQuerySettings } from "@/lib/queries";
+import { ADMIN_LOGO } from "@/lib/config";
 import { cn } from "@/lib/utils";
 import {
   BatteryCharging,
@@ -23,7 +22,6 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useMemo } from "react";
 import { useSidebar } from "./SidebarContext";
 
 const navItems = [
@@ -87,27 +85,14 @@ const bottomNavItems = [
   },
 ];
 
-const FALLBACK_LOGO =
-  DEFAULT_SECTIONS.find((s) => s.id === "general")?.fields?.find(
-    (f) => f.id === "admin-logo",
-  )?.value ?? "/logo.svg";
+const FALLBACK_LOGO = ADMIN_LOGO;
 
 export function AdminSidebar() {
   const { user, logout } = useAuth();
   const { mobileOpen, setMobileOpen } = useSidebar();
   const pathname = usePathname();
-  const { data } = useQuerySettings();
 
-  const logoSrc = useMemo(() => {
-    if (data) {
-      const general = data.find((section) => section.id === "general");
-      const logoField = general?.fields?.find(
-        (field) => field.id === "site-logo",
-      );
-      if (logoField?.value) return logoField.value;
-    }
-    return FALLBACK_LOGO;
-  }, [data]);
+  const logoSrc = FALLBACK_LOGO;
 
   const isActive = (href: string) => {
     if (href === "/admin") {

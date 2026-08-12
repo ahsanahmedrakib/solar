@@ -1,7 +1,14 @@
 import type { Metadata } from "next";
 import { eq } from "drizzle-orm";
 import { getDefaultField } from "@/data/settings";
-import { FACEBOOK_PAGE_URL, LINKEDIN_URL, SITE_URL } from "@/lib/config";
+import {
+  COMPANY_NAME,
+  FACEBOOK_PAGE_URL,
+  FAVICON,
+  LINKEDIN_URL,
+  SITE_LOGO,
+  SITE_URL,
+} from "@/lib/config";
 import { db } from "@/lib/db";
 import { settings } from "@/lib/schema";
 
@@ -25,13 +32,13 @@ export interface SiteInfo {
 }
 
 const FALLBACK: SiteInfo = {
-  companyName: getDefaultField("general", "company-name"),
+  companyName: COMPANY_NAME,
   tagline: getDefaultField("general", "brand-tagline"),
   metaTitle: getDefaultField("seo", "meta-title"),
   metaDescription: getDefaultField("seo", "meta-desc"),
   keywords: getDefaultField("seo", "meta-keywords"),
-  favicon: getDefaultField("general", "site-favicon"),
-  logo: getDefaultField("general", "site-logo"),
+  favicon: FAVICON,
+  logo: SITE_LOGO,
   email: getDefaultField("general", "contact-email"),
   phone: getDefaultField("general", "phone-number"),
   address: getDefaultField("general", "hq-address"),
@@ -53,14 +60,14 @@ export async function getSiteInfo(): Promise<SiteInfo> {
         ?.fields?.find((f: SettingsField) => f.id === fieldId)?.value ?? "";
 
     return {
-      companyName: field("general", "company-name") || FALLBACK.companyName,
+      companyName: COMPANY_NAME,
       tagline: field("general", "brand-tagline") || FALLBACK.tagline,
       metaTitle: field("seo", "meta-title") || FALLBACK.metaTitle,
       metaDescription:
         field("seo", "meta-desc") || FALLBACK.metaDescription,
       keywords: field("seo", "meta-keywords") || FALLBACK.keywords,
-      favicon: field("general", "site-favicon") || FALLBACK.favicon,
-      logo: field("general", "site-logo") || FALLBACK.logo,
+      favicon: FAVICON,
+      logo: SITE_LOGO,
       email: field("general", "contact-email") || FALLBACK.email,
       phone: field("general", "phone-number") || FALLBACK.phone,
       address: field("general", "hq-address") || FALLBACK.address,
