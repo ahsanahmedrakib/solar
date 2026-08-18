@@ -31,7 +31,7 @@ export default function SingleProject({ slug }: { slug: string }) {
               variant="fade-up"
               className="bg-secondary rounded-lg overflow-hidden border border-white shadow-sm"
             >
-              <div className="font-heading bg-accent-500 text-white px-5 py-4 font-bold text-sm tracking-wide uppercase">
+              <div className="font-heading bg-accent-500 text-white px-5 py-4 font-bold text-sm tracking-wide uppercase border border-b">
                 Explore Our Projects
               </div>
               <nav className="flex flex-col">
@@ -117,3 +117,4 @@ export default function SingleProject({ slug }: { slug: string }) {
     </div>
   );
 }
+
