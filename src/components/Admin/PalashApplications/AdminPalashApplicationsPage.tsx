@@ -9,7 +9,7 @@ import {
 } from "@/data/palash";
 import { DEFAULT_ADMIN_LOGO } from "@/data/settings";
 import { apiClient } from "@/lib/apiClient";
-import { queryKeys, useQueryContact } from "@/lib/queries";
+import { invalidateContentCache, useAdminQueryContact } from "@/lib/queries";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   Archive,
@@ -36,7 +36,7 @@ export default function AdminPalashApplicationsPage() {
     isLoading,
     isFetching,
     refetch,
-  } = useQueryContact();
+  } = useAdminQueryContact();
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<
     "all" | "new" | "replied" | "archived"
@@ -64,7 +64,7 @@ export default function AdminPalashApplicationsPage() {
       });
       const json = await res.json();
       if (json.success) {
-        queryClient.invalidateQueries({ queryKey: queryKeys.contact });
+        invalidateContentCache(queryClient, "contact");
         if (selected && selected.id === id) {
           setSelected({ ...selected, status: newStatus });
         }
@@ -86,7 +86,7 @@ export default function AdminPalashApplicationsPage() {
         });
         const json = await res.json();
         if (json.success) {
-          queryClient.invalidateQueries({ queryKey: queryKeys.contact });
+          invalidateContentCache(queryClient, "contact");
           if (selected && selected.id === id) {
             setSelected(null);
           }

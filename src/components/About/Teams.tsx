@@ -24,7 +24,7 @@ export default function Teams() {
 
   const carouselSlides = useMemo(() => {
     if (teamMembers.length >= 4) return teamMembers;
-    return [...teamMembers, ...teamMembers];
+    return [...teamMembers];
   }, [teamMembers]);
 
   return (
@@ -103,49 +103,49 @@ export default function Teams() {
                   Object.keys(SOCIAL_ICONS) as Array<keyof typeof SOCIAL_ICONS>
                 ).filter((platform) => member.socialLinks?.[platform]);
                 return (
-                <SwiperSlide key={`${member.id}-${index}`}>
-                  <div className="group flex h-full flex-col overflow-hidden rounded-lg bg-secondary border border-accent-500 transition-all duration-300 hover:shadow-md">
-                    {/* Profile Image Container */}
-                    <div className="relative aspect-4/3 w-full overflow-hidden p-4 pb-0">
-                      <div className="relative h-full w-full overflow-hidden rounded-lg">
-                        <Image
-                          src={member.image}
-                          alt={member.name}
-                          fill
-                          unoptimized
-                          sizes="(max-w-7xl) 100vw, (max-w-md) 50vw, 33vw"
-                          className="object-cover transition-transform duration-500 group-hover:scale-105"
-                        />
+                  <SwiperSlide key={`${member.id}-${index}`}>
+                    <div className="group flex h-full flex-col overflow-hidden rounded-lg bg-secondary border border-accent-500 transition-all duration-300 hover:shadow-md">
+                      {/* Profile Image Container */}
+                      <div className="relative aspect-4/3 w-full overflow-hidden p-4 pb-0">
+                        <div className="relative h-full w-full overflow-hidden rounded-lg">
+                          <Image
+                            src={member.image}
+                            alt={member.name}
+                            fill
+                            unoptimized
+                            sizes="(max-w-7xl) 100vw, (max-w-md) 50vw, 33vw"
+                            className="object-cover transition-transform duration-500 group-hover:scale-105"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Text Meta Content Area */}
+                      <div className="flex flex-col items-center text-center px-6 py-8">
+                        <h3 className="font-heading text-xl font-bold text-accent-500">
+                          {member.name}
+                        </h3>
+                        <p className="mt-1 text-sm text-[#888888] font-medium">
+                          {member.role}
+                        </p>
+
+                        <div
+                          className={`mt-6 flex min-h-16 w-full items-center justify-center gap-3 pt-6 ${socialLinks.length > 0 ? "border-t border-forest-700/10" : ""}`}
+                        >
+                          {socialLinks?.map((platform) => (
+                            <Link
+                              key={platform}
+                              href={member.socialLinks?.[platform] as string}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex h-10 w-10 items-center justify-center transition-colors"
+                            >
+                              {SOCIAL_ICONS[platform]}
+                            </Link>
+                          ))}
+                        </div>
                       </div>
                     </div>
-
-                    {/* Text Meta Content Area */}
-                    <div className="flex flex-col items-center text-center px-6 py-8">
-                      <h3 className="font-heading text-xl font-bold text-accent-500">
-                        {member.name}
-                      </h3>
-                      <p className="mt-1 text-sm text-[#888888] font-medium">
-                        {member.role}
-                      </p>
-
-                      <div
-                        className={`mt-6 flex min-h-16 w-full items-center justify-center gap-3 pt-6 ${socialLinks.length > 0 ? "border-t border-forest-700/10" : ""}`}
-                      >
-                        {socialLinks?.map((platform) => (
-                          <Link
-                            key={platform}
-                            href={member.socialLinks?.[platform] as string}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex h-10 w-10 items-center justify-center transition-colors"
-                          >
-                            {SOCIAL_ICONS[platform]}
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </SwiperSlide>
+                  </SwiperSlide>
                 );
               })}
             </Swiper>

@@ -3,7 +3,7 @@
 import type { ContactQuery } from "@/data/contact";
 import { DEFAULT_ADMIN_LOGO } from "@/data/settings";
 import { apiClient } from "@/lib/apiClient";
-import { queryKeys, useQueryContact } from "@/lib/queries";
+import { invalidateContentCache, useAdminQueryContact } from "@/lib/queries";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   Archive,
@@ -30,7 +30,7 @@ export default function AdminContactQueriesPage() {
     isLoading,
     isFetching,
     refetch,
-  } = useQueryContact();
+  } = useAdminQueryContact();
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<
     "all" | "new" | "replied" | "archived"
@@ -51,7 +51,7 @@ export default function AdminContactQueriesPage() {
       });
       const json = await res.json();
       if (json.success) {
-        queryClient.invalidateQueries({ queryKey: queryKeys.contact });
+        invalidateContentCache(queryClient, "contact");
         if (selectedQuery && selectedQuery.id === id) {
           setSelectedQuery({ ...selectedQuery, status: newStatus });
         }
@@ -73,7 +73,7 @@ export default function AdminContactQueriesPage() {
         });
         const json = await res.json();
         if (json.success) {
-          queryClient.invalidateQueries({ queryKey: queryKeys.contact });
+          invalidateContentCache(queryClient, "contact");
           if (selectedQuery && selectedQuery.id === id) {
             setSelectedQuery(null);
           }
@@ -107,7 +107,7 @@ export default function AdminContactQueriesPage() {
       });
       const json = await res.json();
       if (json.success) {
-        queryClient.invalidateQueries({ queryKey: queryKeys.contact });
+        invalidateContentCache(queryClient, "contact");
         setSelectedQuery({
           ...selectedQuery,
           status: "replied",

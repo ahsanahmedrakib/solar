@@ -1,4 +1,4 @@
-import { PUBLIC_CACHE_HEADERS } from "@/lib/cache";
+import { NO_CACHE_HEADERS, PUBLIC_CACHE_HEADERS } from "@/lib/cache";
 import { readDataFile, withWriteLock, writeDataFile } from "@/lib/fileStore";
 import { DEFAULT_REVIEWS, type Review } from "@/data/reviews";
 import { getRequestTokenPayload } from "@/lib/token";
@@ -10,11 +10,12 @@ function nextId(items: Review[]): number {
   return items.length > 0 ? Math.max(...items.map((i) => Number(i.id))) + 1 : 1;
 }
 
-export async function GET() {
-  const allReviews = readDataFile<Review[]>(FILE_NAME, DEFAULT_REVIEWS);
+export async function GET(request: Request) {
+  const isAdmin = Boolean(getRequestTokenPayload(request));
+  const allReviews = readDataFile<Review[]>(FILE_NAME, isAdmin ? [] : DEFAULT_REVIEWS);
   return NextResponse.json(
     { success: true, data: allReviews },
-    { headers: PUBLIC_CACHE_HEADERS },
+    { headers: isAdmin ? NO_CACHE_HEADERS : PUBLIC_CACHE_HEADERS },
   );
 }
 
@@ -31,7 +32,7 @@ export async function POST(request: Request) {
     }
 
     return withWriteLock(async () => {
-      const current = readDataFile<Review[]>(FILE_NAME, DEFAULT_REVIEWS);
+      const current = readDataFile<Review[]>(FILE_NAME, []);
       const newReview: Review = {
         id: nextId(current),
         name,
@@ -74,7 +75,7 @@ export async function DELETE(request: Request) {
     }
 
     return withWriteLock(async () => {
-      const current = readDataFile<Review[]>(FILE_NAME, DEFAULT_REVIEWS);
+      const current = readDataFile<Review[]>(FILE_NAME, []);
       writeDataFile(
         FILE_NAME,
         current.filter((i) => i.id !== Number(id)),

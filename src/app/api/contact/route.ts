@@ -1,5 +1,5 @@
 import { readDataFile, withWriteLock, writeDataFile } from "@/lib/fileStore";
-import { DEFAULT_QUERIES, type ContactQuery } from "@/data/contact";
+import type { ContactQuery } from "@/data/contact";
 import { getClientIp, isRateLimited } from "@/lib/rateLimit";
 import { getRequestTokenPayload } from "@/lib/token";
 import { NextResponse } from "next/server";
@@ -16,7 +16,7 @@ export async function GET(request: Request) {
       );
     }
 
-    const queries = readDataFile<ContactQuery[]>(FILE_NAME, DEFAULT_QUERIES);
+    const queries = readDataFile<ContactQuery[]>(FILE_NAME, []);
     return NextResponse.json({ success: true, data: queries });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
@@ -79,7 +79,7 @@ export async function POST(request: Request) {
     }
 
     return withWriteLock(async () => {
-      const current = readDataFile<ContactQuery[]>(FILE_NAME, DEFAULT_QUERIES);
+      const current = readDataFile<ContactQuery[]>(FILE_NAME, []);
       const newQuery: ContactQuery = {
         id: `cq-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
         name: name.trim(),
@@ -125,7 +125,7 @@ export async function PUT(request: Request) {
     }
 
     return withWriteLock(async () => {
-      const current = readDataFile<ContactQuery[]>(FILE_NAME, DEFAULT_QUERIES);
+      const current = readDataFile<ContactQuery[]>(FILE_NAME, []);
       const index = current.findIndex((q) => q.id === id);
       if (index === -1) {
         return NextResponse.json(
@@ -177,7 +177,7 @@ export async function DELETE(request: Request) {
     }
 
     return withWriteLock(async () => {
-      const current = readDataFile<ContactQuery[]>(FILE_NAME, DEFAULT_QUERIES);
+      const current = readDataFile<ContactQuery[]>(FILE_NAME, []);
       writeDataFile(
         FILE_NAME,
         current.filter((q) => q.id !== id),

@@ -3,7 +3,7 @@
 import { useAuth } from "@/components/Auth/AuthProvider";
 import { DEFAULT_ADMIN_LOGO } from "@/data/settings";
 import { apiClient } from "@/lib/apiClient";
-import { queryKeys, useQueryUsers } from "@/lib/queries";
+import { invalidateContentCache, useAdminQueryUsers } from "@/lib/queries";
 import { useQueryClient } from "@tanstack/react-query";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
@@ -39,7 +39,7 @@ interface UserFormData {
 
 export default function AdminUsersPage() {
   const { user: currentUser, refreshUser } = useAuth();
-  const { data: users = [], isLoading } = useQueryUsers();
+  const { data: users = [], isLoading } = useAdminQueryUsers();
   const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [isOpen, setIsOpen] = useState(false);
@@ -98,7 +98,7 @@ export default function AdminUsersPage() {
       });
       const json = await res.json();
       if (json.success) {
-        queryClient.invalidateQueries({ queryKey: queryKeys.users });
+        invalidateContentCache(queryClient, "users");
         toast.success("User deleted");
       } else {
         toast.error(json.error || "Failed to delete user");
@@ -130,7 +130,7 @@ export default function AdminUsersPage() {
         const json = await res.json();
         if (json.success) {
           toast.success("User updated");
-          queryClient.invalidateQueries({ queryKey: queryKeys.users });
+          invalidateContentCache(queryClient, "users");
           if (editingUser.id === currentUser?.id) refreshUser();
           setIsOpen(false);
         } else {
@@ -149,7 +149,7 @@ export default function AdminUsersPage() {
         const json = await res.json();
         if (json.success) {
           toast.success("User created");
-          queryClient.invalidateQueries({ queryKey: queryKeys.users });
+          invalidateContentCache(queryClient, "users");
           setIsOpen(false);
         } else {
           toast.error(json.error || "Failed to create user");

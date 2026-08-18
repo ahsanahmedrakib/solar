@@ -29,7 +29,7 @@ import { useEffect, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { toast } from "react-toastify";
 import * as yup from "yup";
-import { useQueryServices, queryKeys } from "@/lib/queries";
+import { useAdminQueryServices, invalidateContentCache } from "@/lib/queries";
 import { useQueryClient } from "@tanstack/react-query";
 
 // Available Lucide Icons for selection
@@ -81,7 +81,7 @@ const serviceSchema = yup.object().shape({
 type ServiceFormData = yup.InferType<typeof serviceSchema>;
 
 export default function AdminServicesPage() {
-  const { data: services = [], isLoading: loading } = useQueryServices();
+  const { data: services = [], isLoading: loading } = useAdminQueryServices();
   const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
 
@@ -165,7 +165,7 @@ export default function AdminServicesPage() {
         });
         const json = await res.json();
         if (json.success) {
-          queryClient.invalidateQueries({ queryKey: queryKeys.services });
+          invalidateContentCache(queryClient, "services");
           toast.success("Service deleted successfully!");
         } else {
           toast.error("Failed to delete service: " + json.error);
@@ -188,7 +188,7 @@ export default function AdminServicesPage() {
         });
         const json = await res.json();
         if (json.success) {
-          queryClient.invalidateQueries({ queryKey: queryKeys.services });
+          invalidateContentCache(queryClient, "services");
           toast.success("Service updated successfully!");
           setIsOpen(false);
         } else {
@@ -202,7 +202,7 @@ export default function AdminServicesPage() {
         });
         const json = await res.json();
         if (json.success) {
-          queryClient.invalidateQueries({ queryKey: queryKeys.services });
+          invalidateContentCache(queryClient, "services");
           toast.success("Service added successfully!");
           setIsOpen(false);
         } else {

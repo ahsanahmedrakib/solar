@@ -83,10 +83,5 @@ export async function apiClient(
     }
   }
 
-  const method = (init?.method ?? "GET").toUpperCase();
-  if (method === "GET" && response.status === 500) {
-    response = await doFetch(getStoredToken());
-  }
-
   return response;
 }

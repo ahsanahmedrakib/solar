@@ -1,4 +1,4 @@
-import { PUBLIC_CACHE_HEADERS } from "@/lib/cache";
+import { NO_CACHE_HEADERS, PUBLIC_CACHE_HEADERS } from "@/lib/cache";
 import { readDataFile, withWriteLock, writeDataFile } from "@/lib/fileStore";
 import { deleteImage, saveImage } from "@/lib/imageHelper";
 import { getRequestTokenPayload } from "@/lib/token";
@@ -56,12 +56,13 @@ async function processImageFields(sections: SectionShape[]) {
   return result;
 }
 
-export async function GET() {
+export async function GET(request: Request) {
+  const isAdmin = Boolean(getRequestTokenPayload(request));
   const sections = readDataFile<SectionShape[] | null>(FILE_NAME, null);
   const data = sections ? stripHardcodedFields(sections) : null;
   return NextResponse.json(
     { success: true, data },
-    { headers: PUBLIC_CACHE_HEADERS },
+    { headers: isAdmin ? NO_CACHE_HEADERS : PUBLIC_CACHE_HEADERS },
   );
 }
 

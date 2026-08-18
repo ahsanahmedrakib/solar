@@ -1,4 +1,4 @@
-import { PUBLIC_CACHE_HEADERS } from "@/lib/cache";
+import { NO_CACHE_HEADERS, PUBLIC_CACHE_HEADERS } from "@/lib/cache";
 import { readDataFile, withWriteLock, writeDataFile } from "@/lib/fileStore";
 import {
   DEFAULT_HERO_SLIDES,
@@ -22,6 +22,7 @@ function nextId(items: HeroSlide[]): number {
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const site = searchParams.get("site");
+  const isAdmin = Boolean(getRequestTokenPayload(request));
   const stored = readDataFile<HeroSlide[]>(FILE_NAME, []);
 
   const fallback =
@@ -31,10 +32,10 @@ export async function GET(request: Request) {
       ? stored.filter((s) => s.site === site)
       : stored;
 
-  const data = slides.length > 0 ? slides : fallback;
+  const data = isAdmin ? slides : slides.length > 0 ? slides : fallback;
   return NextResponse.json(
     { success: true, data },
-    { headers: PUBLIC_CACHE_HEADERS },
+    { headers: isAdmin ? NO_CACHE_HEADERS : PUBLIC_CACHE_HEADERS },
   );
 }
 

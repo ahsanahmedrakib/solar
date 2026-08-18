@@ -21,7 +21,7 @@ import {
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { useQuerySettings, queryKeys } from "@/lib/queries";
+import { useAdminQuerySettings, invalidateContentCache } from "@/lib/queries";
 import { useQueryClient } from "@tanstack/react-query";
 
 const ICON_MAP: Record<string, React.ComponentType<{ size?: number }>> = {
@@ -79,7 +79,7 @@ function createEmptySections(): Section[] {
 }
 
 export default function AdminSettingsPage() {
-  const { data: ctxSettings, isLoading: loading } = useQuerySettings();
+  const { data: ctxSettings, isLoading: loading } = useAdminQuerySettings();
   const queryClient = useQueryClient();
   const [sections, setSections] = useState<Section[]>(createEmptySections);
 
@@ -139,7 +139,7 @@ export default function AdminSettingsPage() {
       });
       const json = await res.json();
       if (json.success) {
-        queryClient.invalidateQueries({ queryKey: queryKeys.settings });
+        invalidateContentCache(queryClient, "settings");
         toast.success("Website settings saved successfully!");
       } else {
         toast.error("Failed to save settings: " + json.error);

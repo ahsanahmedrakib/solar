@@ -1,4 +1,4 @@
-import { PUBLIC_CACHE_HEADERS } from "@/lib/cache";
+import { NO_CACHE_HEADERS, PUBLIC_CACHE_HEADERS } from "@/lib/cache";
 import { readDataFile, withWriteLock, writeDataFile } from "@/lib/fileStore";
 import { DEFAULT_PROJECTS, type Project } from "@/data/projects";
 import { deleteImage, saveImage } from "@/lib/imageHelper";
@@ -11,11 +11,12 @@ function nextId(items: Project[]): number {
   return items.length > 0 ? Math.max(...items.map((i) => Number(i.id))) + 1 : 1;
 }
 
-export async function GET() {
-  const allProjects = readDataFile<Project[]>(FILE_NAME, DEFAULT_PROJECTS);
+export async function GET(request: Request) {
+  const isAdmin = Boolean(getRequestTokenPayload(request));
+  const allProjects = readDataFile<Project[]>(FILE_NAME, isAdmin ? [] : DEFAULT_PROJECTS);
   return NextResponse.json(
     { success: true, data: allProjects },
-    { headers: PUBLIC_CACHE_HEADERS },
+    { headers: isAdmin ? NO_CACHE_HEADERS : PUBLIC_CACHE_HEADERS },
   );
 }
 
@@ -50,7 +51,7 @@ export async function POST(request: Request) {
     }
 
     return withWriteLock(async () => {
-      const current = readDataFile<Project[]>(FILE_NAME, DEFAULT_PROJECTS);
+      const current = readDataFile<Project[]>(FILE_NAME, []);
       const id = nextId(current);
 
       const savedImagePath = imageUrl
@@ -121,7 +122,7 @@ export async function PUT(request: Request) {
     }
 
     return withWriteLock(async () => {
-      const current = readDataFile<Project[]>(FILE_NAME, DEFAULT_PROJECTS);
+      const current = readDataFile<Project[]>(FILE_NAME, []);
       const index = current.findIndex((i) => i.id === Number(id));
       if (index === -1) {
         return NextResponse.json(
@@ -192,7 +193,7 @@ export async function DELETE(request: Request) {
     }
 
     return withWriteLock(async () => {
-      const current = readDataFile<Project[]>(FILE_NAME, DEFAULT_PROJECTS);
+      const current = readDataFile<Project[]>(FILE_NAME, []);
       const existing = current.find((i) => i.id === Number(id));
       if (existing) {
         await deleteImage(existing.imageUrl);

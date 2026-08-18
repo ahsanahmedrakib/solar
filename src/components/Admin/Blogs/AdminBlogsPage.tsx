@@ -23,7 +23,7 @@ import { useEffect, useState } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { toast } from "react-toastify";
 import * as yup from "yup";
-import { useQueryBlogs, queryKeys } from "@/lib/queries";
+import { useAdminQueryBlogs, invalidateContentCache } from "@/lib/queries";
 import { useQueryClient } from "@tanstack/react-query";
 
 const CATEGORIES = [
@@ -74,7 +74,7 @@ const blogSchema = yup.object().shape({
 type BlogFormData = yup.InferType<typeof blogSchema>;
 
 export default function AdminBlogsPage() {
-  const { data: blogs = [], isLoading: loading } = useQueryBlogs();
+  const { data: blogs = [], isLoading: loading } = useAdminQueryBlogs();
   const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -161,7 +161,7 @@ export default function AdminBlogsPage() {
         });
         const json = await res.json();
         if (json.success) {
-          queryClient.invalidateQueries({ queryKey: queryKeys.blogs });
+          invalidateContentCache(queryClient, "blogs");
           toast.success("Blog post deleted successfully!");
         } else {
           toast.error("Failed to delete blog post: " + json.error);
@@ -206,7 +206,7 @@ export default function AdminBlogsPage() {
         });
         const json = await res.json();
         if (json.success) {
-          queryClient.invalidateQueries({ queryKey: queryKeys.blogs });
+          invalidateContentCache(queryClient, "blogs");
           toast.success("Blog post updated successfully!");
           setIsOpen(false);
         } else {
@@ -220,7 +220,7 @@ export default function AdminBlogsPage() {
         });
         const json = await res.json();
         if (json.success) {
-          queryClient.invalidateQueries({ queryKey: queryKeys.blogs });
+          invalidateContentCache(queryClient, "blogs");
           toast.success("Blog post added successfully!");
           setIsOpen(false);
         } else {

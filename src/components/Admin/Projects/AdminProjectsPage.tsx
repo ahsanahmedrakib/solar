@@ -6,7 +6,7 @@ import { RichTextEditor } from "@/components/Admin/RichTextEditor";
 import type { Project } from "@/data/projects";
 import { DEFAULT_ADMIN_LOGO } from "@/data/settings";
 import { apiClient } from "@/lib/apiClient";
-import { queryKeys, useQueryProjects } from "@/lib/queries";
+import { invalidateContentCache, useAdminQueryProjects } from "@/lib/queries";
 import { useQueryClient } from "@tanstack/react-query";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
@@ -70,7 +70,7 @@ const projectSchema = yup.object().shape({
 type ProjectFormData = yup.InferType<typeof projectSchema>;
 
 export default function AdminProjectsPage() {
-  const { data: projects = [], isLoading } = useQueryProjects();
+  const { data: projects = [], isLoading } = useAdminQueryProjects();
   const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
@@ -160,7 +160,7 @@ export default function AdminProjectsPage() {
         });
         const json = await res.json();
         if (json.success) {
-          queryClient.invalidateQueries({ queryKey: queryKeys.projects });
+          invalidateContentCache(queryClient, "projects");
           toast.success("Project deleted successfully!");
         } else {
           toast.error("Failed to delete project: " + json.error);
@@ -183,7 +183,7 @@ export default function AdminProjectsPage() {
         });
         const json = await res.json();
         if (json.success) {
-          queryClient.invalidateQueries({ queryKey: queryKeys.projects });
+          invalidateContentCache(queryClient, "projects");
           toast.success("Project updated successfully!");
           setIsOpen(false);
         } else {
@@ -197,7 +197,7 @@ export default function AdminProjectsPage() {
         });
         const json = await res.json();
         if (json.success) {
-          queryClient.invalidateQueries({ queryKey: queryKeys.projects });
+          invalidateContentCache(queryClient, "projects");
           toast.success("Project added successfully!");
           setIsOpen(false);
         } else {

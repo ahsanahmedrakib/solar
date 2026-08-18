@@ -18,7 +18,7 @@ import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "react-toastify";
 import * as yup from "yup";
-import { useQueryHeroSlides, queryKeys } from "@/lib/queries";
+import { useAdminQueryHeroSlides, invalidateContentCache } from "@/lib/queries";
 import { useQueryClient } from "@tanstack/react-query";
 import { isSupportedVideoUrl } from "@/lib/videoUrl";
 
@@ -51,7 +51,7 @@ const slideSchema = yup.object({
 type SlideFormData = yup.InferType<typeof slideSchema>;
 
 export default function AdminHeroPage() {
-  const { data: slides = [], isLoading: loading } = useQueryHeroSlides();
+  const { data: slides = [], isLoading: loading } = useAdminQueryHeroSlides();
   const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [isOpen, setIsOpen] = useState(false);
@@ -124,7 +124,7 @@ export default function AdminHeroPage() {
       });
       const json = await res.json();
       if (json.success) {
-        queryClient.invalidateQueries({ queryKey: queryKeys.heroSlides });
+        invalidateContentCache(queryClient, "hero-slides");
         toast.success("Hero slide deleted successfully!");
       } else {
         toast.error("Failed to delete hero slide: " + json.error);
@@ -147,7 +147,7 @@ export default function AdminHeroPage() {
         });
         const json = await res.json();
         if (json.success) {
-          queryClient.invalidateQueries({ queryKey: queryKeys.heroSlides });
+          invalidateContentCache(queryClient, "hero-slides");
           toast.success("Hero slide updated successfully!");
           setIsOpen(false);
         } else {
@@ -161,7 +161,7 @@ export default function AdminHeroPage() {
         });
         const json = await res.json();
         if (json.success) {
-          queryClient.invalidateQueries({ queryKey: queryKeys.heroSlides });
+          invalidateContentCache(queryClient, "hero-slides");
           toast.success("Hero slide added successfully!");
           setIsOpen(false);
         } else {

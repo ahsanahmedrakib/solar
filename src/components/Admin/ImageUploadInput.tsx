@@ -4,6 +4,8 @@ import { AlertCircle, Link as LinkIcon, Upload, X } from "lucide-react";
 import React, { useRef, useState } from "react";
 import { toast } from "react-toastify";
 
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
+
 interface ImageUploadInputProps {
   value: string;
   onChange: (val: string) => void;
@@ -27,6 +29,10 @@ export function ImageUploadInput({
     if (!file) return;
     if (!file.type.startsWith("image/")) {
       toast.error("Please select a valid image file.");
+      return;
+    }
+    if (file.size > MAX_IMAGE_SIZE) {
+      toast.error("Image must be 5MB or smaller.");
       return;
     }
 

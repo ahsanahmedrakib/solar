@@ -1,6 +1,8 @@
 import fs from "fs";
 import path from "path";
 
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
+
 const ALLOWED_FOLDERS = [
   "services",
   "projects",
@@ -59,6 +61,10 @@ export async function saveImage(
   }
 
   const buffer = Buffer.from(matches[2], "base64");
+
+  if (buffer.length > MAX_IMAGE_SIZE) {
+    throw new Error("Image must be 5MB or smaller");
+  }
 
   const relativeDir = `/images/api/${folderName}`;
   const targetDir = path.join(process.cwd(), "public", relativeDir);

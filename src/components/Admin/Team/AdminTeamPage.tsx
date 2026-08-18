@@ -20,7 +20,7 @@ import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import * as yup from "yup";
-import { useQueryTeam, queryKeys } from "@/lib/queries";
+import { useAdminQueryTeam, invalidateContentCache } from "@/lib/queries";
 import { useQueryClient } from "@tanstack/react-query";
 
 const teamSchema = yup.object({
@@ -52,7 +52,7 @@ interface TeamFormData {
 }
 
 export default function AdminTeamPage() {
-  const { data: team = [], isLoading: loading } = useQueryTeam();
+  const { data: team = [], isLoading: loading } = useAdminQueryTeam();
   const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
 
@@ -117,7 +117,7 @@ export default function AdminTeamPage() {
         });
         const json = await res.json();
         if (json.success) {
-          queryClient.invalidateQueries({ queryKey: queryKeys.team });
+          invalidateContentCache(queryClient, "team");
           toast.success("Team member removed successfully!");
         } else {
           toast.error("Failed to remove team member: " + json.error);
@@ -146,7 +146,7 @@ export default function AdminTeamPage() {
         });
         const json = await res.json();
         if (json.success) {
-          queryClient.invalidateQueries({ queryKey: queryKeys.team });
+          invalidateContentCache(queryClient, "team");
           toast.success("Team member updated successfully!");
           setIsOpen(false);
         } else {
@@ -160,7 +160,7 @@ export default function AdminTeamPage() {
         });
         const json = await res.json();
         if (json.success) {
-          queryClient.invalidateQueries({ queryKey: queryKeys.team });
+          invalidateContentCache(queryClient, "team");
           toast.success("Team member added successfully!");
           setIsOpen(false);
         } else {

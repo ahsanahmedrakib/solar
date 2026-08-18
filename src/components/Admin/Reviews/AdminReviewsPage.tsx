@@ -2,7 +2,7 @@
 
 import { DEFAULT_ADMIN_LOGO } from "@/data/settings";
 import { apiClient } from "@/lib/apiClient";
-import { queryKeys, useQueryReviews } from "@/lib/queries";
+import { invalidateContentCache, useAdminQueryReviews } from "@/lib/queries";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   MessageSquareText,
@@ -21,7 +21,7 @@ export default function AdminReviewsPage() {
     isLoading,
     isFetching,
     refetch,
-  } = useQueryReviews();
+  } = useAdminQueryReviews();
   const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -42,7 +42,7 @@ export default function AdminReviewsPage() {
         });
         const json = await res.json();
         if (json.success) {
-          queryClient.invalidateQueries({ queryKey: queryKeys.reviews });
+          invalidateContentCache(queryClient, "reviews");
           toast.success("Review deleted successfully");
         } else {
           toast.error("Failed to delete: " + json.error);

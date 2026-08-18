@@ -1,4 +1,4 @@
-import { PUBLIC_CACHE_HEADERS } from "@/lib/cache";
+import { NO_CACHE_HEADERS, PUBLIC_CACHE_HEADERS } from "@/lib/cache";
 import { readDataFile, withWriteLock, writeDataFile } from "@/lib/fileStore";
 import { DEFAULT_TEAM, type TeamMember } from "@/data/team";
 import { deleteImage, saveImage } from "@/lib/imageHelper";
@@ -11,11 +11,12 @@ function nextId(items: TeamMember[]): number {
   return items.length > 0 ? Math.max(...items.map((i) => Number(i.id))) + 1 : 1;
 }
 
-export async function GET() {
-  const allMembers = readDataFile<TeamMember[]>(FILE_NAME, DEFAULT_TEAM);
+export async function GET(request: Request) {
+  const isAdmin = Boolean(getRequestTokenPayload(request));
+  const allMembers = readDataFile<TeamMember[]>(FILE_NAME, isAdmin ? [] : DEFAULT_TEAM);
   return NextResponse.json(
     { success: true, data: allMembers },
-    { headers: PUBLIC_CACHE_HEADERS },
+    { headers: isAdmin ? NO_CACHE_HEADERS : PUBLIC_CACHE_HEADERS },
   );
 }
 
@@ -40,7 +41,7 @@ export async function POST(request: Request) {
     }
 
     return withWriteLock(async () => {
-      const current = readDataFile<TeamMember[]>(FILE_NAME, DEFAULT_TEAM);
+      const current = readDataFile<TeamMember[]>(FILE_NAME, []);
       const id = nextId(current);
 
       const savedImagePath = image ? await saveImage(image, "team", id) : "";
@@ -89,7 +90,7 @@ export async function PUT(request: Request) {
     }
 
     return withWriteLock(async () => {
-      const current = readDataFile<TeamMember[]>(FILE_NAME, DEFAULT_TEAM);
+      const current = readDataFile<TeamMember[]>(FILE_NAME, []);
       const index = current.findIndex((i) => i.id === Number(id));
       if (index === -1) {
         return NextResponse.json(
@@ -145,7 +146,7 @@ export async function DELETE(request: Request) {
     }
 
     return withWriteLock(async () => {
-      const current = readDataFile<TeamMember[]>(FILE_NAME, DEFAULT_TEAM);
+      const current = readDataFile<TeamMember[]>(FILE_NAME, []);
       const existing = current.find((i) => i.id === Number(id));
       if (existing) {
         await deleteImage(existing.image);

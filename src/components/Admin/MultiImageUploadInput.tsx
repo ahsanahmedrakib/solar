@@ -4,6 +4,8 @@ import { AlertCircle, Link as LinkIcon, Plus, Upload, X } from "lucide-react";
 import React, { useRef, useState } from "react";
 import { toast } from "react-toastify";
 
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
+
 interface MultiImageUploadInputProps {
   value: string[];
   onChange: (val: string[]) => void;
@@ -39,6 +41,10 @@ export function MultiImageUploadInput({
     const validFiles = filesArr.filter((file) => {
       if (!file.type.startsWith("image/")) {
         toast.error(`"${file.name}" is not a valid image file.`);
+        return false;
+      }
+      if (file.size > MAX_IMAGE_SIZE) {
+        toast.error(`"${file.name}" is larger than 5MB.`);
         return false;
       }
       return true;

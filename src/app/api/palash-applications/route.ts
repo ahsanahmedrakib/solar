@@ -1,5 +1,5 @@
 import { readDataFile, withWriteLock, writeDataFile } from "@/lib/fileStore";
-import { DEFAULT_QUERIES, type ContactQuery } from "@/data/contact";
+import type { ContactQuery } from "@/data/contact";
 import { getClientIp, isRateLimited } from "@/lib/rateLimit";
 import { NextResponse } from "next/server";
 
@@ -127,7 +127,7 @@ export async function POST(request: Request) {
     ].join("\n");
 
     return withWriteLock(async () => {
-      const current = readDataFile<ContactQuery[]>(FILE_NAME, DEFAULT_QUERIES);
+      const current = readDataFile<ContactQuery[]>(FILE_NAME, []);
       const newQuery: ContactQuery = {
         id: `palash-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
         name: fullName.trim(),
