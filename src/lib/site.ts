@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { eq } from "drizzle-orm";
 import { getDefaultField } from "@/data/settings";
 import {
   COMPANY_NAME,
@@ -9,12 +8,10 @@ import {
   SITE_LOGO,
   SITE_URL,
 } from "@/lib/config";
-import { db } from "@/lib/db";
-import { settings } from "@/lib/schema";
+import { readDataFile } from "@/lib/fileStore";
 
 type SettingsField = { id?: string; value?: string };
 type SettingsSection = { id?: string; fields?: SettingsField[] };
-type SettingsDocument = { sections?: SettingsSection[] };
 
 export interface SiteInfo {
   companyName: string;
@@ -48,12 +45,10 @@ const FALLBACK: SiteInfo = {
 
 export async function getSiteInfo(): Promise<SiteInfo> {
   try {
-    const rows = await db
-      .select()
-      .from(settings)
-      .where(eq(settings.settingsId, "global"))
-      .limit(1);
-    const data = rows[0] as SettingsDocument | undefined;
+    const data = readDataFile<{ sections?: SettingsSection[] } | null>(
+      "settingsData",
+      null,
+    );
     const field = (sectionId: string, fieldId: string) =>
       data?.sections
         ?.find((s: SettingsSection) => s.id === sectionId)

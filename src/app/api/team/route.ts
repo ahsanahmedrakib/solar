@@ -1,25 +1,22 @@
-import { db } from "@/lib/db";
-import { isTableNotExistsError } from "@/lib/db-helpers";
-import { team } from "@/lib/schema";
+import { PUBLIC_CACHE_HEADERS } from "@/lib/cache";
+import { readDataFile, withWriteLock, writeDataFile } from "@/lib/fileStore";
+import { DEFAULT_TEAM, type TeamMember } from "@/data/team";
 import { deleteImage, saveImage } from "@/lib/imageHelper";
 import { getRequestTokenPayload } from "@/lib/token";
 import { NextResponse } from "next/server";
-import { eq } from "drizzle-orm";
+
+const FILE_NAME = "teamData";
+
+function nextId(items: TeamMember[]): number {
+  return items.length > 0 ? Math.max(...items.map((i) => Number(i.id))) + 1 : 1;
+}
 
 export async function GET() {
-  try {
-    const allMembers = await db.select().from(team);
-    return NextResponse.json({ success: true, data: allMembers });
-  } catch (error: unknown) {
-    if (isTableNotExistsError(error)) {
-      return NextResponse.json({ success: true, data: [] });
-    }
-    const message = error instanceof Error ? error.message : String(error);
-    return NextResponse.json(
-      { success: false, error: message },
-      { status: 500 },
-    );
-  }
+  const allMembers = readDataFile<TeamMember[]>(FILE_NAME, DEFAULT_TEAM);
+  return NextResponse.json(
+    { success: true, data: allMembers },
+    { headers: PUBLIC_CACHE_HEADERS },
+  );
 }
 
 export async function POST(request: Request) {
@@ -42,20 +39,26 @@ export async function POST(request: Request) {
       );
     }
 
-    const savedImagePath = image ? await saveImage(image, "team", 0) : "";
+    return withWriteLock(async () => {
+      const current = readDataFile<TeamMember[]>(FILE_NAME, DEFAULT_TEAM);
+      const id = nextId(current);
 
-    const [newMember] = await db
-      .insert(team)
-      .values({
+      const savedImagePath = image ? await saveImage(image, "team", id) : "";
+
+      const newMember: TeamMember = {
+        id,
         name,
         role,
         image: savedImagePath,
-        bio: bio ?? null,
-        socialLinks: socialLinks ?? null,
-      })
-      .returning();
+        bio: bio ?? undefined,
+        socialLinks: socialLinks ?? undefined,
+      };
 
-    return NextResponse.json({ success: true, data: newMember });
+      writeDataFile(FILE_NAME, [...current, newMember]);
+      return newMember;
+    }).then((newMember) =>
+      NextResponse.json({ success: true, data: newMember }),
+    );
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
     return NextResponse.json(
@@ -85,36 +88,34 @@ export async function PUT(request: Request) {
       );
     }
 
-    const [existing] = await db
-      .select()
-      .from(team)
-      .where(eq(team.id, Number(id)))
-      .limit(1);
+    return withWriteLock(async () => {
+      const current = readDataFile<TeamMember[]>(FILE_NAME, DEFAULT_TEAM);
+      const index = current.findIndex((i) => i.id === Number(id));
+      if (index === -1) {
+        return NextResponse.json(
+          { success: false, error: "Team member not found" },
+          { status: 404 },
+        );
+      }
 
-    if (!existing) {
-      return NextResponse.json(
-        { success: false, error: "Team member not found" },
-        { status: 404 },
-      );
-    }
+      const existing = current[index];
+      const updated: TeamMember = { ...existing };
 
-    const updateData: Record<string, unknown> = {};
-    if (name !== undefined) updateData.name = name;
-    if (role !== undefined) updateData.role = role;
-    if (bio !== undefined) updateData.bio = bio;
-    if (socialLinks !== undefined) updateData.socialLinks = socialLinks;
+      if (name !== undefined) updated.name = name;
+      if (role !== undefined) updated.role = role;
+      if (bio !== undefined) updated.bio = bio;
+      if (socialLinks !== undefined) updated.socialLinks = socialLinks;
 
-    if (image && image !== existing.image) {
-      updateData.image = await saveImage(image, "team", id);
-      await deleteImage(existing.image);
-    }
+      if (image && image !== existing.image) {
+        updated.image = await saveImage(image, "team", existing.id);
+        await deleteImage(existing.image);
+      }
 
-    if (Object.keys(updateData).length === 0) {
-      return NextResponse.json({ success: true, data: existing });
-    }
-
-    await db.update(team).set(updateData).where(eq(team.id, Number(id)));
-    return NextResponse.json({ success: true, data: { id, ...updateData } });
+      const next = [...current];
+      next[index] = updated;
+      writeDataFile(FILE_NAME, next);
+      return NextResponse.json({ success: true, data: updated });
+    });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
     return NextResponse.json(
@@ -143,17 +144,18 @@ export async function DELETE(request: Request) {
       );
     }
 
-    const [existing] = await db
-      .select()
-      .from(team)
-      .where(eq(team.id, Number(id)))
-      .limit(1);
-    if (existing) {
-      await deleteImage(existing.image);
-    }
-
-    await db.delete(team).where(eq(team.id, Number(id)));
-    return NextResponse.json({ success: true });
+    return withWriteLock(async () => {
+      const current = readDataFile<TeamMember[]>(FILE_NAME, DEFAULT_TEAM);
+      const existing = current.find((i) => i.id === Number(id));
+      if (existing) {
+        await deleteImage(existing.image);
+      }
+      writeDataFile(
+        FILE_NAME,
+        current.filter((i) => i.id !== Number(id)),
+      );
+      return NextResponse.json({ success: true });
+    });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
     return NextResponse.json(

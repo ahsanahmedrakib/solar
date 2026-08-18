@@ -13,7 +13,6 @@ function isSuperadmin(request: Request): boolean {
 }
 
 const required = [
-  "DATABASE_URL",
   "JWT_SECRET",
   "JWT_REFRESH_SECRET",
   "DEFAULT_SUPERADMIN_EMAIL",

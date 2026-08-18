@@ -1,8 +1,8 @@
 import { MainSitePageLoading } from "@/components/Common/MainSitePageLoading";
 import JsonLd, { BreadcrumbJsonLd } from "@/components/SEO/JsonLd";
+import { DEFAULT_SERVICES } from "@/data/services";
 import { SITE_URL } from "@/lib/config";
-import { db } from "@/lib/db";
-import { services } from "@/lib/schema";
+import { readDataFile } from "@/lib/fileStore";
 import {
   absoluteUrl,
   getSiteInfo,
@@ -11,7 +11,6 @@ import {
   stripHtml,
   truncateText,
 } from "@/lib/site";
-import { eq } from "drizzle-orm";
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 
@@ -24,15 +23,17 @@ interface Props {
   params: Promise<{ slug: string }>;
 }
 
+function getServiceBySlug(slug: string) {
+  return readDataFile("servicesData", DEFAULT_SERVICES).find(
+    (s) => s.slug === slug,
+  );
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const fallbackTitle = slugToTitle(slug);
   try {
-    const [service] = await db
-      .select()
-      .from(services)
-      .where(eq(services.slug, slug))
-      .limit(1);
+    const service = getServiceBySlug(slug);
     if (!service) return { title: fallbackTitle };
     return pageMetadata({
       title: service.title,
@@ -51,11 +52,7 @@ export default async function Page({ params }: Props) {
 
   let serviceJsonLd: object | null = null;
   try {
-    const [service] = await db
-      .select()
-      .from(services)
-      .where(eq(services.slug, slug))
-      .limit(1);
+    const service = getServiceBySlug(slug);
     if (service) {
       const info = await getSiteInfo();
       serviceJsonLd = {

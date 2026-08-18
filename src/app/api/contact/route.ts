@@ -1,10 +1,10 @@
-import { db } from "@/lib/db";
-import { isTableNotExistsError } from "@/lib/db-helpers";
-import { contactQueries } from "@/lib/schema";
+import { readDataFile, withWriteLock, writeDataFile } from "@/lib/fileStore";
+import { DEFAULT_QUERIES, type ContactQuery } from "@/data/contact";
 import { getClientIp, isRateLimited } from "@/lib/rateLimit";
 import { getRequestTokenPayload } from "@/lib/token";
 import { NextResponse } from "next/server";
-import { eq } from "drizzle-orm";
+
+const FILE_NAME = "contactData";
 
 export async function GET(request: Request) {
   try {
@@ -16,12 +16,9 @@ export async function GET(request: Request) {
       );
     }
 
-    const queries = await db.select().from(contactQueries);
+    const queries = readDataFile<ContactQuery[]>(FILE_NAME, DEFAULT_QUERIES);
     return NextResponse.json({ success: true, data: queries });
   } catch (error: unknown) {
-    if (isTableNotExistsError(error)) {
-      return NextResponse.json({ success: true, data: [] });
-    }
     const message = error instanceof Error ? error.message : String(error);
     return NextResponse.json(
       { success: false, error: message },
@@ -81,20 +78,23 @@ export async function POST(request: Request) {
       );
     }
 
-    const newQuery = {
-      id: `cq-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-      name: name.trim(),
-      email: email.trim(),
-      phone: typeof phone === "string" ? phone.trim() : "",
-      subject: subject.trim(),
-      message: message.trim(),
-      createdAt: new Date().toISOString(),
-      status: "new",
-      notes: null,
-    };
-
-    await db.insert(contactQueries).values(newQuery);
-    return NextResponse.json({ success: true, data: newQuery });
+    return withWriteLock(async () => {
+      const current = readDataFile<ContactQuery[]>(FILE_NAME, DEFAULT_QUERIES);
+      const newQuery: ContactQuery = {
+        id: `cq-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+        name: name.trim(),
+        email: email.trim(),
+        phone: typeof phone === "string" ? phone.trim() : "",
+        subject: subject.trim(),
+        message: message.trim(),
+        createdAt: new Date().toISOString(),
+        status: "new",
+      };
+      writeDataFile(FILE_NAME, [...current, newQuery]);
+      return newQuery;
+    }).then((newQuery) =>
+      NextResponse.json({ success: true, data: newQuery }),
+    );
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
     return NextResponse.json(
@@ -124,24 +124,30 @@ export async function PUT(request: Request) {
       );
     }
 
-    const updateData: Record<string, unknown> = {};
-    if (name !== undefined) updateData.name = name;
-    if (email !== undefined) updateData.email = email;
-    if (phone !== undefined) updateData.phone = phone;
-    if (subject !== undefined) updateData.subject = subject;
-    if (message !== undefined) updateData.message = message;
-    if (status !== undefined) updateData.status = status;
-    if (notes !== undefined) updateData.notes = notes;
+    return withWriteLock(async () => {
+      const current = readDataFile<ContactQuery[]>(FILE_NAME, DEFAULT_QUERIES);
+      const index = current.findIndex((q) => q.id === id);
+      if (index === -1) {
+        return NextResponse.json(
+          { success: false, error: "Query not found" },
+          { status: 404 },
+        );
+      }
 
-    if (Object.keys(updateData).length === 0) {
-      return NextResponse.json({ success: true });
-    }
+      const updated: ContactQuery = { ...current[index] };
+      if (name !== undefined) updated.name = name;
+      if (email !== undefined) updated.email = email;
+      if (phone !== undefined) updated.phone = phone;
+      if (subject !== undefined) updated.subject = subject;
+      if (message !== undefined) updated.message = message;
+      if (status !== undefined) updated.status = status;
+      if (notes !== undefined) updated.notes = notes;
 
-    await db
-      .update(contactQueries)
-      .set(updateData)
-      .where(eq(contactQueries.id, id));
-    return NextResponse.json({ success: true, data: { id, ...updateData } });
+      const next = [...current];
+      next[index] = updated;
+      writeDataFile(FILE_NAME, next);
+      return NextResponse.json({ success: true, data: updated });
+    });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
     return NextResponse.json(
@@ -169,8 +175,15 @@ export async function DELETE(request: Request) {
         { status: 400 },
       );
     }
-    await db.delete(contactQueries).where(eq(contactQueries.id, id));
-    return NextResponse.json({ success: true });
+
+    return withWriteLock(async () => {
+      const current = readDataFile<ContactQuery[]>(FILE_NAME, DEFAULT_QUERIES);
+      writeDataFile(
+        FILE_NAME,
+        current.filter((q) => q.id !== id),
+      );
+      return NextResponse.json({ success: true });
+    });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
     return NextResponse.json(

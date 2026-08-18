@@ -1,13 +1,9 @@
 import crypto from "crypto";
-import "./env";
-import { db } from "./db";
-import { users } from "./schema";
-import { count, eq } from "drizzle-orm";
+import { readDataFile, withWriteLock, writeDataFile } from "./fileStore";
 import {
   comparePassword,
   generateAccessToken,
   generateRefreshToken,
-  getEnv,
   getRequestTokenPayload,
   hashPassword,
   verifyAccessToken,
@@ -26,33 +22,57 @@ export {
   type TokenPayload,
 };
 
-let superadminSeeded = false;
+export interface StoredUser {
+  id: string;
+  name: string;
+  email: string;
+  password: string;
+  role: "superadmin" | "admin";
+  createdAt: string;
+  updatedAt: string;
+}
+
+const USERS_FILE = "usersData";
+
+export function getUsers(): StoredUser[] {
+  return readDataFile<StoredUser[]>(USERS_FILE, []);
+}
+
+export function saveUsers(users: StoredUser[]): void {
+  writeDataFile(USERS_FILE, users);
+}
 
 export async function ensureSuperadminExists() {
-  if (superadminSeeded) return;
+  return withWriteLock(async () => {
+    const users = getUsers();
+    if (users.some((u) => u.role === "superadmin")) return;
 
-  const result = await db
-    .select({ count: count() })
-    .from(users)
-    .where(eq(users.role, "superadmin"));
-  const adminCount = result[0]?.count ?? 0;
+    const email = process.env.DEFAULT_SUPERADMIN_EMAIL;
+    const password = process.env.DEFAULT_SUPERADMIN_PASSWORD;
+    if (!email || !password) return;
 
-  if (adminCount === 0) {
-    const email = getEnv("DEFAULT_SUPERADMIN_EMAIL");
-    const password = getEnv("DEFAULT_SUPERADMIN_PASSWORD");
-    const hashed = await hashPassword(password);
-    try {
-      await db.insert(users).values({
-        id: "sa-" + crypto.randomUUID().slice(0, 8),
-        name: "Super Admin",
-        email,
-        password: hashed,
-        role: "superadmin",
-      });
-    } catch {
-      // Another request may have inserted first — ignore duplicate
+    const now = new Date().toISOString();
+    const superadmin: StoredUser = {
+      id: "sa-" + crypto.randomUUID().slice(0, 8),
+      name: "Super Admin",
+      email,
+      password: await hashPassword(password),
+      role: "superadmin",
+      createdAt: now,
+      updatedAt: now,
+    };
+
+    if (!users.some((u) => u.email.toLowerCase() === email.toLowerCase())) {
+      saveUsers([...users, superadmin]);
     }
-  }
+  });
+}
 
-  superadminSeeded = true;
+export function findUserByEmail(email: string): StoredUser | undefined {
+  const normalized = String(email ?? "").trim().toLowerCase();
+  return getUsers().find((u) => u.email.toLowerCase() === normalized);
+}
+
+export function findUserById(id: string): StoredUser | undefined {
+  return getUsers().find((u) => u.id === id);
 }

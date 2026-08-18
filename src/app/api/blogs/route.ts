@@ -1,25 +1,22 @@
-import { db } from "@/lib/db";
-import { isTableNotExistsError } from "@/lib/db-helpers";
-import { blogs } from "@/lib/schema";
+import { PUBLIC_CACHE_HEADERS } from "@/lib/cache";
+import { readDataFile, withWriteLock, writeDataFile } from "@/lib/fileStore";
+import { DEFAULT_BLOGS, type Blog } from "@/data/blogs";
 import { deleteImage, saveImage } from "@/lib/imageHelper";
 import { getRequestTokenPayload } from "@/lib/token";
 import { NextResponse } from "next/server";
-import { eq } from "drizzle-orm";
+
+const FILE_NAME = "blogsData";
+
+function nextId(items: Blog[]): number {
+  return items.length > 0 ? Math.max(...items.map((i) => Number(i.id))) + 1 : 1;
+}
 
 export async function GET() {
-  try {
-    const allBlogs = await db.select().from(blogs);
-    return NextResponse.json({ success: true, data: allBlogs });
-  } catch (error: unknown) {
-    if (isTableNotExistsError(error)) {
-      return NextResponse.json({ success: true, data: [] });
-    }
-    const message = error instanceof Error ? error.message : "Unknown error";
-    return NextResponse.json(
-      { success: false, error: message },
-      { status: 500 },
-    );
-  }
+  const allBlogs = readDataFile<Blog[]>(FILE_NAME, DEFAULT_BLOGS);
+  return NextResponse.json(
+    { success: true, data: allBlogs },
+    { headers: PUBLIC_CACHE_HEADERS },
+  );
 }
 
 export async function POST(request: Request) {
@@ -33,7 +30,17 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { title, category, imageUrl, slug, content, tags, date, blogDetails, images } = body;
+    const {
+      title,
+      category,
+      imageUrl,
+      slug,
+      content,
+      tags,
+      date,
+      blogDetails,
+      images,
+    } = body;
 
     if (!title || !slug) {
       return NextResponse.json(
@@ -42,32 +49,43 @@ export async function POST(request: Request) {
       );
     }
 
-    const savedImagePath = imageUrl
-      ? await saveImage(imageUrl, "blogs", 0)
-      : "";
+    return withWriteLock(async () => {
+      const current = readDataFile<Blog[]>(FILE_NAME, DEFAULT_BLOGS);
+      const id = nextId(current);
 
-    const savedImages = Array.isArray(images)
-      ? await Promise.all(images.map((img: string) => saveImage(img, "blogs", 0)))
-      : [];
+      const savedImagePath = imageUrl ? await saveImage(imageUrl, "blogs", id) : "";
+      const savedImages = Array.isArray(images)
+        ? await Promise.all(
+            images.map((img: string) => saveImage(img, "blogs", id)),
+          )
+        : [];
 
-    const [newBlog] = await db
-      .insert(blogs)
-      .values({
+      const newBlog: Blog = {
+        id,
         title,
         category: category ?? "",
         imageUrl: savedImagePath,
         slug,
         content: content ?? "",
         tags: tags ?? [],
-        date: date ?? new Date().toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }),
+        date:
+          date ??
+          new Date().toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          }),
         blogDetails: blogDetails ?? "",
         images: savedImages,
-      })
-      .returning();
+      };
 
-    return NextResponse.json({ success: true, data: newBlog });
+      writeDataFile(FILE_NAME, [...current, newBlog]);
+      return newBlog;
+    }).then((newBlog) =>
+      NextResponse.json({ success: true, data: newBlog }),
+    );
   } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : "Unknown error";
+    const message = error instanceof Error ? error.message : String(error);
     return NextResponse.json(
       { success: false, error: message },
       { status: 500 },
@@ -86,7 +104,18 @@ export async function PUT(request: Request) {
     }
 
     const body = await request.json();
-    const { id, title, category, imageUrl, slug, content, tags, date, blogDetails, images } = body;
+    const {
+      id,
+      title,
+      category,
+      imageUrl,
+      slug,
+      content,
+      tags,
+      date,
+      blogDetails,
+      images,
+    } = body;
 
     if (!id) {
       return NextResponse.json(
@@ -95,52 +124,51 @@ export async function PUT(request: Request) {
       );
     }
 
-    const [existing] = await db
-      .select()
-      .from(blogs)
-      .where(eq(blogs.id, Number(id)))
-      .limit(1);
-
-    if (!existing) {
-      return NextResponse.json(
-        { success: false, error: "Blog not found" },
-        { status: 404 },
-      );
-    }
-
-    const updateData: Record<string, unknown> = {};
-    if (title !== undefined) updateData.title = title;
-    if (category !== undefined) updateData.category = category;
-    if (slug !== undefined) updateData.slug = slug;
-    if (content !== undefined) updateData.content = content;
-    if (tags !== undefined) updateData.tags = tags;
-    if (date !== undefined) updateData.date = date;
-    if (blogDetails !== undefined) updateData.blogDetails = blogDetails;
-
-    if (imageUrl && imageUrl !== existing.imageUrl) {
-      updateData.imageUrl = await saveImage(imageUrl, "blogs", id);
-      await deleteImage(existing.imageUrl);
-    }
-
-    if (Array.isArray(images)) {
-      const existingImages = existing.images ?? [];
-      const removed = existingImages.filter((img) => !images.includes(img));
-      updateData.images = await Promise.all(
-        images.map((img: string) => saveImage(img, "blogs", id)),
-      );
-      for (const img of removed) {
-        await deleteImage(img);
+    return withWriteLock(async () => {
+      const current = readDataFile<Blog[]>(FILE_NAME, DEFAULT_BLOGS);
+      const index = current.findIndex((i) => i.id === Number(id));
+      if (index === -1) {
+        return NextResponse.json(
+          { success: false, error: "Blog not found" },
+          { status: 404 },
+        );
       }
-    }
 
-    if (Object.keys(updateData).length === 0) {
-      return NextResponse.json({ success: true, data: existing });
-    }
+      const existing = current[index];
+      const updated: Blog = { ...existing };
 
-    await db.update(blogs).set(updateData).where(eq(blogs.id, Number(id)));
-    return NextResponse.json({ success: true, data: { id, ...updateData } });
+      if (title !== undefined) updated.title = title;
+      if (category !== undefined) updated.category = category;
+      if (slug !== undefined) updated.slug = slug;
+      if (content !== undefined) updated.content = content;
+      if (tags !== undefined) updated.tags = tags;
+      if (date !== undefined) updated.date = date;
+      if (blogDetails !== undefined) updated.blogDetails = blogDetails;
+
+      if (imageUrl && imageUrl !== existing.imageUrl) {
+        updated.imageUrl = await saveImage(imageUrl, "blogs", existing.id);
+        await deleteImage(existing.imageUrl);
+      }
+
+      if (Array.isArray(images)) {
+        const removed = (existing.images ?? []).filter(
+          (img) => !images.includes(img),
+        );
+        updated.images = await Promise.all(
+          images.map((img: string) => saveImage(img, "blogs", existing.id)),
+        );
+        for (const img of removed) {
+          await deleteImage(img);
+        }
+      }
+
+      const next = [...current];
+      next[index] = updated;
+      writeDataFile(FILE_NAME, next);
+      return NextResponse.json({ success: true, data: updated });
+    });
   } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : "Unknown error";
+    const message = error instanceof Error ? error.message : String(error);
     return NextResponse.json(
       { success: false, error: message },
       { status: 500 },
@@ -167,22 +195,23 @@ export async function DELETE(request: Request) {
       );
     }
 
-    const [existing] = await db
-      .select()
-      .from(blogs)
-      .where(eq(blogs.id, Number(id)))
-      .limit(1);
-    if (existing) {
-      await deleteImage(existing.imageUrl);
-      for (const img of existing.images ?? []) {
-        await deleteImage(img);
+    return withWriteLock(async () => {
+      const current = readDataFile<Blog[]>(FILE_NAME, DEFAULT_BLOGS);
+      const existing = current.find((i) => i.id === Number(id));
+      if (existing) {
+        await deleteImage(existing.imageUrl);
+        for (const img of existing.images ?? []) {
+          await deleteImage(img);
+        }
       }
-    }
-
-    await db.delete(blogs).where(eq(blogs.id, Number(id)));
-    return NextResponse.json({ success: true });
+      writeDataFile(
+        FILE_NAME,
+        current.filter((i) => i.id !== Number(id)),
+      );
+      return NextResponse.json({ success: true });
+    });
   } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : "Unknown error";
+    const message = error instanceof Error ? error.message : String(error);
     return NextResponse.json(
       { success: false, error: message },
       { status: 500 },

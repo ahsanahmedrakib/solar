@@ -1,14 +1,11 @@
 import {
   comparePassword,
   ensureSuperadminExists,
+  findUserByEmail,
   generateAccessToken,
   generateRefreshToken,
 } from "@/lib/auth";
-import { db } from "@/lib/db";
-import { isTableNotExistsError } from "@/lib/db-helpers";
 import { getClientIp, isRateLimited } from "@/lib/rateLimit";
-import { users } from "@/lib/schema";
-import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
 export async function POST(request: Request) {
@@ -23,21 +20,25 @@ export async function POST(request: Request) {
     }
 
     const ip = getClientIp(request);
-    if (isRateLimited(`login:${ip}:${String(email).toLowerCase()}`, 10, 15 * 60 * 1000)) {
+    if (
+      isRateLimited(
+        `login:${ip}:${String(email).toLowerCase()}`,
+        10,
+        15 * 60 * 1000,
+      )
+    ) {
       return NextResponse.json(
-        { success: false, error: "Too many login attempts. Please try again later." },
+        {
+          success: false,
+          error: "Too many login attempts. Please try again later.",
+        },
         { status: 429 },
       );
     }
 
-    try {
-      await ensureSuperadminExists();
-    } catch {
-      // Table may not exist yet — skip seeding
-    }
+    await ensureSuperadminExists();
 
-    const [user] = await db.select().from(users).where(eq(users.email, email)).limit(1);
-
+    const user = findUserByEmail(email);
     if (!user) {
       return NextResponse.json(
         { success: false, error: "Invalid email or password" },
@@ -94,12 +95,6 @@ export async function POST(request: Request) {
 
     return response;
   } catch (error: unknown) {
-    if (isTableNotExistsError(error)) {
-      return NextResponse.json(
-        { success: false, error: "Database tables not set up yet. Run: pnpm db:push" },
-        { status: 503 },
-      );
-    }
     const message = error instanceof Error ? error.message : String(error);
     return NextResponse.json(
       { success: false, error: message },

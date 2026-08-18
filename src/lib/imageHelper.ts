@@ -1,6 +1,5 @@
 import fs from "fs";
 import path from "path";
-import { deleteImageFromDB, saveImageToDB } from "./imageStore";
 
 const ALLOWED_FOLDERS = [
   "services",
@@ -61,35 +60,25 @@ export async function saveImage(
 
   const buffer = Buffer.from(matches[2], "base64");
 
-  if (process.env.NODE_ENV === "production") {
-    return saveImageToDB(base64Data, folderName, id);
-  }
-
   const relativeDir = `/images/api/${folderName}`;
   const targetDir = path.join(process.cwd(), "public", relativeDir);
 
-  try {
-    if (!fs.existsSync(targetDir)) {
-      fs.mkdirSync(targetDir, { recursive: true });
-    }
-
-    const fileName = `${sanitizeImageId(id)}_${Date.now()}.${extension}`;
-    const filePath = path.join(targetDir, fileName);
-
-    fs.writeFileSync(filePath, buffer);
-
-    return `${relativeDir}/${fileName}`;
-  } catch (error) {
-    console.warn("Filesystem write failed, falling back to DB:", error);
-    return saveImageToDB(base64Data, folderName, id);
+  if (!fs.existsSync(targetDir)) {
+    fs.mkdirSync(targetDir, { recursive: true });
   }
+
+  const fileName = `${sanitizeImageId(id)}_${Date.now()}.${extension}`;
+  const filePath = path.join(targetDir, fileName);
+
+  fs.writeFileSync(filePath, buffer);
+
+  return `${relativeDir}/${fileName}`;
 }
 
 export async function deleteImage(imageUrl: string): Promise<void> {
   if (!imageUrl) return;
 
   if (imageUrl.startsWith("/api/image/")) {
-    await deleteImageFromDB(imageUrl);
     return;
   }
 

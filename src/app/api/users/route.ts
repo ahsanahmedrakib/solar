@@ -1,14 +1,15 @@
 import {
   ensureSuperadminExists,
+  findUserById,
+  getUsers,
   hashPassword,
-  verifyAccessToken,
+  saveUsers,
+  type StoredUser,
 } from "@/lib/auth";
-import { db } from "@/lib/db";
-import { isTableNotExistsError } from "@/lib/db-helpers";
-import { users } from "@/lib/schema";
+import { withWriteLock } from "@/lib/fileStore";
+import { verifyAccessToken } from "@/lib/auth";
 import crypto from "crypto";
 import { NextResponse } from "next/server";
-import { eq, count } from "drizzle-orm";
 
 function getTokenPayload(request: Request) {
   const authHeader = request.headers.get("Authorization");
@@ -18,6 +19,17 @@ function getTokenPayload(request: Request) {
   } catch {
     return null;
   }
+}
+
+function toPublicUser(user: StoredUser) {
+  return {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role: user.role,
+    createdAt: user.createdAt,
+    updatedAt: user.updatedAt,
+  };
 }
 
 export async function GET(request: Request) {
@@ -32,22 +44,9 @@ export async function GET(request: Request) {
 
     await ensureSuperadminExists();
 
-    const allUsers = await db
-      .select({
-        id: users.id,
-        name: users.name,
-        email: users.email,
-        role: users.role,
-        createdAt: users.createdAt,
-        updatedAt: users.updatedAt,
-      })
-      .from(users);
-
+    const allUsers = getUsers().map(toPublicUser);
     return NextResponse.json({ success: true, data: allUsers });
   } catch (error: unknown) {
-    if (isTableNotExistsError(error)) {
-      return NextResponse.json({ success: true, data: [] });
-    }
     const message = error instanceof Error ? error.message : String(error);
     return NextResponse.json(
       { success: false, error: message },
@@ -89,38 +88,35 @@ export async function POST(request: Request) {
       );
     }
 
-    await ensureSuperadminExists();
+    return withWriteLock(async () => {
+      await ensureSuperadminExists();
 
-    const existing = await db.select().from(users).where(eq(users.email, email)).limit(1);
-    if (existing.length > 0) {
-      return NextResponse.json(
-        { success: false, error: "A user with this email already exists" },
-        { status: 409 },
-      );
-    }
+      const current = getUsers();
+      if (
+        current.some(
+          (u) => u.email.toLowerCase() === String(email).toLowerCase(),
+        )
+      ) {
+        return NextResponse.json(
+          { success: false, error: "A user with this email already exists" },
+          { status: 409 },
+        );
+      }
 
-    const nextId = "u-" + crypto.randomUUID().slice(0, 12);
-
-    const hashedPassword = await hashPassword(password);
-    const [newUser] = await db
-      .insert(users)
-      .values({
-        id: nextId,
+      const now = new Date().toISOString();
+      const newUser: StoredUser = {
+        id: "u-" + crypto.randomUUID().slice(0, 12),
         name,
         email,
-        password: hashedPassword,
+        password: await hashPassword(password),
         role: role || "admin",
-      })
-      .returning({
-        id: users.id,
-        name: users.name,
-        email: users.email,
-        role: users.role,
-        createdAt: users.createdAt,
-        updatedAt: users.updatedAt,
-      });
+        createdAt: now,
+        updatedAt: now,
+      };
 
-    return NextResponse.json({ success: true, data: newUser });
+      saveUsers([...current, newUser]);
+      return NextResponse.json({ success: true, data: toPublicUser(newUser) });
+    });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
     return NextResponse.json(
@@ -148,83 +144,80 @@ export async function PUT(request: Request) {
       );
     }
 
-    const [targetUser] = await db.select().from(users).where(eq(users.id, id)).limit(1);
-    if (!targetUser) {
-      return NextResponse.json(
-        { success: false, error: "User not found" },
-        { status: 404 },
-      );
-    }
-
-    const isSuperadmin = payload.role === "superadmin";
-    const isOwnProfile = payload.userId === id;
-
-    if (!isSuperadmin && !isOwnProfile) {
-      return NextResponse.json(
-        { success: false, error: "You can only update your own profile" },
-        { status: 403 },
-      );
-    }
-
-    if (role && !isSuperadmin) {
-      return NextResponse.json(
-        { success: false, error: "Only superadmin can change roles" },
-        { status: 403 },
-      );
-    }
-
-    if (role && !["admin", "superadmin"].includes(role)) {
-      return NextResponse.json(
-        { success: false, error: "Role must be 'admin' or 'superadmin'" },
-        { status: 400 },
-      );
-    }
-
-    const updateData: Record<string, unknown> = { updatedAt: new Date() };
-
-    if (name && isOwnProfile) updateData.name = name;
-    if (name && isSuperadmin) updateData.name = name;
-    if (email && isSuperadmin) {
-      const emailExists = await db
-        .select()
-        .from(users)
-        .where(eq(users.email, email))
-        .limit(1);
-      if (emailExists.length > 0 && emailExists[0].id !== id) {
+    return withWriteLock(async () => {
+      const current = getUsers();
+      const index = current.findIndex((u) => u.id === id);
+      if (index === -1) {
         return NextResponse.json(
-          { success: false, error: "Email already in use" },
-          { status: 409 },
+          { success: false, error: "User not found" },
+          { status: 404 },
         );
       }
-      updateData.email = email;
-    }
-    if (role && isSuperadmin) updateData.role = role;
-    if (password) {
-      if (password.length < 6) {
+
+      const targetUser = current[index];
+      const isSuperadmin = payload.role === "superadmin";
+      const isOwnProfile = payload.userId === id;
+
+      if (!isSuperadmin && !isOwnProfile) {
         return NextResponse.json(
-          { success: false, error: "Password must be at least 6 characters" },
+          { success: false, error: "You can only update your own profile" },
+          { status: 403 },
+        );
+      }
+
+      if (role && !isSuperadmin) {
+        return NextResponse.json(
+          { success: false, error: "Only superadmin can change roles" },
+          { status: 403 },
+        );
+      }
+
+      if (role && !["admin", "superadmin"].includes(role)) {
+        return NextResponse.json(
+          { success: false, error: "Role must be 'admin' or 'superadmin'" },
           { status: 400 },
         );
       }
-      updateData.password = await hashPassword(password);
-    }
 
-    await db.update(users).set(updateData).where(eq(users.id, id));
+      const updated: StoredUser = {
+        ...targetUser,
+        updatedAt: new Date().toISOString(),
+      };
 
-    const [updated] = await db
-      .select({
-        id: users.id,
-        name: users.name,
-        email: users.email,
-        role: users.role,
-        createdAt: users.createdAt,
-        updatedAt: users.updatedAt,
-      })
-      .from(users)
-      .where(eq(users.id, id))
-      .limit(1);
+      if (name) updated.name = name;
+      if (email && isSuperadmin) {
+        if (
+          current.some(
+            (u) =>
+              u.id !== id && u.email.toLowerCase() === email.toLowerCase(),
+          )
+        ) {
+          return NextResponse.json(
+            { success: false, error: "Email already in use" },
+            { status: 409 },
+          );
+        }
+        updated.email = email;
+      }
+      if (role && isSuperadmin) updated.role = role;
+      if (password) {
+        if (password.length < 6) {
+          return NextResponse.json(
+            { success: false, error: "Password must be at least 6 characters" },
+            { status: 400 },
+          );
+        }
+        updated.password = await hashPassword(password);
+      }
 
-    return NextResponse.json({ success: true, data: updated });
+      const next = [...current];
+      next[index] = updated;
+      saveUsers(next);
+      return NextResponse.json({
+        success: true,
+        data: toPublicUser(updated),
+      });
+    });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
     return NextResponse.json(
@@ -254,32 +247,34 @@ export async function DELETE(request: Request) {
       );
     }
 
-    const [targetUser] = await db.select().from(users).where(eq(users.id, id)).limit(1);
-    if (!targetUser) {
-      return NextResponse.json(
-        { success: false, error: "User not found" },
-        { status: 404 },
-      );
-    }
-
-    if (targetUser.role === "superadmin") {
-      const [result] = await db
-        .select({ count: count() })
-        .from(users)
-        .where(eq(users.role, "superadmin"));
-      if ((result?.count ?? 0) <= 1) {
+    return withWriteLock(async () => {
+      const current = getUsers();
+      const targetUser = findUserById(id);
+      if (!targetUser) {
         return NextResponse.json(
-          {
-            success: false,
-            error: "Cannot delete the only superadmin account",
-          },
-          { status: 403 },
+          { success: false, error: "User not found" },
+          { status: 404 },
         );
       }
-    }
 
-    await db.delete(users).where(eq(users.id, id));
-    return NextResponse.json({ success: true });
+      if (targetUser.role === "superadmin") {
+        const superadminCount = current.filter(
+          (u) => u.role === "superadmin",
+        ).length;
+        if (superadminCount <= 1) {
+          return NextResponse.json(
+            {
+              success: false,
+              error: "Cannot delete the only superadmin account",
+            },
+            { status: 403 },
+          );
+        }
+      }
+
+      saveUsers(current.filter((u) => u.id !== id));
+      return NextResponse.json({ success: true });
+    });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
     return NextResponse.json(

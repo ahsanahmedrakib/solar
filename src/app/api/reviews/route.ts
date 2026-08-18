@@ -1,24 +1,21 @@
-import { db } from "@/lib/db";
-import { isTableNotExistsError } from "@/lib/db-helpers";
-import { reviews } from "@/lib/schema";
+import { PUBLIC_CACHE_HEADERS } from "@/lib/cache";
+import { readDataFile, withWriteLock, writeDataFile } from "@/lib/fileStore";
+import { DEFAULT_REVIEWS, type Review } from "@/data/reviews";
 import { getRequestTokenPayload } from "@/lib/token";
 import { NextResponse } from "next/server";
-import { desc, eq } from "drizzle-orm";
+
+const FILE_NAME = "reviewsData";
+
+function nextId(items: Review[]): number {
+  return items.length > 0 ? Math.max(...items.map((i) => Number(i.id))) + 1 : 1;
+}
 
 export async function GET() {
-  try {
-    const allReviews = await db.select().from(reviews).orderBy(desc(reviews.createdAt));
-    return NextResponse.json({ success: true, data: allReviews });
-  } catch (error: unknown) {
-    if (isTableNotExistsError(error)) {
-      return NextResponse.json({ success: true, data: [] });
-    }
-    const message = error instanceof Error ? error.message : String(error);
-    return NextResponse.json(
-      { success: false, error: message },
-      { status: 500 },
-    );
-  }
+  const allReviews = readDataFile<Review[]>(FILE_NAME, DEFAULT_REVIEWS);
+  return NextResponse.json(
+    { success: true, data: allReviews },
+    { headers: PUBLIC_CACHE_HEADERS },
+  );
 }
 
 export async function POST(request: Request) {
@@ -33,15 +30,21 @@ export async function POST(request: Request) {
       );
     }
 
-    const newReview = {
-      name,
-      role,
-      rating: rating ?? 5,
-      quote,
-    };
-
-    const inserted = await db.insert(reviews).values(newReview).returning();
-    return NextResponse.json({ success: true, data: inserted[0] });
+    return withWriteLock(async () => {
+      const current = readDataFile<Review[]>(FILE_NAME, DEFAULT_REVIEWS);
+      const newReview: Review = {
+        id: nextId(current),
+        name,
+        role,
+        rating: rating ?? 5,
+        quote,
+        createdAt: new Date().toISOString(),
+      };
+      writeDataFile(FILE_NAME, [...current, newReview]);
+      return newReview;
+    }).then((newReview) =>
+      NextResponse.json({ success: true, data: newReview }),
+    );
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
     return NextResponse.json(
@@ -69,8 +72,15 @@ export async function DELETE(request: Request) {
         { status: 400 },
       );
     }
-    await db.delete(reviews).where(eq(reviews.id, Number(id)));
-    return NextResponse.json({ success: true });
+
+    return withWriteLock(async () => {
+      const current = readDataFile<Review[]>(FILE_NAME, DEFAULT_REVIEWS);
+      writeDataFile(
+        FILE_NAME,
+        current.filter((i) => i.id !== Number(id)),
+      );
+      return NextResponse.json({ success: true });
+    });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
     return NextResponse.json(

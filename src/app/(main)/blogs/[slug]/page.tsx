@@ -1,8 +1,8 @@
 import { MainSitePageLoading } from "@/components/Common/MainSitePageLoading";
 import JsonLd, { BreadcrumbJsonLd } from "@/components/SEO/JsonLd";
+import { DEFAULT_BLOGS } from "@/data/blogs";
 import { SITE_URL } from "@/lib/config";
-import { db } from "@/lib/db";
-import { blogs } from "@/lib/schema";
+import { readDataFile } from "@/lib/fileStore";
 import {
   absoluteUrl,
   getSiteInfo,
@@ -11,7 +11,6 @@ import {
   stripHtml,
   truncateText,
 } from "@/lib/site";
-import { eq } from "drizzle-orm";
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 
@@ -24,15 +23,15 @@ interface Props {
   params: Promise<{ slug: string }>;
 }
 
+function getBlogBySlug(slug: string) {
+  return readDataFile("blogsData", DEFAULT_BLOGS).find((b) => b.slug === slug);
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const fallbackTitle = slugToTitle(slug);
   try {
-    const [blog] = await db
-      .select()
-      .from(blogs)
-      .where(eq(blogs.slug, slug))
-      .limit(1);
+    const blog = getBlogBySlug(slug);
     if (!blog) return { title: fallbackTitle };
     return pageMetadata({
       title: blog.title,
@@ -54,11 +53,7 @@ export default async function Page({ params }: Props) {
 
   let articleJsonLd: object | null = null;
   try {
-    const [blog] = await db
-      .select()
-      .from(blogs)
-      .where(eq(blogs.slug, slug))
-      .limit(1);
+    const blog = getBlogBySlug(slug);
     if (blog) {
       const info = await getSiteInfo();
       articleJsonLd = {

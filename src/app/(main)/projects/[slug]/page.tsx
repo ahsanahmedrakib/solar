@@ -1,9 +1,8 @@
 import { MainSitePageLoading } from "@/components/Common/MainSitePageLoading";
 import { BreadcrumbJsonLd } from "@/components/SEO/JsonLd";
-import { db } from "@/lib/db";
-import { projects } from "@/lib/schema";
+import { DEFAULT_PROJECTS } from "@/data/projects";
+import { readDataFile } from "@/lib/fileStore";
 import { pageMetadata, slugToTitle, stripHtml, truncateText } from "@/lib/site";
-import { eq } from "drizzle-orm";
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 
@@ -16,15 +15,17 @@ interface Props {
   params: Promise<{ slug: string }>;
 }
 
+function getProjectBySlug(slug: string) {
+  return readDataFile("projectsData", DEFAULT_PROJECTS).find(
+    (p) => p.slug === slug,
+  );
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const fallbackTitle = slugToTitle(slug);
   try {
-    const [project] = await db
-      .select()
-      .from(projects)
-      .where(eq(projects.slug, slug))
-      .limit(1);
+    const project = getProjectBySlug(slug);
     if (!project) return { title: fallbackTitle };
     const description = stripHtml(project.projectDetails || "");
     return pageMetadata({

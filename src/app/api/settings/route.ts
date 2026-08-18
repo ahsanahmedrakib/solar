@@ -1,10 +1,10 @@
-import { db } from "@/lib/db";
-import { isTableNotExistsError } from "@/lib/db-helpers";
-import { settings } from "@/lib/schema";
+import { PUBLIC_CACHE_HEADERS } from "@/lib/cache";
+import { readDataFile, withWriteLock, writeDataFile } from "@/lib/fileStore";
 import { deleteImage, saveImage } from "@/lib/imageHelper";
 import { getRequestTokenPayload } from "@/lib/token";
 import { NextResponse } from "next/server";
-import { eq } from "drizzle-orm";
+
+const FILE_NAME = "settingsData";
 
 const HARDCODED_FIELD_IDS = [
   "company-name",
@@ -31,10 +31,7 @@ function stripHardcodedFields(sections: SectionShape[]): SectionShape[] {
     );
 }
 
-async function processImageFields(
-  sections: SectionShape[],
-  existingSections?: SectionShape[],
-) {
+async function processImageFields(sections: SectionShape[]) {
   const result = [];
   for (const section of sections) {
     if (!section.fields) {
@@ -42,7 +39,6 @@ async function processImageFields(
       continue;
     }
 
-    const existingSection = existingSections?.find((s) => s.id === section.id);
     const processedFields = [];
 
     for (const field of section.fields) {
@@ -51,15 +47,7 @@ async function processImageFields(
         continue;
       }
 
-      const existingField = existingSection?.fields?.find(
-        (f) => f.id === field.id,
-      );
       const savedPath = await saveImage(field.value, "settings", field.id);
-
-      if (existingField?.value && existingField.value !== savedPath) {
-        await deleteImage(existingField.value);
-      }
-
       processedFields.push({ ...field, value: savedPath });
     }
 
@@ -69,30 +57,12 @@ async function processImageFields(
 }
 
 export async function GET() {
-  try {
-    const rows = await db
-      .select()
-      .from(settings)
-      .where(eq(settings.settingsId, "global"))
-      .limit(1);
-
-    if (rows.length === 0) {
-      return NextResponse.json({ success: true, data: null });
-    }
-    return NextResponse.json({
-      success: true,
-      data: stripHardcodedFields(rows[0].sections as SectionShape[]),
-    });
-  } catch (error: unknown) {
-    if (isTableNotExistsError(error)) {
-      return NextResponse.json({ success: true, data: null });
-    }
-    const message = error instanceof Error ? error.message : String(error);
-    return NextResponse.json(
-      { success: false, error: message },
-      { status: 500 },
-    );
-  }
+  const sections = readDataFile<SectionShape[] | null>(FILE_NAME, null);
+  const data = sections ? stripHardcodedFields(sections) : null;
+  return NextResponse.json(
+    { success: true, data },
+    { headers: PUBLIC_CACHE_HEADERS },
+  );
 }
 
 export async function POST(request: Request) {
@@ -115,32 +85,33 @@ export async function POST(request: Request) {
       );
     }
 
-    const existingRows = await db
-      .select()
-      .from(settings)
-      .where(eq(settings.settingsId, "global"))
-      .limit(1);
+    return withWriteLock(async () => {
+      const existing = readDataFile<SectionShape[] | null>(FILE_NAME, null);
+      const processedSections = await processImageFields(
+        stripHardcodedFields(sections),
+      );
 
-    const existingSections = (existingRows[0]?.sections ?? []) as SectionShape[];
+      const updated = [];
+      for (const section of processedSections) {
+        const existingSection = existing?.find((s) => s.id === section.id);
+        const removed = (existingSection?.fields ?? [])
+          .filter((f) => f.type === "image")
+          .filter(
+            (f) =>
+              !section.fields?.some((nf) => nf.id === f.id) ||
+              section.fields.some(
+                (nf) => nf.id === f.id && nf.value !== f.value,
+              ),
+          );
+        for (const f of removed) {
+          await deleteImage(f.value);
+        }
+        updated.push(section);
+      }
 
-    const processedSections = await processImageFields(
-      stripHardcodedFields(sections),
-      existingSections,
-    );
-
-    if (existingRows.length > 0) {
-      await db
-        .update(settings)
-        .set({ sections: processedSections, updatedAt: new Date() })
-        .where(eq(settings.settingsId, "global"));
-    } else {
-      await db.insert(settings).values({
-        settingsId: "global",
-        sections: processedSections,
-      });
-    }
-
-    return NextResponse.json({ success: true });
+      writeDataFile(FILE_NAME, updated);
+      return NextResponse.json({ success: true });
+    });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
     return NextResponse.json(

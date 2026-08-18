@@ -1,10 +1,10 @@
-import { db } from "@/lib/db";
-import { isTableNotExistsError } from "@/lib/db-helpers";
-import { contactQueries } from "@/lib/schema";
+import { readDataFile, withWriteLock, writeDataFile } from "@/lib/fileStore";
+import { DEFAULT_QUERIES, type ContactQuery } from "@/data/contact";
 import { getClientIp, isRateLimited } from "@/lib/rateLimit";
 import { NextResponse } from "next/server";
 
 const PHONE_REGEX = /^[+]?[0-9\s\-()]{7,20}$/;
+const FILE_NAME = "contactData";
 
 export async function POST(request: Request) {
   try {
@@ -96,7 +96,10 @@ export async function POST(request: Request) {
 
     if (hasBusiness !== "yes" && hasBusiness !== "no") {
       return NextResponse.json(
-        { success: false, error: "Please select whether you have an existing business" },
+        {
+          success: false,
+          error: "Please select whether you have an existing business",
+        },
         { status: 400 },
       );
     }
@@ -123,24 +126,26 @@ export async function POST(request: Request) {
       `Additional Comments: ${comments?.trim() || "-"}`,
     ].join("\n");
 
-    const newQuery = {
-      id: `palash-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-      name: fullName.trim(),
-      email: (email && email.trim()) || `application-${Date.now()}@palash.local`,
-      phone: mobile.trim(),
-      subject: "Palash Charging Station - Dealership & Partner Application",
-      message,
-      createdAt: new Date().toISOString(),
-      status: "new",
-      notes: null,
-    };
-
-    await db.insert(contactQueries).values(newQuery);
-    return NextResponse.json({ success: true, data: newQuery });
+    return withWriteLock(async () => {
+      const current = readDataFile<ContactQuery[]>(FILE_NAME, DEFAULT_QUERIES);
+      const newQuery: ContactQuery = {
+        id: `palash-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+        name: fullName.trim(),
+        email:
+          (email && email.trim()) ||
+          `application-${Date.now()}@palash.local`,
+        phone: mobile.trim(),
+        subject: "Palash Charging Station - Dealership & Partner Application",
+        message,
+        createdAt: new Date().toISOString(),
+        status: "new",
+      };
+      writeDataFile(FILE_NAME, [...current, newQuery]);
+      return newQuery;
+    }).then((newQuery) =>
+      NextResponse.json({ success: true, data: newQuery }),
+    );
   } catch (error: unknown) {
-    if (isTableNotExistsError(error)) {
-      return NextResponse.json({ success: true });
-    }
     const message = error instanceof Error ? error.message : String(error);
     return NextResponse.json(
       { success: false, error: message },

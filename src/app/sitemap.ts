@@ -1,8 +1,9 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/config";
-import { db } from "@/lib/db";
-import { isTableNotExistsError } from "@/lib/db-helpers";
-import { blogs, projects, services } from "@/lib/schema";
+import { readDataFile } from "@/lib/fileStore";
+import { DEFAULT_BLOGS } from "@/data/blogs";
+import { DEFAULT_PROJECTS } from "@/data/projects";
+import { DEFAULT_SERVICES } from "@/data/services";
 
 export const dynamic = "force-dynamic";
 
@@ -53,42 +54,32 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   try {
-    const [serviceRows, projectRows, blogRows] = await Promise.all([
-      db
-        .select({ slug: services.slug, updatedAt: services.createdAt })
-        .from(services),
-      db
-        .select({ slug: projects.slug, updatedAt: projects.createdAt })
-        .from(projects),
-      db
-        .select({ slug: blogs.slug, updatedAt: blogs.createdAt })
-        .from(blogs),
-    ]);
+    const servicesData = readDataFile("servicesData", DEFAULT_SERVICES);
+    const projectsData = readDataFile("projectsData", DEFAULT_PROJECTS);
+    const blogsData = readDataFile("blogsData", DEFAULT_BLOGS);
 
     entries.push(
-      ...serviceRows.map((item) => ({
+      ...servicesData.map((item) => ({
         url: `${SITE_URL}/services/${item.slug}`,
-        lastModified: item.updatedAt,
+        lastModified: new Date(),
         changeFrequency: "monthly" as const,
         priority: 0.8,
       })),
-      ...projectRows.map((item) => ({
+      ...projectsData.map((item) => ({
         url: `${SITE_URL}/projects/${item.slug}`,
-        lastModified: item.updatedAt,
+        lastModified: new Date(),
         changeFrequency: "monthly" as const,
         priority: 0.8,
       })),
-      ...blogRows.map((item) => ({
+      ...blogsData.map((item) => ({
         url: `${SITE_URL}/blogs/${item.slug}`,
-        lastModified: item.updatedAt,
+        lastModified: new Date(),
         changeFrequency: "weekly" as const,
         priority: 0.7,
       })),
     );
-  } catch (error) {
-    if (!isTableNotExistsError(error)) {
-      throw error;
-    }
+  } catch {
+    // fall back to the static entries above if data files are unavailable
   }
 
   return entries;

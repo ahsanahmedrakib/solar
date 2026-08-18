@@ -1,25 +1,22 @@
-import { db } from "@/lib/db";
-import { isTableNotExistsError } from "@/lib/db-helpers";
-import { projects } from "@/lib/schema";
+import { PUBLIC_CACHE_HEADERS } from "@/lib/cache";
+import { readDataFile, withWriteLock, writeDataFile } from "@/lib/fileStore";
+import { DEFAULT_PROJECTS, type Project } from "@/data/projects";
 import { deleteImage, saveImage } from "@/lib/imageHelper";
 import { getRequestTokenPayload } from "@/lib/token";
 import { NextResponse } from "next/server";
-import { eq } from "drizzle-orm";
+
+const FILE_NAME = "projectsData";
+
+function nextId(items: Project[]): number {
+  return items.length > 0 ? Math.max(...items.map((i) => Number(i.id))) + 1 : 1;
+}
 
 export async function GET() {
-  try {
-    const allProjects = await db.select().from(projects);
-    return NextResponse.json({ success: true, data: allProjects });
-  } catch (error: unknown) {
-    if (isTableNotExistsError(error)) {
-      return NextResponse.json({ success: true, data: [] });
-    }
-    const message = error instanceof Error ? error.message : String(error);
-    return NextResponse.json(
-      { success: false, error: message },
-      { status: 500 },
-    );
-  }
+  const allProjects = readDataFile<Project[]>(FILE_NAME, DEFAULT_PROJECTS);
+  return NextResponse.json(
+    { success: true, data: allProjects },
+    { headers: PUBLIC_CACHE_HEADERS },
+  );
 }
 
 export async function POST(request: Request) {
@@ -33,7 +30,17 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { title, imageUrl, slug, category, client, location, projectDetails, isFeatured, images } = body;
+    const {
+      title,
+      imageUrl,
+      slug,
+      category,
+      client,
+      location,
+      projectDetails,
+      isFeatured,
+      images,
+    } = body;
 
     if (!title || !slug) {
       return NextResponse.json(
@@ -42,17 +49,21 @@ export async function POST(request: Request) {
       );
     }
 
-    const savedImagePath = imageUrl
-      ? await saveImage(imageUrl, "projects", 0)
-      : "";
+    return withWriteLock(async () => {
+      const current = readDataFile<Project[]>(FILE_NAME, DEFAULT_PROJECTS);
+      const id = nextId(current);
 
-    const savedImages = Array.isArray(images)
-      ? await Promise.all(images.map((img: string) => saveImage(img, "projects", 0)))
-      : [];
+      const savedImagePath = imageUrl
+        ? await saveImage(imageUrl, "projects", id)
+        : "";
+      const savedImages = Array.isArray(images)
+        ? await Promise.all(
+            images.map((img: string) => saveImage(img, "projects", id)),
+          )
+        : [];
 
-    const [newProject] = await db
-      .insert(projects)
-      .values({
+      const newProject: Project = {
+        id,
         title,
         imageUrl: savedImagePath,
         slug,
@@ -62,10 +73,13 @@ export async function POST(request: Request) {
         location: location ?? "",
         projectDetails: projectDetails ?? "",
         images: savedImages,
-      })
-      .returning();
+      };
 
-    return NextResponse.json({ success: true, data: newProject });
+      writeDataFile(FILE_NAME, [...current, newProject]);
+      return newProject;
+    }).then((newProject) =>
+      NextResponse.json({ success: true, data: newProject }),
+    );
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
     return NextResponse.json(
@@ -86,7 +100,18 @@ export async function PUT(request: Request) {
     }
 
     const body = await request.json();
-    const { id, title, imageUrl, slug, category, client, location, projectDetails, isFeatured, images } = body;
+    const {
+      id,
+      title,
+      imageUrl,
+      slug,
+      category,
+      client,
+      location,
+      projectDetails,
+      isFeatured,
+      images,
+    } = body;
 
     if (!id) {
       return NextResponse.json(
@@ -95,54 +120,49 @@ export async function PUT(request: Request) {
       );
     }
 
-    const [existing] = await db
-      .select()
-      .from(projects)
-      .where(eq(projects.id, Number(id)))
-      .limit(1);
-
-    if (!existing) {
-      return NextResponse.json(
-        { success: false, error: "Project not found" },
-        { status: 404 },
-      );
-    }
-
-    const updateData: Record<string, unknown> = {};
-    if (title !== undefined) updateData.title = title;
-    if (slug !== undefined) updateData.slug = slug;
-    if (category !== undefined) updateData.category = category;
-    if (client !== undefined) updateData.client = client;
-    if (location !== undefined) updateData.location = location;
-    if (projectDetails !== undefined) updateData.projectDetails = projectDetails;
-    if (isFeatured !== undefined) updateData.isFeatured = isFeatured;
-
-    if (imageUrl && imageUrl !== existing.imageUrl) {
-      updateData.imageUrl = await saveImage(imageUrl, "projects", id);
-      await deleteImage(existing.imageUrl);
-    }
-
-    if (Array.isArray(images)) {
-      const existingImages = existing.images ?? [];
-      const removed = existingImages.filter((img) => !images.includes(img));
-      updateData.images = await Promise.all(
-        images.map((img: string) => saveImage(img, "projects", id)),
-      );
-      for (const img of removed) {
-        await deleteImage(img);
+    return withWriteLock(async () => {
+      const current = readDataFile<Project[]>(FILE_NAME, DEFAULT_PROJECTS);
+      const index = current.findIndex((i) => i.id === Number(id));
+      if (index === -1) {
+        return NextResponse.json(
+          { success: false, error: "Project not found" },
+          { status: 404 },
+        );
       }
-    }
 
-    if (Object.keys(updateData).length === 0) {
-      return NextResponse.json({ success: true, data: existing });
-    }
+      const existing = current[index];
+      const updated: Project = { ...existing };
 
-    await db
-      .update(projects)
-      .set(updateData)
-      .where(eq(projects.id, Number(id)));
+      if (title !== undefined) updated.title = title;
+      if (slug !== undefined) updated.slug = slug;
+      if (category !== undefined) updated.category = category;
+      if (client !== undefined) updated.client = client;
+      if (location !== undefined) updated.location = location;
+      if (projectDetails !== undefined) updated.projectDetails = projectDetails;
+      if (isFeatured !== undefined) updated.isFeatured = isFeatured;
 
-    return NextResponse.json({ success: true, data: { id, ...updateData } });
+      if (imageUrl && imageUrl !== existing.imageUrl) {
+        updated.imageUrl = await saveImage(imageUrl, "projects", existing.id);
+        await deleteImage(existing.imageUrl);
+      }
+
+      if (Array.isArray(images)) {
+        const removed = (existing.images ?? []).filter(
+          (img) => !images.includes(img),
+        );
+        updated.images = await Promise.all(
+          images.map((img: string) => saveImage(img, "projects", existing.id)),
+        );
+        for (const img of removed) {
+          await deleteImage(img);
+        }
+      }
+
+      const next = [...current];
+      next[index] = updated;
+      writeDataFile(FILE_NAME, next);
+      return NextResponse.json({ success: true, data: updated });
+    });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
     return NextResponse.json(
@@ -171,20 +191,21 @@ export async function DELETE(request: Request) {
       );
     }
 
-    const [existing] = await db
-      .select()
-      .from(projects)
-      .where(eq(projects.id, Number(id)))
-      .limit(1);
-    if (existing) {
-      await deleteImage(existing.imageUrl);
-      for (const img of existing.images ?? []) {
-        await deleteImage(img);
+    return withWriteLock(async () => {
+      const current = readDataFile<Project[]>(FILE_NAME, DEFAULT_PROJECTS);
+      const existing = current.find((i) => i.id === Number(id));
+      if (existing) {
+        await deleteImage(existing.imageUrl);
+        for (const img of existing.images ?? []) {
+          await deleteImage(img);
+        }
       }
-    }
-
-    await db.delete(projects).where(eq(projects.id, Number(id)));
-    return NextResponse.json({ success: true });
+      writeDataFile(
+        FILE_NAME,
+        current.filter((i) => i.id !== Number(id)),
+      );
+      return NextResponse.json({ success: true });
+    });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
     return NextResponse.json(

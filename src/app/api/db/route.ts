@@ -1,4 +1,6 @@
 import { verifyAccessToken } from "@/lib/auth";
+import fs from "fs";
+import path from "path";
 import { NextResponse } from "next/server";
 
 function isSuperadmin(request: Request): boolean {
@@ -12,6 +14,43 @@ function isSuperadmin(request: Request): boolean {
   }
 }
 
+function dataFilesStatus() {
+  const dir = path.join(process.cwd(), "src", "data", "api");
+  if (!fs.existsSync(dir)) return [];
+  return fs
+    .readdirSync(dir)
+    .filter((f) => f.endsWith(".json"))
+    .map((f) => {
+      const full = path.join(dir, f);
+      let size = 0;
+      try {
+        size = fs.statSync(full).size;
+      } catch {
+        size = 0;
+      }
+      return { file: f, bytes: size };
+    });
+}
+
+function imagesStatus() {
+  const root = path.join(process.cwd(), "public", "images", "api");
+  if (!fs.existsSync(root)) return { count: 0, bytes: 0 };
+  let count = 0;
+  let bytes = 0;
+  const walk = (dir: string) => {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) walk(full);
+      else if (entry.isFile()) {
+        count += 1;
+        bytes += fs.statSync(full).size;
+      }
+    }
+  };
+  walk(root);
+  return { count, bytes };
+}
+
 export async function GET(request: Request) {
   if (!isSuperadmin(request)) {
     return NextResponse.json(
@@ -21,55 +60,15 @@ export async function GET(request: Request) {
   }
 
   try {
-    const url = process.env.DATABASE_URL;
-
-    if (!url) {
-      return NextResponse.json({
-        success: false,
-        error: "DATABASE_URL is not set",
-        data: { envSet: false, status: "disconnected" },
-      });
-    }
-
-    try {
-      const { db } = await import("@/lib/db");
-      const { sql } = await import("drizzle-orm");
-      const result = await db.execute(sql`SELECT 1 as ping`);
-
-      let tableNames: string[] = [];
-      try {
-        const tablesResult = await db.execute(sql`
-          SELECT table_name FROM information_schema.tables
-          WHERE table_schema = 'public'
-        `);
-        tableNames = (tablesResult.rows as { table_name: string }[]).map(
-          (r) => r.table_name,
-        );
-      } catch {
-        tableNames = [];
-      }
-
-      return NextResponse.json({
-        success: true,
-        data: {
-          status: "connected",
-          envSet: true,
-          ping: result.rows,
-          tables: tableNames,
-          tableCount: tableNames.length,
-        },
-      });
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : String(error);
-      return NextResponse.json(
-        {
-          success: false,
-          error: message,
-          data: { envSet: true, status: "disconnected" },
-        },
-        { status: 500 },
-      );
-    }
+    return NextResponse.json({
+      success: true,
+      data: {
+        storage: "file",
+        environment: process.env.NODE_ENV ?? "development",
+        dataFiles: dataFilesStatus(),
+        images: imagesStatus(),
+      },
+    });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
     return NextResponse.json(
