@@ -1,10 +1,28 @@
 import type { MetadataRoute } from "next";
+import { unstable_cache } from "next/cache";
 import { SITE_URL } from "@/lib/config";
 import { db } from "@/lib/db";
 import { isTableNotExistsError } from "@/lib/db-helpers";
 import { blogs, projects, services } from "@/lib/schema";
 
 export const dynamic = "force-dynamic";
+
+const getCachedSitemapRows = unstable_cache(
+  async () =>
+    Promise.all([
+      db
+        .select({ slug: services.slug, updatedAt: services.createdAt })
+        .from(services),
+      db
+        .select({ slug: projects.slug, updatedAt: projects.createdAt })
+        .from(projects),
+      db
+        .select({ slug: blogs.slug, updatedAt: blogs.createdAt })
+        .from(blogs),
+    ]),
+  ["sitemap-rows"],
+  { revalidate: 3600, tags: ["services", "projects", "blogs"] },
+);
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const entries: MetadataRoute.Sitemap = [
@@ -53,17 +71,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   try {
-    const [serviceRows, projectRows, blogRows] = await Promise.all([
-      db
-        .select({ slug: services.slug, updatedAt: services.createdAt })
-        .from(services),
-      db
-        .select({ slug: projects.slug, updatedAt: projects.createdAt })
-        .from(projects),
-      db
-        .select({ slug: blogs.slug, updatedAt: blogs.createdAt })
-        .from(blogs),
-    ]);
+    const [serviceRows, projectRows, blogRows] = await getCachedSitemapRows();
 
     entries.push(
       ...serviceRows.map((item) => ({

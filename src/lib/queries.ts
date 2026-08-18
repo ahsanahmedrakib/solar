@@ -57,7 +57,7 @@ export function useQuerySettings() {
     queryKey: queryKeys.settings,
     queryFn: () => apiFetchJson<Section[] | null>("/api/settings", null),
     staleTime: FIVE_MINUTES,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
   });
 }
 
@@ -66,7 +66,7 @@ export function useQueryServices() {
     queryKey: queryKeys.services,
     queryFn: () => apiFetchJson<Service[]>("/api/services", []),
     staleTime: FIVE_MINUTES,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
   });
 }
 
@@ -75,7 +75,7 @@ export function useQueryBlogs() {
     queryKey: queryKeys.blogs,
     queryFn: () => apiFetchJson<Blog[]>("/api/blogs", []),
     staleTime: FIVE_MINUTES,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
   });
 }
 
@@ -88,7 +88,7 @@ export function useQueryHeroSlides(site?: HeroSite) {
         [],
       ),
     staleTime: FIVE_MINUTES,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
   });
 }
 
@@ -97,7 +97,7 @@ export function useQueryTeam() {
     queryKey: queryKeys.team,
     queryFn: () => apiFetchJson<TeamMember[]>("/api/team", []),
     staleTime: FIVE_MINUTES,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
   });
 }
 
@@ -106,7 +106,7 @@ export function useQueryProjects() {
     queryKey: queryKeys.projects,
     queryFn: () => apiFetchJson<Project[]>("/api/projects", []),
     staleTime: FIVE_MINUTES,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
   });
 }
 
@@ -115,7 +115,7 @@ export function useQueryContact() {
     queryKey: queryKeys.contact,
     queryFn: () => apiFetchJson<ContactQuery[]>("/api/contact", []),
     staleTime: FIVE_MINUTES,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
   });
 }
 
@@ -124,7 +124,7 @@ export function useQueryReviews() {
     queryKey: queryKeys.reviews,
     queryFn: () => apiFetchJson<Review[]>("/api/reviews", []),
     staleTime: FIVE_MINUTES,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
   });
 }
 
@@ -133,7 +133,7 @@ export function useQueryUsers() {
     queryKey: queryKeys.users,
     queryFn: () => apiFetchJson<UserData[]>("/api/users", []),
     staleTime: FIVE_MINUTES,
-    refetchOnWindowFocus: true,
+    refetchOnWindowFocus: false,
   });
 }
 

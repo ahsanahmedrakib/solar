@@ -1,3 +1,5 @@
+import { CONTENT_REVALIDATE_SECONDS } from "@/lib/cache";
+import { unstable_cache } from "next/cache";
 import type { Metadata } from "next";
 import { eq } from "drizzle-orm";
 import { getDefaultField } from "@/data/settings";
@@ -11,6 +13,17 @@ import {
 } from "@/lib/config";
 import { db } from "@/lib/db";
 import { settings } from "@/lib/schema";
+
+const getCachedGlobalSettingsRow = unstable_cache(
+  async () =>
+    db
+      .select()
+      .from(settings)
+      .where(eq(settings.settingsId, "global"))
+      .limit(1),
+  ["site-global-settings"],
+  { revalidate: CONTENT_REVALIDATE_SECONDS, tags: ["settings"] },
+);
 
 type SettingsField = { id?: string; value?: string };
 type SettingsSection = { id?: string; fields?: SettingsField[] };
@@ -48,11 +61,7 @@ const FALLBACK: SiteInfo = {
 
 export async function getSiteInfo(): Promise<SiteInfo> {
   try {
-    const rows = await db
-      .select()
-      .from(settings)
-      .where(eq(settings.settingsId, "global"))
-      .limit(1);
+    const rows = await getCachedGlobalSettingsRow();
     const data = rows[0] as SettingsDocument | undefined;
     const field = (sectionId: string, fieldId: string) =>
       data?.sections

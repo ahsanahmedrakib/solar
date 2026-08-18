@@ -11,6 +11,8 @@ const ALLOWED_FOLDERS = [
   "settings",
 ];
 
+const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024;
+
 const EXTENSION_MAP: Record<string, string> = {
   jpeg: "jpg",
   jpg: "jpg",
@@ -60,9 +62,8 @@ export async function saveImage(
   }
 
   const buffer = Buffer.from(matches[2], "base64");
-
-  if (process.env.NODE_ENV === "production") {
-    return saveImageToDB(base64Data, folderName, id);
+  if (buffer.byteLength > MAX_IMAGE_SIZE_BYTES) {
+    throw new Error("Image exceeds the maximum allowed size");
   }
 
   const relativeDir = `/images/api/${folderName}`;

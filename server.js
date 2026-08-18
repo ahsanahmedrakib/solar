@@ -2,7 +2,11 @@ const { createServer } = require("http");
 const { parse } = require("url");
 const next = require("next");
 
-const dev = process.env.NODE_ENV !== "production";
+// IMPORTANT: only run the dev server when NODE_ENV is explicitly set to
+// "development". If it is unset (e.g. cPanel runs `node server.js` without
+// NODE_ENV), default to production. Running Next.js in dev mode on a shared
+// host pegs the CPU at 100% and gets the account suspended.
+const dev = process.env.NODE_ENV === "development";
 const hostname = process.env.HOSTNAME || "localhost";
 const port = parseInt(process.env.PORT || "3000", 10);
 

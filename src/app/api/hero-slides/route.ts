@@ -1,3 +1,5 @@
+import { PUBLIC_CACHE_HEADERS, CONTENT_REVALIDATE_SECONDS, revalidateContent } from "@/lib/cache";
+import { unstable_cache } from "next/cache";
 import { db } from "@/lib/db";
 import { isTableNotExistsError } from "@/lib/db-helpers";
 import { getRequestTokenPayload } from "@/lib/token";
@@ -9,22 +11,30 @@ import { heroSlides } from "@/lib/schema";
 import { asc, eq, sql } from "drizzle-orm";
 import { NextResponse } from "next/server";
 
+const getCachedSlides = unstable_cache(
+  async (site: string) => {
+    if (site === "ahead" || site === "palash") {
+      return db
+        .select()
+        .from(heroSlides)
+        .where(eq(heroSlides.site, site))
+        .orderBy(asc(heroSlides.order));
+    }
+    return db.select().from(heroSlides).orderBy(asc(heroSlides.order));
+  },
+  ["api-hero-slides"],
+  { revalidate: CONTENT_REVALIDATE_SECONDS, tags: ["hero-slides"] },
+);
+
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const site = searchParams.get("site");
-    const slides =
-      site === "ahead" || site === "palash"
-        ? await db
-            .select()
-            .from(heroSlides)
-            .where(eq(heroSlides.site, site))
-            .orderBy(asc(heroSlides.order))
-        : await db
-            .select()
-            .from(heroSlides)
-            .orderBy(asc(heroSlides.order));
-    return NextResponse.json({ success: true, data: slides });
+    const site = searchParams.get("site") ?? "";
+    const slides = await getCachedSlides(site);
+    return NextResponse.json(
+      { success: true, data: slides },
+      { headers: PUBLIC_CACHE_HEADERS },
+    );
   } catch (error: unknown) {
     if (isTableNotExistsError(error)) {
       return NextResponse.json({ success: true, data: [] });
@@ -118,6 +128,7 @@ export async function POST(request: Request) {
       })
       .returning();
 
+    revalidateContent();
     return NextResponse.json({ success: true, data: newSlide });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Unknown error";
@@ -229,6 +240,7 @@ export async function PUT(request: Request) {
       .set(updateData)
       .where(eq(heroSlides.id, Number(id)));
 
+    revalidateContent();
     return NextResponse.json({ success: true, data: { id, ...updateData } });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Unknown error";
@@ -259,6 +271,7 @@ export async function DELETE(request: Request) {
     }
 
     await db.delete(heroSlides).where(eq(heroSlides.id, Number(id)));
+    revalidateContent();
     return NextResponse.json({ success: true });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Unknown error";

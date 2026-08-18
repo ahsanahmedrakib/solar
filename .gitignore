@@ -42,3 +42,6 @@ next-env.d.ts
 
 # Ignore all ZIP files
 *.zip
+
+# Runtime-uploaded images (user content)
+/public/images/api/

@@ -1,3 +1,4 @@
+import { PUBLIC_CACHE_HEADERS, cachedDbQuery, revalidateContent } from "@/lib/cache";
 import { db } from "@/lib/db";
 import { isTableNotExistsError } from "@/lib/db-helpers";
 import { settings } from "@/lib/schema";
@@ -5,6 +6,17 @@ import { deleteImage, saveImage } from "@/lib/imageHelper";
 import { getRequestTokenPayload } from "@/lib/token";
 import { NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
+
+const getCachedGlobalSettings = cachedDbQuery(
+  async () =>
+    db
+      .select()
+      .from(settings)
+      .where(eq(settings.settingsId, "global"))
+      .limit(1),
+  ["api-settings-global"],
+  ["settings"],
+);
 
 const HARDCODED_FIELD_IDS = [
   "company-name",
@@ -70,19 +82,18 @@ async function processImageFields(
 
 export async function GET() {
   try {
-    const rows = await db
-      .select()
-      .from(settings)
-      .where(eq(settings.settingsId, "global"))
-      .limit(1);
+    const rows = await getCachedGlobalSettings();
 
     if (rows.length === 0) {
       return NextResponse.json({ success: true, data: null });
     }
-    return NextResponse.json({
-      success: true,
-      data: stripHardcodedFields(rows[0].sections as SectionShape[]),
-    });
+    return NextResponse.json(
+      {
+        success: true,
+        data: stripHardcodedFields(rows[0].sections as SectionShape[]),
+      },
+      { headers: PUBLIC_CACHE_HEADERS },
+    );
   } catch (error: unknown) {
     if (isTableNotExistsError(error)) {
       return NextResponse.json({ success: true, data: null });
@@ -140,6 +151,7 @@ export async function POST(request: Request) {
       });
     }
 
+    revalidateContent();
     return NextResponse.json({ success: true });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);

@@ -1,3 +1,4 @@
+import { PUBLIC_CACHE_HEADERS, cachedDbQuery, revalidateContent } from "@/lib/cache";
 import { db } from "@/lib/db";
 import { isTableNotExistsError } from "@/lib/db-helpers";
 import { projects } from "@/lib/schema";
@@ -6,10 +7,19 @@ import { getRequestTokenPayload } from "@/lib/token";
 import { NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
 
+const getCachedProjects = cachedDbQuery(
+  () => db.select().from(projects),
+  ["api-projects"],
+  ["projects"],
+);
+
 export async function GET() {
   try {
-    const allProjects = await db.select().from(projects);
-    return NextResponse.json({ success: true, data: allProjects });
+    const allProjects = await getCachedProjects();
+    return NextResponse.json(
+      { success: true, data: allProjects },
+      { headers: PUBLIC_CACHE_HEADERS },
+    );
   } catch (error: unknown) {
     if (isTableNotExistsError(error)) {
       return NextResponse.json({ success: true, data: [] });
@@ -65,6 +75,7 @@ export async function POST(request: Request) {
       })
       .returning();
 
+    revalidateContent();
     return NextResponse.json({ success: true, data: newProject });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
@@ -142,6 +153,7 @@ export async function PUT(request: Request) {
       .set(updateData)
       .where(eq(projects.id, Number(id)));
 
+    revalidateContent();
     return NextResponse.json({ success: true, data: { id, ...updateData } });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
@@ -184,6 +196,7 @@ export async function DELETE(request: Request) {
     }
 
     await db.delete(projects).where(eq(projects.id, Number(id)));
+    revalidateContent();
     return NextResponse.json({ success: true });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);

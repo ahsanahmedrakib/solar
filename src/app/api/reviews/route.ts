@@ -1,3 +1,4 @@
+import { PUBLIC_CACHE_HEADERS, cachedDbQuery, revalidateContent } from "@/lib/cache";
 import { db } from "@/lib/db";
 import { isTableNotExistsError } from "@/lib/db-helpers";
 import { reviews } from "@/lib/schema";
@@ -5,10 +6,19 @@ import { getRequestTokenPayload } from "@/lib/token";
 import { NextResponse } from "next/server";
 import { desc, eq } from "drizzle-orm";
 
+const getCachedReviews = cachedDbQuery(
+  () => db.select().from(reviews).orderBy(desc(reviews.createdAt)),
+  ["api-reviews"],
+  ["reviews"],
+);
+
 export async function GET() {
   try {
-    const allReviews = await db.select().from(reviews).orderBy(desc(reviews.createdAt));
-    return NextResponse.json({ success: true, data: allReviews });
+    const allReviews = await getCachedReviews();
+    return NextResponse.json(
+      { success: true, data: allReviews },
+      { headers: PUBLIC_CACHE_HEADERS },
+    );
   } catch (error: unknown) {
     if (isTableNotExistsError(error)) {
       return NextResponse.json({ success: true, data: [] });
@@ -41,6 +51,7 @@ export async function POST(request: Request) {
     };
 
     const inserted = await db.insert(reviews).values(newReview).returning();
+    revalidateContent();
     return NextResponse.json({ success: true, data: inserted[0] });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
@@ -70,6 +81,7 @@ export async function DELETE(request: Request) {
       );
     }
     await db.delete(reviews).where(eq(reviews.id, Number(id)));
+    revalidateContent();
     return NextResponse.json({ success: true });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);

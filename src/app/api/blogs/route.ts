@@ -1,3 +1,4 @@
+import { PUBLIC_CACHE_HEADERS, cachedDbQuery, revalidateContent } from "@/lib/cache";
 import { db } from "@/lib/db";
 import { isTableNotExistsError } from "@/lib/db-helpers";
 import { blogs } from "@/lib/schema";
@@ -6,10 +7,19 @@ import { getRequestTokenPayload } from "@/lib/token";
 import { NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
 
+const getCachedBlogs = cachedDbQuery(
+  () => db.select().from(blogs),
+  ["api-blogs"],
+  ["blogs"],
+);
+
 export async function GET() {
   try {
-    const allBlogs = await db.select().from(blogs);
-    return NextResponse.json({ success: true, data: allBlogs });
+    const allBlogs = await getCachedBlogs();
+    return NextResponse.json(
+      { success: true, data: allBlogs },
+      { headers: PUBLIC_CACHE_HEADERS },
+    );
   } catch (error: unknown) {
     if (isTableNotExistsError(error)) {
       return NextResponse.json({ success: true, data: [] });
@@ -65,6 +75,7 @@ export async function POST(request: Request) {
       })
       .returning();
 
+    revalidateContent();
     return NextResponse.json({ success: true, data: newBlog });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Unknown error";
@@ -138,6 +149,7 @@ export async function PUT(request: Request) {
     }
 
     await db.update(blogs).set(updateData).where(eq(blogs.id, Number(id)));
+    revalidateContent();
     return NextResponse.json({ success: true, data: { id, ...updateData } });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Unknown error";
@@ -180,6 +192,7 @@ export async function DELETE(request: Request) {
     }
 
     await db.delete(blogs).where(eq(blogs.id, Number(id)));
+    revalidateContent();
     return NextResponse.json({ success: true });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Unknown error";
