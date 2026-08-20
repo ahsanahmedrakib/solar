@@ -94,7 +94,7 @@ export default function Testimonials() {
   ).toFixed(1);
 
   return (
-    <section className="bg-secondary py-20 lg:py-25 px-4 sm:px-6 lg:px-8 font-sans overflow-hidden">
+    <section className="bg-white py-20 lg:py-25 px-4 sm:px-6 lg:px-8 font-sans overflow-hidden">
       <div className="solar-container">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
           {/* LEFT COLUMN: INTRODUCTION & TRUST ACCENT BOX */}

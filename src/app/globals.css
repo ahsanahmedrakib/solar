@@ -470,7 +470,7 @@ body:has(.admin-layout-root) {
   background: var(--color-gold-500);
 }
 
-/* Single image gallery slider (projects / services / blogs) */
+/* Single image gallery slider (projects / services) */
 .single-image-slider .swiper-button-prev,
 .single-image-slider .swiper-button-next {
   width: 46px;

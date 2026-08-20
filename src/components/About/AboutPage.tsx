@@ -1,6 +1,3 @@
-import About from "../Home/About";
-import FAQAndStats from "../Home/FAQAndStats";
-import Testimonials from "../Home/Testimonials";
 import WhyChooseUs from "../Home/WhyChooseUs";
 import AboutBanner from "./AboutBanner";
 import Approach from "./Approach";
@@ -11,15 +8,10 @@ const AboutPage = () => {
   return (
     <div>
       <AboutBanner />
-      <About />
       <Approach />
       <WhyChooseUs />
       <WhatWeDo />
-      {/* <Advantages /> */}
-      {/* <CoreFeatures /> */}
       <Teams />
-      <Testimonials />
-      <FAQAndStats />
     </div>
   );
 };

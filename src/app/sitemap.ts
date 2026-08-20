@@ -1,7 +1,6 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/config";
 import { readDataFile } from "@/lib/fileStore";
-import { DEFAULT_BLOGS } from "@/data/blogs";
 import { DEFAULT_PROJECTS } from "@/data/projects";
 import { DEFAULT_SERVICES } from "@/data/services";
 
@@ -34,12 +33,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.9,
     },
     {
-      url: `${SITE_URL}/blogs`,
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.7,
-    },
-    {
       url: `${SITE_URL}/contact`,
       lastModified: new Date(),
       changeFrequency: "yearly",
@@ -56,7 +49,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     const servicesData = readDataFile("servicesData", DEFAULT_SERVICES);
     const projectsData = readDataFile("projectsData", DEFAULT_PROJECTS);
-    const blogsData = readDataFile("blogsData", DEFAULT_BLOGS);
 
     entries.push(
       ...servicesData.map((item) => ({
@@ -70,12 +62,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         lastModified: new Date(),
         changeFrequency: "monthly" as const,
         priority: 0.8,
-      })),
-      ...blogsData.map((item) => ({
-        url: `${SITE_URL}/blogs/${item.slug}`,
-        lastModified: new Date(),
-        changeFrequency: "weekly" as const,
-        priority: 0.7,
       })),
     );
   } catch {

@@ -53,7 +53,6 @@ const NAV_ITEMS: NavItem[] = [
   },
   { label: "Services", href: "/services" },
   { label: "Projects", href: "/projects" },
-  { label: "Blogs", href: "/blogs" },
   { label: "Contact", href: "/contact" },
 ];
 

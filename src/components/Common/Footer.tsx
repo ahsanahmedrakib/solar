@@ -42,7 +42,6 @@ const QUICK_LINKS = [
   { label: "About Us", href: "/about" },
   { label: "Services", href: "/services" },
   { label: "Projects", href: "/projects" },
-  { label: "Blogs", href: "/blogs" },
 ];
 
 export default function Footer() {

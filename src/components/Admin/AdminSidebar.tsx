@@ -7,7 +7,6 @@ import {
   BatteryCharging,
   Briefcase,
   ChevronRight,
-  FileText,
   ImageIcon,
   Layers,
   LayoutDashboard,
@@ -44,11 +43,6 @@ const navItems = [
     title: "Team",
     href: "/admin/team",
     icon: Users,
-  },
-  {
-    title: "Blogs",
-    href: "/admin/blogs",
-    icon: FileText,
   },
   {
     title: "Hero Slider",

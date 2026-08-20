@@ -1,6 +1,5 @@
 "use client";
 
-import type { Blog } from "@/data/blogs";
 import type { ContactQuery } from "@/data/contact";
 import type { HeroSite, HeroSlide } from "@/data/hero-slides";
 import type { Project } from "@/data/projects";
@@ -16,17 +15,6 @@ import {
 } from "@tanstack/react-query";
 
 const FIVE_MINUTES = 5 * 60 * 1000;
-
-export interface CommentItem {
-  id: number;
-  name: string;
-  email: string;
-  website: string;
-  comment: string;
-  date: string;
-  blogTitle: string;
-  blogSlug: string;
-}
 
 export interface UserData {
   id: string;
@@ -47,7 +35,6 @@ async function apiFetchJson<T>(url: string, fallback: T): Promise<T> {
 export const queryKeys = {
   settings: ["settings"] as const,
   services: ["services"] as const,
-  blogs: ["blogs"] as const,
   heroSlides: ["hero-slides"] as const,
   team: ["team"] as const,
   projects: ["projects"] as const,
@@ -59,7 +46,6 @@ export const queryKeys = {
 export const adminQueryKeys = {
   settings: ["admin", "settings"] as const,
   services: ["admin", "services"] as const,
-  blogs: ["admin", "blogs"] as const,
   heroSlides: ["admin", "hero-slides"] as const,
   team: ["admin", "team"] as const,
   projects: ["admin", "projects"] as const,
@@ -95,15 +81,6 @@ export function useQueryServices() {
   return useQuery({
     queryKey: queryKeys.services,
     queryFn: () => apiFetchJson<Service[]>("/api/services", []),
-    staleTime: FIVE_MINUTES,
-    refetchOnWindowFocus: false,
-  });
-}
-
-export function useQueryBlogs() {
-  return useQuery({
-    queryKey: queryKeys.blogs,
-    queryFn: () => apiFetchJson<Blog[]>("/api/blogs", []),
     staleTime: FIVE_MINUTES,
     refetchOnWindowFocus: false,
   });
@@ -183,14 +160,6 @@ export function useAdminQueryServices() {
   });
 }
 
-export function useAdminQueryBlogs() {
-  return useQuery({
-    queryKey: adminQueryKeys.blogs,
-    queryFn: () => apiFetchJson<Blog[]>("/api/blogs", []),
-    ...ADMIN_QUERY_OPTIONS,
-  });
-}
-
 export function useAdminQueryHeroSlides() {
   return useQuery({
     queryKey: adminQueryKeys.heroSlides,
@@ -244,7 +213,6 @@ export function useInvalidateAll() {
   return () => {
     qc.invalidateQueries({ queryKey: queryKeys.settings });
     qc.invalidateQueries({ queryKey: queryKeys.services });
-    qc.invalidateQueries({ queryKey: queryKeys.blogs });
     qc.invalidateQueries({ queryKey: queryKeys.heroSlides });
     qc.invalidateQueries({ queryKey: queryKeys.team });
     qc.invalidateQueries({ queryKey: queryKeys.projects });

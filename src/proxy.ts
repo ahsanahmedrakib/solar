@@ -5,7 +5,6 @@ const PUBLIC_GET_PREFIXES = [
   "/api/settings",
   "/api/services",
   "/api/projects",
-  "/api/blogs",
   "/api/hero-slides",
   "/api/team",
   "/api/reviews",
