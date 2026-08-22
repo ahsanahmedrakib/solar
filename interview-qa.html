@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ahead Solar BD - Interview Preparation Q&amp;A</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  @page{size:A4;margin:18mm 15mm}
+  body{font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;font-size:11pt;line-height:1.55;color:#1a1a2e;background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .cover{page-break-after:always;display:flex;flex-direction:column;justify-content:center;align-items:center;min-height:100vh;text-align:center;background:linear-gradient(135deg,#0c3d3b 0%,#28cbc6 50%,#0c3d3b 100%);color:#fff;padding:60px 40px}
+  .cover .logo-area{font-size:48pt;font-weight:800;letter-spacing:-1px;margin-bottom:8px;text-shadow:0 2px 20px rgba(0,0,0,.3)}
+  .cover .logo-area span{color:#f7b308}
+  .cover .subtitle{font-size:16pt;font-weight:300;letter-spacing:4px;text-transform:uppercase;opacity:.9;margin-bottom:40px}
+  .cover .doc-title{font-size:22pt;font-weight:700;background:rgba(255,255,255,.15);padding:16px 40px;border-radius:12px;border:1px solid rgba(255,255,255,.25);margin-bottom:30px}
+  .cover .meta{font-size:11pt;opacity:.8;line-height:1.8}
+  .cover .divider{width:80px;height:3px;background:#f7b308;border-radius:2px;margin:24px auto}
+  .cover .stats{display:flex;gap:40px;margin-top:30px;font-size:10pt}
+  .cover .stat-item{text-align:center}
+  .cover .stat-num{font-size:28pt;font-weight:800;color:#f7b308}
+  .toc-page{page-break-after:always;padding:40px 0}
+  .toc-title{font-size:20pt;font-weight:800;color:#0c3d3b;text-align:center;margin-bottom:8px}
+  .toc-subtitle{text-align:center;color:#64748b;font-size:10pt;margin-bottom:30px}
+  .toc-list{list-style:none;max-width:600px;margin:0 auto}
+  .toc-list li{display:flex;justify-content:space-between;align-items:baseline;padding:8px 0;border-bottom:1px dotted #cbd5e1;font-size:10.5pt}
+  .toc-list .toc-num{color:#28cbc6;font-weight:700;margin-right:10px;min-width:24px}
+  .toc-list .toc-name{flex:1;color:#1e293b}
+  .toc-list .toc-pg{color:#64748b;font-size:9.5pt;margin-left:10px}
+  .section-header{background:linear-gradient(135deg,#0c3d3b,#1a726c);color:#fff;padding:18px 24px;border-radius:10px;margin:36px 0 20px 0;page-break-after:avoid}
+  .section-header h2{font-size:15pt;font-weight:700;margin:0}
+  .section-header .section-range{font-size:9pt;opacity:.75;margin-top:2px}
+  .qa{margin-bottom:18px;page-break-inside:avoid}
+  .qa-question{font-size:11pt;font-weight:700;color:#0c3d3b;padding:10px 14px;background:#eef7f6;border-left:4px solid #28cbc6;border-radius:0 8px 8px 0;margin-bottom:6px}
+  .qa-question .q-num{color:#28cbc6;margin-right:6px}
+  .qa-answer{padding:8px 14px 8px 22px;font-size:10.5pt;color:#334155;line-height:1.6}
+  .qa-answer p{margin-bottom:6px}
+  .qa-answer ul,.qa-answer ol{margin:4px 0 6px 18px}
+  .qa-answer li{margin-bottom:3px}
+  .qa-answer code{background:#f1f5f9;padding:1px 5px;border-radius:3px;font-size:9.5pt;font-family:Consolas,Monaco,monospace;color:#0c3d3b}
+  .qa-answer strong{color:#0c3d3b}
+  @media print{body{margin:0}.cover{min-height:100vh}.section-header{page-break-after:avoid}.qa{page-break-inside:avoid}}
+</style>
+</head>
+<body>
+<div class="cover">
+  <div class="logo-area">AHEAD <span>SOLAR</span></div>
+  <div class="subtitle">Bangladesh</div>
+  <div class="divider"></div>
+  <div class="doc-title">Interview Preparation Q&amp;A</div>
+  <div class="meta">Next.js 16 + React 19 &bull; Full-Stack Corporate Website<br>Comprehensive Technical Reference Guide</div>
+  <div class="stats">
+    <div class="stat-item"><div class="stat-num">85</div>Questions</div>
+    <div class="stat-item"><div class="stat-num">16</div>Sections</div>
+    <div class="stat-item"><div class="stat-num">2026</div>Edition</div>
+  </div>
+</div>
+<div class="toc-page">
+  <div class="toc-title">Table of Contents</div>
+  <div class="toc-subtitle">85 Questions Across 16 Sections</div>
+  <ul class="toc-list">
+    <li><span class="toc-num">01</span><span class="toc-name">Project Overview &amp; Domain</span><span class="toc-pg">Q1-Q5</span></li>
+    <li><span class="toc-num">02</span><span class="toc-name">Tech Stack &amp; Architecture</span><span class="toc-pg">Q6-Q10</span></li>
+    <li><span class="toc-num">03</span><span class="toc-name">Next.js &amp; React Concepts</span><span class="toc-pg">Q11-Q18</span></li>
+    <li><span class="toc-num">04</span><span class="toc-name">Styling &amp; Design System</span><span class="toc-pg">Q19-Q23</span></li>
+    <li><span class="toc-num">05</span><span class="toc-name">Authentication &amp; Security</span><span class="toc-pg">Q24-Q30</span></li>
+    <li><span class="toc-num">06</span><span class="toc-name">API Routes &amp; Data Layer</span><span class="toc-pg">Q31-Q36</span></li>
+    <li><span class="toc-num">07</span><span class="toc-name">File-Based JSON Database</span><span class="toc-pg">Q37-Q40</span></li>
+    <li><span class="toc-num">08</span><span class="toc-name">CMS / Admin Dashboard</span><span class="toc-pg">Q41-Q46</span></li>
+    <li><span class="toc-num">09</span><span class="toc-name">State Management &amp; Data Fetching</span><span class="toc-pg">Q47-Q51</span></li>
+    <li><span class="toc-num">10</span><span class="toc-name">Forms &amp; Validation</span><span class="toc-pg">Q52-Q55</span></li>
+    <li><span class="toc-num">11</span><span class="toc-name">SEO &amp; Performance</span><span class="toc-pg">Q56-Q62</span></li>
+    <li><span class="toc-num">12</span><span class="toc-name">Image &amp; Video Handling</span><span class="toc-pg">Q63-Q66</span></li>
+    <li><span class="toc-num">13</span><span class="toc-name">Animations &amp; UX</span><span class="toc-pg">Q67-Q71</span></li>
+    <li><span class="toc-num">14</span><span class="toc-name">Middleware &amp; Proxy</span><span class="toc-pg">Q72-Q75</span></li>
+    <li><span class="toc-num">15</span><span class="toc-name">Deployment &amp; DevOps</span><span class="toc-pg">Q76-Q79</span></li>
+    <li><span class="toc-num">16</span><span class="toc-name">General / Behavioral Questions</span><span class="toc-pg">Q80-Q85</span></li>
+  </ul>
+</div>
+<!-- SECTION 1 -->
+<div class="section-header"><h2>1. Project Overview &amp; Domain</h2><div class="section-range">Questions 1 - 5</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q1.</span> What is the Ahead Solar BD project about?</div><div class="qa-answer">
+<p>Ahead Solar BD is a corporate website for <strong>Ahead Solar</strong>, a solar energy company based in Bangladesh. The platform serves as both a public-facing marketing site and an internal content management system. The public site showcases the company's solar services, completed projects, team members, customer reviews, and provides a contact form for lead generation. A dedicated Palash charging station page highlights a specific EV charging product line.</p>
+<p>The admin CMS dashboard allows authorized users to manage all content dynamically - including services, projects, hero slides, team members, reviews, contact inquiries, and site-wide settings - without modifying source code. The system uses a file-based JSON database, keeping deployment simple and free from external database dependencies.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q2.</span> What are the main public-facing pages of the site?</div><div class="qa-answer">
+<p>The public website includes the following key pages organized under the <code>(main)</code> route group:</p>
+<ul>
+<li><strong>Home (/)</strong> - Hero slider, featured services, projects showcase, team section, customer reviews, and a marquee ticker.</li>
+<li><strong>About (/about)</strong> - Company history, mission, and team overview.</li>
+<li><strong>Services (/services)</strong> - List of solar energy services with individual detail pages at <code>/services/[slug]</code>.</li>
+<li><strong>Projects (/projects)</strong> - Portfolio of completed installations with detail pages at <code>/projects/[slug]</code>.</li>
+<li><strong>Contact (/contact)</strong> - Contact form for inquiries and a map/address section.</li>
+<li><strong>Palash Charging Station (/palash-charging-station)</strong> - Dedicated page for the Palash EV charging product with its own color theme.</li>
+<li><strong>Solutions (/solutions)</strong> - Solutions section accessed via the navbar dropdown.</li>
+</ul>
+<p>Additionally, a 404 not-found page and a login page exist outside the main route group.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q3.</span> What is the Palash charging station page, and how does it differ visually?</div><div class="qa-answer">
+<p>The Palash charging station page is a dedicated product page for Ahead Solar's Palash EV charging station. What makes it unique is its <strong>scoped CSS variable override system</strong> defined in <code>globals.css</code>. The page applies a <code>.palash-page</code> class that completely redefines the brand color palette: the primary cyan is replaced with <code>#ed1b24</code> (Palash red), and the forest/deep cyan tones are replaced with <code>#0d5a4a</code> (Palash dark green).</p>
+<p>This technique leverages Tailwind CSS v4's design token system by overriding the <code>--color-accent-*</code>, <code>--color-gold-*</code>, and <code>--color-forest-*</code> CSS custom properties at the element level. All Tailwind utilities like <code>text-accent</code>, <code>bg-forest-700</code>, and the <code>btn-brand</code> class automatically render in the Palash color scheme without needing entirely new utility classes. The eyebrow label also gets a red palash-flower SVG dot instead of the gold sun icon.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q4.</span> What type of company is Ahead Solar, and what domain does this project operate in?</div><div class="qa-answer">
+<p>Ahead Solar operates in the <strong>renewable energy / solar power</strong> domain in Bangladesh. The company provides solar panel installation, solar energy consulting, and related services. The website positions them as a professional solar solutions provider with a corporate identity featuring a cyan (#28cbc6) and gold (#F7B308) brand palette that evokes solar energy themes.</p>
+<p>The domain influences design decisions: the site uses solar/energy-themed iconography (sun SVGs in section eyebrows), nature-inspired color tones (forest greens, cyan), and a clean professional layout appropriate for B2B and B2C solar energy clients in the Bangladesh market. The inclusion of an EV charging station product (Palash) indicates expansion into electric vehicle infrastructure.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q5.</span> Who are the target users of this website?</div><div class="qa-answer">
+<p>The website serves two distinct audiences:</p>
+<ul>
+<li><strong>Public Visitors (B2B/B2C):</strong> Homeowners, business owners, and organizations in Bangladesh looking for solar energy solutions. They browse services, view completed projects for social proof, read customer reviews, and submit contact forms for quotes or consultations.</li>
+<li><strong>Admin Users (Internal Staff):</strong> Ahead Solar employees with <code>superadmin</code> or <code>admin</code> roles who log into the CMS dashboard to manage all site content. The admin interface uses a dark theme for extended work sessions.</li>
+</ul>
+<p>The Palash charging station page also targets EV owners and fleet operators interested in charging infrastructure.</p>
+</div></div>
+<!-- SECTION 2 -->
+<div class="section-header"><h2>2. Tech Stack &amp; Architecture</h2><div class="section-range">Questions 6 - 10</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q6.</span> What is the complete tech stack used in this project?</div><div class="qa-answer">
+<p>The tech stack comprises:</p>
+<ul>
+<li><strong>Framework:</strong> Next.js 16.2.9 with React 19.2.4 and React DOM 19.2.4</li>
+<li><strong>Language:</strong> TypeScript 5.x</li>
+<li><strong>Styling:</strong> Tailwind CSS v4 (via <code>@tailwindcss/postcss</code>) with custom design tokens defined in CSS</li>
+<li><strong>Data Fetching:</strong> TanStack React Query v5.101.2</li>
+<li><strong>Forms:</strong> React Hook Form v7.80 with <code>@hookform/resolvers</code> v5.4 and Yup v1.7 validation</li>
+<li><strong>Rich Text:</strong> Tiptap v3.27 editor (with image and link extensions)</li>
+<li><strong>Carousel:</strong> Swiper v14.0</li>
+<li><strong>Icons:</strong> Lucide React v1.21</li>
+<li><strong>Auth:</strong> JWT (jsonwebtoken v9.0.3) + bcryptjs v3.0.3 for password hashing</li>
+<li><strong>Notifications:</strong> React Toastify v11.1</li>
+<li><strong>UI Utilities:</strong> class-variance-authority, clsx, tailwind-merge, Radix UI Slot</li>
+<li><strong>Database:</strong> File-based JSON (no external DB)</li>
+<li><strong>Package Manager:</strong> pnpm</li>
+</ul>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q7.</span> Why was Next.js 16 chosen over other frameworks?</div><div class="qa-answer">
+<p>Next.js 16 was chosen for its <strong>full-stack capabilities</strong> - it provides both the frontend rendering and backend API routes in a single project, eliminating the need for a separate server. The App Router offers file-based routing with support for layouts, loading states, and parallel routes, which maps cleanly to the site's page structure.</p>
+<p>Next.js 16 also provides built-in features critical for a corporate site: automatic code splitting, server-side rendering (SSR), static site generation (SSG), image optimization, SEO metadata APIs (<code>generateMetadata</code>), sitemap and robots.txt generation, and middleware support for authentication. The framework's React 19 compatibility ensures access to the latest concurrent features, and its Turbopack-powered dev server provides fast HMR during development.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q8.</span> Describe the overall project architecture and folder structure.</div><div class="qa-answer">
+<p>The project follows the Next.js App Router convention:</p>
+<ul>
+<li><code>src/app/</code> - Route definitions, layouts, API routes. Contains <code>(main)/</code> for public pages, <code>admin/</code> for CMS, and <code>api/</code> for backend endpoints.</li>
+<li><code>src/components/</code> - Organized by feature: <code>Home/</code>, <code>About/</code>, <code>Services/</code>, <code>Projects/</code>, <code>Contact/</code>, <code>Palash/</code>, <code>Admin/</code>, <code>Auth/</code>, <code>Common/</code>, <code>SEO/</code>, <code>ui/</code>.</li>
+<li><code>src/data/</code> - TypeScript type definitions and default data. The <code>api/</code> subdirectory holds JSON data files used as the database.</li>
+<li><code>src/lib/</code> - Core utilities: auth, token management, file store, API client, queries, caching, rate limiting, image/video helpers, config, and site metadata.</li>
+<li><code>src/hooks/</code> - Custom React hooks like <code>useInView</code>.</li>
+<li><code>src/types/</code> - Shared TypeScript interfaces.</li>
+<li><code>public/</code> - Static assets (images, videos, logos).</li>
+</ul>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q9.</span> What is the role of <code>src/lib/config.ts</code>?</div><div class="qa-answer">
+<p><code>src/lib/config.ts</code> serves as the <strong>centralized configuration hub</strong> for the application. It exports environment-derived and hardcoded constants including <code>SITE_URL</code> (from the SITE_URL environment variable, defaulting to <code>https://aheadsolarbd.com</code>), social media URLs, company branding constants (<code>COMPANY_NAME</code>, <code>SITE_LOGO</code>, <code>ADMIN_LOGO</code>, <code>FAVICON</code>), and the default Open Graph image path.</p>
+<p>This file ensures a single source of truth for site-wide constants. It is imported by the layout, metadata generators, API routes, and components, preventing hardcoded URLs and inconsistent branding across the application. The <code>SITE_URL</code> is particularly important for generating canonical URLs, sitemaps, and Open Graph metadata.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q10.</span> How does the project handle environment variables?</div><div class="qa-answer">
+<p>The project uses a dedicated <code>src/lib/env.ts</code> module that runs at import time and validates required environment variables: <code>JWT_SECRET</code>, <code>JWT_REFRESH_SECRET</code>, <code>DEFAULT_SUPERADMIN_EMAIL</code>, and <code>DEFAULT_SUPERADMIN_PASSWORD</code>. If any are missing, it logs a warning in development but <strong>throws an error in production</strong>, preventing the app from starting in a misconfigured state.</p>
+<p>The <code>.env</code> file at the project root contains the actual secret values. Environment variables are accessed via <code>process.env</code> throughout the codebase - in API routes for authentication, in <code>config.ts</code> for site URL, and in <code>token.ts</code> for JWT signing secrets. The centralized validation approach in <code>env.ts</code> prevents scattering <code>process.env</code> checks across multiple files.</p>
+</div></div>
+<!-- SECTION 3 -->
+<div class="section-header"><h2>3. Next.js &amp; React Concepts</h2><div class="section-range">Questions 11 - 18</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q11.</span> What is the App Router, and how does this project use it?</div><div class="qa-answer">
+<p>The App Router is Next.js's file-system based router introduced in Next.js 13, replacing the Pages Router. This project uses it extensively with route groups: <code>(main)/</code> for public pages, <code>admin/</code> for the CMS dashboard, and <code>api/</code> for backend endpoints. Each folder maps to a URL segment, and special files (<code>page.tsx</code>, <code>layout.tsx</code>, <code>loading.tsx</code>) define the UI.</p>
+<p>The root <code>src/app/layout.tsx</code> wraps the entire application with <code>ClientProviders</code> (for React Query) and <code>LazyLayout</code>. The <code>(main)/layout.tsx</code> provides the public site shell (navbar, footer), while <code>admin/layout.tsx</code> provides the dark-themed admin shell with sidebar navigation. A catch-all route <code>[...catchAll]</code> handles dynamic admin sub-routes.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q12.</span> What is the difference between Server Components and Client Components in this project?</div><div class="qa-answer">
+<p>In Next.js 16 with React 19, components are <strong>Server Components by default</strong>. Server Components run on the server, can directly access the file system for reading JSON data, and send minimal HTML to the client. The root <code>page.tsx</code> and <code>layout.tsx</code> are server components - they call <code>getSiteInfo()</code> directly and generate metadata.</p>
+<p>Client Components are marked with <code>"use client"</code> and run in the browser, handling interactivity, forms, state, effects, and event handlers. Examples include <code>src/lib/queries.ts</code>, <code>src/lib/apiClient.ts</code>, and <code>src/hooks/useInView.ts</code>. The home page uses <code>dynamic()</code> to lazy-load the <code>HomePage</code> client component, creating a clear boundary between server-rendered shell and interactive client UI.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q13.</span> How does the <code>dynamic()</code> import work in the home page?</div><div class="qa-answer">
+<p>The home page uses <code>next/dynamic</code> to lazily load the <code>HomePage</code> component with a <code>MainSitePageLoading</code> skeleton as the loading state. This performs <strong>code splitting</strong> - the HomePage and all its children are bundled into a separate JavaScript chunk that loads asynchronously.</p>
+<p>The server-rendered page shell (JSON-LD structured data, metadata) is sent immediately, while the interactive home page hydrates in the browser. This is especially beneficial for a large home page with hero sliders, service cards, project galleries, and team sections - only the critical above-the-fold content needs to load first, significantly improving the initial page load performance.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q14.</span> What is the role of the root <code>layout.tsx</code>?</div><div class="qa-answer">
+<p>The root layout performs three key functions:</p>
+<ul>
+<li><strong>Font Loading:</strong> Loads three Google Fonts via <code>next/font/google</code> - Rajdhani (headings), Rubik (body), Geist_Mono (code) - exposing them as CSS custom properties for the Tailwind theme.</li>
+<li><strong>Global Metadata:</strong> The <code>generateMetadata()</code> function reads site info from the JSON database and sets default title template, description, Open Graph, and Twitter card metadata.</li>
+<li><strong>Provider Wrapping:</strong> Wraps children with <code>ClientProviders</code> (React Query, Toastify) and <code>LazyLayout</code> for deferred loading.</li>
+</ul>
+<p>The HTML element also receives font CSS variables and an <code>antialiased</code> class for smooth font rendering.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q15.</span> What are React 19 features leveraged in this project?</div><div class="qa-answer">
+<p>The project uses React 19.2.4, leveraging several improvements:</p>
+<ul>
+<li><strong>Server Components:</strong> Native support for components that render only on the server, used throughout the app directory.</li>
+<li><strong>Improved Hydration:</strong> Better handling of server-client mismatches, reducing console errors.</li>
+<li><strong>ref as a prop:</strong> React 19 allows passing ref as a regular prop instead of using forwardRef, simplifying component APIs.</li>
+<li><strong>Resource Loading:</strong> Built-in support for loading resources (fonts via <code>next/font</code>) with automatic preloading.</li>
+</ul>
+<p>React 19 also improves concurrent rendering performance, benefiting the complex home page with its multiple data-driven sections and improving overall user experience.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q16.</span> How do the <code>robots.ts</code> and <code>sitemap.ts</code> work?</div><div class="qa-answer">
+<p><code>robots.ts</code> exports a function returning a <code>MetadataRoute.Robots</code> object. It allows all crawlers to index the public site but <strong>disallows /admin and /login</strong> paths. It also points to the sitemap URL.</p>
+<p><code>sitemap.ts</code> exports a force-dynamic function that builds a sitemap by combining static routes (home, about, services, projects, contact, palash) with dynamic entries read from the JSON data files. Each service and project slug becomes a unique sitemap URL. This ensures new content added via the CMS automatically appears in the sitemap without a rebuild, keeping SEO data synchronized with content changes.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q17.</span> What is the purpose of <code>ClientProviders</code> and <code>LazyLayout</code>?</div><div class="qa-answer">
+<p><code>ClientProviders</code> is a client component that wraps the application with necessary context providers - primarily the <code>QueryClientProvider</code> for TanStack React Query and the <code>ToastContainer</code> for React Toastify notifications. Since providers use React context (a client-only feature), they must be in a client component, even though the root layout itself is a server component.</p>
+<p><code>LazyLayout</code> provides deferred/lazy rendering for children, likely using React 19's features or a custom implementation to defer rendering of below-the-fold content. Together, these two components bridge the server-client boundary - keeping the root layout as a server component while enabling client-side interactivity for the entire application tree.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q18.</span> What is the purpose of the <code>not-found.tsx</code> file?</div><div class="qa-answer">
+<p>The <code>src/app/not-found.tsx</code> file defines a custom 404 page that Next.js renders when a user navigates to a URL that doesn't match any defined route. This provides a branded, user-friendly error page instead of the default browser or Next.js 404 page.</p>
+<p>Additionally, there is a separate <code>src/app/admin/not-found.tsx</code> for the admin section using the dark admin theme. The admin also has a <code>[...catchAll]</code> route that acts as a catch-all for unmatched admin paths, providing more granular 404 handling within the CMS dashboard. This dual approach ensures both public visitors and admin users see context-appropriate error pages.</p>
+</div></div>
+<!-- SECTION 4 -->
+<div class="section-header"><h2>4. Styling &amp; Design System</h2><div class="section-range">Questions 19 - 23</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q19.</span> How does Tailwind CSS v4 work in this project?</div><div class="qa-answer">
+<p>This project uses <strong>Tailwind CSS v4</strong> via <code>@tailwindcss/postcss</code>, which is a major departure from v3. The critical difference: <strong>there is no tailwind.config.js</strong>. Instead, all design tokens are defined directly in CSS using the <code>@theme</code> directive inside <code>globals.css</code>.</p>
+<p>The <code>@theme</code> block defines custom color scales (brand, accent, gold, forest, neutral, admin, semantic), typography fonts, border radii, shadows, and transitions. Tailwind v4 reads these CSS custom properties and generates corresponding utility classes like <code>bg-brand-500</code>, <code>text-accent-600</code>, <code>rounded-xl</code>, etc. The <code>@import "tailwindcss"</code> directive at the top of globals.css activates the Tailwind v4 engine.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q20.</span> Explain the color token system used in the design.</div><div class="qa-answer">
+<p>The design system uses a multi-layered color architecture:</p>
+<ul>
+<li><strong>Raw Brand Palette:</strong> Primitive color scales defined in <code>@theme</code> - <code>--color-brand-*</code> (cyan, #28CBC6 primary), <code>--color-accent-*</code> (highlights), <code>--color-gold-*</code> (secondary accent, #F7B308), <code>--color-forest-*</code> (deep cyan for dark sections), <code>--color-neutral-*</code> (slate grays), and <code>--color-admin-*</code> (dark surface palette).</li>
+<li><strong>Shorthand Aliases:</strong> <code>--color-primary</code> maps to brand-500, enabling utilities like <code>bg-primary</code>.</li>
+<li><strong>Semantic CSS Properties:</strong> In <code>:root</code>, <code>--clr-primary</code>, <code>--clr-accent</code>, <code>--admin-accent</code> provide component-level tokens consumed by custom classes.</li>
+<li><strong>Palash Overrides:</strong> The <code>.palash-page</code> scope redefines accent, gold, and forest tokens to red/green values.</li>
+</ul>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q21.</span> What is the <code>color-mix()</code> function used for in the CSS?</div><div class="qa-answer">
+<p>The <code>color-mix()</code> CSS function creates semi-transparent variants of brand colors without hardcoding opacity values. For example: <code>--color-primary-muted: color-mix(in srgb, var(--color-brand-500) 12%, transparent)</code> creates a 12% opacity version of the brand cyan for background tints.</p>
+<p>Similarly, <code>--shadow-brand</code> uses <code>color-mix(in srgb, var(--color-brand-500) 35%, transparent)</code> for a brand-colored box shadow. This ensures that if the brand color changes (e.g., via the Palash override), all derived colors, shadows, and accents automatically update. It reduces the number of manually defined color variants and maintains consistency across the design system.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q22.</span> What utility libraries are used alongside Tailwind?</div><div class="qa-answer">
+<p>Three utility libraries complement Tailwind CSS:</p>
+<ul>
+<li><strong>clsx</strong> - A tiny utility for conditionally joining class names. Used when class composition requires logical expressions.</li>
+<li><strong>tailwind-merge</strong> - Intelligently merges Tailwind class strings without conflicts: <code>twMerge("p-2 p-4")</code> results in <code>"p-4"</code>. Critical for component libraries where props override base classes.</li>
+<li><strong>class-variance-authority (CVA)</strong> - Defines component variants with type-safe class mappings. Used for creating consistent, variant-based component APIs.</li>
+</ul>
+<p>Together, these enable clean, maintainable class composition without the verbosity and conflict issues of raw Tailwind strings.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q23.</span> What is the admin dark theme, and how is it implemented?</div><div class="qa-answer">
+<p>The admin dashboard uses a dark theme defined through CSS custom properties in <code>:root</code>. Key tokens include <code>--admin-bg: #0f1117</code>, <code>--admin-surface: #161b27</code>, <code>--admin-surface-2: #1e2535</code>, and <code>--admin-surface-hover: #242b3d</code> for the layered surface hierarchy. Text colors use <code>--admin-text-primary: #f0f4ff</code>, <code>--admin-text-secondary: #8b95b0</code>, and <code>--admin-text-muted: #5a6380</code>.</p>
+<p>The accent color is set to the brand teal with glow and muted variants. The admin also maps these tokens to <strong>shadcn-ui compatible variables</strong> (<code>--card</code>, <code>--primary</code>, <code>--border</code>, <code>--ring</code>, etc.), enabling compatibility with shadcn-ui component primitives. The admin layout wraps content in a <code>.admin-layout-root</code> class that locks body overflow.</p>
+</div></div>
+<!-- SECTION 5 -->
+<div class="section-header"><h2>5. Authentication &amp; Security</h2><div class="section-range">Questions 24 - 30</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q24.</span> How does the JWT authentication system work?</div><div class="qa-answer">
+<p>The authentication uses a <strong>dual-token JWT system</strong> implemented in <code>src/lib/token.ts</code>:</p>
+<ul>
+<li><strong>Access Token:</strong> Short-lived (15 minutes), signed with JWT_SECRET. Contains user ID, email, and role (superadmin or admin). Used for authenticating API requests.</li>
+<li><strong>Refresh Token:</strong> Long-lived (7 days), signed with JWT_REFRESH_SECRET. Used to obtain new access tokens without re-authentication.</li>
+</ul>
+<p>The flow: client sends credentials to <code>/api/auth/login</code>, receives both tokens. Access token is stored in localStorage and attached as <code>Authorization: Bearer</code> header. When it expires (401 response), the apiClient automatically calls <code>/api/auth/refresh</code> with the refresh token to get a new access token, then retries the original request.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q25.</span> How does the <code>apiClient</code> handle token refresh?</div><div class="qa-answer">
+<p>The <code>apiClient</code> at <code>src/lib/apiClient.ts</code> implements automatic token refresh with <strong>request deduplication</strong>. When a fetch returns 401, it checks if the failed URL is an auth route (to avoid infinite loops). If not, it calls <code>refreshOrSingle()</code>, which ensures only one refresh request is in flight at a time using a shared promise variable.</p>
+<p>If refresh succeeds, the original request is retried with the new token. If it fails, <code>clearAuth()</code> removes both tokens from localStorage and <code>redirectToLogin()</code> redirects to <code>/login</code> (only if the current path starts with /admin). This ensures smooth session management without flickering or data loss during normal browsing.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q26.</span> How are passwords stored and verified?</div><div class="qa-answer">
+<p>Passwords are hashed using <strong>bcryptjs</strong> with a salt rounds value of <strong>12</strong>: <code>bcrypt.hash(password, 12)</code>. This provides strong protection against rainbow table and brute-force attacks. The <code>hashPassword()</code> and <code>comparePassword()</code> functions in token.ts wrap bcrypt's async API.</p>
+<p>When a user attempts login, the provided password is compared against the stored hash using <code>bcrypt.compare()</code>. The default superadmin account is created automatically on first boot via <code>ensureSuperadminExists()</code> in auth.ts, which reads credentials from environment variables, hashes the password, and saves the user to the JSON data file with a UUID-based ID.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q27.</span> What roles exist in the system?</div><div class="qa-answer">
+<p>The system defines two roles in the TokenPayload interface: <code>"superadmin"</code> and <code>"admin"</code>. Both roles can access the CMS dashboard, but the distinction suggests different permission levels for future implementation.</p>
+<p>The StoredUser interface includes id, name, email, password, role, createdAt, and updatedAt fields. The superadmin role is automatically seeded from environment variables if no superadmin exists. Additional admin users can be created through the CMS user management interface at <code>/admin/users</code>. The role is embedded in the JWT payload and can be checked in API routes for role-based access control.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q28.</span> How does the middleware proxy protect API routes?</div><div class="qa-answer">
+<p>The middleware at <code>src/proxy.ts</code> intercepts all requests matching <code>/api/:path*</code>. It implements a <strong>whitelist-based access control</strong> system:</p>
+<ul>
+<li><strong>Always public:</strong> Auth routes (login, refresh, logout)</li>
+<li><strong>Public GET:</strong> Routes like /api/settings, /api/services, /api/projects, /api/hero-slides, /api/team, /api/reviews, /api/image, /api/db, /api/env allow unauthenticated reads</li>
+<li><strong>Public POST:</strong> Only /api/contact, /api/reviews, and /api/palash-applications allow unauthenticated writes</li>
+<li><strong>Protected:</strong> All other routes require a valid JWT access token</li>
+</ul>
+<p>The middleware extracts the token from either the Authorization header or the accessToken cookie, verifies it, and returns 401 if invalid.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q29.</span> How does rate limiting work?</div><div class="qa-answer">
+<p>Rate limiting is implemented in <code>src/lib/rateLimit.ts</code> using an <strong>in-memory sliding window</strong> approach. The <code>isRateLimited()</code> function takes a key (typically the client IP), a max request count (default 10), and a time window (default 15 minutes). It maintains a Map of buckets, each tracking a request count and reset timestamp.</p>
+<p>The <code>getClientIp()</code> function extracts the real IP from <code>x-forwarded-for</code> or <code>x-real-ip</code> headers for proxied deployments. Note: this is a single-process rate limiter - multiple server instances would not share state, which is acceptable for this project's scale and deployment model.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q30.</span> What security measures are in place beyond authentication?</div><div class="qa-answer">
+<p>Several security measures extend beyond JWT auth:</p>
+<ul>
+<li><strong>Path traversal prevention:</strong> Image and video helpers reject URLs containing <code>..</code> or backslashes.</li>
+<li><strong>File validation:</strong> imageHelper.ts validates folder names against an allowlist (services, projects, team, hero, settings) and enforces a 5MB size limit.</li>
+<li><strong>Input sanitization:</strong> Image IDs are validated with regex to prevent injection attacks.</li>
+<li><strong>Write locks:</strong> <code>withWriteLock()</code> in fileStore.ts serializes concurrent file writes to prevent data corruption.</li>
+<li><strong>Environment validation:</strong> env.ts fails in production if secrets are missing.</li>
+<li><strong>Robots.txt:</strong> Disallows indexing of admin and login routes.</li>
+</ul>
+</div></div>
+<!-- SECTION 6 -->
+<div class="section-header"><h2>6. API Routes &amp; Data Layer</h2><div class="section-range">Questions 31 - 36</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q31.</span> What API routes exist in the project?</div><div class="qa-answer">
+<p>The <code>src/app/api/</code> directory contains the following route groups:</p>
+<ul>
+<li><code>auth/</code> - Login, refresh, and logout endpoints</li>
+<li><code>contact/</code> - Contact form submissions (public POST)</li>
+<li><code>db/</code> - Database operations (public GET)</li>
+<li><code>env/</code> - Environment info (public GET)</li>
+<li><code>hero-slides/</code> - Hero carousel slides (public GET)</li>
+<li><code>image/</code> - Image serving (public GET)</li>
+<li><code>palash-applications/</code> - Palash applications (public POST)</li>
+<li><code>projects/</code> - Project CRUD</li>
+<li><code>reviews/</code> - Reviews (public GET + public POST)</li>
+<li><code>services/</code> - Service CRUD</li>
+<li><code>settings/</code> - Site settings (public GET)</li>
+<li><code>team/</code> - Team member CRUD</li>
+<li><code>users/</code> - User management (admin-only CRUD)</li>
+</ul>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q32.</span> How do API routes communicate with the frontend?</div><div class="qa-answer">
+<p>API routes follow a consistent response pattern: <code>{ success: boolean, data?: T, error?: string }</code>. The frontend uses TanStack React Query hooks defined in queries.ts to fetch data. Each hook calls <code>apiFetchJson()</code>, which uses the apiClient to make authenticated requests.</p>
+<p>The apiClient automatically attaches the JWT access token from localStorage as a Bearer token. If a request returns 401, it attempts a silent token refresh before retrying. The query hooks define staleTime of 5 minutes for public data and 0 (always refetch) for admin data. The queryKeys object provides consistent cache keys.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q33.</span> What is the data flow for a public page like the services list?</div><div class="qa-answer">
+<p>The data flow for the services page works as follows:</p>
+<ol>
+<li>Browser requests <code>/services</code>.</li>
+<li>Next.js serves the (main)/layout.tsx shell (navbar, footer) and the services page component.</li>
+<li>The services page component calls <code>useQueryServices()</code> from React Query.</li>
+<li>React Query's queryFn calls <code>apiFetchJson("/api/services", [])</code>.</li>
+<li>apiClient makes a GET request to /api/services (no auth needed - public GET).</li>
+<li>The API route reads servicesData.json via <code>readDataFile()</code> and returns the array.</li>
+<li>React Query caches the result for 5 minutes and renders the services list.</li>
+</ol>
+<p>This client-side fetching approach means the page shell loads instantly while data loads asynchronously, with a loading skeleton shown during the fetch.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q34.</span> What caching strategy is used?</div><div class="qa-answer">
+<p>The project uses a <strong>multi-layer caching strategy</strong>:</p>
+<ul>
+<li><strong>React Query Client Cache:</strong> Public data is cached with staleTime: 5 minutes and refetchOnWindowFocus: false. Admin data has staleTime: 0 (always fresh).</li>
+<li><strong>HTTP Cache Headers:</strong> cache.ts defines PUBLIC_CACHE_HEADERS with stale-while-revalidate=600 (10 minutes), allowing browsers to serve stale content while revalidating in the background. Admin routes use NO_CACHE_HEADERS with no-store.</li>
+<li><strong>Query Invalidation:</strong> When admin modifies content, <code>invalidateContentCache()</code> invalidates both the public and admin query keys, ensuring fresh data on next fetch.</li>
+</ul>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q35.</span> How does the contact form submission work?</div><div class="qa-answer">
+<p>The contact form is a public POST endpoint at <code>/api/contact</code>. When a visitor submits the form:</p>
+<ol>
+<li>Client-side validation runs via React Hook Form + Yup (name, email, phone, message fields).</li>
+<li>Validated data is sent via the apiClient POST to /api/contact.</li>
+<li>The middleware allows this without authentication (it is in PUBLIC_POST_PATHS).</li>
+<li>The API route may apply rate limiting using <code>isRateLimited()</code> with the client IP.</li>
+<li>The submission is saved to contactData.json via <code>writeDataFile()</code>.</li>
+<li>A success response is returned, and the admin can view submissions in the /admin/contact dashboard.</li>
+</ol>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q36.</span> How are API responses structured?</div><div class="qa-answer">
+<p>All API routes follow a <strong>consistent JSON response format</strong>:</p>
+<ul>
+<li><strong>Success:</strong> <code>{ success: true, data: T }</code> - where T is the resource type (array or object).</li>
+<li><strong>Error:</strong> <code>{ success: false, error: "Error message" }</code> - with appropriate HTTP status code (400, 401, 404, 500).</li>
+</ul>
+<p>The frontend's <code>apiFetchJson()</code> helper checks <code>json.success &amp;&amp; Array.isArray(json.data)</code> and falls back to a default value if the response is invalid. This consistent structure simplifies error handling and makes it easy to add global response interceptors. The API client also handles non-JSON responses gracefully.</p>
+</div></div>
+<!-- SECTION 7 -->
+<div class="section-header"><h2>7. File-Based JSON Database</h2><div class="section-range">Questions 37 - 40</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q37.</span> How does the file-based JSON database work?</div><div class="qa-answer">
+<p>The database is implemented in <code>src/lib/fileStore.ts</code> using Node.js fs module. JSON files are stored in <code>src/data/api/</code> with names like servicesData.json, projectsData.json, etc. The <code>readDataFile&lt;T&gt;(fileName, fallback)</code> function reads and parses a JSON file, returning the typed data or a fallback value if the file doesn't exist or is empty.</p>
+<p>The <code>writeDataFile&lt;T&gt;(fileName, data)</code> function writes data as formatted JSON. A critical feature is <code>withWriteLock()</code> - a promise-based mutex that serializes write operations to prevent data corruption from concurrent requests. This is essential because Node.js is single-threaded but async operations can interleave.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q38.</span> What data files exist in the <code>src/data/api/</code> directory?</div><div class="qa-answer">
+<p>The <code>src/data/api/</code> directory contains JSON files for each content type:</p>
+<ul>
+<li><code>usersData.json</code> - Admin/superadmin user accounts with hashed passwords</li>
+<li><code>teamData.json</code> - Team member profiles</li>
+<li>Additionally, runtime-created files for: services, projects, hero-slides, reviews, contact submissions, settings, and palash applications</li>
+</ul>
+<p>Default data is defined in TypeScript files under <code>src/data/</code>. When a JSON data file doesn't exist, the API routes fall back to these defaults. The JSON files are created on first write and serve as the persistent storage layer.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q39.</span> What are the advantages and disadvantages of this approach?</div><div class="qa-answer">
+<p><strong>Advantages:</strong></p>
+<ul>
+<li><strong>Simplicity:</strong> No external database setup, connection strings, or ORM configuration needed.</li>
+<li><strong>Portability:</strong> The entire database is just JSON files that can be backed up by copying a directory.</li>
+<li><strong>Performance:</strong> Reads are fast (in-process file I/O) for small to medium datasets.</li>
+<li><strong>Cost:</strong> No database hosting fees - ideal for a small business site with moderate traffic.</li>
+</ul>
+<p><strong>Disadvantages:</strong></p>
+<ul>
+<li><strong>Scalability:</strong> Not suitable for high-concurrency write workloads; the write lock serializes all mutations.</li>
+<li><strong>Atomicity:</strong> No transaction support - crashes during writes could corrupt data.</li>
+<li><strong>Query capability:</strong> No indexing or query optimization; all reads load the full file.</li>
+<li><strong>Multi-instance:</strong> Multiple server instances would have separate data copies (not shared).</li>
+</ul>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q40.</span> How does the write lock mechanism prevent data corruption?</div><div class="qa-answer">
+<p>The <code>withWriteLock()</code> function in fileStore.ts implements a <strong>promise-based mutex</strong>. It maintains a module-level writeLock variable that holds the latest write promise. When <code>withWriteLock(fn)</code> is called, it chains fn onto the existing promise via <code>writeLock.then(fn)</code>. This ensures that even if multiple API requests try to write simultaneously, their operations execute sequentially.</p>
+<p>For example, if two requests try to update services at the same time: the first starts writing immediately, and the second waits until the first's promise resolves (success or failure). The <code>.then(() =&gt; undefined, () =&gt; undefined)</code> ensures the lock chain continues even if a write fails. This prevents the classic race condition where two concurrent reads followed by two writes would cause one write to overwrite the other's changes.</p>
+</div></div>
+
+<!-- SECTION 8 -->
+<div class="section-header"><h2>8. CMS / Admin Dashboard</h2><div class="section-range">Questions 41 - 46</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q41.</span> What content can be managed through the admin CMS?</div><div class="qa-answer">
+<p>The admin CMS at <code>/admin</code> provides management interfaces for all dynamic content:</p>
+<ul>
+<li><strong>Hero Slides (/admin/hero-slider)</strong> - Manage the homepage carousel slides with images, text, and links.</li>
+<li><strong>Services (/admin/services)</strong> - Create, edit, delete solar service offerings with images, descriptions, and slugs.</li>
+<li><strong>Projects (/admin/projects)</strong> - Manage the project portfolio with images, descriptions, and slugs.</li>
+<li><strong>Team (/admin/team)</strong> - Team member profiles with photos and bios.</li>
+<li><strong>Reviews (/admin/reviews)</strong> - Customer testimonials and ratings.</li>
+<li><strong>Contact (/admin/contact)</strong> - View and manage contact form submissions.</li>
+<li><strong>Settings (/admin/settings)</strong> - Global site settings (company info, SEO, social links).</li>
+<li><strong>Users (/admin/users)</strong> - Manage admin and superadmin accounts.</li>
+<li><strong>Analytics (/admin/analytics)</strong> - Dashboard analytics and metrics.</li>
+</ul>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q42.</span> How is the admin layout structured?</div><div class="qa-answer">
+<p>The admin layout at <code>src/app/admin/layout.tsx</code> provides a dark-themed shell with:</p>
+<ul>
+<li><strong>Sidebar Navigation:</strong> Fixed 260px wide sidebar with links to each CMS section.</li>
+<li><strong>Header:</strong> 64px tall header bar with user info and logout.</li>
+<li><strong>Main Content Area:</strong> Scrollable content area with the dark surface background.</li>
+<li><strong>Root Class:</strong> The layout applies <code>.admin-layout-root</code> which locks body overflow via the CSS selector <code>html:has(.admin-layout-root) { overflow: hidden !important; }</code>.</li>
+</ul>
+<p>The admin CSS file at <code>src/app/admin/admin.css</code> contains additional admin-specific styles. The layout uses the admin dark theme tokens defined in <code>:root</code>.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q43.</span> How does admin data fetching differ from the public site?</div><div class="qa-answer">
+<p>Admin queries use separate React Query hooks prefixed with <code>useAdminQuery*</code> and use adminQueryKeys. The key differences:</p>
+<ul>
+<li><strong>Stale Time:</strong> Admin queries have staleTime: 0 and refetchOnMount: true, ensuring the admin always sees the latest data. Public queries cache for 5 minutes.</li>
+<li><strong>Refetch Behavior:</strong> Admin queries skip refetchOnWindowFocus to avoid unnecessary requests during editing.</li>
+<li><strong>Cache Separation:</strong> Public and admin data use different query keys, so invalidating admin data doesn't force a refetch on the public site until content is published.</li>
+<li><strong>Write Operations:</strong> Admin API routes require authentication (PUT, DELETE), while public routes are read-only.</li>
+</ul>
+</div></div>
+
+
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q44.</span> How does the Tiptap rich text editor integrate into the CMS?</div><div class="qa-answer">
+<p>The CMS uses <strong>Tiptap v3.27</strong> with the following extensions: starter-kit for basic formatting (bold, italic, headings, lists, blockquote, code blocks), extension-image for inline image insertion, and extension-link for hyperlink creation and editing.</p>
+<p>Tiptap is used for service descriptions, project descriptions, and other rich content fields. It provides a WYSIWYG editing experience that outputs clean HTML. The editor integrates with React Hook Form for validation and stores content as HTML strings in the JSON data files. The rich text output is rendered on the public site within the page content areas.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q45.</span> How does the Palash charging station management work in the admin?</div><div class="qa-answer">
+<p>The admin interface includes a <code>/admin/palash-applications</code> section for managing Palash charging station applications. The palash-applications API route is listed as a public POST endpoint, meaning visitors can apply for a Palash station without authentication.</p>
+<p>The public Palash page at <code>/palash-charging-station</code> includes an application form that POSTs to this endpoint. The admin can then view and manage these applications in the CMS. The Palash page uses the special <code>.palash-page</code> CSS class that overrides the entire color scheme to match the Palash brand (red and dark green), demonstrating the flexibility of the CSS custom property-based design system.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q46.</span> How does the CMS handle image uploads?</div><div class="qa-answer">
+<p>Image uploads are handled by <code>src/lib/imageHelper.ts</code>. The flow works as follows: the admin selects an image in the CMS form, client-side JavaScript converts the image to a base64 data URL, and the base64 string is sent to the API route along with the form data.</p>
+<p>The <code>saveImage()</code> function validates the folder name against an allowlist (services, projects, team, hero, settings), extracts the file type, validates the extension, checks the 5MB size limit, and creates a unique filename with a timestamp. The image buffer is written to <code>public/images/api/{folder}/{id}_{timestamp}.{ext}</code>. The stored URL is saved in the JSON data file. <code>deleteImage()</code> removes the physical file when content is deleted, with security checks for path traversal.</p>
+</div></div>
+
+<!-- SECTION 9 -->
+<div class="section-header"><h2>9. State Management &amp; Data Fetching</h2><div class="section-range">Questions 47 - 51</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q47.</span> Why is TanStack React Query used instead of native fetch?</div><div class="qa-answer">
+<p>TanStack React Query v5 provides several critical features that raw fetch lacks:</p>
+<ul>
+<li><strong>Automatic Caching:</strong> Results are cached by query key, preventing duplicate network requests for the same data.</li>
+<li><strong>Stale-While-Revalidate:</strong> Shows cached data immediately while fetching fresh data in the background.</li>
+<li><strong>Background Refetching:</strong> Can refetch on window focus, interval, or when the component remounts.</li>
+<li><strong>Query Invalidation:</strong> When admin updates content, invalidateQueries() triggers a refetch across all components using that data.</li>
+<li><strong>Loading/Error States:</strong> Built-in isLoading, isError, error states for each query.</li>
+</ul>
+<p>This is essential for a CMS where content changes frequently and both public and admin views need to stay synchronized.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q48.</span> What is the difference between queryKeys and adminQueryKeys?</div><div class="qa-answer">
+<p><strong>queryKeys</strong> defines cache keys for the public site: ["settings"], ["services"], ["projects"], etc. These queries have 5-minute stale time and are consumed by public-facing components.</p>
+<p><strong>adminQueryKeys</strong> defines prefixed cache keys: ["admin", "settings"], ["admin", "services"], etc. These queries have 0 stale time (always fresh) and are consumed by CMS components.</p>
+<p>This separation is deliberate: when an admin updates a service, <code>invalidateContentCache("services")</code> invalidates both ["services"] and ["admin", "services"], ensuring both views refresh. But the public site doesn't refetch on every admin page load - only when data is actually modified.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q49.</span> How does the useInvalidateAll hook work?</div><div class="qa-answer">
+<p>The <code>useInvalidateAll()</code> hook in queries.ts returns a function that, when called, invalidates <strong>all public query keys</strong>: settings, services, hero-slides, team, projects, contact, reviews, and users. It uses React Query's queryClient.invalidateQueries() with each key.</p>
+<p>This is likely used after a bulk operation (like importing data or resetting the database) to force a complete refetch of all cached data. For individual content updates, the more targeted <code>invalidateContentCache(queryClient, key)</code> function is used instead, which only invalidates the specific content type (both public and admin variants).</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q50.</span> How does the useInView hook work?</div><div class="qa-answer">
+<p>The <code>useInView()</code> hook at src/hooks/useInView.ts uses the <strong>Intersection Observer API</strong> to detect when an element enters the viewport. It accepts options for once (default true), threshold (0.15 default), and rootMargin ("0px 0px -8% 0px" default, triggering slightly before the element is fully visible).</p>
+<p>It returns a ref to attach to the target element and an inView boolean state. When the element intersects, inView becomes true, and if once is true, the observer is disconnected. If IntersectionObserver is unavailable (SSR or old browsers), it falls back to requestAnimationFrame to immediately set inView to true. This hook powers the scroll reveal animations throughout the site.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q51.</span> What are the query hook naming conventions?</div><div class="qa-answer">
+<p>The project follows a clear naming convention for React Query hooks:</p>
+<ul>
+<li><strong>Public hooks:</strong> <code>useQuery{Resource}()</code> - e.g., useQueryServices(), useQueryProjects(), useQueryTeam(). These use queryKeys and 5-minute stale time.</li>
+<li><strong>Admin hooks:</strong> <code>useAdminQuery{Resource}()</code> - e.g., useAdminQueryServices(). These use adminQueryKeys and zero stale time.</li>
+<li><strong>Specialized hooks:</strong> <code>useQueryHeroSlides(site?)</code> accepts an optional parameter, extending the query key with the site filter.</li>
+<li><strong>Invalidation hooks:</strong> <code>useInvalidateAll()</code> returns an invalidation function.</li>
+</ul>
+<p>This consistent naming makes it easy to identify which hooks are safe for public components and which require auth.</p>
+</div></div>
+
+
+<!-- SECTION 10 -->
+<div class="section-header"><h2>10. Forms &amp; Validation</h2><div class="section-range">Questions 52 - 55</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q52.</span> How does React Hook Form integrate with Yup in this project?</div><div class="qa-answer">
+<p>The project uses react-hook-form v7.80 with @hookform/resolvers v5.4 and yup v1.7 for schema-based validation. The integration works as follows:</p>
+<ol>
+<li>A Yup schema is defined with field-level validations (required, email, min/max length, regex patterns).</li>
+<li>The <code>yupResolver(schema)</code> from @hookform/resolvers/yup bridges Yup's validation to React Hook Form's validation system.</li>
+<li>The <code>useForm()</code> hook is initialized with the resolver, providing register(), handleSubmit(), formState: { errors }.</li>
+<li>Error messages from Yup are automatically mapped to formState.errors and can be displayed next to form fields.</li>
+</ol>
+<p>This approach provides type-safe, declarative validation schemas that are shared between client-side display and potentially server-side validation.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q53.</span> What forms exist in the application?</div><div class="qa-answer">
+<p>Forms exist in both the public site and admin CMS:</p>
+<ul>
+<li><strong>Contact Form (/contact):</strong> Collects name, email, phone, subject, and message. Publicly accessible, submits via POST to /api/contact.</li>
+<li><strong>Palash Application Form:</strong> Application form for Palash charging station interest. Publicly accessible POST to /api/palash-applications.</li>
+<li><strong>Login Form (/login):</strong> Email and password authentication form, submits to /api/auth/login.</li>
+<li><strong>Admin CMS Forms:</strong> Create/edit forms for services, projects, team members, hero slides, reviews, settings, and users. These use Tiptap for rich text fields and file inputs for image uploads.</li>
+</ul>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q54.</span> How are form errors displayed to the user?</div><div class="qa-answer">
+<p>Form errors are displayed using React Hook Form's formState.errors object and React Toastify for submission feedback:</p>
+<ul>
+<li><strong>Field-level errors:</strong> When validation fails, error messages appear below the corresponding field via <code>errors.fieldName?.message</code>.</li>
+<li><strong>Submission feedback:</strong> React Toastify provides toast notifications for success (toast.success()) and error (toast.error()) states after form submission.</li>
+<li><strong>Visual styling:</strong> Admin forms use the admin theme's danger color for error text, with Tailwind utilities.</li>
+</ul>
+<p>The combination provides immediate field-level feedback and persistent submission status notifications.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q55.</span> How does client-side validation differ from server-side validation?</div><div class="qa-answer">
+<p><strong>Client-side validation</strong> (React Hook Form + Yup) runs in the browser before any network request. It provides instant feedback, improves UX by avoiding unnecessary server calls, and reduces server load. However, it can be bypassed by malicious users.</p>
+<p><strong>Server-side validation</strong> happens in the API route handlers. API routes validate the incoming data structure, check required fields, validate email formats, and ensure data integrity before writing to the JSON files. The server also applies rate limiting and authentication checks.</p>
+<p>The project implements both layers: client-side for UX and server-side for security. For example, the contact form validates fields in the browser, but the API route also validates before saving.</p>
+</div></div>
+
+
+<!-- SECTION 11 -->
+<div class="section-header"><h2>11. SEO &amp; Performance</h2><div class="section-range">Questions 56 - 62</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q56.</span> How does the project handle SEO metadata?</div><div class="qa-answer">
+<p>SEO metadata is handled through Next.js's Metadata API at multiple levels:</p>
+<ul>
+<li><strong>Root Layout:</strong> generateMetadata() in src/app/layout.tsx reads site info from the JSON database and sets the default title template (%s | Ahead Solar), description, Open Graph, and Twitter card metadata.</li>
+<li><strong>Page-level:</strong> The pageMetadata() helper in site.ts generates per-page metadata with canonical URLs, custom titles/descriptions, and images.</li>
+<li><strong>Dynamic Content:</strong> Service and project detail pages generate metadata from their content data.</li>
+</ul>
+<p>The metadata includes metadataBase for resolving relative URLs, alternates.canonical for canonical URLs, and structured Open Graph/Twitter data for social sharing.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q57.</span> What is the JSON-LD structured data used for?</div><div class="qa-answer">
+<p>The home page includes two JSON-LD structured data schemas rendered via the JsonLd component:</p>
+<ul>
+<li><strong>Organization Schema:</strong> Contains the company name, URL, logo, description, email, phone, address (with Bangladesh country code), and social media profiles. This helps Google display a Knowledge Panel for the company.</li>
+<li><strong>WebSite Schema:</strong> Basic website information that helps search engines understand the site structure.</li>
+</ul>
+<p>JSON-LD is the preferred format for structured data because it doesn't interfere with the page's CSS or JavaScript. It is embedded in a script tag with type="application/ld+json" and parsed by search engines to generate rich results.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q58.</span> What SEO-friendly features are built into the site?</div><div class="qa-answer">
+<p>The site includes several SEO-friendly features:</p>
+<ul>
+<li><strong>Dynamic Sitemap:</strong> sitemap.xml is generated dynamically from both static routes and CMS content (services and projects slugs).</li>
+<li><strong>Robots.txt:</strong> Generated via robots.ts, allowing public pages while blocking /admin and /login.</li>
+<li><strong>Canonical URLs:</strong> Each page has a canonical URL set via alternates.canonical in metadata.</li>
+<li><strong>Open Graph &amp; Twitter Cards:</strong> Social media preview data for every page with custom images.</li>
+<li><strong>Semantic HTML:</strong> Proper heading hierarchy and semantic elements for screen readers and crawlers.</li>
+<li><strong>Server-Side Rendering:</strong> Pages are rendered on the server, ensuring crawlers see fully rendered HTML.</li>
+</ul>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q59.</span> How does the project optimize page load performance?</div><div class="qa-answer">
+<p>Performance optimizations include:</p>
+<ul>
+<li><strong>Code Splitting:</strong> dynamic() imports split the HomePage into a separate chunk, loading only what's needed initially.</li>
+<li><strong>Font Optimization:</strong> next/font/google preloads fonts and uses font-display: swap to prevent invisible text.</li>
+<li><strong>Image Optimization:</strong> Images are served from public/images/api/ with Next.js's built-in Image component providing lazy loading and responsive sizing.</li>
+<li><strong>React Query Caching:</strong> 5-minute stale time prevents refetching data that hasn't changed.</li>
+<li><strong>Lazy Loading:</strong> LazyLayout defers rendering of below-the-fold content.</li>
+<li><strong>Reduced Motion:</strong> The CSS includes @media (prefers-reduced-motion: reduce) that disables all animations for accessibility.</li>
+</ul>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q60.</span> What are the cache control headers used?</div><div class="qa-answer">
+<p>The project defines two sets of cache headers in <code>src/lib/cache.ts</code>:</p>
+<ul>
+<li><strong>PUBLIC_CACHE_HEADERS:</strong> <code>Cache-Control: public, max-age=0, must-revalidate, stale-while-revalidate=600</code> - This tells the browser to always revalidate with the server but allows serving stale content for up to 10 minutes while revalidation happens in the background. Ideal for content that changes occasionally.</li>
+<li><strong>NO_CACHE_HEADERS:</strong> <code>Cache-Control: no-store</code> - Used for admin routes and sensitive data that should never be cached by the browser or intermediate proxies.</li>
+</ul>
+<p>The stale-while-revalidate pattern provides an excellent balance between freshness and performance for a CMS-driven site.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q61.</span> How does lazy loading improve the user experience?</div><div class="qa-answer">
+<p>Lazy loading is implemented at multiple levels in this project. The <code>LazyLayout</code> component wraps the application tree and likely defers rendering of non-critical UI sections until they're needed. The <code>dynamic()</code> import on the HomePage splits the main content into a separate chunk that loads asynchronously after the shell renders.</p>
+<p>On individual pages, the <code>useInView</code> hook triggers scroll reveal animations only when elements enter the viewport, and images use Next.js's Image component for lazy loading. This progressive loading approach ensures the initial paint is fast and interactive, with content appearing smoothly as the user scrolls down.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q62.</span> What is the MainSitePageLoading component?</div><div class="qa-answer">
+<p>The <code>MainSitePageLoading</code> component at src/components/Common/MainSitePageLoading.tsx is a <strong>loading skeleton</strong> displayed while the HomePage chunk loads asynchronously. It's used as the loading option in the dynamic() import on the home page.</p>
+<p>This component likely renders placeholder shapes (gray boxes or shimmer effects) that approximate the layout of the home page sections. This provides visual feedback during the loading phase and prevents layout shift when the actual content renders. It improves perceived performance by showing something meaningful immediately rather than a blank page.</p>
+</div></div>
+<!-- SECTION 12 -->
+<div class="section-header"><h2>12. Image &amp; Video Handling</h2><div class="section-range">Questions 63 - 66</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q63.</span> How are images stored and served?</div><div class="qa-answer">
+<p>Images are stored as physical files in the <code>public/images/api/</code> directory, organized by content type (services, projects, team, hero, settings). When an admin uploads an image via the CMS, the client converts it to base64, sends it to the API, and <code>saveImage()</code> in imageHelper.ts decodes it back to a buffer and writes it to disk with a unique filename.</p>
+<p>The stored URL (e.g., <code>/images/api/services/service1_1234567890.jpg</code>) is saved in the corresponding JSON data file. These URLs are relative to the public directory and served directly by Next.js static file serving.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q64.</span> What image formats and size limits are supported?</div><div class="qa-answer">
+<p>The imageHelper.ts defines support for these formats through the EXTENSION_MAP: JPEG (.jpg), PNG (.png), GIF (.gif), WebP (.webp), and SVG (.svg).</p>
+<p>The maximum file size is <strong>5MB</strong> (5 * 1024 * 1024 bytes). Files exceeding this limit are rejected with an error before any disk write occurs. Unsupported file types are rejected during the extension mapping step.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q65.</span> How does video handling work?</div><div class="qa-answer">
+<p>Video handling follows a similar pattern to images, implemented in <code>src/lib/videoHelper.ts</code>. Videos are stored in the <code>public/video/</code> directory. Supported formats include MP4, WebM, OGG/OGV, MOV, and M4V.</p>
+<p>The <code>saveVideo()</code> function accepts base64 video data, validates the file type, decodes to buffer, and writes to disk. It supports both auto-generated filenames (with timestamp) and sanitized original filenames. The <code>deleteVideo()</code> function removes the file with path traversal checks.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q66.</span> How does the videoUrl helper work?</div><div class="qa-answer">
+<p>The <code>src/lib/videoUrl.ts</code> module provides utility functions for working with video URLs, handling URL normalization, validation, and potentially YouTube/Vimeo embed URL conversion. This helper ensures consistent video URL handling across the application.</p>
+<p>The videoHelper.ts module focuses on file system operations (save/delete), while videoUrl.ts focuses on URL manipulation. This separation keeps the codebase organized with file operations in one module and URL logic in another.</p>
+</div></div>
+
+<!-- SECTION 13 -->
+<div class="section-header"><h2>13. Animations &amp; UX</h2><div class="section-range">Questions 67 - 71</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q67.</span> How do scroll reveal animations work?</div><div class="qa-answer">
+<p>Scroll reveal animations are driven by the Reveal component and the useInView hook. The CSS defines a <code>.reveal</code> class with initial opacity: 0 and transform: translate3d(0, 48px, 0). When the element enters the viewport via IntersectionObserver, the class <code>.reveal-revealed</code> is added, triggering a CSS transition to visible state.</p>
+<p>Multiple animation variants are supported via data attributes: fade, fade-down, zoom, slide-left, slide-right, and scale. The cubic-bezier(0.22, 1, 0.36, 1) timing function creates a smooth, natural-feeling deceleration effect across all variants.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q68.</span> What is the Ken Burns effect used for?</div><div class="qa-answer">
+<p>The Ken Burns effect is a <strong>slow zoom animation</strong> applied to hero slide background images. Defined as a CSS keyframe animation, it scales the image from 1.05 to 1.14 over 9 seconds with an ease-out timing function. This creates a subtle, cinematic zoom that adds visual interest to the hero carousel.</p>
+<p>The animation is applied to the <code>.hero-bg-zoom</code> element within active Swiper slides via the <code>.swiper-slide-active .hero-bg-zoom</code> selector. Each new slide triggers a fresh Ken Burns animation, creating a dynamic, professional-looking hero section common on corporate websites.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q69.</span> How do the hero text animations work?</div><div class="qa-answer">
+<p>The hero section uses a multi-layered animation system:</p>
+<ul>
+<li><strong>Hero Anime Items:</strong> Elements with class <code>.hero-anime-item</code> start at opacity: 0, translateY(34px). The active slide items transition to visible with staggered delays (0.12s, 0.24s, 0.36s, 0.48s for subsequent children).</li>
+<li><strong>Word-by-Word Reveal:</strong> The <code>.anime-word</code> class animates individual words with opacity and transform transitions, creating a typewriter-like reveal effect.</li>
+<li><strong>CSS-Only Triggering:</strong> All animations are triggered by the <code>.swiper-slide-active</code> parent class, replaying with each new slide using pure CSS without JavaScript state management.</li>
+</ul>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q70.</span> What is the marquee/ticker animation?</div><div class="qa-answer">
+<p>The marquee animation creates an <strong>infinite horizontal scrolling ticker</strong> effect used in the footer or between sections. It uses a CSS keyframe that translates the track by -50% since the content is duplicated for seamless looping. The animation runs for 28 seconds with a linear timing function.</p>
+<p>The marquee pauses on hover via <code>animation-play-state: paused</code>. The content structure uses duplicated groups so when the first set scrolls out of view, the duplicate seamlessly takes its place, creating infinite scrolling without any JavaScript.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q71.</span> What ambient animations exist in the design system?</div><div class="qa-answer">
+<p>The design system includes several ambient motion effects:</p>
+<ul>
+<li><strong>Float Animation:</strong> <code>.animate-float</code> creates a gentle vertical bobbing motion over 5 seconds.</li>
+<li><strong>Pulse Ring:</strong> <code>.pulse-ring</code> creates an expanding, fading ring effect for attention-grabbing CTAs.</li>
+<li><strong>Gradient Shift:</strong> <code>.animate-gradient</code> animates background-position for gradient backgrounds.</li>
+<li><strong>Card Shine:</strong> <code>.card-shine</code> adds a diagonal light sweep across cards on hover.</li>
+<li><strong>Nav Link Sweep:</strong> <code>.nav-link-sweep</code> animates an underline from right-to-left on hover.</li>
+<li><strong>Chat Widget Animations:</strong> Entrance, button pop-in, and idle bobbing for the floating chat widget.</li>
+</ul>
+<p>All animations respect the <code>prefers-reduced-motion: reduce</code> media query for accessibility compliance.</p>
+</div></div>
+
+<!-- SECTION 14 -->
+<div class="section-header"><h2>14. Middleware &amp; Proxy</h2><div class="section-range">Questions 72 - 75</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q72.</span> What is the role of the proxy middleware?</div><div class="qa-answer">
+<p>The middleware at <code>src/proxy.ts</code> serves as the <strong>API gateway</strong> for the entire application. It intercepts all requests matching <code>/api/:path*</code> and implements authentication and authorization logic before any API route handler executes. Non-API requests pass through directly via NextResponse.next().</p>
+<p>The middleware uses a whitelist approach: specific routes are marked as public (GET/POST), while everything else requires a valid JWT access token. This protects admin operations (CRUD on services, projects, team, etc.) while keeping public content accessible to search engines and anonymous visitors.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q73.</span> How does the middleware extract and validate tokens?</div><div class="qa-answer">
+<p>The <code>getToken()</code> function in proxy.ts checks two sources for the JWT token:</p>
+<ol>
+<li><strong>Authorization Header:</strong> Looks for <code>Authorization: Bearer &lt;token&gt;</code> in the request headers.</li>
+<li><strong>Cookies:</strong> Falls back to reading the accessToken cookie from the request.</li>
+</ol>
+<p>If a token is found, <code>verifyAccessToken(token)</code> is called, which uses jsonwebtoken to verify the signature against JWT_SECRET and decode the payload. If verification fails (expired, invalid signature, malformed payload), the middleware returns a 401 JSON response. This dual-source approach supports both API clients and browser-based requests.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q74.</span> Why are some routes public while others require authentication?</div><div class="qa-answer">
+<p>The route access policy is designed around the <strong>public content vs. admin operations</strong> distinction:</p>
+<ul>
+<li><strong>Public GET routes:</strong> Services, projects, team, reviews, hero-slides, and settings must be publicly readable for the website to render content. Search engines need to crawl these routes.</li>
+<li><strong>Public POST routes:</strong> Contact form, reviews, and palash-applications allow anonymous submissions, which is essential for lead generation and social proof.</li>
+<li><strong>Protected routes:</strong> All write operations (PUT, DELETE) on content and user management require authentication to prevent unauthorized modifications.</li>
+</ul>
+<p>This separation ensures the public site works without login while the CMS remains secure.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q75.</span> What happens when the middleware rejects a request?</div><div class="qa-answer">
+<p>When the middleware rejects a request (no token or invalid token), it returns a <strong>401 Unauthorized</strong> JSON response with the structure: <code>{ success: false, error: "Authorization header missing or invalid" }</code> or <code>{ success: false, error: "Invalid or expired token" }</code>.</p>
+<p>The client-side <code>apiClient</code> detects the 401 status and automatically attempts a token refresh using the refresh token. If refresh succeeds, the original request is retried with the new token transparently. If refresh also fails (expired refresh token), the client clears stored tokens and redirects to the login page. This creates a seamless authentication experience where users are only prompted to log in when their session truly expires.</p>
+</div></div>
+
+<!-- SECTION 15 -->
+<div class="section-header"><h2>15. Deployment &amp; DevOps</h2><div class="section-range">Questions 76 - 79</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q76.</span> How is this project deployed?</div><div class="qa-answer">
+<p>The project is a Next.js application that can be deployed to any Node.js hosting platform. Given the file-based JSON database, deployment must use a <strong>persistent filesystem</strong> (not a serverless/edge runtime) to ensure data files survive across requests. Common deployment targets include a VPS (DigitalOcean, AWS EC2), a Node.js PaaS (Railway, Render), or a Docker container.</p>
+<p>The <code>pnpm build</code> command (via <code>next build</code>) creates an optimized production build, and <code>pnpm start</code> (via <code>next start</code>) runs the production server. Environment variables (JWT secrets, admin credentials) must be configured in the hosting environment.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q77.</span> What environment variables are required for production?</div><div class="qa-answer">
+<p>The following environment variables are required for production deployment (validated by env.ts):</p>
+<ul>
+<li><strong>JWT_SECRET:</strong> A long, random string used to sign access tokens (15-minute expiry).</li>
+<li><strong>JWT_REFRESH_SECRET:</strong> A separate long, random string for signing refresh tokens (7-day expiry).</li>
+<li><strong>DEFAULT_SUPERADMIN_EMAIL:</strong> Email for the initial superadmin account.</li>
+<li><strong>DEFAULT_SUPERADMIN_PASSWORD:</strong> Password for the initial superadmin account (hashed with bcrypt, 12 rounds).</li>
+</ul>
+<p>Optional variables include NODE_ENV (defaults to development) and SITE_URL (defaults to https://aheadsolarbd.com). In production, missing required variables cause the application to throw an error and refuse to start.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q78.</span> What are the build scripts and their purposes?</div><div class="qa-answer">
+<p>The package.json defines four scripts:</p>
+<ul>
+<li><strong><code>pnpm dev</code></strong> (next dev) - Starts the development server with Turbopack for fast HMR. Supports hot reloading of components, API routes, and CSS changes.</li>
+<li><strong><code>pnpm build</code></strong> (next build) - Creates an optimized production build. Analyzes the bundle, tree-shakes unused code, generates static pages where possible, and outputs to the .next directory.</li>
+<li><strong><code>pnpm start</code></strong> (next start) - Starts the production server using the optimized build. Must be run after <code>pnpm build</code>.</li>
+<li><strong><code>pnpm lint</code></strong> (eslint) - Runs ESLint to check for code quality issues, unused imports, and potential bugs. Uses the eslint-config-next preset.</li>
+</ul>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q79.</span> What are the limitations of the file-based database for production?</div><div class="qa-answer">
+<p>The file-based JSON database has several production limitations:</p>
+<ul>
+<li><strong>No horizontal scaling:</strong> Multiple server instances would each have their own copy of the data, leading to inconsistencies. A single-server deployment is required.</li>
+<li><strong>Write concurrency:</strong> The write lock serializes all mutations, creating a bottleneck under high write load. For a corporate site with occasional CMS updates, this is acceptable.</li>
+<li><strong>No backups automation:</strong> There is no built-in backup mechanism. Data can be lost if the filesystem is corrupted or the server crashes during a write. Regular filesystem backups are essential.</li>
+<li><strong>No querying:</strong> All data is loaded into memory for every read. With a large dataset, this could become slow. For this project's scale (hundreds of records), performance is fine.</li>
+</ul>
+<p>For a small-to-medium corporate website, these limitations are acceptable trade-offs for the simplicity and zero-cost deployment benefits.</p>
+</div></div>
+
+<!-- SECTION 16 -->
+<div class="section-header"><h2>16. General / Behavioral Questions</h2><div class="section-range">Questions 80 - 85</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q80.</span> Why did you choose a file-based database over MongoDB or PostgreSQL?</div><div class="qa-answer">
+<p>The file-based JSON database was chosen to <strong>minimize deployment complexity and cost</strong> for a corporate website. Ahead Solar is a small-to-medium business that needs a website to showcase services and collect leads, not handle millions of transactions. Adding MongoDB or PostgreSQL would require additional hosting costs, database management, backup strategies, and connection configuration.</p>
+<p>The JSON approach means the entire application and its data can be deployed on a single $5-10/month VPS with no external dependencies. The data model is simple (flat arrays of records), the read/write patterns are low-volume, and the write lock provides sufficient concurrency control for a CMS with a handful of admin users.</p>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q81.</span> What challenges did you face during development?</div><div class="qa-answer">
+<p>Key challenges included:</p>
+<ul>
+<li><strong>Next.js 16 breaking changes:</strong> As noted in AGENTS.md, Next.js 16 has breaking changes from earlier versions. Understanding the new App Router conventions, middleware patterns, and API route structure required careful reading of the documentation.</li>
+<li><strong>Server-Client boundary:</strong> Correctly splitting code between server components (for data fetching and SEO) and client components (for interactivity) required understanding React 19's rendering model.</li>
+<li><strong>Concurrent write safety:</strong> Implementing the write lock to prevent data corruption from simultaneous admin operations was a non-trivial concurrency challenge in Node.js's async environment.</li>
+<li><strong>Token refresh flow:</strong> Building a robust auto-refresh system that handles edge cases (expired refresh tokens, concurrent requests during refresh, network failures) required careful implementation.</li>
+</ul>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q82.</span> How would you improve this project if you had more time?</div><div class="qa-answer">
+<p>Several improvements would enhance the project:</p>
+<ul>
+<li><strong>Database migration:</strong> Replace the JSON file store with SQLite or PostgreSQL for better concurrency, atomicity, and query capabilities.</li>
+<li><strong>Image optimization:</strong> Integrate Next.js Image component with a CDN for automatic format conversion (WebP/AVIF), responsive sizing, and edge caching.</li>
+<li><strong>Testing:</strong> Add unit tests for API routes and utilities, integration tests for the auth flow, and E2E tests with Playwright for critical user journeys.</li>
+<li><strong>Role-based permissions:</strong> Implement granular permissions so admin users can be restricted to specific CMS sections (e.g., a user who can only manage services).</li>
+<li><strong>Real-time updates:</strong> Use Server-Sent Events or WebSockets to push content changes to the public site without requiring a page refresh.</li>
+</ul>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q83.</span> Describe your approach to testing this application.</div><div class="qa-answer">
+<p>A comprehensive testing strategy for this project would include:</p>
+<ul>
+<li><strong>Unit Tests:</strong> Test utility functions in isolation - token generation/verification, file store read/write, rate limiting logic, image/video helpers, and form validation schemas. Use Jest or Vitest.</li>
+<li><strong>API Route Tests:</strong> Test each API endpoint with mock file system operations - verify authentication checks, response formats, error handling, and data validation.</li>
+<li><strong>Component Tests:</strong> Test React components with React Testing Library - form submissions, loading states, error displays, and interactive elements.</li>
+<li><strong>E2E Tests:</strong> Use Playwright to test critical user flows - login, content editing, form submission, and page navigation.</li>
+<li><strong>Visual Regression:</strong> Capture screenshots of key pages and compare against baselines to catch unintended styling changes.</li>
+</ul>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q84.</span> How does this project handle accessibility?</div><div class="qa-answer">
+<p>The project addresses accessibility in several ways:</p>
+<ul>
+<li><strong>Reduced Motion:</strong> The CSS includes a comprehensive <code>@media (prefers-reduced-motion: reduce)</code> block that disables all animations, transitions, and transforms for users who have requested reduced motion in their OS settings.</li>
+<li><strong>Semantic HTML:</strong> The use of proper heading hierarchy, landmarks, and semantic elements provides structure for screen readers.</li>
+<li><strong>Font Legibility:</strong> The <code>antialiased</code> class on the HTML element ensures smooth font rendering, and the font sizes are appropriate for readability.</li>
+<li><strong>Focus Indicators:</strong> Tailwind's default focus ring styles provide visible focus indicators for keyboard navigation.</li>
+<li><strong>Color Contrast:</strong> The design token system uses carefully chosen color values that maintain sufficient contrast ratios for text readability.</li>
+</ul>
+</div></div>
+
+<div class="qa"><div class="qa-question"><span class="q-num">Q85.</span> What did you learn from building this project?</div><div class="qa-answer">
+<p>Key learnings from the Ahead Solar BD project:</p>
+<ul>
+<li><strong>Full-Stack Next.js Mastery:</strong> Deep understanding of the App Router, server/client component boundaries, API routes, middleware, and metadata generation in Next.js 16.</li>
+<li><strong>Design System Architecture:</strong> Building a multi-theme CSS custom property system that supports brand switching (cyan/gold for main site, red/green for Palash, dark theme for admin) using Tailwind v4's token architecture.</li>
+<li><strong>Authentication Patterns:</strong> Implementing a production-quality JWT auth system with automatic token refresh, request deduplication, and middleware-based route protection.</li>
+<li><strong>Simplified Data Layer:</strong> Understanding when a file-based database is appropriate and how to add concurrency safety (write locks) to prevent data corruption.</li>
+<li><strong>Performance Optimization:</strong> Applying code splitting, lazy loading, scroll animations, and caching strategies to create a fast, engaging user experience.</li>
+</ul>
+</div></div>
+
+</body>
+</html>
